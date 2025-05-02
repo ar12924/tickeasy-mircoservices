@@ -1,4 +1,4 @@
-package user.buy.vo;
+package user.member.vo;
 
 import java.sql.Date;
 import java.sql.Timestamp;

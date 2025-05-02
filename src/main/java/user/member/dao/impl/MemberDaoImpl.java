@@ -1,4 +1,4 @@
-package user.buy.dao.impl;
+package user.member.dao.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,8 +9,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import user.buy.dao.MemberDao;
-import user.buy.vo.Member;
+import user.member.dao.MemberDao;
+import user.member.vo.Member;
 
 public class MemberDaoImpl implements MemberDao {
 	private DataSource ds;
@@ -21,7 +21,7 @@ public class MemberDaoImpl implements MemberDao {
 	}
 
 	@Override
-	public Member selectMemberById(int id) {
+	public Member selectMemberById(Integer id) {
 		String sql = "SELECT * FROM member WHERE member_id = ?";
 		try (	// 1. 建立連線
 				Connection conn = ds.getConnection(); 
