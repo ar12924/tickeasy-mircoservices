@@ -44,6 +44,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- 配置 gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.12.1</version>
+		</dependency>
 		<!-- 配置 mysql driver -->
 		<dependency>
 			<groupId>com.mysql</groupId>
