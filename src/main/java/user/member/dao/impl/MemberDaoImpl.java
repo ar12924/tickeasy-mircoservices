@@ -20,7 +20,6 @@ public class MemberDaoImpl implements MemberDao {
 			// 取得 ds (所有 CRUD 共用)
 			ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/tickeasy");
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

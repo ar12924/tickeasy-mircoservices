@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tickeasy 活動搜尋</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="./css/SearchEvent.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- 1. 標題區 -->
+      <div class="search">
+        <h1>tickeasy 活動搜尋</h1>
+      </div>
+
+      <!-- 2. 結果表格 -->
+      <table class="result">
+        <tbody>
+          <tr>
+            <th>event_id</th>
+            <th>event_name</th>
+            <th>event_from_date</th>
+            <th>event_to_date</th>
+            <th>event_host</th>
+            <th>total_capacity</th>
+            <th>place</th>
+            <th>summary</th>
+            <th>detail</th>
+            <th>is_posted</th>
+            <th>keyword_id</th>
+            <th>member_id</th>
+            <th>create_time</th>
+            <th>update_time</th>
+          </tr>
+          <tr v-for="info in eventsList">
+            <td>{{ info.event_id }}</td>
+            <td>{{ info.event_name }}</td>
+            <td>{{ info.event_from_date }}</td>
+            <td>{{ info.event_to_date }}</td>
+            <td>{{ info.event_host }}</td>
+            <td>{{ info.total_capacity }}</td>
+            <td>{{ info.place }}</td>
+            <td>{{ info.summary }}</td>
+            <td>{{ info.detail }}</td>
+            <td>{{ info.is_posted }}</td>
+            <td>{{ info.keyword_id }}</td>
+            <td>{{ info.member_id }}</td>
+            <td>{{ info.create_time }}</td>
+            <td>{{ info.update_time }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script src="./js/SearchEvent.js"></script>
+  </body>
+</html>
