@@ -28,18 +28,24 @@ public class BuyDaoImpl implements BuyDao {
 	}
 
 	@Override
-	public List<EventInfo> selectAllEvent() {
-		String sql = "SELECT * FROM event_info";
-		try ( // 1. 建立連線
+	public List<EventInfo> selectEvent(String keywords) {
+		// 1. 將 keywords 插入 SQL 語句進行條件搜尋
+		StringBuilder sqlTemp = new StringBuilder("SELECT * FROM event_info WHERE event_name ");
+		sqlTemp.append("LIKE '%");
+		sqlTemp.append(keywords);
+		sqlTemp.append("%' ORDER BY event_from_date");
+		String sql = sqlTemp.toString();
+		
+		try ( // 2. 建立連線
 				Connection conn = ds.getConnection();
-				// 2. 創建預備 sql 敘述
+				// 3. 創建預備 sql 敘述
 				PreparedStatement pstmt = conn.prepareStatement(sql);) {
-			// 3. 取得 rs 物件，並遍歷每筆資料
+			// 4. 取得 rs 物件，並遍歷每筆資料
 			try (ResultSet rs = pstmt.executeQuery()) {
 				List<EventInfo> eventInfoLst = new ArrayList<>();
 				while (rs.next()) {
 					EventInfo eventInfo = new EventInfo();
-					// 4. 將資料放入 vo
+					// 5. 將資料放入 vo
 					eventInfo.setEvent_id(rs.getInt("event_id"));
 					eventInfo.setEvent_name(rs.getString("event_name"));
 					eventInfo.setEvent_from_date(rs.getTimestamp("event_from_date"));
@@ -56,7 +62,7 @@ public class BuyDaoImpl implements BuyDao {
 					eventInfo.setUpdate_time(rs.getTimestamp("update_time"));
 					eventInfoLst.add(eventInfo);
 				}
-				// 5. 回傳 list
+				// 6. 回傳 list
 				return eventInfoLst;
 			}
 		} catch (SQLException e) {

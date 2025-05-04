@@ -30,14 +30,16 @@ public class searchEventServlet extends HttpServlet {
 		// 指定允許所有網域
 		resp.setHeader("Access-Control-Allow-Origin", "*");
 
-		// 1. 去資料庫找所有活動資料
-		List<EventInfo> eventInfoLists = buyDaoImpl.selectAllEvent();
-		// 2. 創建 Gson 物件
+		// 1. 接受前端查詢字串(若無則給定空字串查詢)
+		String keywords = req.getParameter("keywords");
+		keywords = keywords == null ? "" : keywords;
+		// 2. 去資料庫找活動資料
+		List<EventInfo> eventInfoLists = buyDaoImpl.selectEvent(keywords);
+		// 3. 創建 Gson 物件
 		Gson gson = new Gson();
-		// 3. 將活動陣列轉成 json 格式
-//		eventInfoLists.forEach(event -> System.out.println(event.getEvent_id()));
+		// 4. 將活動陣列轉成 json 格式
 		String jsonData = gson.toJson(eventInfoLists);
-		// 4. 回應 json 字串(包含多個活動)
+		// 5. 回應 json 字串(包含多個活動)
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("utf-8");
 		PrintWriter pw = resp.getWriter();

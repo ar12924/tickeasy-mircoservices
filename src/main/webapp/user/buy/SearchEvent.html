@@ -9,9 +9,11 @@
   </head>
   <body>
     <div id="app">
-      <!-- 1. 標題區 -->
+      <!-- 1. 搜尋區 -->
       <div class="search">
         <h1>tickeasy 活動搜尋</h1>
+        <input type="text" v-model="searchWords" />
+        <button @click="searchClick">搜尋</button>
       </div>
 
       <!-- 2. 結果表格 -->
