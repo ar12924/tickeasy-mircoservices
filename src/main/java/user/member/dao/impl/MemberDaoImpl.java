@@ -15,16 +15,21 @@ import user.member.vo.Member;
 public class MemberDaoImpl implements MemberDao {
 	private DataSource ds;
 
-	public MemberDaoImpl() throws NamingException {
-		// 取得 ds (所有 CRUD 共用)
-		ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/tickeasy");
+	public MemberDaoImpl() {
+		try {
+			// 取得 ds (所有 CRUD 共用)
+			ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/tickeasy");
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public Member selectMemberById(Integer id) {
 		String sql = "SELECT * FROM member WHERE member_id = ?";
-		try (	// 1. 建立連線
-				Connection conn = ds.getConnection(); 
+		try ( // 1. 建立連線
+				Connection conn = ds.getConnection();
 				// 2. 創建預備 sql 敘述
 				PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			// 3. 設定欄位型別

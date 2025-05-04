@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tickeasy 會員查詢</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="./css/MemberInfo.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- 1. 搜尋區 -->
+      <div class="search">
+        <h1>tickeasy 會員查詢</h1>
+        <label for="">請輸入想要查詢的會員id: </label>
+        <input type="number" v-model="indicatedId" />
+        <button @click="searchClick">搜尋</button>
+        <span class="warning" v-if="msg">{{ msg }}</span>
+      </div>
+
+      <!-- 2. 結果表格 -->
+      <table class="result" v-if="selectedMember != null">
+        <tbody>
+          <tr>
+            <th>member_id</th>
+            <th>user_name</th>
+            <th>email</th>
+            <th>phone</th>
+            <th>birth_date</th>
+            <th>gender</th>
+            <th>role_level</th>
+            <th>is_active</th>
+            <th>create_time</th>
+            <th>update_time</th>
+          </tr>
+          <tr>
+            <td>{{ selectedMember.member_id }}</td>
+            <td>{{ selectedMember.user_name }}</td>
+            <td>{{ selectedMember.email }}</td>
+            <td>{{ selectedMember.phone }}</td>
+            <td>{{ selectedMember.birth_date }}</td>
+            <td>{{ selectedMember.gender }}</td>
+            <td>{{ selectedMember.role_level }}</td>
+            <td>{{ selectedMember.is_active }}</td>
+            <td>{{ selectedMember.create_time }}</td>
+            <td>{{ selectedMember.update_time }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script src="./js/MemberInfo.js"></script>
+  </body>
+</html>
