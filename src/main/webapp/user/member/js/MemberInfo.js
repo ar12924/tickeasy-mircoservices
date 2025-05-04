@@ -23,6 +23,7 @@ const app = Vue.createApp({
       if (this.indicatedId) {
         // 呼叫 methods 中的 fetchMemberInfo() 函數
         this.fetchMemberInfo();
+        this.msg = "";
       } else {
         this.msg = "請輸入資料";
       }
