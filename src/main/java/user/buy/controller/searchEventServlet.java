@@ -12,34 +12,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import user.buy.dao.BuyDao;
-import user.buy.dao.impl.BuyDaoImpl;
+import user.buy.service.BuyService;
+import user.buy.service.impl.BuyServiceImpl;
 import user.buy.vo.EventInfo;
 
 @WebServlet("/search-event")
 public class searchEventServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private BuyDao buyDaoImpl;
+	private BuyService buyServiceImpl;
 
 	public searchEventServlet() {
-		buyDaoImpl = new BuyDaoImpl();
+		buyServiceImpl = new BuyServiceImpl();
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 指定允許所有網域
+		// 1. 指定允許所有網域
 		resp.setHeader("Access-Control-Allow-Origin", "*");
-
-		// 1. 接受前端查詢字串(若無則給定空字串查詢)
+		// 2. 接受前端查詢 keywords (若無則給定 "" 查詢)
 		String keywords = req.getParameter("keywords");
 		keywords = keywords == null ? "" : keywords;
-		// 2. 去資料庫找活動資料
-		List<EventInfo> eventInfoLists = buyDaoImpl.selectEvent(keywords);
-		// 3. 創建 Gson 物件
-		Gson gson = new Gson();
+		// 3. 將 keywords 交給 Service 處理，回傳查詢結果
+		List<EventInfo> eventInfosList = buyServiceImpl.searchEventByKeyword(keywords);
 		// 4. 將活動陣列轉成 json 格式
-		String jsonData = gson.toJson(eventInfoLists);
-		// 5. 回應 json 字串(包含多個活動)
+		Gson gson = new Gson();
+		String jsonData = gson.toJson(eventInfosList);
+		// 5. 回應 json 字串
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("utf-8");
 		PrintWriter pw = resp.getWriter();

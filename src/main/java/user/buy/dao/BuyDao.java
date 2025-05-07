@@ -4,5 +4,5 @@ import java.util.List;
 import user.buy.vo.EventInfo;
 
 public interface BuyDao {
-	List<EventInfo> selectEvent(String keywords);
+	List<EventInfo> selectEventByKeyword(String keywords);
 }

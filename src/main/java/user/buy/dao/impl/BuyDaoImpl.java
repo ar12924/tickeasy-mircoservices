@@ -24,18 +24,17 @@ public class BuyDaoImpl implements BuyDao {
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
-	public List<EventInfo> selectEvent(String keywords) {
+	public List<EventInfo> selectEventByKeyword(String keywords) {
 		// 1. 將 keywords 插入 SQL 語句進行條件搜尋
 		StringBuilder sqlTemp = new StringBuilder("SELECT * FROM event_info WHERE event_name ");
 		sqlTemp.append("LIKE '%");
 		sqlTemp.append(keywords);
 		sqlTemp.append("%' ORDER BY event_from_date");
 		String sql = sqlTemp.toString();
-		
+
 		try ( // 2. 建立連線
 				Connection conn = ds.getConnection();
 				// 3. 創建預備 sql 敘述
