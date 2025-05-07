@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import user.buy.dao.BuyDao;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
+import user.buy.vo.MemberNotification;
 
 public class BuyDaoImpl implements BuyDao {
 	private DataSource ds;
@@ -105,6 +106,45 @@ public class BuyDaoImpl implements BuyDao {
 				}
 				// 6. 回傳 list
 				return buyerTicketLst;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<MemberNotification> selectNotification() {
+		// 1. 生成 SQL 語句進行搜尋
+		String sql = "SELECT * FROM member_notification ORDER BY send_time;";
+
+		try ( // 2. 建立連線
+				Connection conn = ds.getConnection();
+				// 3. 創建預備 sql 敘述
+				PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			// 4. 取得 rs 物件，並遍歷每筆資料
+			try (ResultSet rs = pstmt.executeQuery()) {
+				List<MemberNotification> memberNotificationLst = new ArrayList<>();
+				while (rs.next()) {
+					MemberNotification memberNotification = new MemberNotification();
+					// 5. 將資料放入 vo
+					memberNotification.setMember_notification_id(rs.getInt("member_notification_id"));
+					memberNotification.setNotification_id(rs.getInt("notification_id"));
+					memberNotification.setMember_id(rs.getInt("member_id"));
+					memberNotification.setIs_read(rs.getInt("is_read"));
+					memberNotification.setIs_visible(rs.getInt("is_visible"));
+					memberNotification.setNotification_status(rs.getInt("notification_status"));
+					memberNotification.setTitle(rs.getString("title"));
+					memberNotification.setMessage(rs.getString("message"));
+					memberNotification.setLink_url(rs.getString("link_url"));
+					memberNotification.setRead_time(rs.getTimestamp("read_time"));
+					memberNotification.setSend_time(rs.getTimestamp("send_time"));
+					memberNotification.setCreate_time(rs.getTimestamp("create_time"));
+					memberNotification.setUpdate_time(rs.getTimestamp("update_time"));
+					memberNotificationLst.add(memberNotification);
+				}
+				// 6. 回傳 list
+				return memberNotificationLst;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -66,12 +66,24 @@
         <!-- 我的票券 section -->
         <section class="my-tickets">
           <h2>我的票券</h2>
-          <div class="ticket-card">
+          <div class="ticket-card" v-for="item in ticketList.slice(0, 1)">
             <div class="ticket-card-top">
               <div class="ticket-info">
-                <h3>2025春季音樂節</h3>
-                <p>座位：Row 5, Seat 12</p>
-                <p>日期：2024/03/15 19:30</p>
+                <h3>{{ item.event_name }}</h3>
+                <div class="ticket-info-box">
+                  <div class="ticket-info-left">
+                    <p>列隊序號</p>
+                    <p>票券姓名</p>
+                    <p>聯絡信箱</p>
+                    <p>聯絡手機</p>
+                  </div>
+                  <div class="ticket-info-right">
+                    <p>{{ item.quene_id }}</p>
+                    <p>{{ item.participant_name }}</p>
+                    <p>{{ item.email }}</p>
+                    <p>{{ item.phone }}</p>
+                  </div>
+                </div>
               </div>
               <div class="ticket-actions">
                 <button class="show">查看票券</button>
@@ -87,11 +99,14 @@
         <!-- 通知中心 section -->
         <section class="notification-center">
           <h2>通知中心</h2>
-          <div class="notification-card">
+          <div
+            class="notification-card"
+            v-for="item in notificationList.slice(0, 1)"
+          >
             <div class="notification-content">
-              <h3 class="notification-title">活動提醒</h3>
-              <p class="notification-text">2024春季音樂節購票即將開始</p>
-              <p class="notification-time">2小時前</p>
+              <h3 class="notification-title">{{ item.title }}</h3>
+              <p class="notification-text">{{ item.message }}</p>
+              <p class="notification-time">{{ timeAgo(item.send_time) }}</p>
             </div>
             <a href="#" class="more-info">查看更多</a>
           </div>

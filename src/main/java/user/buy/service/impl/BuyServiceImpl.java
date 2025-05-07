@@ -7,6 +7,7 @@ import user.buy.dao.impl.BuyDaoImpl;
 import user.buy.service.BuyService;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
+import user.buy.vo.MemberNotification;
 
 public class BuyServiceImpl implements BuyService {
 	private BuyDao buyDaoImpl;
@@ -27,6 +28,12 @@ public class BuyServiceImpl implements BuyService {
 	public List<BuyerTicket> searchTicket() {
 		// 1. 查詢 buyer_ticket
 		return buyDaoImpl.selectTicket();
+	}
+
+	@Override
+	public List<MemberNotification> searchNotification() {
+		// 1. 查詢 member_notification
+		return buyDaoImpl.selectNotification();
 	}
 
 }

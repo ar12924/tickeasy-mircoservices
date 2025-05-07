@@ -205,6 +205,11 @@ nav {
   align-items: center;
 }
 
+.ticket-info-box {
+  display: flex;
+  gap: 1rem;
+}
+
 .ticket-actions {
   display: flex;
   gap: 1rem;
