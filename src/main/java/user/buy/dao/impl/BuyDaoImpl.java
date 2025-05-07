@@ -12,6 +12,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import user.buy.dao.BuyDao;
+import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 
 public class BuyDaoImpl implements BuyDao {
@@ -63,6 +64,47 @@ public class BuyDaoImpl implements BuyDao {
 				}
 				// 6. 回傳 list
 				return eventInfoLst;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<BuyerTicket> selectTicket() {
+		// 1. 生成 SQL 語句進行搜尋
+		String sql = "SELECT * FROM buyer_ticket;";
+
+		try ( // 2. 建立連線
+				Connection conn = ds.getConnection();
+				// 3. 創建預備 sql 敘述
+				PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			// 4. 取得 rs 物件，並遍歷每筆資料
+			try (ResultSet rs = pstmt.executeQuery()) {
+				List<BuyerTicket> buyerTicketLst = new ArrayList<>();
+				while (rs.next()) {
+					BuyerTicket buyerTicket = new BuyerTicket();
+					// 5. 將資料放入 vo
+					buyerTicket.setTicket_id(rs.getInt("ticket_id"));
+					buyerTicket.setOrder_id(rs.getInt("order_id"));
+					buyerTicket.setEmail(rs.getString("email"));
+					buyerTicket.setPhone(rs.getString("phone"));
+					buyerTicket.setPrice(rs.getBigDecimal("price"));
+					buyerTicket.setStatus(rs.getInt("status"));
+					buyerTicket.setId_card(rs.getString("id_card"));
+					buyerTicket.setCurrent_holder_member_id(rs.getInt("current_holder_member_id"));
+					buyerTicket.setIs_used(rs.getInt("is_used"));
+					buyerTicket.setParticipant_name(rs.getString("participant_name"));
+					buyerTicket.setEvent_name(rs.getString("event_name"));
+					buyerTicket.setType_id(rs.getInt("type_id"));
+					buyerTicket.setQuene_id(rs.getInt("queue_id"));
+					buyerTicket.setCreate_time(rs.getTimestamp("create_time"));
+					buyerTicket.setUpdate_time(rs.getTimestamp("update_time"));
+					buyerTicketLst.add(buyerTicket);
+				}
+				// 6. 回傳 list
+				return buyerTicketLst;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

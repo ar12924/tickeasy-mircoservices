@@ -8,7 +8,7 @@ const app = Vue.createApp({
   methods: {
     // 2. 從後端 api 抓 event_info 資料
     async fetchEventInfo() {
-      const url = `http://localhost:8080/maven-tickeasy-v1/search-event`;
+      const url = `http://localhost:8080/maven-tickeasy-v1/index-search-event`;
       const resp = await fetch(url);
       const eventsData = await resp.json();
       eventsData.forEach((item, i) => {
