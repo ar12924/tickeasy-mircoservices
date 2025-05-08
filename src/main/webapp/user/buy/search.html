@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TickEasy - 探索精彩活動</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./css/search.css" />
   </head>
   <body>
     <div id="app">
@@ -28,18 +28,21 @@
         <h1>探索精彩活動，創造難忘回憶</h1>
         <p>最專業的活動票券平台，為您提供最優質的購票體驗</p>
         <div class="search-bar">
-          <input type="text" placeholder="搜尋活動..." />
-          <button type="submit">搜尋</button>
+          <input
+            type="text"
+            placeholder="搜尋活動..."
+            v-model="searchKeyword"
+          />
+          <button type="button" @click="searchClick">搜尋</button>
         </div>
       </header>
 
       <!-- 主內容 main -->
       <main>
-        <!-- 熱門活動 section -->
+        <!-- 搜尋結果 section -->
         <section class="hot-events">
-          <h2>熱門活動</h2>
           <div class="event-grid">
-            <div class="event-card" v-for="item in eventsList.slice(0, 3)">
+            <div class="event-card" v-for="item in eventsList.slice(0, 100)">
               <img
                 src="https://picsum.photos/200/300?v=1"
                 alt="2025春季音樂節"
@@ -63,53 +66,23 @@
             </div>
           </div>
         </section>
-        <!-- 我的票券 section -->
-        <section class="my-tickets">
-          <h2>我的票券</h2>
-          <div class="ticket-card" v-for="item in ticketList.slice(0, 1)">
-            <div class="ticket-card-top">
-              <div class="ticket-info">
-                <h3>{{ item.event_name }}</h3>
-                <div class="ticket-info-box">
-                  <div class="ticket-info-left">
-                    <p>列隊序號</p>
-                    <p>票券姓名</p>
-                    <p>聯絡信箱</p>
-                    <p>聯絡手機</p>
-                  </div>
-                  <div class="ticket-info-right">
-                    <p>{{ item.quene_id }}</p>
-                    <p>{{ item.participant_name }}</p>
-                    <p>{{ item.email }}</p>
-                    <p>{{ item.phone }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="ticket-actions">
-                <button class="show">查看票券</button>
-                <button class="transfer">轉讓票券</button>
-              </div>
-            </div>
-            <div class="ticket-card-bottom">
-              <hr />
-              <a href="#" class="more-info">查看更多</a>
-            </div>
+        <!-- 無狀態 section -->
+        <section class="events-none">
+          <div class="icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z"
+                fill="currentColor"
+              />
+              <path d="M10 8H9V11H12V10H10V8Z" fill="currentColor" />
+            </svg>
           </div>
-        </section>
-        <!-- 通知中心 section -->
-        <section class="notification-center">
-          <h2>通知中心</h2>
-          <div
-            class="notification-card"
-            v-for="item in notificationList.slice(0, 1)"
-          >
-            <div class="notification-content">
-              <h3 class="notification-title">{{ item.title }}</h3>
-              <p class="notification-text">{{ item.message }}</p>
-              <p class="notification-time">{{ timeAgo(item.send_time) }}</p>
-            </div>
-            <a href="#" class="more-info">查看更多</a>
-          </div>
+          <h2>找不到符合的活動</h2>
+          <p>我們找不到符合「」的搜尋結果</p>
         </section>
       </main>
 
@@ -146,6 +119,6 @@
         </div>
       </footer>
     </div>
-    <script src="./js/index.js"></script>
+    <script src="./js/search.js"></script>
   </body>
 </html>

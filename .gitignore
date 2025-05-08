@@ -19,3 +19,4 @@ buildNumber.properties
 .settings
 *.class
 .gitkeep
+/bin/

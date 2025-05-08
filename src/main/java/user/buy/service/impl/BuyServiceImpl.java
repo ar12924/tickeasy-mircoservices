@@ -17,11 +17,11 @@ public class BuyServiceImpl implements BuyService {
 	}
 
 	@Override
-	public List<EventInfo> searchEventByKeyword(String keywords) {
+	public List<EventInfo> searchEventByKeyword(String keyword) {
 		// 1. 過濾 keywords
-		keywords = keywords == null ? "" : keywords;
+		keyword = keyword == null ? "" : keyword;
 		// 2. 查詢 event_info
-		return buyDaoImpl.selectEventByKeyword(keywords);
+		return buyDaoImpl.selectEventByKeyword(keyword);
 	}
 
 	@Override

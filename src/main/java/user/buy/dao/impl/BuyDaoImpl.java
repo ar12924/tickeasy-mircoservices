@@ -29,11 +29,11 @@ public class BuyDaoImpl implements BuyDao {
 	}
 
 	@Override
-	public List<EventInfo> selectEventByKeyword(String keywords) {
+	public List<EventInfo> selectEventByKeyword(String keyword) {
 		// 1. 將 keywords 插入 SQL 語句進行條件搜尋
 		StringBuilder sqlTemp = new StringBuilder("SELECT * FROM event_info WHERE event_name ");
 		sqlTemp.append("LIKE '%");
-		sqlTemp.append(keywords);
+		sqlTemp.append(keyword);
 		sqlTemp.append("%' ORDER BY event_from_date");
 		String sql = sqlTemp.toString();
 

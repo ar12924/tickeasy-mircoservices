@@ -2,7 +2,9 @@ package user.buy.vo;
 
 import java.sql.Timestamp;
 
-public class EventInfo {
+import common.vo.Core;
+
+public class EventInfo extends Core {
 	private int event_id;
 	private String event_name;
 	private Timestamp event_from_date;

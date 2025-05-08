@@ -30,10 +30,9 @@ public class searchEventServlet extends HttpServlet {
 		// 1. 指定允許所有網域
 		resp.setHeader("Access-Control-Allow-Origin", "*");
 		// 2. 接受前端查詢 keywords (若無則給定 "" 查詢)
-		String keywords = req.getParameter("keywords");
-		keywords = keywords == null ? "" : keywords;
+		String keyword = req.getParameter("keyword");
 		// 3. 將 keywords 交給 Service 處理，回傳查詢結果
-		List<EventInfo> eventInfosList = buyServiceImpl.searchEventByKeyword(keywords);
+		List<EventInfo> eventInfosList = buyServiceImpl.searchEventByKeyword(keyword);
 		// 4. 將活動陣列轉成 json 格式
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(eventInfosList);
