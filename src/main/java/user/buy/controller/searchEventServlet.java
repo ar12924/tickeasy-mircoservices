@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import common.vo.Payload;
 import user.buy.service.BuyService;
 import user.buy.service.impl.BuyServiceImpl;
 import user.buy.vo.EventInfo;
@@ -32,10 +33,20 @@ public class searchEventServlet extends HttpServlet {
 		// 2. 接受前端查詢 keywords (若無則給定 "" 查詢)
 		String keyword = req.getParameter("keyword");
 		// 3. 將 keywords 交給 Service 處理，回傳查詢結果
-		List<EventInfo> eventInfosList = buyServiceImpl.searchEventByKeyword(keyword);
+		List<EventInfo> eventInfoList = buyServiceImpl.searchEventByKeyword(keyword);
+		// 4. 判斷回傳 list 是否為空陣列
+		Payload<List<EventInfo>> payload = new Payload<>();
+		if(eventInfoList.isEmpty()) {
+			payload.setSuccessful(false);
+			payload.setMessage("查無資料");
+		}else {
+			payload.setSuccessful(true);
+			payload.setMessage("取得資料");
+		}
+		payload.setData(eventInfoList);
 		// 4. 將活動陣列轉成 json 格式
 		Gson gson = new Gson();
-		String jsonData = gson.toJson(eventInfosList);
+		String jsonData = gson.toJson(payload);
 		// 5. 回應 json 字串
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("utf-8");

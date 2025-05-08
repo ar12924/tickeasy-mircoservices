@@ -2,7 +2,7 @@ const app = Vue.createApp({
   data() {
     return {
       // 1.1. 活動清單
-      eventsList: [],
+      eventPayload: {},
       // 1.5. 綁定 input 輸入值
       searchKeyword: "",
     };
@@ -12,11 +12,8 @@ const app = Vue.createApp({
     async fetchEventInfo(searchKeyword) {
       const url = `http://localhost:8080/maven-tickeasy-v1/index-search-event?keyword=${searchKeyword}`;
       const resp = await fetch(url);
-      const eventsData = await resp.json();
-      this.eventsList = [];
-      eventsData.forEach((item, i) => {
-        this.eventsList.push(item);
-      });
+      const body = await resp.json();
+      this.eventPayload = body;
     },
     // 1.3. 將時間轉換為日期格式
     formatDate(dateString) {

@@ -40,9 +40,9 @@
       <!-- 主內容 main -->
       <main>
         <!-- 搜尋結果 section -->
-        <section class="hot-events">
+        <section class="hot-events" v-if="eventPayload.successful">
           <div class="event-grid">
-            <div class="event-card" v-for="item in eventsList.slice(0, 100)">
+            <div class="event-card" v-for="item in eventPayload.data">
               <img
                 src="https://picsum.photos/200/300?v=1"
                 alt="2025春季音樂節"
@@ -67,7 +67,7 @@
           </div>
         </section>
         <!-- 無狀態 section -->
-        <section class="events-none">
+        <section class="events-none" v-if="!eventPayload.successful">
           <div class="icon">
             <svg
               viewBox="0 0 24 24"

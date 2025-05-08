@@ -2,7 +2,7 @@ const app = Vue.createApp({
   data() {
     return {
       // 1.1. 活動清單
-      eventsList: [],
+      eventPayload: {},
       // 2.1. 票券清單
       ticketList: [],
       // 3.1. 通知清單
@@ -14,28 +14,22 @@ const app = Vue.createApp({
     async fetchEventInfo() {
       const url = `http://localhost:8080/maven-tickeasy-v1/index-search-event`;
       const resp = await fetch(url);
-      const eventsData = await resp.json();
-      eventsData.forEach((item, i) => {
-        this.eventsList.push(item);
-      });
+      const body = await resp.json();
+      this.eventPayload = body;
     },
     // 2.2. 從後端 api 抓 buyer_ticket 資料
     async fetchBuyerTicket() {
       const url = `http://localhost:8080/maven-tickeasy-v1/index-search-ticket`;
       const resp = await fetch(url);
-      const ticketData = await resp.json();
-      ticketData.forEach((item, i) => {
-        this.ticketList.push(item);
-      });
+      const body = await resp.json();
+      this.ticketList = body;
     },
     // 3.2. 從後端 api 抓 member_notification 資料
     async fetchMemberNotification() {
       const url = `http://localhost:8080/maven-tickeasy-v1/index-search-notification`;
       const resp = await fetch(url);
-      const notificationData = await resp.json();
-      notificationData.forEach((item, i) => {
-        this.notificationList.push(item);
-      });
+      const body = await resp.json();
+      this.notificationList = body;
     },
     // 3.3. 計算與現在時點的時間差
     timeAgo(dateTimeString) {

@@ -39,7 +39,10 @@
         <section class="hot-events">
           <h2>熱門活動</h2>
           <div class="event-grid">
-            <div class="event-card" v-for="item in eventsList.slice(0, 3)">
+            <div
+              class="event-card"
+              v-for="item in eventPayload.data.slice(0, 3)"
+            >
               <img
                 src="https://picsum.photos/200/300?v=1"
                 alt="2025春季音樂節"
