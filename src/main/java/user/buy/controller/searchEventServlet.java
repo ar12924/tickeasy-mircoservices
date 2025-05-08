@@ -44,10 +44,9 @@ public class searchEventServlet extends HttpServlet {
 			payload.setMessage("取得資料");
 		}
 		payload.setData(eventInfoList);
-		// 4. 將活動陣列轉成 json 格式
+		// 5. 轉成 json 格式，並回應 json 字串
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(payload);
-		// 5. 回應 json 字串
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("utf-8");
 		PrintWriter pw = resp.getWriter();
