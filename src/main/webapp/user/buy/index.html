@@ -28,8 +28,12 @@
         <h1>探索精彩活動，創造難忘回憶</h1>
         <p>最專業的活動票券平台，為您提供最優質的購票體驗</p>
         <div class="search-bar">
-          <input type="text" placeholder="搜尋活動..." />
-          <button type="submit">搜尋</button>
+          <input
+            type="text"
+            placeholder="搜尋活動..."
+            v-model="searchKeyword"
+          />
+          <button type="button" @click="searchClick">搜尋</button>
         </div>
       </header>
 

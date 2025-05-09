@@ -2,11 +2,17 @@ const app = Vue.createApp({
   data() {
     return {
       // 1.1. 活動清單
-      eventPayload: {},
+      eventPayload: {
+        successful: false,
+        message: "",
+        data: [],
+      },
       // 2.1. 票券清單
       ticketList: [],
       // 3.1. 通知清單
       notificationList: [],
+      // 4.2. 搜尋關鍵字
+      searchKeyword: "",
     };
   },
   methods: {
@@ -64,6 +70,12 @@ const app = Vue.createApp({
       const date = new Date(dateString);
       const options = { year: "numeric", month: "short", day: "numeric" };
       return date.toLocaleDateString("en-US", options);
+    },
+    // 4.1. 點擊搜尋按鈕，跳轉 + 關鍵字存入 session storage
+    searchClick() {
+      sessionStorage.clear();
+      sessionStorage.setItem("keyword", this.searchKeyword);
+      window.location.href = `http://localhost:8080/maven-tickeasy-v1/user/buy/search.html`;
     },
   },
   // 1.3. 載入頁面時調用抓 api 方法

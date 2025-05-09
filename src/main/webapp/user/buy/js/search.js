@@ -2,7 +2,11 @@ const app = Vue.createApp({
   data() {
     return {
       // 1.1. 活動清單
-      eventPayload: {},
+      eventPayload: {
+        successful: false,
+        message: "",
+        data: [],
+      },
       // 1.5. 綁定 input 輸入值
       searchKeyword: "",
     };
@@ -25,6 +29,11 @@ const app = Vue.createApp({
     searchClick() {
       this.fetchEventInfo(this.searchKeyword);
     },
+  },
+  mounted() {
+    // 1.6. 自前一頁的 sessionStorage 取得關鍵字
+    this.searchKeyword = sessionStorage.getItem("keyword");
+    this.fetchEventInfo(this.searchKeyword);
   },
 });
 app.mount("#app");

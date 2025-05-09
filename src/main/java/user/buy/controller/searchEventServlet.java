@@ -33,18 +33,8 @@ public class searchEventServlet extends HttpServlet {
 		// 2. 接受前端查詢 keywords (若無則給定 "" 查詢)
 		String keyword = req.getParameter("keyword");
 		// 3. 將 keywords 交給 Service 處理，回傳查詢結果
-		List<EventInfo> eventInfoList = buyServiceImpl.searchEventByKeyword(keyword);
-		// 4. 判斷回傳 list 是否為空陣列
-		Payload<List<EventInfo>> payload = new Payload<>();
-		if(eventInfoList.isEmpty()) {
-			payload.setSuccessful(false);
-			payload.setMessage("查無資料");
-		}else {
-			payload.setSuccessful(true);
-			payload.setMessage("取得資料");
-		}
-		payload.setData(eventInfoList);
-		// 5. 轉成 json 格式，並回應 json 字串
+		Payload<List<EventInfo>> payload = buyServiceImpl.searchEventByKeyword(keyword);
+		// 4. 轉成 json 格式，並回應 json 字串
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(payload);
 		resp.setContentType("application/json");
