@@ -6,19 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import user.buy.vo.EventVO;
+import user.buy.vo.TicketTypeVO;
 /**
  * 活動資訊數據訪問實現類
  */
 public class EventInfoDAOImpl implements EventInfoDAO{
 	@Override
-    public Map<String, Object> getEventInfoById(Integer eventId) {
+    public EventVO getEventInfoById(Integer eventId) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        Map<String, Object> eventInfo = null;
+        EventVO eventInfo = null;
         
         try {
             conn = DatabaseUtil.getConnection();
@@ -31,7 +31,7 @@ public class EventInfoDAOImpl implements EventInfoDAO{
             rs = pstmt.executeQuery();
             
             if (rs.next()) {
-                eventInfo = mapResultSetToEventInfo(rs);
+                eventInfo = mapResultSetToEventVO(rs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -41,13 +41,13 @@ public class EventInfoDAOImpl implements EventInfoDAO{
         
         return eventInfo;
     }
-	
-	@Override
-    public List<Map<String, Object>> getRecommendedEvents(int limit) {
+    
+    @Override
+    public List<EventVO> getRecommendedEvents(int limit) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        List<Map<String, Object>> events = new ArrayList<>();
+        List<EventVO> events = new ArrayList<>();
         
         try {
             conn = DatabaseUtil.getConnection();
@@ -63,7 +63,7 @@ public class EventInfoDAOImpl implements EventInfoDAO{
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
-                Map<String, Object> eventInfo = mapResultSetToEventInfo(rs);
+                EventVO eventInfo = mapResultSetToEventVO(rs);
                 events.add(eventInfo);
             }
         } catch (SQLException e) {
@@ -76,11 +76,11 @@ public class EventInfoDAOImpl implements EventInfoDAO{
     }
 
     @Override
-    public List<Map<String, Object>> searchEventsByKeyword(String keyword, int offset, int limit) {
+    public List<EventVO> searchEventsByKeyword(String keyword, int offset, int limit) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        List<Map<String, Object>> events = new ArrayList<>();
+        List<EventVO> events = new ArrayList<>();
         
         try {
             conn = DatabaseUtil.getConnection();
@@ -105,7 +105,7 @@ public class EventInfoDAOImpl implements EventInfoDAO{
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
-                Map<String, Object> eventInfo = mapResultSetToEventInfo(rs);
+                EventVO eventInfo = mapResultSetToEventVO(rs);
                 events.add(eventInfo);
             }
         } catch (SQLException e) {
@@ -118,11 +118,11 @@ public class EventInfoDAOImpl implements EventInfoDAO{
     }
     
     @Override
-    public List<Map<String, Object>> getEventTicketTypesByEventId(Integer eventId) {
+    public List<TicketTypeVO> getEventTicketTypesByEventId(Integer eventId) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        List<Map<String, Object>> ticketTypes = new ArrayList<>();
+        List<TicketTypeVO> ticketTypes = new ArrayList<>();
         
         try {
             conn = DatabaseUtil.getConnection();
@@ -140,18 +140,18 @@ public class EventInfoDAOImpl implements EventInfoDAO{
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
-                Map<String, Object> ticketType = new HashMap<>();
-                ticketType.put("typeId", rs.getInt("type_id"));
-                ticketType.put("categoryName", rs.getString("category_name"));
+                TicketTypeVO ticketType = new TicketTypeVO();
+                ticketType.setTypeId(rs.getInt("type_id"));
+                ticketType.setCategoryName(rs.getString("category_name"));
                 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                ticketType.put("sellFromTime", sdf.format(rs.getTimestamp("sell_from_time")));
-                ticketType.put("sellToTime", sdf.format(rs.getTimestamp("sell_to_time")));
+                ticketType.setSellFromTime(sdf.format(rs.getTimestamp("sell_from_time")));
+                ticketType.setSellToTime(sdf.format(rs.getTimestamp("sell_to_time")));
                 
-                ticketType.put("price", rs.getDouble("price"));
-                ticketType.put("capacity", rs.getInt("capacity"));
-                ticketType.put("eventId", rs.getInt("event_id"));
-                ticketType.put("remainingTickets", rs.getInt("remaining_tickets"));
+                ticketType.setPrice(rs.getDouble("price"));
+                ticketType.setCapacity(rs.getInt("capacity"));
+                ticketType.setEventId(rs.getInt("event_id"));
+                ticketType.setRemainingTickets(rs.getInt("remaining_tickets"));
                 
                 ticketTypes.add(ticketType);
             }
@@ -204,7 +204,36 @@ public class EventInfoDAOImpl implements EventInfoDAO{
     }
     
     @Override
-    public boolean setEventFavoriteStatus(Integer memberId, Integer eventId, Integer isFollowed) {
+    public Integer checkFavoriteStatus(Integer memberId, Integer eventId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Integer favoriteStatus = null;
+        
+        try {
+            conn = DatabaseUtil.getConnection();
+            
+            // 檢查是否已經存在關注記錄
+            String sql = "SELECT is_followed FROM favorite WHERE member_id = ? AND event_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, memberId);
+            pstmt.setInt(2, eventId);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                favoriteStatus = rs.getInt("is_followed");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DatabaseUtil.closeAll(conn, pstmt, rs);
+        }
+        
+        return favoriteStatus;
+    }
+    
+    @Override
+    public boolean insertFavorite(Integer memberId, Integer eventId, Integer isFollowed) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         boolean success = false;
@@ -212,36 +241,15 @@ public class EventInfoDAOImpl implements EventInfoDAO{
         try {
             conn = DatabaseUtil.getConnection();
             
-            // 檢查是否已經存在關注記錄
-            String checkSql = "SELECT favorite_id FROM favorite WHERE member_id = ? AND event_id = ?";
-            PreparedStatement checkStmt = conn.prepareStatement(checkSql);
-            checkStmt.setInt(1, memberId);
-            checkStmt.setInt(2, eventId);
-            ResultSet rs = checkStmt.executeQuery();
-            
-            if (rs.next()) {
-                // 更新現有記錄
-                String updateSql = "UPDATE favorite SET is_followed = ?, update_time = NOW() " +
-                                   "WHERE member_id = ? AND event_id = ?";
-                pstmt = conn.prepareStatement(updateSql);
-                pstmt.setInt(1, isFollowed);
-                pstmt.setInt(2, memberId);
-                pstmt.setInt(3, eventId);
-            } else {
-                // 新增記錄
-                String insertSql = "INSERT INTO favorite (member_id, event_id, is_followed, create_time, update_time) " +
-                                   "VALUES (?, ?, ?, NOW(), NOW())";
-                pstmt = conn.prepareStatement(insertSql);
-                pstmt.setInt(1, memberId);
-                pstmt.setInt(2, eventId);
-                pstmt.setInt(3, isFollowed);
-            }
+            String sql = "INSERT INTO favorite (member_id, event_id, is_followed, create_time, update_time) " +
+                         "VALUES (?, ?, ?, NOW(), NOW())";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, memberId);
+            pstmt.setInt(2, eventId);
+            pstmt.setInt(3, isFollowed);
             
             int rowsAffected = pstmt.executeUpdate();
             success = rowsAffected > 0;
-            
-            rs.close();
-            checkStmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -251,33 +259,86 @@ public class EventInfoDAOImpl implements EventInfoDAO{
         return success;
     }
     
+    @Override
+    public boolean updateFavorite(Integer memberId, Integer eventId, Integer isFollowed) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        boolean success = false;
+        
+        try {
+            conn = DatabaseUtil.getConnection();
+            
+            String sql = "UPDATE favorite SET is_followed = ?, update_time = NOW() " +
+                         "WHERE member_id = ? AND event_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, isFollowed);
+            pstmt.setInt(2, memberId);
+            pstmt.setInt(3, eventId);
+            
+            int rowsAffected = pstmt.executeUpdate();
+            success = rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DatabaseUtil.closeAll(conn, pstmt, null);
+        }
+        
+        return success;
+    }
+    
+    @Override
+    public byte[] getEventImage(Integer eventId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        byte[] imageData = null;
+        
+        try {
+            conn = DatabaseUtil.getConnection();
+            String sql = "SELECT image FROM event_info WHERE event_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, eventId);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                imageData = rs.getBytes("image");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DatabaseUtil.closeAll(conn, pstmt, rs);
+        }
+        
+        return imageData;
+    }
+    
     /**
-     * 將ResultSet映射到Map
+     * 將ResultSet映射到EventVO
      */
-    private Map<String, Object> mapResultSetToEventInfo(ResultSet rs) throws SQLException {
-        Map<String, Object> eventInfo = new HashMap<>();
-        eventInfo.put("eventId", rs.getInt("event_id"));
-        eventInfo.put("eventName", rs.getString("event_name"));
+    private EventVO mapResultSetToEventVO(ResultSet rs) throws SQLException {
+        EventVO eventVO = new EventVO();
+        eventVO.setEventId(rs.getInt("event_id"));
+        eventVO.setEventName(rs.getString("event_name"));
         
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        eventInfo.put("eventFromDate", sdf.format(rs.getTimestamp("event_from_date")));
-        eventInfo.put("eventToDate", sdf.format(rs.getTimestamp("event_to_date")));
+        eventVO.setEventFromDate(sdf.format(rs.getTimestamp("event_from_date")));
+        eventVO.setEventToDate(sdf.format(rs.getTimestamp("event_to_date")));
         
-        eventInfo.put("eventHost", rs.getString("event_host"));
-        eventInfo.put("totalCapacity", rs.getInt("total_capacity"));
-        eventInfo.put("place", rs.getString("place"));
-        eventInfo.put("summary", rs.getString("summary"));
-        eventInfo.put("detail", rs.getString("detail"));
-        eventInfo.put("isPosted", rs.getInt("is_posted"));
-        eventInfo.put("imageDir", rs.getString("image_dir"));
-        eventInfo.put("keywordId", rs.getInt("keyword_id"));
-        eventInfo.put("memberId", rs.getInt("member_id"));
+        eventVO.setEventHost(rs.getString("event_host"));
+        eventVO.setTotalCapacity(rs.getInt("total_capacity"));
+        eventVO.setPlace(rs.getString("place"));
+        eventVO.setSummary(rs.getString("summary"));
+        eventVO.setDetail(rs.getString("detail"));
+        eventVO.setIsPosted(rs.getInt("is_posted"));
+        eventVO.setImageDir(rs.getString("image_dir"));
+        eventVO.setKeywordId(rs.getInt("keyword_id"));
+        eventVO.setMemberId(rs.getInt("member_id"));
         
         // 設置關鍵字
-        eventInfo.put("keyword1", rs.getString("keyword_name1"));
-        eventInfo.put("keyword2", rs.getString("keyword_name2"));
-        eventInfo.put("keyword3", rs.getString("keyword_name3"));
+        eventVO.setKeyword1(rs.getString("keyword_name1"));
+        eventVO.setKeyword2(rs.getString("keyword_name2"));
+        eventVO.setKeyword3(rs.getString("keyword_name3"));
         
-        return eventInfo;
+        return eventVO;
     }
 }

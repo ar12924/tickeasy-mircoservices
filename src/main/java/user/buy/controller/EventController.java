@@ -3,7 +3,8 @@ package user.buy.controller;
 import com.google.gson.Gson;
 import user.buy.service.EventInfoService;
 import user.buy.service.EventInfoServiceImpl;
-import user.buy.dao.DatabaseUtil;
+import user.buy.vo.EventVO;
+import user.buy.vo.TicketTypeVO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,18 +15,12 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * 活動控制器，處理活動相關RESTful API請求
- * 創建者: Claude
- * 創建日期: 2025-05-07
  */
 @WebServlet("/api/events/*")
 public class EventController extends HttpServlet {
@@ -64,7 +59,7 @@ public class EventController extends HttpServlet {
         if (pathInfo == null || pathInfo.equals("/")) {
             // 獲取推薦活動列表
             int limit = getIntParameter(req, "limit", 10);
-            List<Map<String, Object>> events = eventService.getRecommendedEvents(limit, memberId);
+            List<EventVO> events = eventService.getRecommendedEvents(limit, memberId);
             
             // 將結果轉換為JSON並返回
             Map<String, Object> response = new HashMap<>();
@@ -87,7 +82,7 @@ public class EventController extends HttpServlet {
                 return;
             }
             
-            List<Map<String, Object>> events = eventService.searchEvents(keyword, page, pageSize, memberId);
+            List<EventVO> events = eventService.searchEvents(keyword, page, pageSize, memberId);
             
             // 將結果轉換為JSON並返回
             Map<String, Object> response = new HashMap<>();
@@ -100,7 +95,7 @@ public class EventController extends HttpServlet {
             
             try {
                 Integer eventId = Integer.parseInt(eventIdStr);
-                Map<String, Object> event = eventService.getEventDetail(eventId, memberId);
+                EventVO event = eventService.getEventDetail(eventId, memberId);
                 
                 if (event != null) {
                     // 將結果轉換為JSON並返回
@@ -138,7 +133,7 @@ public class EventController extends HttpServlet {
         
         try {
             int eventId = Integer.parseInt(eventIdStr);
-            byte[] imageData = getEventImage(eventId);
+            byte[] imageData = eventService.getEventImage(eventId);
             
             if (imageData != null) {
                 // 設置響應類型
@@ -157,34 +152,6 @@ public class EventController extends HttpServlet {
         } catch (Exception e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "獲取圖片時發生錯誤");
         }
-    }
-    
-    /**
-     * 從數據庫中獲取活動圖片
-     */
-    private byte[] getEventImage(int eventId) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        byte[] imageData = null;
-        
-        try {
-            conn = DatabaseUtil.getConnection();
-            String sql = "SELECT image FROM event_info WHERE event_id = ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, eventId);
-            rs = pstmt.executeQuery();
-            
-            if (rs.next()) {
-                imageData = rs.getBytes("image");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DatabaseUtil.closeAll(conn, pstmt, rs);
-        }
-        
-        return imageData;
     }
     
     @Override
@@ -256,6 +223,8 @@ public class EventController extends HttpServlet {
     
     /**
      * 活動票券類型控制器
+     * 創建者: Claude
+     * 創建日期: 2025-05-07
      */
     @WebServlet("/api/events/*/tickets")
     public static class EventTicketsController extends HttpServlet {
@@ -296,7 +265,7 @@ public class EventController extends HttpServlet {
             
             try {
                 Integer eventId = Integer.parseInt(eventIdStr);
-                List<Map<String, Object>> ticketTypes = eventService.getEventTicketTypes(eventId);
+                List<TicketTypeVO> ticketTypes = eventService.getEventTicketTypes(eventId);
                 
                 if (ticketTypes != null && !ticketTypes.isEmpty()) {
                     // 將結果轉換為JSON並返回

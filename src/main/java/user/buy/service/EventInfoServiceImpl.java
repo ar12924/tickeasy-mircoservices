@@ -1,68 +1,77 @@
 package user.buy.service;
+
 import user.buy.dao.EventInfoDAO;
 import user.buy.dao.EventInfoDAOImpl;
+import user.buy.vo.EventVO;
+import user.buy.vo.TicketTypeVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 活動資訊服務實現類
+ * 創建者: Claude
+ * 創建日期: 2025-05-07
  */
-public class EventInfoServiceImpl implements EventInfoService{
-private EventInfoDAO eventInfoDAO;
+public class EventInfoServiceImpl implements EventInfoService {
+    private EventInfoDAO eventInfoDAO;
     
     public EventInfoServiceImpl() {
         this.eventInfoDAO = new EventInfoDAOImpl();
     }
 
     @Override
-    public Map<String, Object> getEventDetail(Integer eventId, Integer memberId) {
+    public EventVO getEventDetail(Integer eventId, Integer memberId) {
         // 獲取活動基本信息
-        Map<String, Object> eventInfo = eventInfoDAO.getEventInfoById(eventId);
+        EventVO eventVO = eventInfoDAO.getEventInfoById(eventId);
         
-        if (eventInfo != null) {
-            // 計算活動的剩餘票券數量
-            List<Map<String, Object>> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId(eventId);
-            int totalRemainingTickets = 0;
+        if (eventVO != null) {
+            // 獲取票券類型列表
+            List<TicketTypeVO> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId(eventId);
             
-            for (Map<String, Object> ticketType : ticketTypes) {
-                totalRemainingTickets += (Integer) ticketType.get("remainingTickets");
+            // 計算活動的剩餘票券數量
+            int totalRemainingTickets = 0;
+            for (TicketTypeVO ticketType : ticketTypes) {
+                totalRemainingTickets += ticketType.getRemainingTickets();
             }
             
-            eventInfo.put("remainingTickets", totalRemainingTickets);
+            eventVO.setRemainingTickets(totalRemainingTickets);
             
             // 如果有登入會員，檢查是否已關注該活動
             if (memberId != null) {
-                // 檢查會員是否已關注此活動的邏輯
-                // 此處簡化處理，可以通過查詢favorite表實現
-                eventInfo.put("isFollowed", 0); // 預設未關注
+                Integer favoriteStatus = eventInfoDAO.checkFavoriteStatus(memberId, eventId);
+                eventVO.setIsFollowed(favoriteStatus != null ? favoriteStatus : 0);
+            } else {
+                eventVO.setIsFollowed(0); // 預設未關注
             }
         }
         
-        return eventInfo;
+        return eventVO;
     }
 
     @Override
-    public List<Map<String, Object>> getRecommendedEvents(int limit, Integer memberId) {
+    public List<EventVO> getRecommendedEvents(int limit, Integer memberId) {
         // 獲取推薦活動列表
-        List<Map<String, Object>> events = eventInfoDAO.getRecommendedEvents(limit);
+        List<EventVO> events = eventInfoDAO.getRecommendedEvents(limit);
         
-        // 計算每個活動的剩餘票券數量
-        for (Map<String, Object> event : events) {
+        // 計算每個活動的剩餘票券數量，設置關注狀態
+        for (EventVO event : events) {
             // 獲取票券類型
-            List<Map<String, Object>> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId((Integer) event.get("eventId"));
-            int totalRemainingTickets = 0;
+            List<TicketTypeVO> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId(event.getEventId());
             
-            for (Map<String, Object> ticketType : ticketTypes) {
-                totalRemainingTickets += (Integer) ticketType.get("remainingTickets");
+            // 計算總剩餘票數
+            int totalRemainingTickets = 0;
+            for (TicketTypeVO ticketType : ticketTypes) {
+                totalRemainingTickets += ticketType.getRemainingTickets();
             }
             
-            event.put("remainingTickets", totalRemainingTickets);
+            event.setRemainingTickets(totalRemainingTickets);
             
             // 如果有登入會員，檢查是否已關注該活動
             if (memberId != null) {
-                // 實際應該在DAO層實現查詢會員關注狀態的方法
-                event.put("isFollowed", 0); // 預設未關注
+                Integer favoriteStatus = eventInfoDAO.checkFavoriteStatus(memberId, event.getEventId());
+                event.setIsFollowed(favoriteStatus != null ? favoriteStatus : 0);
+            } else {
+                event.setIsFollowed(0); // 預設未關注
             }
         }
         
@@ -70,29 +79,32 @@ private EventInfoDAO eventInfoDAO;
     }
 
     @Override
-    public List<Map<String, Object>> searchEvents(String keyword, int page, int pageSize, Integer memberId) {
+    public List<EventVO> searchEvents(String keyword, int page, int pageSize, Integer memberId) {
         // 計算偏移量
         int offset = (page - 1) * pageSize;
         
         // 搜索活動
-        List<Map<String, Object>> events = eventInfoDAO.searchEventsByKeyword(keyword, offset, pageSize);
+        List<EventVO> events = eventInfoDAO.searchEventsByKeyword(keyword, offset, pageSize);
         
-        // 計算每個活動的剩餘票券數量
-        for (Map<String, Object> event : events) {
+        // 計算每個活動的剩餘票券數量，設置關注狀態
+        for (EventVO event : events) {
             // 獲取票券類型
-            List<Map<String, Object>> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId((Integer) event.get("eventId"));
-            int totalRemainingTickets = 0;
+            List<TicketTypeVO> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId(event.getEventId());
             
-            for (Map<String, Object> ticketType : ticketTypes) {
-                totalRemainingTickets += (Integer) ticketType.get("remainingTickets");
+            // 計算總剩餘票數
+            int totalRemainingTickets = 0;
+            for (TicketTypeVO ticketType : ticketTypes) {
+                totalRemainingTickets += ticketType.getRemainingTickets();
             }
             
-            event.put("remainingTickets", totalRemainingTickets);
+            event.setRemainingTickets(totalRemainingTickets);
             
             // 如果有登入會員，檢查是否已關注該活動
             if (memberId != null) {
-                // 實際應該在DAO層實現查詢會員關注狀態的方法
-                event.put("isFollowed", 0); // 預設未關注
+                Integer favoriteStatus = eventInfoDAO.checkFavoriteStatus(memberId, event.getEventId());
+                event.setIsFollowed(favoriteStatus != null ? favoriteStatus : 0);
+            } else {
+                event.setIsFollowed(0); // 預設未關注
             }
         }
         
@@ -100,7 +112,7 @@ private EventInfoDAO eventInfoDAO;
     }
 
     @Override
-    public List<Map<String, Object>> getEventTicketTypes(Integer eventId) {
+    public List<TicketTypeVO> getEventTicketTypes(Integer eventId) {
         return eventInfoDAO.getEventTicketTypesByEventId(eventId);
     }
 
@@ -111,6 +123,20 @@ private EventInfoDAO eventInfoDAO;
 
     @Override
     public boolean toggleEventFavorite(Integer memberId, Integer eventId, Integer isFollowed) {
-        return eventInfoDAO.setEventFavoriteStatus(memberId, eventId, isFollowed);
+        // 檢查是否已存在關注記錄
+        Integer currentStatus = eventInfoDAO.checkFavoriteStatus(memberId, eventId);
+        
+        if (currentStatus == null) {
+            // 新增關注記錄
+            return eventInfoDAO.insertFavorite(memberId, eventId, isFollowed);
+        } else {
+            // 更新現有記錄
+            return eventInfoDAO.updateFavorite(memberId, eventId, isFollowed);
+        }
+    }
+    
+    @Override
+    public byte[] getEventImage(Integer eventId) {
+        return eventInfoDAO.getEventImage(eventId);
     }
 }

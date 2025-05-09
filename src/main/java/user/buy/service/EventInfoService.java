@@ -1,6 +1,7 @@
 package user.buy.service;
 import java.util.List;
-import java.util.Map;
+import user.buy.vo.EventVO;
+import user.buy.vo.TicketTypeVO; 
 /**
  * 活動資訊服務接口
  */
@@ -12,7 +13,7 @@ public interface EventInfoService {
      * @param memberId 當前會員ID（可為null）
      * @return 活動詳情Map
      */
-    Map<String, Object> getEventDetail(Integer eventId, Integer memberId);
+	EventVO getEventDetail(Integer eventId, Integer memberId);
     
     /**
      * 獲取推薦活動列表
@@ -21,8 +22,7 @@ public interface EventInfoService {
      * @param memberId 當前會員ID（可為null）
      * @return 活動列表
      */
-    List<Map<String, Object>> getRecommendedEvents(int limit, Integer memberId);
-    
+	List<EventVO> getRecommendedEvents(int limit, Integer memberId);    
     /**
      * 根據關鍵字搜索活動
      * 
@@ -32,7 +32,7 @@ public interface EventInfoService {
      * @param memberId 當前會員ID（可為null）
      * @return 活動列表
      */
-    List<Map<String, Object>> searchEvents(String keyword, int page, int pageSize, Integer memberId);
+    List<EventVO> searchEvents(String keyword, int page, int pageSize, Integer memberId);
     
     /**
      * 獲取活動的票券類型列表
@@ -40,7 +40,7 @@ public interface EventInfoService {
      * @param eventId 活動ID
      * @return 票券類型列表
      */
-    List<Map<String, Object>> getEventTicketTypes(Integer eventId);
+    List<TicketTypeVO> getEventTicketTypes(Integer eventId);
     
     /**
      * 檢查票券是否有足夠庫存
@@ -60,4 +60,12 @@ public interface EventInfoService {
      * @return 是否設置成功
      */
     boolean toggleEventFavorite(Integer memberId, Integer eventId, Integer isFollowed);
+    
+    /**
+     * 獲取活動圖片
+     * 
+     * @param eventId 活動ID
+     * @return 圖片數據
+     */
+    byte[] getEventImage(Integer eventId);
 }
