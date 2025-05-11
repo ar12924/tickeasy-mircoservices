@@ -2,6 +2,8 @@ package user.buy.service.impl;
 
 import java.util.List;
 
+import org.hibernate.Transaction;
+
 import common.vo.Payload;
 import user.buy.dao.BuyDao;
 import user.buy.dao.impl.BuyDaoImpl;
@@ -38,8 +40,17 @@ public class BuyServiceImpl implements BuyService {
 
 	@Override
 	public List<BuyerTicket> searchTicket() {
-		// 1. 查詢 buyer_ticket
-		return buyDaoImpl.selectTicket();
+		try {
+			beginTxn();
+			// 1. 查詢 buyer_ticket
+			List<BuyerTicket> ticketList = buyDaoImpl.selectTicket();
+			commit();
+			return ticketList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			rollback();
+			return null;
+		}
 	}
 
 	@Override

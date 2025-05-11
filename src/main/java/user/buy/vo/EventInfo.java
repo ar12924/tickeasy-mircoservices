@@ -3,69 +3,69 @@ package user.buy.vo;
 import java.sql.Timestamp;
 
 public class EventInfo {
-	private int event_id;
-	private String event_name;
-	private Timestamp event_from_date;
-	private Timestamp event_to_date;
-	private String event_host;
-	private int total_capacity;
+	private int eventId;
+	private String eventName;
+	private Timestamp eventFromDate;
+	private Timestamp eventToDate;
+	private String eventHost;
+	private int totalCapacity;
 	private String place;
 	private String summary;
 	private String detail;
-	private int is_posted;
-	private String image_dir;
+	private int isPosted;
+	private String imageDir;
 	private Object image;
-	private int keyword_id;
-	private int member_id;
-	private Timestamp create_time;
-	private Timestamp update_time;
+	private int keywordId;
+	private int memberId;
+	private Timestamp createTime;
+	private Timestamp updateTime;
 
-	public int getEvent_id() {
-		return event_id;
+	public int getEventId() {
+		return eventId;
 	}
 
-	public void setEvent_id(int event_id) {
-		this.event_id = event_id;
+	public void setEventId(int eventId) {
+		this.eventId = eventId;
 	}
 
-	public String getEvent_name() {
-		return event_name;
+	public String getEventName() {
+		return eventName;
 	}
 
-	public void setEvent_name(String event_name) {
-		this.event_name = event_name;
+	public void setEventName(String eventName) {
+		this.eventName = eventName;
 	}
 
-	public Timestamp getEvent_from_date() {
-		return event_from_date;
+	public Timestamp getEventFromDate() {
+		return eventFromDate;
 	}
 
-	public void setEvent_from_date(Timestamp event_from_date) {
-		this.event_from_date = event_from_date;
+	public void setEventFromDate(Timestamp eventFromDate) {
+		this.eventFromDate = eventFromDate;
 	}
 
-	public Timestamp getEvent_to_date() {
-		return event_to_date;
+	public Timestamp getEventToDate() {
+		return eventToDate;
 	}
 
-	public void setEvent_to_date(Timestamp event_to_date) {
-		this.event_to_date = event_to_date;
+	public void setEventToDate(Timestamp eventToDate) {
+		this.eventToDate = eventToDate;
 	}
 
-	public String getEvent_host() {
-		return event_host;
+	public String getEventHost() {
+		return eventHost;
 	}
 
-	public void setEvent_host(String event_host) {
-		this.event_host = event_host;
+	public void setEventHost(String eventHost) {
+		this.eventHost = eventHost;
 	}
 
-	public int getTotal_capacity() {
-		return total_capacity;
+	public int getTotalCapacity() {
+		return totalCapacity;
 	}
 
-	public void setTotal_capacity(int total_capacity) {
-		this.total_capacity = total_capacity;
+	public void setTotalCapacity(int totalCapacity) {
+		this.totalCapacity = totalCapacity;
 	}
 
 	public String getPlace() {
@@ -92,20 +92,20 @@ public class EventInfo {
 		this.detail = detail;
 	}
 
-	public int getIs_posted() {
-		return is_posted;
+	public int getIsPosted() {
+		return isPosted;
 	}
 
-	public void setIs_posted(int is_posted) {
-		this.is_posted = is_posted;
+	public void setIsPosted(int isPosted) {
+		this.isPosted = isPosted;
 	}
 
-	public String getImage_dir() {
-		return image_dir;
+	public String getImageDir() {
+		return imageDir;
 	}
 
-	public void setImage_dir(String image_dir) {
-		this.image_dir = image_dir;
+	public void setImageDir(String imageDir) {
+		this.imageDir = imageDir;
 	}
 
 	public Object getImage() {
@@ -116,35 +116,36 @@ public class EventInfo {
 		this.image = image;
 	}
 
-	public int getKeyword_id() {
-		return keyword_id;
+	public int getKeywordId() {
+		return keywordId;
 	}
 
-	public void setKeyword_id(int keyword_id) {
-		this.keyword_id = keyword_id;
+	public void setKeywordId(int keywordId) {
+		this.keywordId = keywordId;
 	}
 
-	public int getMember_id() {
-		return member_id;
+	public int getMemberId() {
+		return memberId;
 	}
 
-	public void setMember_id(int member_id) {
-		this.member_id = member_id;
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
 	}
 
-	public Timestamp getCreate_time() {
-		return create_time;
+	public Timestamp getCreateTime() {
+		return createTime;
 	}
 
-	public void setCreate_time(Timestamp create_time) {
-		this.create_time = create_time;
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
 	}
 
-	public Timestamp getUpdate_time() {
-		return update_time;
+	public Timestamp getUpdateTime() {
+		return updateTime;
 	}
 
-	public void setUpdate_time(Timestamp update_time) {
-		this.update_time = update_time;
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
+
 }

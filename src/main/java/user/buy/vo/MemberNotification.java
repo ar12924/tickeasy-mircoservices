@@ -3,66 +3,66 @@ package user.buy.vo;
 import java.sql.Timestamp;
 
 public class MemberNotification {
-	private Integer member_notification_id;
-	private Integer notification_id;
-	private Integer member_id;
-	private Integer is_read;
-	private Integer is_visible;
-	private Integer notification_status;
+	private Integer memberNotificationId;
+	private Integer notificationId;
+	private Integer memberId;
+	private Integer isRead;
+	private Integer isVisible;
+	private Integer notificationStatus;
 	private String title;
 	private String message;
-	private String link_url;
-	private Timestamp read_time;
-	private Timestamp send_time;
-	private Timestamp create_time;
-	private Timestamp update_time;
+	private String linkUrl;
+	private Timestamp readTime;
+	private Timestamp sendTime;
+	private Timestamp createTime;
+	private Timestamp updateTime;
 
-	public Integer getMember_notification_id() {
-		return member_notification_id;
+	public Integer getMemberNotificationId() {
+		return memberNotificationId;
 	}
 
-	public void setMember_notification_id(Integer member_notification_id) {
-		this.member_notification_id = member_notification_id;
+	public void setMemberNotificationId(Integer memberNotificationId) {
+		this.memberNotificationId = memberNotificationId;
 	}
 
-	public Integer getNotification_id() {
-		return notification_id;
+	public Integer getNotificationId() {
+		return notificationId;
 	}
 
-	public void setNotification_id(Integer notification_id) {
-		this.notification_id = notification_id;
+	public void setNotificationId(Integer notificationId) {
+		this.notificationId = notificationId;
 	}
 
-	public Integer getMember_id() {
-		return member_id;
+	public Integer getMemberId() {
+		return memberId;
 	}
 
-	public void setMember_id(Integer member_id) {
-		this.member_id = member_id;
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
 	}
 
-	public Integer getIs_read() {
-		return is_read;
+	public Integer getIsRead() {
+		return isRead;
 	}
 
-	public void setIs_read(Integer is_read) {
-		this.is_read = is_read;
+	public void setIsRead(Integer isRead) {
+		this.isRead = isRead;
 	}
 
-	public Integer getIs_visible() {
-		return is_visible;
+	public Integer getIsVisible() {
+		return isVisible;
 	}
 
-	public void setIs_visible(Integer is_visible) {
-		this.is_visible = is_visible;
+	public void setIsVisible(Integer isVisible) {
+		this.isVisible = isVisible;
 	}
 
-	public Integer getNotification_status() {
-		return notification_status;
+	public Integer getNotificationStatus() {
+		return notificationStatus;
 	}
 
-	public void setNotification_status(Integer notification_status) {
-		this.notification_status = notification_status;
+	public void setNotificationStatus(Integer notificationStatus) {
+		this.notificationStatus = notificationStatus;
 	}
 
 	public String getTitle() {
@@ -81,43 +81,43 @@ public class MemberNotification {
 		this.message = message;
 	}
 
-	public String getLink_url() {
-		return link_url;
+	public String getLinkUrl() {
+		return linkUrl;
 	}
 
-	public void setLink_url(String link_url) {
-		this.link_url = link_url;
+	public void setLinkUrl(String linkUrl) {
+		this.linkUrl = linkUrl;
 	}
 
-	public Timestamp getRead_time() {
-		return read_time;
+	public Timestamp getReadTime() {
+		return readTime;
 	}
 
-	public void setRead_time(Timestamp read_time) {
-		this.read_time = read_time;
+	public void setReadTime(Timestamp readTime) {
+		this.readTime = readTime;
 	}
 
-	public Timestamp getSend_time() {
-		return send_time;
+	public Timestamp getSendTime() {
+		return sendTime;
 	}
 
-	public void setSend_time(Timestamp send_time) {
-		this.send_time = send_time;
+	public void setSendTime(Timestamp sendTime) {
+		this.sendTime = sendTime;
 	}
 
-	public Timestamp getCreate_time() {
-		return create_time;
+	public Timestamp getCreateTime() {
+		return createTime;
 	}
 
-	public void setCreate_time(Timestamp create_time) {
-		this.create_time = create_time;
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
 	}
 
-	public Timestamp getUpdate_time() {
-		return update_time;
+	public Timestamp getUpdateTime() {
+		return updateTime;
 	}
 
-	public void setUpdate_time(Timestamp update_time) {
-		this.update_time = update_time;
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 }

@@ -14,14 +14,14 @@ import com.google.gson.Gson;
 
 import user.buy.service.BuyService;
 import user.buy.service.impl.BuyServiceImpl;
-import user.buy.vo.BuyerTicket;
+import user.buy.vo.MemberNotification;
 
-@WebServlet("/index-search-ticket")
-public class searchTicketServlet extends HttpServlet {
+@WebServlet("/index-search-notification")
+public class SearchNotificationController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private BuyService buyServiceImpl;
 
-	public searchTicketServlet() {
+	public SearchNotificationController() {
 		buyServiceImpl = new BuyServiceImpl();
 	}
 
@@ -30,10 +30,10 @@ public class searchTicketServlet extends HttpServlet {
 		// 1. 指定允許所有網域
 		resp.setHeader("Access-Control-Allow-Origin", "*");
 		// 2. 交給 Service 處理，回傳查詢結果
-		List<BuyerTicket> buyerTicketList = buyServiceImpl.searchTicket();
+		List<MemberNotification> memberNotificationList = buyServiceImpl.searchNotification();
 		// 3. 將活動陣列轉成 json 格式
 		Gson gson = new Gson();
-		String jsonData = gson.toJson(buyerTicketList);
+		String jsonData = gson.toJson(memberNotificationList);
 		// 4. 回應 json 字串
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("utf-8");
