@@ -79,78 +79,12 @@ public class BuyDaoImpl implements BuyDao {
 		String hql = "FROM BuyerTicket";
 		// 2. 查詢所有 row
 		return getSession().createQuery(hql, BuyerTicket.class).getResultList();
-//		try ( // 2. 建立連線
-//				Connection conn = ds.getConnection();
-//				// 3. 創建預備 sql 敘述
-//				PreparedStatement pstmt = conn.prepareStatement(hql);) {
-//			// 4. 取得 rs 物件，並遍歷每筆資料
-//			try (ResultSet rs = pstmt.executeQuery()) {
-//				List<BuyerTicket> buyerTicketLst = new ArrayList<>();
-//				while (rs.next()) {
-//					BuyerTicket buyerTicket = new BuyerTicket();
-//					// 5. 將資料放入 vo
-//					buyerTicket.setTicketId(rs.getInt("ticket_id"));
-//					buyerTicket.setOrderId(rs.getInt("order_id"));
-//					buyerTicket.setEmail(rs.getString("email"));
-//					buyerTicket.setPhone(rs.getString("phone"));
-//					buyerTicket.setPrice(rs.getBigDecimal("price"));
-//					buyerTicket.setStatus(rs.getInt("status"));
-//					buyerTicket.setIdCard(rs.getString("id_card"));
-//					buyerTicket.setCurrentHolderMemberId(rs.getInt("current_holder_member_id"));
-//					buyerTicket.setIsUsed(rs.getInt("is_used"));
-//					buyerTicket.setParticipantName(rs.getString("participant_name"));
-//					buyerTicket.setEventName(rs.getString("event_name"));
-//					buyerTicket.setTypeId(rs.getInt("type_id"));
-//					buyerTicket.setQueueId(rs.getInt("queue_id"));
-//					buyerTicket.setCreateTime(rs.getTimestamp("create_time"));
-//					buyerTicket.setUpdateTime(rs.getTimestamp("update_time"));
-//					buyerTicketLst.add(buyerTicket);
-//				}
-//				// 6. 回傳 list
-//				return buyerTicketLst;
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
 	}
 
 	@Override
 	public List<MemberNotification> selectNotification() {
-		// 1. 生成 SQL 語句進行搜尋
-		String sql = "SELECT * FROM member_notification ORDER BY send_time;";
-
-		try ( // 2. 建立連線
-				Connection conn = ds.getConnection();
-				// 3. 創建預備 sql 敘述
-				PreparedStatement pstmt = conn.prepareStatement(sql);) {
-			// 4. 取得 rs 物件，並遍歷每筆資料
-			try (ResultSet rs = pstmt.executeQuery()) {
-				List<MemberNotification> memberNotificationLst = new ArrayList<>();
-				while (rs.next()) {
-					MemberNotification memberNotification = new MemberNotification();
-					// 5. 將資料放入 vo
-					memberNotification.setMemberNotificationId(rs.getInt("member_notification_id"));
-					memberNotification.setNotificationId(rs.getInt("notification_id"));
-					memberNotification.setMemberId(rs.getInt("member_id"));
-					memberNotification.setIsRead(rs.getInt("is_read"));
-					memberNotification.setIsVisible(rs.getInt("is_visible"));
-					memberNotification.setNotificationStatus(rs.getInt("notification_status"));
-					memberNotification.setTitle(rs.getString("title"));
-					memberNotification.setMessage(rs.getString("message"));
-					memberNotification.setLinkUrl(rs.getString("link_url"));
-					memberNotification.setReadTime(rs.getTimestamp("read_time"));
-					memberNotification.setSendTime(rs.getTimestamp("send_time"));
-					memberNotification.setCreateTime(rs.getTimestamp("create_time"));
-					memberNotification.setUpdateTime(rs.getTimestamp("update_time"));
-					memberNotificationLst.add(memberNotification);
-				}
-				// 6. 回傳 list
-				return memberNotificationLst;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
+		// 1. 生成 HQL 語句進行搜尋
+		String hql = "FROM MemberNotification ORDER BY sendTime";
+		return getSession().createQuery(hql, MemberNotification.class).getResultList();
 	}
 }

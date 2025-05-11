@@ -24,13 +24,13 @@ public class BuyServiceImpl implements BuyService {
 		// 1. 過濾 keywords
 		keyword = keyword == null ? "" : keyword;
 		// 2. 查詢 event_info
-		List<EventInfo> eventInfoLst =  buyDaoImpl.selectEventByKeyword(keyword);
+		List<EventInfo> eventInfoLst = buyDaoImpl.selectEventByKeyword(keyword);
 		// 3. 判斷回傳資料是否為空的？
 		Payload<List<EventInfo>> payload = new Payload<>();
-		if(eventInfoLst.isEmpty()) {
+		if (eventInfoLst.isEmpty()) {
 			payload.setSuccessful(false);
 			payload.setMessage("查無資料");
-		}else {
+		} else {
 			payload.setSuccessful(true);
 			payload.setMessage("取得資料");
 		}
@@ -55,8 +55,18 @@ public class BuyServiceImpl implements BuyService {
 
 	@Override
 	public List<MemberNotification> searchNotification() {
-		// 1. 查詢 member_notification
-		return buyDaoImpl.selectNotification();
+		try {
+			beginTxn();
+			// 1. 查詢 member_notification
+			List<MemberNotification> memberNotifLst = buyDaoImpl.selectNotification();
+			commit();
+			return memberNotifLst;
+		} catch (Exception e) {
+			e.printStackTrace();
+			rollback();
+			return null;
+		}
+
 	}
 
 }

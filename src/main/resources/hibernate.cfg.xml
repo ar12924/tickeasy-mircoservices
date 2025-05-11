@@ -19,5 +19,6 @@
 		<property name="hibernate.format_sql">true</property>
 		<!-- 設定映射容器 -->
 		<mapping class="user.buy.vo.BuyerTicket" />
+		<mapping class="user.buy.vo.MemberNotification" />
 	</session-factory>
 </hibernate-configuration>
