@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知中心</title>
+    <link rel="stylesheet" href="../../common/index.css" />
+    <link rel="stylesheet" href="./css/notification.css" />
+</head>
+<body>
+    <nav>
+        <div class="logo">
+          <a href="/">TickEasy</a>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#tickets">我的訂單</a></li>
+          <li><a href="#favorites">我的關注</a></li>
+          <li><a href="#account">我的票券</a></li>
+          <li><a href="#notifications">通知中心</a></li>
+          <li><a href="#profile" class="cta-button">會員中心</a></li>
+        </ul>
+      </nav>
+
+    <main>
+        <div id="title">
+            <div class="title title_icon"><img src="../../common/images/back.png" alt="icon"></div>
+
+            <div class="title title_content">通知中心</div>
+        </div>
+        <hr>
+        <div id="notification_nav">
+            <div class="ntf_nav -on" id="all_ntf">
+            	<div class="ntf_tab" data-tab="tab_1" >
+	                <div class="ntf_nav_group ntf_nav_title">
+	                    所有通知
+	                </div>
+	                <div class="ntf_nav_group ntf_nav_count">
+	                    <span class="badge all_ntf">1</span>
+	                </div>
+                </div>
+            </div>
+            <div class="ntf_nav" id="eventMind_ntf">
+            	<div class="ntf_tab" data-tab="tab_2">
+	                <div class="ntf_nav_group ntf_nav_title">
+	                    活動提醒
+	                </div>
+	                <div class="ntf_nav_group ntf_nav_count">
+	                    <span class="badge eventMind_ntf">1</span>
+	                </div>
+                </div>
+            </div>
+            <div class="ntf_nav" id="sold_ntf">
+            	<div class="ntf_tab" data-tab="tab_3">
+	                <div class="ntf_nav_group ntf_nav_title">
+	                    開賣提醒
+	                </div>
+	                <div class="ntf_nav_group ntf_nav_count">
+	                    <span class="badge sold_ntf">1</span>
+	                </div>
+	            </div>
+            </div>
+            <div class="ntf_nav" id="swap_ntf">
+           		<div class="ntf_tab" data-tab="tab_4">
+	                <div class="ntf_nav_group ntf_nav_title">
+	                    分票通知
+	                </div>
+	                <div class="ntf_nav_group ntf_nav_count">
+	                    <span class="badge swap_ntf">1</span>
+	                </div>
+	            </div>
+            </div>
+            <div class="ntf_nav" id="change_ntf">
+	            <div class="ntf_tab" data-tab="tab_5">
+	                <div class="ntf_nav_group ntf_nav_title">
+	                    轉票通知
+	                </div>
+	                <div class="ntf_nav_group ntf_nav_count">
+	                    <span class="badge change_ntf">1</span>
+	                </div>
+	            </div> 
+            </div>
+        </div>
+        
+        <div id="main_ntf">
+	        
+	            <div id="notification">
+	                <!-- 
+	                    <div class="ntf -unread">
+	                    	<a href="#" class="ntf_link">
+	                        <div class="ntf_region ntf_left">
+	                        <div class="ntf_title">活動提醒</div>
+	                        
+	                            <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+	                        </div>
+	                        </a>
+	                        <div class="ntf_region ntf_right">
+	                            <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+	                            <div class="ntf_time">2小時前</div>
+	                        </div>
+	                            
+	                    </div>
+	                </a>
+	                <div class="ntf">
+	                    <div class="ntf_region ntf_left">
+	                    <div class="ntf_title">活動提醒</div>
+	                       
+	                        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+	                    </div>
+	                    <div class="ntf_region ntf_right">
+	                        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+	                        <div class="ntf_time">2小時前</div>
+	                    </div>
+	                        
+	                </div>
+	                <div class="ntf">
+	                    <div class="ntf_region ntf_left">
+	                    <div class="ntf_title">活動提醒</div>
+	                       
+	                        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+	                    </div>
+	                    <div class="ntf_region ntf_right">
+	                        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+	                        <div class="ntf_time">2小時前</div>
+	                    </div>
+	                        
+	                </div>
+	                <div class="ntf">
+	                    <div class="ntf_region ntf_left">
+	                    <div class="ntf_title">活動提醒</div>
+	                       
+	                        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+	                    </div>
+	                    <div class="ntf_region ntf_right">
+	                        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+	                        <div class="ntf_time">2小時前</div>
+	                    </div>
+	                        
+	                </div>
+	                <div class="ntf">
+	                    <div class="ntf_region ntf_left">
+	                    <div class="ntf_title">活動提醒</div>
+	                       
+	                        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+	                    </div>
+	                    <div class="ntf_region ntf_right">
+	                        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+	                        <div class="ntf_time">2小時前</div>
+	                    </div>
+	                        
+	                </div>
+	                <div class="ntf">
+	                    <div class="ntf_region ntf_left">
+	                    <div class="ntf_title">活動提醒</div>
+	                       
+	                        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+	                    </div>
+	                    <div class="ntf_region ntf_right">
+	                        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+	                        <div class="ntf_time">2小時前</div>
+	                    </div>
+	                        
+	                </div>
+	                <div class="ntf">
+	                    <div class="ntf_region ntf_left">
+	                    <div class="ntf_title">活動提醒</div>
+	                       
+	                        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+	                    </div>
+	                    <div class="ntf_region ntf_right">
+	                        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+	                        <div class="ntf_time">2小時前</div>
+	                    </div>
+	                        
+	                </div>
+	                <div class="ntf">
+	                    <div class="ntf_region ntf_left">
+	                    <div class="ntf_title">活動提醒</div>
+	                       
+	                        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+	                    </div>
+	                    <div class="ntf_region ntf_right">
+	                        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+	                        <div class="ntf_time">2小時前</div>
+	                    </div>
+	                        
+	                </div>
+	 -->
+	            
+	        </div>
+	        	<!-- <div id="tab2" class="tab_content">
+	            	<div id="notification">
+	            	
+	            	</div>-->
+	        	</div> 
+       		 
+        
+    </main>
+
+    <footer>
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>關於我們</h3>
+            <ul>
+              <li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>客戶服務</h3>
+            <ul>
+              <li><a href="#faq">常見問題</a></li>
+              <li><a href="#contact">聯絡我們</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>售票須知</h3>
+            <ul>
+              <li><a href="#terms">購票說明</a></li>
+              <li><a href="#policy">退票政策</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>追蹤我們</h3>
+            <div class="social-links">
+              <a href="#facebook">Facebook</a>
+              <a href="#instagram">Instagram</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+   <!--  <script>
+        // document.getElementById("nav").innerHTML = fetch("header.html").then(res => res.text()).then(data => {
+        // document.getElementById("nav").innerHTML = data;
+        // });
+
+        // document.getElementById("footer").innerHTML = fetch("footer.html").then(res => res.text()).then(data => {
+        // document.getElementById("footer").innerHTML = data;
+        // });
+
+    </script> -->
+    <script src="./js/notification.js"></script>
+
+</body>
+</html>

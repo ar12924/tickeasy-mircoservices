@@ -1,0 +1,244 @@
+* {
+    box-sizing: border-box;
+  }
+ /*  main{
+   
+  } */
+ div#title{
+    margin-left:200px;
+    margin-top:20px;
+
+  }
+div.title{
+    display: inline-block;
+}
+div.title_icon img{
+    width:14px;
+}
+div#notification_nav{
+    width:100%;
+    height:90px;
+}
+@media all and (max-width: 800px){
+	div#notification_nav{
+	height:150px; 
+}
+}
+div.ntf_nav{
+    display: inline-block;
+    width:100px;
+    margin-left:50px;
+    margin-top:30px;
+
+}
+div.ntf_nav_group{
+    display: inline-block;
+}
+div.ntf_nav_count{
+    margin-left:10px;
+
+
+}
+/* div.ntf_nav.-on{
+    color: #EC4899; 
+    font-weight: bold;
+
+} */
+span.badge {
+    display: inline-block;
+    /* padding-left:5px;
+    padding-right:5px; */
+    padding-bottom: 2px;
+    width:20px;
+    height:20px;
+    background-color: #D9D9D9; 
+    color: #6B7280;            
+    border-radius: 50%;            
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+  }
+/* span.badge.-on {
+    display: inline-block;
+    padding-left:5px;
+    padding-right:5px;
+    padding-bottom: 2px;
+    width:20px;
+    height:20px;
+    background-color: #EC48991A; 
+    color: #EC4899;            
+    border-radius: 50%;            
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+  } */
+  div.ntf_nav.-on div.ntf_nav_group{
+    color: #EC4899; 
+    font-weight: bold;
+  }
+  div.ntf_nav.-on span.badge{
+     display: inline-block;
+     /* padding-left:5px;
+     padding-right:5px; */
+     padding-bottom: 2px;
+     width:20px;
+     height:20px;
+     background-color: #EC48991A; 
+     color: #EC4899;            
+     border-radius: 50%;            
+     text-align: center;
+     font-weight: bold;
+     font-size: 13px;
+  }
+
+
+div#main_ntf{
+    background-color: #cbcbcb1a;
+    width:100%;
+    height:700px;
+    padding:1px;
+ 
+}
+div#notification{
+    background-color: #FFFFFF;
+    width:70%;
+    min-height:530px;
+    max-height:600px;
+    margin: 50px auto 50px auto;
+    /* position:relative;
+    left:50%;
+    top:50px;
+    transform:translateX(-50%); */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    /* margin-bottom: 100px; */
+    padding:5px;
+    /* border:1px solid darkblue; */
+    overflow-y: auto;
+
+}
+div.ntf{
+    background-color: #D9D9D93A;
+    width:90%;
+    height:80px;
+    margin: 20px auto 20px auto;
+    /* position:relative;
+    left:50%;
+    top:30px; */
+    /* transform:translateX(-50%); */
+    color:#6B7280;
+    border-radius: 10px;
+    /* margin-bottom:20px; */
+}
+@media all and (max-width:1440px){
+	div.ntf{
+		height:125px;
+	}
+}
+div.ntf.-unread{
+    background-color: #FDF2F8;
+
+}
+div.ntf_left{
+    margin-top:5px;
+    margin-left:30px;
+    width:80%;
+}
+div.ntf_title{
+    font-weight: bold;
+    font-size: 16px;  
+    color:#000000;
+}
+div.ntf_content{
+    margin-top:10px;
+   
+}
+div.ntf_region{
+    display: inline-block;
+}
+div.ntf_right{
+    margin-left:60px;
+    text-align: center;
+    margin-top:5px;
+}
+@media all and (max-width: 1440px){
+	div.ntf_right{
+		display:none; 
+		/* margin-left:0px; */
+	}
+}
+div.ntf_delete{
+	width:70px;
+	position:center;
+}
+
+div.ntf_delete img{
+    width:20px;
+    
+    
+    
+}
+div.ntf_time{
+    font-size: 14px;
+    width:70px;
+}
+a{
+  text-decoration: none; 
+  color: inherit;
+ 
+  
+}
+
+div.ntf_tab{
+
+    cursor: pointer;
+}
+div.tab_content.-on{
+	display:none
+}
+div.ntf_empty{
+	background-color: #D9D9D93A;
+    width:90%;
+    height:500px;
+    margin: 20px auto 20px auto;
+    /* position:relative;
+    left:50%;
+    top:30px; */
+    /* transform:translateX(-50%); */
+    color:#D9D9D9;
+    border-radius: 10px; 
+    position: relative;
+   /*  text-align:center;
+    vertical-align:middle; */
+}
+div.ntf_empty_text{
+	position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  font-size:40px;
+}
+
+
+/* 
+
+<div id="notification">
+<div class="ntf">
+    <div class="ntf_title">活動提醒<div
+       
+        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
+        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
+        <div class="ntf_time">2小時前</div>
+
+
+
+
+<div id="notification_nav">
+<div class="ntf_nav">
+    <div class="ntf_nav_title">
+        所有通知
+    </div>
+    <div class="ntf_nav_count">
+        2
+    </div>
+</div> */
