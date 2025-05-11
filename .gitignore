@@ -15,5 +15,8 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
-# Eclipse settings
+# Eclipse others
 .settings
+*.class
+.gitkeep
+/bin/
