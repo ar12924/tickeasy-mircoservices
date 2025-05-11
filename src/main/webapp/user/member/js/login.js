@@ -13,6 +13,7 @@ window.onload = () => {
 };
 
 document.querySelector('#loginBtn').addEventListener('click', () => {
+  
   const username = usernameEl.value.trim();
   const password = passwordEl.value;
 
@@ -20,7 +21,7 @@ document.querySelector('#loginBtn').addEventListener('click', () => {
     msgEl.textContent = '請輸入帳號與密碼';
     return;
   }
-
+  
   fetch('login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -28,13 +29,15 @@ document.querySelector('#loginBtn').addEventListener('click', () => {
   })
     .then(res => res.json())
     .then(data => {
+		    
       if (data.successful) {
         if (rememberMeEl.checked) {
           localStorage.setItem("rememberedUser", username);
         } else {
           localStorage.removeItem("rememberedUser");
         }
-        window.location.href = "result.html";
+		const contextPath = window.location.pathname.split('/')[1];
+        window.location.href = `/${contextPath}/user/member/result.html`;
       } else {
         msgEl.textContent = data.message || "登入失敗";
       }

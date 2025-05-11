@@ -25,7 +25,7 @@ public class FindController extends HttpServlet{
             member.setSuccessful(false);
             member.setMessage("尚未登入");
         } else {
-            member.setPassword(null); // 移除敏感資訊
+            member.setPassword(null); 
             member.setSuccessful(true);
             member.setMessage("登入中");
         }

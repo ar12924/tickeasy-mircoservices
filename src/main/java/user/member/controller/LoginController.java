@@ -31,6 +31,7 @@ public class LoginController extends HttpServlet {
 
         member = SERVICE.login(member);
         if (member.isSuccessful()) {
+        	
             if (req.getSession(false) != null) {
                 req.changeSessionId();
             }
@@ -40,5 +41,10 @@ public class LoginController extends HttpServlet {
         }
         CommonUtil.writePojo2Json(resp, member);
 	}
+	
+	 @Override
+	    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	        resp.sendRedirect("/login.html"); // 導回登入頁
+	    }
 	
 }

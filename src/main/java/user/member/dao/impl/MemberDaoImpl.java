@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.util.JdbcUtil;
-
 import static user.member.util.JdbcUtil.getConnection;
 
 
@@ -22,7 +21,7 @@ public class MemberDaoImpl implements MemberDao {
 	public boolean insert(Member member) {
 		String sql = "INSERT INTO member ( user_name, password, email, phone, birth_date, gender,role_level, is_active, unicode, id_card, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	    try (Connection conn = getConnection();
-	             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	            PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 	            pstmt.setString(1, member.getUserName());
 	            pstmt.setString(2, member.getPassword());

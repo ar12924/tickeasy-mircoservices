@@ -13,7 +13,7 @@ const msg = document.querySelector('#msg');
 loggedInNickname.textContent = sessionStorage.getItem('loggedInNickname');
 
 // 載入會員資訊
-fetch('/user/member/session')
+fetch('/user/member/find')
   .then(resp => resp.json())
   .then(body => {
     if (body.successful) {
