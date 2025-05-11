@@ -1,5 +1,6 @@
 package user.member.service.impl;
 
+import java.sql.Date;
 import java.util.List;
 
 
@@ -30,12 +31,35 @@ public class MemberServiceImpl implements MemberService{
             member.setSuccessful(false);
             return member;
         }
-
-        if (memberDao.findByUserName(username) != null) {
-            member.setMessage("此使用者名稱已被註冊");
+        
+        String phone = member.getPhone();
+        if (phone == null || !phone.matches("^09\\d{8}$")) {
+            member.setMessage("手機格式錯誤，需為台灣手機號碼 09 開頭共 10 碼");
             member.setSuccessful(false);
             return member;
         }
+
+        String gender = member.getGender();
+        if (gender == null || !(gender.equals("M") || gender.equals("F"))) {
+            member.setMessage("性別請選擇男 (M) 或 女 (F)");
+            member.setSuccessful(false);
+            return member;
+        }
+
+        Date birthDate = member.getBirthDate();
+        if (birthDate == null) {
+            member.setMessage("請選擇出生日期");
+            member.setSuccessful(false);
+            return member;
+        }
+
+
+        if (memberDao.findByUserName(username) != null) {
+            member.setMessage("此帳號已被註冊");
+            member.setSuccessful(false);
+            return member;
+        }
+        
         
         String unicode = member.getUnicode();
         if (unicode != null && !unicode.matches("\\d{8}")) {

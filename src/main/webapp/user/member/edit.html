@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>會員資料編輯</title>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div>登入中：<span id="loggedInNickname">--</span></div>
+    <button id="logoutButton">登出</button>
+  </div>
+
+  <div class="form-group">
+    <label for="username">使用者帳號</label>
+    <input type="text" id="username" disabled>
+  </div>
+
+  <div class="form-group">
+    <label for="password">新密碼</label>
+    <input type="password" id="password">
+  </div>
+
+  <div class="form-group">
+    <label for="cPassword">確認新密碼</label>
+    <input type="password" id="cPassword">
+  </div>
+
+  <div class="form-group">
+    <label for="nickname">暱稱</label>
+    <input type="text" id="nickname">
+  </div>
+
+  <div class="form-group">
+    <label for="email">電子信箱</label>
+    <input type="email" id="email">
+  </div>
+
+  <div class="form-group">
+    <label for="unicode">統一編號</label>
+    <input type="text" id="unicode">
+  </div>
+
+  <button id="saveButton">儲存變更</button>
+
+  <div id="msg"></div>
+
+  <script src="./js/edit.js"></script>
+</body>
+</html>

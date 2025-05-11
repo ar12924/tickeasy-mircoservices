@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+body {
+  font-family: sans-serif;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.register-box {
+  background: white;
+  padding: 30px;
+  width: 300px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #ccc;
+}
+.register-box h2 {
+  text-align: center;
+  color: #e91e63;
+}
+.register-box input,
+.register-box select {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button {
+  width: 100%;
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#msg {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+}

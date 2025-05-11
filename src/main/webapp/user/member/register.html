@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>TickEasy 註冊</title>
+  <link rel="stylesheet" href="./member/css/register.css">
+</head>
+<body>
+  <div class="form-box">
+    <h2>註冊 TickEasy 帳號</h2>
+
+    <label for="userName">帳號（5~50字元）</label>
+    <input id="userName" type="text">
+
+    <label for="email">電子郵件</label>
+    <input id="email" type="email">
+
+    <label for="password">密碼（至少6字元）</label>
+    <input id="password" type="password">
+
+    <label for="rePassword">確認密碼</label>
+    <input id="rePassword" type="password">
+
+    <label for="birthDate">出生年月日</label>
+    <input id="birthDate" type="date">
+
+    <label for="phone">手機號碼（09開頭，共10碼）</label>
+    <input id="phone" type="text">
+
+    <label for="gender">性別</label>
+    <select id="gender">
+      <option value="">請選擇</option>
+      <option value="M">男性</option>
+      <option value="F">女性</option>
+    </select>
+
+    <label for="idCard">身分證號（開頭需為英文字母）</label>
+    <input id="idCard" type="text">
+
+    <label for="unicode">統一編號（8碼數字）</label>
+    <input id="unicode" type="text">
+
+    <label><input type="checkbox" id="agree"> 我同意服務條款</label>
+ 	<label><input type="checkbox" id="agree"> 我要申請成為活動主辦人</label>
+
+    <button id="submitBtn">立即註冊</button>
+    <div id="msg"></div>
+  </div>
+  <script src="./member/js/register.js"></script>
+</body>
+</html>
