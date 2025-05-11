@@ -4,25 +4,33 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import common.util.JdbcUtil;
-import static user.member.util.JdbcUtil.getConnection;
-
+import javax.sql.DataSource;
 
 import user.member.dao.MemberDao;
+import user.member.util.JdbcUtil;
 import user.member.vo.Member;
 
 
 public class MemberDaoImpl implements MemberDao {
 
+	private DataSource ds;
+	public MemberDaoImpl() {
+		ds = JdbcUtil.getDatasource(); 
+	}
+
 	@Override
 	public boolean insert(Member member) {
-		String sql = "INSERT INTO member ( user_name, password, email, phone, birth_date, gender,role_level, is_active, unicode, id_card, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	    try (Connection conn = getConnection();
-	            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+		String sql = "INSERT INTO member (user_name, password, email, phone, birth_date, gender,role_level, is_active, unicode, id_card, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	    try (
+	    		Connection conn = ds.getConnection();
+	            PreparedStatement pstmt = conn.prepareStatement(sql)
+	     ) {
+	    		Timestamp now = new Timestamp(System.currentTimeMillis());
+	    	
 	            pstmt.setString(1, member.getUserName());
 	            pstmt.setString(2, member.getPassword());
 	            pstmt.setString(3, member.getEmail());
@@ -34,8 +42,8 @@ public class MemberDaoImpl implements MemberDao {
 	            pstmt.setInt(8, member.getIsActive() != null ? member.getIsActive() : 1);
 	            pstmt.setString(9, member.getUnicode());
 	            pstmt.setString(10, member.getIdCard());
-	            pstmt.setTimestamp(11, member.getCreateTime());
-	            pstmt.setTimestamp(12, member.getUpdateTime());
+	            pstmt.setTimestamp(11, now);
+	            pstmt.setTimestamp(12, now);
 
 	            return pstmt.executeUpdate() > 0;
 
@@ -57,7 +65,7 @@ public class MemberDaoImpl implements MemberDao {
             sql.append("email = ?, phone = ?, birth_date = ?, gender = ?, unicode = ?, update_time = CURRENT_TIMESTAMP WHERE user_name = ?");
 
             try (
-                Connection conn = getConnection();
+                Connection conn = ds.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql.toString())
             ) {
             	if (password != null && !password.isEmpty()) {
@@ -80,7 +88,7 @@ public class MemberDaoImpl implements MemberDao {
 	public Member findByUserName(String userName) {
 		final String sql = "SELECT * FROM member WHERE user_name = ?";
 	    try (
-	        Connection conn = JdbcUtil.getConnection();
+	        Connection conn = ds.getConnection();
 	        PreparedStatement stmt = conn.prepareStatement(sql)
 	    ) {
 	        stmt.setString(1, userName);
@@ -98,7 +106,7 @@ public class MemberDaoImpl implements MemberDao {
 	public Member findById(int memberId) {
 	    final String sql = "SELECT * FROM member WHERE member_id = ?";
 	    try (
-	        Connection conn = JdbcUtil.getConnection();
+	        Connection conn = ds.getConnection();
 	        PreparedStatement stmt = conn.prepareStatement(sql)
 	    ) {
 	        stmt.setInt(1, memberId);
@@ -116,7 +124,7 @@ public class MemberDaoImpl implements MemberDao {
 	public boolean delete(int memberId) {
         final String sql = "DELETE FROM member WHERE memberId = ?";
         try (
-            Connection conn = getConnection();
+            Connection conn = ds.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)
         ) {
             pstmt.setInt(1, memberId);
@@ -132,12 +140,14 @@ public class MemberDaoImpl implements MemberDao {
 		final String sql = "SELECT * FROM member ORDER BY member_id";
 		List<Member> resultList = new ArrayList<>();
 	try (
-		Connection conn = getConnection();
+		Connection conn = ds.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);
 		ResultSet rs = pstmt.executeQuery()
 	) {
-	}
-	catch (Exception e) {
+		while (rs.next()) {
+            resultList.add(mapRowToMember(rs));
+		}
+	}catch (Exception e) {
 		 e.printStackTrace();
 	}
 		return resultList;

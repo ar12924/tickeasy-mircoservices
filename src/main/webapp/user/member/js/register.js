@@ -79,6 +79,7 @@ document.querySelector('button').addEventListener('click', () => {
   
     .then(resp => resp.json())
     .then(body => {
+	  console.log("後端回傳：", body);  //測試用
       const { successful, message } = body;
       msg.style.color = successful ? 'blue' : 'red';
       msg.textContent = message || (successful ? '註冊成功' : '註冊失敗');
