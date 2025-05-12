@@ -1,36 +1,15 @@
 package user.buy.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 import org.hibernate.query.Query;
 
-import common.util.HibernateUtil5;
-import user.buy.dao.BuyDao;
+import user.buy.dao.SearchDao;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
-public class BuyDaoImpl implements BuyDao {
-	private DataSource ds;
-
-	public BuyDaoImpl() {
-		try {
-			// 取得 ds (所有 CRUD 共用)
-			ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/tickeasy");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
-
+public class SearchDaoImpl implements SearchDao {
 	@Override
 	public List<EventInfo> selectEventByKeyword(String keyword) {
 		// 1. 生成 HQL 語句

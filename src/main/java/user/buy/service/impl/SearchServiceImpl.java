@@ -2,21 +2,19 @@ package user.buy.service.impl;
 
 import java.util.List;
 
-import org.hibernate.Transaction;
-
 import common.vo.Payload;
-import user.buy.dao.BuyDao;
-import user.buy.dao.impl.BuyDaoImpl;
-import user.buy.service.BuyService;
+import user.buy.dao.SearchDao;
+import user.buy.dao.impl.SearchDaoImpl;
+import user.buy.service.SearchService;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
-public class BuyServiceImpl implements BuyService {
-	private BuyDao buyDaoImpl;
+public class SearchServiceImpl implements SearchService {
+	private SearchDao buyDaoImpl;
 
-	public BuyServiceImpl() {
-		buyDaoImpl = new BuyDaoImpl();
+	public SearchServiceImpl() {
+		buyDaoImpl = new SearchDaoImpl();
 	}
 
 	@Override

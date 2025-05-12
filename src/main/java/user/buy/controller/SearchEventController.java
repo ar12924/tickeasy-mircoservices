@@ -13,17 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import common.vo.Payload;
-import user.buy.service.BuyService;
-import user.buy.service.impl.BuyServiceImpl;
+import user.buy.service.SearchService;
+import user.buy.service.impl.SearchServiceImpl;
 import user.buy.vo.EventInfo;
 
 @WebServlet("/index-search-event")
 public class SearchEventController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private BuyService buyServiceImpl;
+	private SearchService buyServiceImpl;
 
 	public SearchEventController() {
-		buyServiceImpl = new BuyServiceImpl();
+		buyServiceImpl = new SearchServiceImpl();
 	}
 
 	@Override

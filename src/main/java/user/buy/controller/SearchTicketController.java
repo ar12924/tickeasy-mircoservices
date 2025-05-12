@@ -12,17 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import user.buy.service.BuyService;
-import user.buy.service.impl.BuyServiceImpl;
+import user.buy.service.SearchService;
+import user.buy.service.impl.SearchServiceImpl;
 import user.buy.vo.BuyerTicket;
 
 @WebServlet("/index-search-ticket")
 public class SearchTicketController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private BuyService buyServiceImpl;
+	private SearchService buyServiceImpl;
 
 	public SearchTicketController() {
-		buyServiceImpl = new BuyServiceImpl();
+		buyServiceImpl = new SearchServiceImpl();
 	}
 
 	@Override

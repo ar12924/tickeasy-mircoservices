@@ -7,7 +7,7 @@ import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
-public interface BuyDao extends CommonDao {
+public interface SearchDao extends CommonDao {
 	List<EventInfo> selectEventByKeyword(String keywords);
 
 	List<BuyerTicket> selectTicket();

@@ -8,7 +8,7 @@ import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
-public interface BuyService extends CommonService{
+public interface SearchService extends CommonService{
 	Payload<List<EventInfo>> searchEventByKeyword(String keywords);
 
 	List<BuyerTicket> searchTicket();
