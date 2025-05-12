@@ -21,10 +21,19 @@ public class BuyServiceImpl implements BuyService {
 
 	@Override
 	public Payload<List<EventInfo>> searchEventByKeyword(String keyword) {
+		List<EventInfo> eventInfoLst = null;
 		// 1. 過濾 keywords
 		keyword = keyword == null ? "" : keyword;
-		// 2. 查詢 event_info
-		List<EventInfo> eventInfoLst = buyDaoImpl.selectEventByKeyword(keyword);
+		// 2. 查詢 event_info(事務開始)
+		try {
+			beginTxn();
+			eventInfoLst = buyDaoImpl.selectEventByKeyword(keyword);
+			commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			rollback();
+			return null;
+		}
 		// 3. 判斷回傳資料是否為空的？
 		Payload<List<EventInfo>> payload = new Payload<>();
 		if (eventInfoLst.isEmpty()) {

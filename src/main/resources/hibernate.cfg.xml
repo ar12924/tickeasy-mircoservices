@@ -20,5 +20,6 @@
 		<!-- 設定映射容器 -->
 		<mapping class="user.buy.vo.BuyerTicket" />
 		<mapping class="user.buy.vo.MemberNotification" />
+		<mapping class="user.buy.vo.EventInfo" />
 	</session-factory>
 </hibernate-configuration>
