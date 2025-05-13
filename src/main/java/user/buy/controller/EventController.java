@@ -3,7 +3,7 @@ package user.buy.controller;
 import com.google.gson.Gson;
 import user.buy.service.EventInfoService;
 import user.buy.service.EventInfoServiceImpl;
-import user.buy.vo.EventVO;
+import user.buy.vo.EventBuyVO;
 import user.buy.vo.TicketTypeVO;
 
 import javax.servlet.ServletException;
@@ -15,6 +15,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,7 @@ import java.util.Map;
 @WebServlet("/api/events/*")
 public class EventController extends HttpServlet {
     
+	private static final long serialVersionUID = 1L;
     private EventInfoService eventService;
     private Gson gson;
     
@@ -59,13 +62,22 @@ public class EventController extends HttpServlet {
         if (pathInfo == null || pathInfo.equals("/")) {
             // 獲取推薦活動列表
             int limit = getIntParameter(req, "limit", 10);
-            List<EventVO> events = eventService.getRecommendedEvents(limit, memberId);
+            List<EventBuyVO> events = eventService.getRecommendedEvents(limit, memberId);
             
-            // 將結果轉換為JSON並返回
-            Map<String, Object> response = new HashMap<>();
-            response.put("status", 200);
-            response.put("data", events);
-            out.println(gson.toJson(response));
+            if (events != null) {
+                // 將結果轉換為JSON並返回
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", 200);
+                response.put("data", formatEventListForJson(events));
+                out.println(gson.toJson(response));
+            } else {
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", 500);
+                response.put("errorCode", "B0001");
+                response.put("errorMessage", "獲取活動列表失敗");
+                response.put("userMessage", "系統忙碌中，請稍後再試");
+                out.println(gson.toJson(response));
+            }
         } else if (pathInfo.startsWith("/search")) {
             // 搜索活動
             String keyword = req.getParameter("keyword");
@@ -75,39 +87,48 @@ public class EventController extends HttpServlet {
             if (keyword == null || keyword.trim().isEmpty()) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("status", 400);
-                response.put("errorCode", "B0001");
+                response.put("errorCode", "B0002");
                 response.put("errorMessage", "請提供搜索關鍵字");
                 response.put("userMessage", "請提供搜索關鍵字");
                 out.println(gson.toJson(response));
                 return;
             }
             
-            List<EventVO> events = eventService.searchEvents(keyword, page, pageSize, memberId);
+            List<EventBuyVO> events = eventService.searchEvents(keyword, page, pageSize, memberId);
             
-            // 將結果轉換為JSON並返回
-            Map<String, Object> response = new HashMap<>();
-            response.put("status", 200);
-            response.put("data", events);
-            out.println(gson.toJson(response));
+            if (events != null) {
+                // 將結果轉換為JSON並返回
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", 200);
+                response.put("data", formatEventListForJson(events));
+                out.println(gson.toJson(response));
+            } else {
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", 500);
+                response.put("errorCode", "B0003");
+                response.put("errorMessage", "搜索活動失敗");
+                response.put("userMessage", "系統忙碌中，請稍後再試");
+                out.println(gson.toJson(response));
+            }
         } else {
             // 獲取活動詳情，路徑格式為 /api/events/{eventId}
             String eventIdStr = pathInfo.substring(1); // 移除開頭的 /
             
             try {
                 Integer eventId = Integer.parseInt(eventIdStr);
-                EventVO event = eventService.getEventDetail(eventId, memberId);
+                EventBuyVO event = eventService.getEventDetail(eventId, memberId);
                 
                 if (event != null) {
                     // 將結果轉換為JSON並返回
                     Map<String, Object> response = new HashMap<>();
                     response.put("status", 200);
-                    response.put("data", event);
+                    response.put("data", formatEventForJson(event));
                     out.println(gson.toJson(response));
                 } else {
                     // 活動不存在
                     Map<String, Object> response = new HashMap<>();
                     response.put("status", 404);
-                    response.put("errorCode", "B0002");
+                    response.put("errorCode", "B0004");
                     response.put("errorMessage", "活動不存在");
                     response.put("userMessage", "找不到對應的活動");
                     out.println(gson.toJson(response));
@@ -116,7 +137,7 @@ public class EventController extends HttpServlet {
                 // 活動ID格式錯誤
                 Map<String, Object> response = new HashMap<>();
                 response.put("status", 400);
-                response.put("errorCode", "B0003");
+                response.put("errorCode", "B0005");
                 response.put("errorMessage", "無效的活動ID");
                 response.put("userMessage", "請提供有效的活動ID");
                 out.println(gson.toJson(response));
@@ -135,7 +156,7 @@ public class EventController extends HttpServlet {
             int eventId = Integer.parseInt(eventIdStr);
             byte[] imageData = eventService.getEventImage(eventId);
             
-            if (imageData != null) {
+            if (imageData != null && imageData.length > 0) {
                 // 設置響應類型
                 resp.setContentType("image/jpeg"); // 可以根據實際圖片類型調整
                 resp.setContentLength(imageData.length);
@@ -196,7 +217,7 @@ public class EventController extends HttpServlet {
                 } else {
                     Map<String, Object> response = new HashMap<>();
                     response.put("status", 500);
-                    response.put("errorCode", "B0004");
+                    response.put("errorCode", "B0006");
                     response.put("errorMessage", "設置關注狀態失敗");
                     response.put("userMessage", "無法設置關注狀態，請稍後再試");
                     out.println(gson.toJson(response));
@@ -205,7 +226,7 @@ public class EventController extends HttpServlet {
                 // 活動ID格式錯誤
                 Map<String, Object> response = new HashMap<>();
                 response.put("status", 400);
-                response.put("errorCode", "B0003");
+                response.put("errorCode", "B0007");
                 response.put("errorMessage", "無效的活動ID");
                 response.put("userMessage", "請提供有效的活動ID");
                 out.println(gson.toJson(response));
@@ -214,7 +235,7 @@ public class EventController extends HttpServlet {
             // 不支援的請求
             Map<String, Object> response = new HashMap<>();
             response.put("status", 404);
-            response.put("errorCode", "B0005");
+            response.put("errorCode", "B0008");
             response.put("errorMessage", "不支援的請求");
             response.put("userMessage", "不支援的請求路徑");
             out.println(gson.toJson(response));
@@ -222,76 +243,45 @@ public class EventController extends HttpServlet {
     }
     
     /**
-     * 活動票券類型控制器
-     * 創建者: Claude
-     * 創建日期: 2025-05-07
+     * 格式化活動對象，處理日期格式問題
      */
-    @WebServlet("/api/events/*/tickets")
-    public static class EventTicketsController extends HttpServlet {
+    private Map<String, Object> formatEventForJson(EventBuyVO event) {
+        Map<String, Object> eventMap = new HashMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
-        private EventInfoService eventService;
-        private Gson gson;
+        eventMap.put("eventId", event.getEventId());
+        eventMap.put("eventName", event.getEventName());
+        eventMap.put("eventFromDate", event.getEventFromDate() != null ? sdf.format(event.getEventFromDate()) : null);
+        eventMap.put("eventToDate", event.getEventToDate() != null ? sdf.format(event.getEventToDate()) : null);
+        eventMap.put("eventHost", event.getEventHost());
+        eventMap.put("totalCapacity", event.getTotalCapacity());
+        eventMap.put("place", event.getPlace());
+        eventMap.put("summary", event.getSummary());
+        eventMap.put("detail", event.getDetail());
+        eventMap.put("isPosted", event.getPosted());
+        eventMap.put("imageDir", event.getImageDir());
+        eventMap.put("keywordId", event.getKeywordId());
+        eventMap.put("memberId", event.getMemberId());
+        eventMap.put("keyword1", event.getKeyword1());
+        eventMap.put("keyword2", event.getKeyword2());
+        eventMap.put("keyword3", event.getKeyword3());
+        eventMap.put("remainingTickets", event.getRemainingTickets());
+        eventMap.put("isFollowed", event.getFollowed());
         
-        @Override
-        public void init() throws ServletException {
-            super.init();
-            eventService = new EventInfoServiceImpl();
-            gson = new Gson();
+        return eventMap;
+    }
+    
+    /**
+     * 格式化活動列表，處理日期格式問題
+     */
+    private List<Map<String, Object>> formatEventListForJson(List<EventBuyVO> events) {
+        List<Map<String, Object>> formattedEvents = new ArrayList<>();
+        
+        for (EventBuyVO event : events) {
+            formattedEvents.add(formatEventForJson(event));
         }
         
-        @Override
-        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-            // 設置響應類型
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            
-            // 獲取請求路徑
-            String pathInfo = req.getPathInfo();
-            PrintWriter out = resp.getWriter();
-            
-            // 獲取活動ID
-            String[] pathParts = pathInfo.split("/");
-            if (pathParts.length < 3) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("status", 400);
-                response.put("errorCode", "B0003");
-                response.put("errorMessage", "無效的活動ID");
-                response.put("userMessage", "請提供有效的活動ID");
-                out.println(gson.toJson(response));
-                return;
-            }
-            
-            String eventIdStr = pathParts[1];
-            
-            try {
-                Integer eventId = Integer.parseInt(eventIdStr);
-                List<TicketTypeVO> ticketTypes = eventService.getEventTicketTypes(eventId);
-                
-                if (ticketTypes != null && !ticketTypes.isEmpty()) {
-                    // 將結果轉換為JSON並返回
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("status", 200);
-                    response.put("data", ticketTypes);
-                    out.println(gson.toJson(response));
-                } else {
-                    // 沒有找到票券類型
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("status", 404);
-                    response.put("errorCode", "B0006");
-                    response.put("errorMessage", "找不到票券類型");
-                    response.put("userMessage", "該活動尚未設置票券類型");
-                    out.println(gson.toJson(response));
-                }
-            } catch (NumberFormatException e) {
-                // 活動ID格式錯誤
-                Map<String, Object> response = new HashMap<>();
-                response.put("status", 400);
-                response.put("errorCode", "B0003");
-                response.put("errorMessage", "無效的活動ID");
-                response.put("userMessage", "請提供有效的活動ID");
-                out.println(gson.toJson(response));
-            }
-        }
+        return formattedEvents;
     }
     
     /**
@@ -322,5 +312,104 @@ public class EventController extends HttpServlet {
             }
         }
         return null;
+    }
+    
+    /**
+     * 活動票券類型控制器
+     * 創建日期: 2025-05-12
+     */
+    @WebServlet("/api/events/*/tickets")
+    public static class EventTicketsController extends HttpServlet {
+        
+        private static final long serialVersionUID = 1L;
+        private EventInfoService eventService;
+        private Gson gson;
+        
+        @Override
+        public void init() throws ServletException {
+            super.init();
+            eventService = new EventInfoServiceImpl();
+            gson = new Gson();
+        }
+        
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            // 設置響應類型
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            
+            // 獲取請求路徑
+            String pathInfo = req.getRequestURI();
+            PrintWriter out = resp.getWriter();
+            
+            // 解析URL，獲取活動ID
+            // URL格式：/api/events/{eventId}/tickets
+            String[] pathParts = pathInfo.split("/");
+            if (pathParts.length < 4) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", 400);
+                response.put("errorCode", "B0009");
+                response.put("errorMessage", "無效的請求路徑");
+                response.put("userMessage", "請提供有效的請求路徑");
+                out.println(gson.toJson(response));
+                return;
+            }
+            
+            String eventIdStr = pathParts[3]; // 獲取路徑中的eventId部分
+            
+            try {
+                Integer eventId = Integer.parseInt(eventIdStr);
+                List<TicketTypeVO> ticketTypes = eventService.getEventTicketTypes(eventId);
+                
+                if (ticketTypes != null && !ticketTypes.isEmpty()) {
+                    // 將結果轉換為JSON並返回
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("status", 200);
+                    response.put("data", formatTicketTypesForJson(ticketTypes));
+                    out.println(gson.toJson(response));
+                } else {
+                    // 沒有找到票券類型
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("status", 404);
+                    response.put("errorCode", "B0010");
+                    response.put("errorMessage", "找不到票券類型");
+                    response.put("userMessage", "該活動尚未設置票券類型");
+                    out.println(gson.toJson(response));
+                }
+            } catch (NumberFormatException e) {
+                // 活動ID格式錯誤
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", 400);
+                response.put("errorCode", "B0011");
+                response.put("errorMessage", "無效的活動ID");
+                response.put("userMessage", "請提供有效的活動ID");
+                out.println(gson.toJson(response));
+            }
+        }
+        
+        /**
+         * 格式化票券類型列表，處理日期格式問題
+         */
+        private List<Map<String, Object>> formatTicketTypesForJson(List<TicketTypeVO> ticketTypes) {
+            List<Map<String, Object>> formattedTicketTypes = new ArrayList<>();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            
+            for (TicketTypeVO ticketType : ticketTypes) {
+                Map<String, Object> ticketTypeMap = new HashMap<>();
+                
+                ticketTypeMap.put("typeId", ticketType.getTypeId());
+                ticketTypeMap.put("categoryName", ticketType.getCategoryName());
+                ticketTypeMap.put("sellFromTime", ticketType.getSellFromTime() != null ? sdf.format(ticketType.getSellFromTime()) : null);
+                ticketTypeMap.put("sellToTime", ticketType.getSellToTime() != null ? sdf.format(ticketType.getSellToTime()) : null);
+                ticketTypeMap.put("price", ticketType.getPrice());
+                ticketTypeMap.put("capacity", ticketType.getCapacity());
+                ticketTypeMap.put("eventId", ticketType.getEventId());
+                ticketTypeMap.put("remainingTickets", ticketType.getRemainingTickets());
+                
+                formattedTicketTypes.add(ticketTypeMap);
+            }
+            
+            return formattedTicketTypes;
+        }
     }
 }

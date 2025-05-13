@@ -147,5 +147,5 @@ public class EventInfo {
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
 	}
-
+	
 }
