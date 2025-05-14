@@ -27,7 +27,6 @@ const app = Vue.createApp({
     },
     // 1.4. 使用者點擊搜尋列
     searchClick() {
-      // this.fetchEventInfo(this.searchKeyword);
       if (this.searchKeyword) {
         window.location.href = `search.html?keyword=${this.searchKeyword}`;
       } else {
