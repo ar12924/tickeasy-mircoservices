@@ -20,10 +20,6 @@
 		<!-- 設定映射容器 -->
 		<mapping class="user.buy.vo.BuyerTicket" />
 		
-		<!-- archchang的實體類映射 -->
-        <mapping class="user.buy.vo.EventBuyVO"/>
-        <mapping class="user.buy.vo.TicketTypeVO"/>
-        <mapping class="user.buy.vo.KeywordCategoryVO"/>
-        <mapping class="user.buy.vo.FavoriteVO"/>
+		
 	</session-factory>
 </hibernate-configuration>
