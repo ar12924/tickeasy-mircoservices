@@ -27,12 +27,19 @@ const app = Vue.createApp({
     },
     // 1.4. 使用者點擊搜尋列
     searchClick() {
-      this.fetchEventInfo(this.searchKeyword);
+      // this.fetchEventInfo(this.searchKeyword);
+      if (this.searchKeyword) {
+        window.location.href = `search.html?keyword=${this.searchKeyword}`;
+      } else {
+        window.location.href = `search.html`;
+      }
     },
   },
-  mounted() {
-    // 1.6. 自前一頁的 sessionStorage 取得關鍵字
-    this.searchKeyword = sessionStorage.getItem("keyword");
+  created() {
+    // 1.6. 自URL?後方取得關鍵字
+    const urlSearchParams = new URLSearchParams(window.location.search); // 轉換成 key-value 陣列
+    const params = Object.fromEntries(urlSearchParams.entries()); // 轉成一般 js 物件
+    this.searchKeyword = params.keyword;
     this.fetchEventInfo(this.searchKeyword);
   },
 });

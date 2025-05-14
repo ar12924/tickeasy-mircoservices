@@ -39,7 +39,7 @@ public class BuyerTicket {
 	@Column(name="type_id")
 	private Integer typeId;
 	@Column(name="queue_id")
-	private Integer queueId;
+	private Integer queneId;
 	@Column(name="create_time")
 	private Timestamp createTime;
 	@Column(name="update_time")
