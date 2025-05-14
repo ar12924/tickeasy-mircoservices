@@ -23,6 +23,8 @@ import java.util.Map;
 
 /**
  * 活動控制器，處理活動相關RESTful API請求
+ * 創建者: archchang
+ * 創建日期: 2025-05-07
  */
 @WebServlet("/api/events/*")
 public class EventController extends HttpServlet {

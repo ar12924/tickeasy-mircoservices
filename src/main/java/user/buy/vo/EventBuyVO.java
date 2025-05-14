@@ -1,5 +1,9 @@
 package user.buy.vo;
-
+/**
+ * 活動資訊服務實現類
+ * 創建者: archchang
+ * 創建日期: 2025-05-13
+ */
 import java.util.Date;
 import javax.persistence.*;
 

@@ -12,6 +12,8 @@ import user.buy.vo.TicketTypeVO;
 
 /**
  * 活動資訊數據訪問實現類
+ * 創建者: archchang
+ * 創建日期: 2025-05-07
  */
 public class EventInfoDAOImpl implements EventInfoDAO {
     
@@ -131,9 +133,14 @@ public class EventInfoDAOImpl implements EventInfoDAO {
                      "FROM event_ticket_type ett " +
                      "WHERE ett.type_id = :typeId";
         
-        Integer remainingTickets = session.createNativeQuery(sql, Integer.class)
+        Object result = session.createNativeQuery(sql)
                                         .setParameter("typeId", typeId)
                                         .uniqueResult();
+        
+        Integer remainingTickets = null;
+        if (result != null) {
+            remainingTickets = ((Number) result).intValue();
+        }
         
         return remainingTickets != null ? remainingTickets : 0;
     }

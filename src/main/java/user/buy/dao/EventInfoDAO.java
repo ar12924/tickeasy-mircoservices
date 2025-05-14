@@ -8,6 +8,8 @@ import user.buy.vo.FavoriteVO;
 import user.buy.vo.TicketTypeVO;
 /**
  * 活動資訊數據訪問接口
+ * 創建者: archchang
+ * 創建日期: 2025-05-07
  */
 public interface EventInfoDAO extends CommonDao {
     /**

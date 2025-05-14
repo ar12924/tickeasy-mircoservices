@@ -8,6 +8,8 @@ import user.buy.vo.TicketTypeVO;
 
 /**
  * 活動資訊服務接口
+ * 創建者: archchang
+ * 創建日期: 2025-05-07
  */
 public interface EventInfoService extends CommonService{
 	/**

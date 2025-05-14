@@ -2,7 +2,11 @@ package user.buy.vo;
 
 import java.util.Date;
 import javax.persistence.*;
-
+/**
+ * 活動資訊服務實現類
+ * 創建者: archchang
+ * 創建日期: 2025-05-13
+ */
 @Entity
 @Table(name = "keyword_category")
 public class KeywordCategoryVO {

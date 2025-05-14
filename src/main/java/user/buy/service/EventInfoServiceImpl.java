@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * 活動資訊服務實現類
+ * 創建者: archchang
  * 創建日期: 2025-05-07
  */
 public class EventInfoServiceImpl implements EventInfoService {
