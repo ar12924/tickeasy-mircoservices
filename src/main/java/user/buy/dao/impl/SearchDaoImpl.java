@@ -10,6 +10,7 @@ import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
 public class SearchDaoImpl implements SearchDao {
+
 	@Override
 	public List<EventInfo> selectEventByKeyword(String keyword) {
 		// 1. 生成 HQL 語句

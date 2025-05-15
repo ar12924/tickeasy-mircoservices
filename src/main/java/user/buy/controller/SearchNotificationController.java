@@ -16,6 +16,12 @@ import user.buy.service.SearchService;
 import user.buy.service.impl.SearchServiceImpl;
 import user.buy.vo.MemberNotification;
 
+
+/** 首頁(index.html)通知中心區塊資料界接
+ *  請求方法: get
+ *  回應格式: JSON
+ *  資料型態: List<MemberNotification>
+ */
 @WebServlet("/index-search-notification")
 public class SearchNotificationController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
