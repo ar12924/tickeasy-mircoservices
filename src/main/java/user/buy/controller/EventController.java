@@ -2,7 +2,7 @@ package user.buy.controller;
 
 import com.google.gson.Gson;
 import user.buy.service.EventInfoService;
-import user.buy.service.EventInfoServiceImpl;
+import user.buy.service.impl.EventInfoServiceImpl;
 import user.buy.vo.EventBuyVO;
 import user.buy.vo.TicketTypeVO;
 

@@ -1,4 +1,4 @@
-package user.buy.dao;
+package user.buy.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import user.buy.dao.EventInfoDAO;
 import user.buy.vo.EventBuyVO;
 import user.buy.vo.FavoriteVO;
 import user.buy.vo.TicketTypeVO;

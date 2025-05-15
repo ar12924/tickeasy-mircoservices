@@ -1,7 +1,8 @@
-package user.buy.service;
+package user.buy.service.impl;
 
 import user.buy.dao.EventInfoDAO;
-import user.buy.dao.EventInfoDAOImpl;
+import user.buy.dao.impl.EventInfoDAOImpl;
+import user.buy.service.EventInfoService;
 import user.buy.vo.EventBuyVO;
 import user.buy.vo.FavoriteVO;
 import user.buy.vo.TicketTypeVO;
