@@ -18,7 +18,7 @@ import user.buy.vo.BuyerTicket;
 
 
 /** 首頁(index.html)我的票券區塊資料界接
- *  請求方法: get
+ *  請求方法: GET
  *  回應格式: JSON
  *  資料型態: List<BuyerTicket>
  */

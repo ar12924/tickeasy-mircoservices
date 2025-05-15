@@ -18,7 +18,7 @@ import user.buy.vo.MemberNotification;
 
 
 /** 首頁(index.html)通知中心區塊資料界接
- *  請求方法: get
+ *  請求方法: GET
  *  回應格式: JSON
  *  資料型態: List<MemberNotification>
  */
