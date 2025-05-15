@@ -15,6 +15,7 @@ const app = Vue.createApp({
     // 1.2. 從後端 api 抓 event_info 資料
     async fetchEventInfo(searchKeyword) {
       const url = `http://localhost:8080/maven-tickeasy-v1/index-search-event?keyword=${searchKeyword}`;
+      console.log(url);
       const resp = await fetch(url);
       const body = await resp.json();
       this.eventPayload = body;
@@ -36,9 +37,12 @@ const app = Vue.createApp({
   },
   created() {
     // 1.6. 自URL?後方取得關鍵字
-    const urlSearchParams = new URLSearchParams(window.location.search); // 轉換成 key-value 陣列
-    const params = Object.fromEntries(urlSearchParams.entries()); // 轉成一般 js 物件
-    this.searchKeyword = params.keyword;
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    // URL後方沒有參數，會回傳 undefined
+    if (params.keyword !== undefined) {
+      this.searchKeyword = params.keyword;
+    }
     this.fetchEventInfo(this.searchKeyword);
   },
 });
