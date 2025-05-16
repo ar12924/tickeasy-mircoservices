@@ -2,7 +2,7 @@ package user.member.dao;
 
 import java.util.List;
 
-import user.member.vo.Member;
+import user.member.entity.Member;
 
 public interface MemberDao {
 	  boolean insert(Member member);

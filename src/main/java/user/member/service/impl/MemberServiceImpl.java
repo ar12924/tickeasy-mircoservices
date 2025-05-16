@@ -2,20 +2,28 @@ package user.member.service.impl;
 
 import java.sql.Date;
 import java.util.List;
-
+import java.util.UUID;
 
 import user.member.dao.MemberDao;
+import user.member.dao.VerificationDao;
 import user.member.dao.impl.MemberDaoImpl;
+import user.member.dao.impl.VerificationDaoImpl;
+import user.member.entity.Member;
+import user.member.entity.VerificationToken;
+import user.member.service.MailService;
 import user.member.service.MemberService;
-import user.member.vo.Member;
 
 public class MemberServiceImpl implements MemberService{
 	private final MemberDao memberDao;
+	private final VerificationDao verifyDao;
+	private final MailService mailService;
 	
     public MemberServiceImpl() {
-        this.memberDao = new MemberDaoImpl();
+        memberDao = new MemberDaoImpl();
+		verifyDao = new VerificationDaoImpl();
+		mailService = new MailServiceImpl();
     }
-
+    
 	@Override
 	public Member register(Member member) {
         String username = member.getUserName();
@@ -81,17 +89,43 @@ public class MemberServiceImpl implements MemberService{
             member.setSuccessful(false);
             return member;
         }
-
+        
+        // 預設roleLevel = 0
+        member.setRoleLevel(0);
         boolean inserted = memberDao.insert(member);
-        member.setMessage(inserted ? "註冊成功" : "註冊失敗");
+        member.setMessage(inserted ? "註冊成功！請查收驗證信以開通會員" : "註冊失敗");
         member.setSuccessful(inserted);
+        
+        // 寄出驗證信的完整步驟
+        if (inserted) {
+        	try {
+            // Step 1：產生驗證用 token
+            String tokenStr = UUID.randomUUID().toString();
+
+            // Step 2：存進 verification_token 資料表
+            VerificationToken token = new VerificationToken();
+            token.setToken(tokenStr);
+            token.setMember(member);
+            token.setUsed(false);
+            verifyDao.insert(token);
+
+            // 確認是否可以執行            
+            System.out.println("驗證 token 已建立：" + tokenStr);
+
+            // Step 3：寄信
+            mailService.sendActivationNotification(member.getEmail(), member.getUserName(), tokenStr);
+        }
+        	catch (Exception e) {
+                System.err.println("驗證信發送失敗：" + e.getMessage());
+        	}
+        }
         return member;
 	}
 	
 	@Override
 	public Member editMember(Member member) {
         if (member.getPassword() != null &&
-                (member.getPassword().length() < 6 )) {
+               (member.getPassword().length() < 6 )) {
                 member.setMessage("密碼長度須大於 6 字元");
                 member.setSuccessful(false);
                 return member;
@@ -183,5 +217,22 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public boolean removeMemberById(Integer memberId) {
         return memberDao.delete(memberId);
+	}
+
+	@Override
+	public boolean activateMemberByToken(String tokenStr) {
+        System.out.println("開始驗證 token: " + tokenStr);
+
+		VerificationToken token = verifyDao.findByToken(tokenStr);
+        if (token == null || token.isUsed()) {
+            return false;
+        }
+
+        Member member = token.getMember();
+        member.setRoleLevel(1); // 設為啟用等級 1=一般會員
+        token.setUsed(true);
+
+        return verifyDao.update(token) && memberDao.update(member);
+	
 	}
 }

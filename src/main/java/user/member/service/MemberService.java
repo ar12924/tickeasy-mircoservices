@@ -2,7 +2,7 @@ package user.member.service;
 
 import java.util.List;
 
-import user.member.vo.Member;
+import user.member.entity.Member;
 
 public interface MemberService {
     Member register(Member member);
@@ -13,4 +13,5 @@ public interface MemberService {
     List<Member> getAll();
     String getRoleById(Integer memberId);
 	boolean removeMemberById(Integer memberId);
+	boolean activateMemberByToken(String tokenStr);
 }
