@@ -58,70 +58,31 @@ nav {
   border-radius: 4px;
 }
 
-/* Header styles */
+/* 進度條 & 麵包屑 header 樣式 */
 header {
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1rem 2rem;
-}
-
-.main-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.logo {
-  color: #ff69b4;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 2rem;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #333;
-}
-
-.member-center {
-  background-color: #ff69b4;
-  color: white !important;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-}
-
-/* Main content styles */
-main {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-
-.booking-container {
-  background-color: white;
-  border-radius: 8px;
-  padding: 2rem;
 }
 
 .back-link {
-  color: #333;
-  margin-bottom: 2rem;
+  color: #6b7280;
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
   cursor: pointer;
+  display: flex;
+  gap: 1rem;
 }
 
-/* Booking steps */
+.back-label {
+  font-weight: bold;
+  color: black;
+}
+
 .booking-steps {
   display: flex;
   justify-content: center;
   gap: 4rem;
-  margin-bottom: 3rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   position: relative;
 }
 
@@ -143,10 +104,24 @@ main {
 }
 
 .step.active .step-number {
-  background-color: #ff69b4;
+  background-color: #ec4899;
 }
 
-/* Ticket section */
+/* 選票區 main 樣式 */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 3rem;
+  padding: 0 1rem;
+}
+
+.booking-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.2);
+}
+/* 選票區 section */
 .ticket-section {
   margin-bottom: 2rem;
 }
@@ -164,8 +139,7 @@ main {
   max-width: 100%;
   height: auto;
 }
-
-/* Ticket selection */
+/* 票種框框 */
 .ticket-selection {
   max-width: 600px;
   margin: 0 auto;
@@ -187,8 +161,13 @@ main {
   align-items: center;
 }
 
+.ticket-name {
+  font-weight: bold;
+}
+
 .ticket-remaining {
-  color: #ff69b4;
+  font-weight: bold;
+  color: #ec4899;
   font-size: 0.9rem;
 }
 
@@ -205,9 +184,9 @@ main {
 .quantity-btn {
   width: 24px;
   height: 24px;
-  border: 1px solid #ff69b4;
+  border: 1px solid #ec4899;
   background: white;
-  color: #ff69b4;
+  color: #ec4899;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -223,15 +202,16 @@ main {
 .refresh-btn {
   display: block;
   margin: 1.5rem auto;
-  padding: 0.3rem 1rem;
-  background-color: #ff69b4;
+  padding: 0.3rem 0.5rem;
+  background-color: #ec4899;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
-/* Navigation buttons */
+/* 下一步按鈕區 */
 .navigation-buttons {
   display: flex;
   justify-content: space-between;
@@ -248,7 +228,8 @@ main {
 
 .next-btn {
   padding: 0.5rem 2rem;
-  background-color: #ff69b4;
+  background-color: #ec4899;
+  font-weight: bold;
   color: white;
   border: none;
   border-radius: 4px;
@@ -260,7 +241,7 @@ footer {
   background-color: #1f2937;
   color: white;
   padding: 4rem 1rem;
-  margin-top: 4rem;
+  margin-top: 2rem;
 }
 
 .footer-content {

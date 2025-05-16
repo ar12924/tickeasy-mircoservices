@@ -22,37 +22,43 @@
         </ul>
       </nav>
 
+      <!-- 進度條 & 麵包屑 header -->
+      <header>
+        <div class="back-link">
+          <span><i class="fa-duotone fa-solid fa-less-than"></i></span>
+          <span class="back-label">2024春季音樂節</span>
+        </div>
+        <hr />
+        <div class="booking-steps">
+          <div class="step active">
+            <span class="step-number">1</span>
+            <span class="step-text">選擇票券</span>
+          </div>
+          <div class="step">
+            <span class="step-number">2</span>
+            <span class="step-text">填寫資料</span>
+          </div>
+          <div class="step">
+            <span class="step-number">3</span>
+            <span class="step-text">付款確認</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 訂票區 main -->
       <main>
         <div class="booking-container">
-          <div class="back-link">< 2024春季音樂節</div>
-
-          <div class="booking-steps">
-            <div class="step active">
-              <span class="step-number">1</span>
-              <span class="step-text">選擇票券</span>
-            </div>
-            <div class="step">
-              <span class="step-number">2</span>
-              <span class="step-text">填寫資料</span>
-            </div>
-            <div class="step">
-              <span class="step-number">3</span>
-              <span class="step-text">付款確認</span>
-            </div>
-          </div>
-
           <section class="ticket-section">
             <h2>票券一覽</h2>
-
             <div class="seating-map">
-              <!-- 這裡放置座位圖的圖片 -->
+              <!-- 訂票區 main - 座位圖 -->
               <img
                 src="https://placehold.co/600x800"
                 alt="座位圖"
                 class="venue-map"
               />
             </div>
-
+            <!-- 訂票區 main - 票種區塊 -->
             <div class="ticket-selection">
               <div class="ticket-type">
                 <div class="ticket-info">
@@ -66,7 +72,6 @@
                   <button class="quantity-btn plus">+</button>
                 </div>
               </div>
-
               <div class="ticket-type">
                 <div class="ticket-info">
                   <span class="ticket-name">搖滾區</span>
@@ -79,18 +84,18 @@
                   <button class="quantity-btn plus">+</button>
                 </div>
               </div>
-
+              <!-- 訂票區 main - 刷新票數按鈕 -->
               <button class="refresh-btn">
                 更新票數
                 <span><i class="fa-solid fa-rotate"></i></span>
               </button>
             </div>
           </section>
-
-          <div class="navigation-buttons">
-            <button class="back-btn">返回</button>
-            <button class="next-btn">下一步</button>
-          </div>
+        </div>
+        <!-- 訂票區 main - 下一步按鈕區 -->
+        <div class="navigation-buttons">
+          <button class="back-btn">返回</button>
+          <button class="next-btn">下一步</button>
         </div>
       </main>
 
@@ -127,5 +132,10 @@
         </div>
       </footer>
     </div>
+    <!-- font-awesome 連結 -->
+    <script
+      src="https://kit.fontawesome.com/f74fdc6515.js"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
