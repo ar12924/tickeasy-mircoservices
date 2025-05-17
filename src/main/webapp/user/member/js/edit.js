@@ -13,7 +13,7 @@ const msg = document.querySelector('#msg');
 loggedInNickname.textContent = sessionStorage.getItem('loggedInNickname');
 
 // 載入會員資訊
-fetch('/user/member/find')
+fetch('find')
   .then(resp => resp.json())
   .then(body => {
     if (body.successful) {
@@ -86,7 +86,7 @@ saveButton.addEventListener('click', () => {
 
 logoutButton.addEventListener('click', () => {
   if (confirm('是否登出？')) {
-    fetch('/user/member/logout')
+    fetch('logout')
       .then(resp => resp.json())
       .then(body => {
         if (body.successful) {
