@@ -104,6 +104,7 @@ public class MemberServiceImpl implements MemberService{
 
             // Step 2：存進 verification_token 資料表
             VerificationToken token = new VerificationToken();
+            token.setTokenId(UUID.randomUUID());
             token.setToken(tokenStr);
             token.setMember(member);
             token.setUsed(false);

@@ -31,7 +31,7 @@ public class Member{
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "MEMBER_ID")
 	private Integer memberId;
     
 	@Column(name = "USER_NAME")
@@ -72,8 +72,10 @@ public class Member{
 	@Column(name = "UPDATE_TIME", insertable = false)
 	private Timestamp updateTime;
     
+	@Transient
     private boolean successful;
     
+	@Transient
     private String message;
     
     @OneToMany(mappedBy = "member")
