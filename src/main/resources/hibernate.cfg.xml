@@ -20,23 +20,9 @@
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.format_sql">true</property>
-<<<<<<< HEAD
-		<!-- 設定映射容器(yiwei) -->
-=======
 
 		<!-- 設定映射容器 -->
-		<!-- nora -->
-		<mapping class="user.member.entity.Member" />
-		<mapping class="user.member.entity.VerificationToken" />
-		<!-- evelyn -->
-		<mapping class="user.notify.vo.Notification" />
-		<!-- archchang -->
-		<mapping class="user.buy.vo.EventBuyVO" />
-		<mapping class="user.buy.vo.TicketTypeVO" />
-		<mapping class="user.buy.vo.KeywordCategoryVO" />
-		<mapping class="user.buy.vo.FavoriteVO" />
 		<!-- yiwei -->
->>>>>>> main
 		<mapping class="user.buy.vo.BuyerTicket" />
 		<mapping class="user.buy.vo.MemberNotification" />
 		<mapping class="user.buy.vo.EventInfo" />
