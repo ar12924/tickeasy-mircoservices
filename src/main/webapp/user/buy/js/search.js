@@ -15,6 +15,7 @@ const app = Vue.createApp({
     // 1.2. 從後端 api 抓 event_info 資料
     async fetchEventInfo(searchKeyword) {
       const url = `http://localhost:8080/maven-tickeasy-v1/index-search-event?keyword=${searchKeyword}`;
+      console.log(url);
       const resp = await fetch(url);
       const body = await resp.json();
       this.eventPayload = body;
@@ -27,12 +28,21 @@ const app = Vue.createApp({
     },
     // 1.4. 使用者點擊搜尋列
     searchClick() {
-      this.fetchEventInfo(this.searchKeyword);
+      if (this.searchKeyword) {
+        window.location.href = `search.html?keyword=${this.searchKeyword}`;
+      } else {
+        window.location.href = `search.html`;
+      }
     },
   },
-  mounted() {
-    // 1.6. 自前一頁的 sessionStorage 取得關鍵字
-    this.searchKeyword = sessionStorage.getItem("keyword");
+  created() {
+    // 1.6. 自URL?後方取得關鍵字
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    // URL後方沒有參數，會回傳 undefined
+    if (params.keyword !== undefined) {
+      this.searchKeyword = params.keyword;
+    }
     this.fetchEventInfo(this.searchKeyword);
   },
 });

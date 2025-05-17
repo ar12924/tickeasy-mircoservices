@@ -13,17 +13,24 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import common.vo.Payload;
-import user.buy.service.BuyService;
-import user.buy.service.impl.BuyServiceImpl;
+import user.buy.service.SearchService;
+import user.buy.service.impl.SearchServiceImpl;
 import user.buy.vo.EventInfo;
 
+
+/** 首頁(index.html)熱門活動區塊資料界接
+ *  搜尋頁(search.html)活動區塊資料界接
+ *  請求方法: GET
+ *  回應格式: JSON
+ *  資料型態: Payload<List<EventInfo>>
+ */
 @WebServlet("/index-search-event")
 public class SearchEventController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private BuyService buyServiceImpl;
+	private SearchService buyServiceImpl;
 
 	public SearchEventController() {
-		buyServiceImpl = new BuyServiceImpl();
+		buyServiceImpl = new SearchServiceImpl();
 	}
 
 	@Override

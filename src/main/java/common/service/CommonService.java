@@ -1,19 +1,24 @@
 package common.service;
 
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import common.util.HibernateUtil5;
 
 public interface CommonService {
+	private SessionFactory getSessionFactory() {
+		return HibernateUtil5.getSessionFactory();
+	}
+
 	default Transaction beginTxn() {
-		return HibernateUtil5.getSessionFactory().getCurrentSession().beginTransaction();
+		return getSessionFactory().getCurrentSession().beginTransaction();
 	}
 
 	default void commit() {
-		HibernateUtil5.getSessionFactory().getCurrentSession().getTransaction().commit();
+		getSessionFactory().getCurrentSession().getTransaction().commit();
 	}
 
 	default void rollback() {
-		HibernateUtil5.getSessionFactory().getCurrentSession().getTransaction().rollback();
+		getSessionFactory().getCurrentSession().getTransaction().rollback();
 	}
 }

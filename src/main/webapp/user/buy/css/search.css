@@ -177,13 +177,6 @@ nav {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.more-info {
-  color: #ec4899;
-  font-size: 0.9rem;
-  display: block;
-  text-align: center;
-}
-
 /* 搜尋無狀態 section 樣式 */
 .icon svg {
   width: 8rem;

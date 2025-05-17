@@ -71,11 +71,13 @@ const app = Vue.createApp({
       const options = { year: "numeric", month: "short", day: "numeric" };
       return date.toLocaleDateString("en-US", options);
     },
-    // 4.1. 點擊搜尋按鈕，跳轉 + 關鍵字存入 session storage
+    // 4.1. 點擊搜尋按鈕，跳轉 + 關鍵字存入URL?後方參數
     searchClick() {
-      sessionStorage.clear();
-      sessionStorage.setItem("keyword", this.searchKeyword);
-      window.location.href = `http://localhost:8080/maven-tickeasy-v1/user/buy/search.html`;
+      if (this.searchKeyword) {
+        window.location.href = `search.html?keyword=${this.searchKeyword}`;
+      } else {
+        window.location.href = `search.html`;
+      }
     },
   },
   // 1.3. 載入頁面時調用抓 api 方法

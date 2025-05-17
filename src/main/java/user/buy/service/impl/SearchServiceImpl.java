@@ -2,35 +2,42 @@ package user.buy.service.impl;
 
 import java.util.List;
 
-import org.hibernate.Transaction;
-
 import common.vo.Payload;
-import user.buy.dao.BuyDao;
-import user.buy.dao.impl.BuyDaoImpl;
-import user.buy.service.BuyService;
+import user.buy.dao.SearchDao;
+import user.buy.dao.impl.SearchDaoImpl;
+import user.buy.service.SearchService;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
-public class BuyServiceImpl implements BuyService {
-	private BuyDao buyDaoImpl;
+public class SearchServiceImpl implements SearchService {
+	private SearchDao buyDaoImpl;
 
-	public BuyServiceImpl() {
-		buyDaoImpl = new BuyDaoImpl();
+	public SearchServiceImpl() {
+		buyDaoImpl = new SearchDaoImpl();
 	}
 
 	@Override
 	public Payload<List<EventInfo>> searchEventByKeyword(String keyword) {
+		List<EventInfo> eventInfoLst = null;
 		// 1. 過濾 keywords
 		keyword = keyword == null ? "" : keyword;
-		// 2. 查詢 event_info
-		List<EventInfo> eventInfoLst =  buyDaoImpl.selectEventByKeyword(keyword);
+		// 2. 查詢 event_info(事務開始)
+		try {
+			beginTxn();
+			eventInfoLst = buyDaoImpl.selectEventByKeyword(keyword);
+			commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			rollback();
+			return null;
+		}
 		// 3. 判斷回傳資料是否為空的？
 		Payload<List<EventInfo>> payload = new Payload<>();
-		if(eventInfoLst.isEmpty()) {
+		if (eventInfoLst.isEmpty()) {
 			payload.setSuccessful(false);
 			payload.setMessage("查無資料");
-		}else {
+		} else {
 			payload.setSuccessful(true);
 			payload.setMessage("取得資料");
 		}
@@ -55,8 +62,18 @@ public class BuyServiceImpl implements BuyService {
 
 	@Override
 	public List<MemberNotification> searchNotification() {
-		// 1. 查詢 member_notification
-		return buyDaoImpl.selectNotification();
+		try {
+			beginTxn();
+			// 1. 查詢 member_notification
+			List<MemberNotification> memberNotifLst = buyDaoImpl.selectNotification();
+			commit();
+			return memberNotifLst;
+		} catch (Exception e) {
+			e.printStackTrace();
+			rollback();
+			return null;
+		}
+
 	}
 
 }

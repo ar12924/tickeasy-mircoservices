@@ -177,13 +177,6 @@ nav {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.more-info {
-  color: #ec4899;
-  font-size: 0.9rem;
-  display: block;
-  text-align: center;
-}
-
 /* 我的票券 section 樣式 */
 .my-tickets {
   max-width: 1200px;
@@ -224,6 +217,13 @@ nav {
   cursor: pointer;
 }
 
+.more-info {
+  color: #ec4899;
+  font-size: 0.9rem;
+  display: block;
+  text-align: center;
+}
+
 .ticket-actions button:hover {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
@@ -253,6 +253,13 @@ nav {
   color: #374151;
   font-size: 0.9rem;
   text-align: right;
+}
+
+.more-info {
+  color: #ec4899;
+  font-size: 0.9rem;
+  display: block;
+  text-align: center;
 }
 
 /* 頁腳 footer 樣式 */
