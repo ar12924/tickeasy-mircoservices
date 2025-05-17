@@ -3,7 +3,6 @@
 "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
 	<session-factory>
-
 		<!-- 直接連線設定 -->
 		<!-- <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property> 
 			<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/tickeasy</property> 
@@ -12,19 +11,13 @@
 		<property name="hibernate.connection.datasource">
 			java:comp/env/jdbc/tickeasy
 		</property>
-
 		<!-- 設定 current_session 為 thread -->
 		<property name="hibernate.current_session_context_class">thread</property>
-
 		<!-- 設定方言、格式及換行 -->
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.format_sql">true</property>
-
 		<!-- 設定映射容器 -->
-		<!-- yiwei -->
 		<mapping class="user.buy.vo.BuyerTicket" />
-		<mapping class="user.buy.vo.MemberNotification" />
-		<mapping class="user.buy.vo.EventInfo" />
 	</session-factory>
 </hibernate-configuration>
