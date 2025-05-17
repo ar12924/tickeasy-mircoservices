@@ -22,19 +22,6 @@
 		<property name="hibernate.format_sql">true</property>
 
 		<!-- 設定映射容器 -->
-		<!-- nora -->
-		<mapping class="user.member.entity.Member" />
-		<mapping class="user.member.entity.VerificationToken" />
-		<!-- evelyn -->
-		<mapping class="user.notify.vo.Notification" />
-		<!-- archchang -->
-		<mapping class="user.buy.vo.EventBuyVO" />
-		<mapping class="user.buy.vo.TicketTypeVO" />
-		<mapping class="user.buy.vo.KeywordCategoryVO" />
-		<mapping class="user.buy.vo.FavoriteVO" />
-		<!-- yiwei -->
 		<mapping class="user.buy.vo.BuyerTicket" />
-		<mapping class="user.buy.vo.MemberNotification" />
-		<mapping class="user.buy.vo.EventInfo" />
 	</session-factory>
 </hibernate-configuration>
