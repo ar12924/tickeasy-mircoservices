@@ -12,10 +12,10 @@ public interface SearchService extends CommonService {
 	/**
 	 * 傳入關鍵字，驗證使用者輸入的關鍵字格式
 	 * 
-	 * @param 關鍵字
+	 * @param 關鍵字, 頁數, 每頁筆數
 	 * @return 符合條件的數筆活動資料
 	 */
-	Payload<List<EventInfo>> searchEventByKeyword(String keyword);
+	Payload<List<EventInfo>> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize);
 
 	/**
 	 * ...

@@ -62,6 +62,42 @@
               </div>
             </div>
           </div>
+          <!-- 頁籤 section -->
+          <div class="pagination">
+            <ul class="pagination-list">
+              <li class="pagination-item">
+                <a
+                  href="#"
+                  class="pagination-link pagination-prev"
+                  aria-label="上一頁"
+                  @click.prevent="tabPrev"
+                >
+                  &lt;
+                </a>
+              </li>
+              <li
+                :class="['pagination-item',{'pagination-active':currentPage === page}]"
+                v-for="page in pageNumberArr"
+              >
+                <a
+                  href="#"
+                  :class="['pagination-link',{'pagination-active':currentPage === page}]"
+                  @click.prevent="tabClick"
+                  >{{ page }}</a
+                >
+              </li>
+              <li class="pagination-item">
+                <a
+                  href="#"
+                  class="pagination-link pagination-next"
+                  aria-label="下一頁"
+                  @click.prevent="tabNext"
+                >
+                  &gt;
+                </a>
+              </li>
+            </ul>
+          </div>
         </section>
         <!-- 無狀態 section -->
         <section class="events-none" v-if="!eventPayload.successful">
@@ -79,7 +115,7 @@
             </svg>
           </div>
           <h2>找不到符合的活動</h2>
-          <p>我們找不到符合「」的搜尋結果</p>
+          <p>我們找不到符合「{{ searchKeyword }}」的搜尋結果</p>
         </section>
       </main>
 

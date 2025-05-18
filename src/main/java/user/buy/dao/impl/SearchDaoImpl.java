@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.query.Query;
 
+import common.vo.Payload;
 import user.buy.dao.SearchDao;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
@@ -12,18 +13,28 @@ import user.buy.vo.MemberNotification;
 public class SearchDaoImpl implements SearchDao {
 
 	@Override
-	public List<EventInfo> selectEventByKeyword(String keyword) {
+	public Payload<List<EventInfo>> selectEventByKeyword(String keyword, Integer pageNumber, Integer pageSize) {
 		// 1. 生成 HQL 語句
-		String hql = "FROM EventInfo WHERE eventName LIKE :keyword ORDER BY eventFromDate";
+		String hqlData = "FROM EventInfo WHERE eventName LIKE :keyword ORDER BY eventFromDate";
+		String hqlCount = "SELECT COUNT(e) FROM EventInfo e WHERE e.eventName LIKE :keyword";
 		// 2. 條件式查詢
-		Query<EventInfo> query = getSession().createQuery(hql, EventInfo.class);
+		Query<EventInfo> queryData = getSession().createQuery(hqlData, EventInfo.class)
+				.setFirstResult((pageNumber - 1) * pageSize) // 略過比數
+				.setMaxResults(pageSize); // 顯示比數
+		Query<Long> queryCount = getSession().createQuery(hqlCount, Long.class);
 		// 3. 判斷 keyword 字串是否為空
 		if (!keyword.isEmpty()) {
-			query.setParameter("keyword", "%" + keyword + "%");
+			queryData.setParameter("keyword", "%" + keyword + "%");
+			queryCount.setParameter("keyword", "%" + keyword + "%");
 		} else {
-			query.setParameter("keyword", "%%");
+			queryData.setParameter("keyword", "%%");
+			queryCount.setParameter("keyword", "%%");
 		}
-		return query.getResultList();
+		// 4. 將查詢結果和總筆數放入 Payload 型態
+		Payload<List<EventInfo>> eventPayload = new Payload<>();
+		eventPayload.setData(queryData.getResultList()); // 查詢結果
+		eventPayload.setCount(queryCount.uniqueResult()); // 總筆數
+		return eventPayload;
 	}
 
 	@Override

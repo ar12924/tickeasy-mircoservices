@@ -18,14 +18,14 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public Payload<List<EventInfo>> searchEventByKeyword(String keyword) {
-		List<EventInfo> eventInfoLst = null;
+	public Payload<List<EventInfo>> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize) {
+		Payload<List<EventInfo>> eventPayload = null;
 		// 1. 過濾 keywords
 		keyword = keyword == null ? "" : keyword;
 		// 2. 查詢 event_info(事務開始)
 		try {
 			beginTxn();
-			eventInfoLst = buyDaoImpl.selectEventByKeyword(keyword);
+			eventPayload = buyDaoImpl.selectEventByKeyword(keyword, pageNumber, pageSize);
 			commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -33,16 +33,14 @@ public class SearchServiceImpl implements SearchService {
 			return null;
 		}
 		// 3. 判斷回傳資料是否為空的？
-		Payload<List<EventInfo>> payload = new Payload<>();
-		if (eventInfoLst.isEmpty()) {
-			payload.setSuccessful(false);
-			payload.setMessage("查無資料");
+		if (eventPayload.getData().isEmpty()) {
+			eventPayload.setSuccessful(false);
+			eventPayload.setMessage("查無資料");
 		} else {
-			payload.setSuccessful(true);
-			payload.setMessage("取得資料");
+			eventPayload.setSuccessful(true);
+			eventPayload.setMessage("取得資料");
 		}
-		payload.setData(eventInfoLst);
-		return payload;
+		return eventPayload;
 	}
 
 	@Override
