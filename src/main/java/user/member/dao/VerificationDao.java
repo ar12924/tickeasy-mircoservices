@@ -1,9 +1,16 @@
 package user.member.dao;
 
-import user.member.entity.VerificationToken;
+import common.dao.CommonDao;
+import user.member.vo.VerificationToken;
 
-public interface VerificationDao {
-	 boolean insert(VerificationToken token);
-	 VerificationToken findByToken(String tokenStr);
-	 boolean update(VerificationToken token);
+public interface VerificationDao extends CommonDao{
+	VerificationToken findByToken(String tokenName);
+
+	VerificationToken findById(Integer tokenId);
+
+	boolean insert(VerificationToken token);
+
+	boolean update(VerificationToken token);
+
+	boolean deleteById(Integer tokenId);
 }
