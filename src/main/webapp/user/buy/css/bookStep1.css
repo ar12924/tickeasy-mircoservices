@@ -67,6 +67,7 @@ header {
   color: #6b7280;
   margin-top: 1.2rem;
   margin-bottom: 0.8rem;
+  padding-left: 1rem;
   cursor: pointer;
   display: flex;
   gap: 1rem;
