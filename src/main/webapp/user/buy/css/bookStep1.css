@@ -65,8 +65,8 @@ header {
 
 .back-link {
   color: #6b7280;
-  margin-top: 1.2rem;
-  margin-bottom: 0.8rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.6rem;
   padding-left: 1rem;
   cursor: pointer;
   display: flex;
@@ -76,6 +76,8 @@ header {
 .back-label {
   font-weight: bold;
   color: black;
+  display: flex;
+  align-items: center;
 }
 
 .booking-steps {
@@ -93,19 +95,35 @@ header {
   gap: 0.5rem;
 }
 
+.step-bar {
+  border: 1px solid #d3d3d3;
+  width: 15rem;
+}
+
 .step-number {
-  width: 24px;
-  height: 24px;
-  background-color: #ddd;
+  width: 2rem;
+  height: 2rem;
+  background-color: #d3d3d3;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #6b7280;
+  font-weight: bold;
+}
+
+.step-text {
+  color: #6b7280;
+  font-weight: bold;
 }
 
 .step.active .step-number {
   background-color: #ec4899;
+  color: white;
+}
+
+.step.active .step-text {
+  color: #ec4899;
 }
 
 /* 選票區 main 樣式 */
@@ -152,41 +170,47 @@ main {
   align-items: center;
   padding: 1rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 10px;
   margin-bottom: 1rem;
 }
 
 .ticket-info {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   align-items: center;
 }
 
 .ticket-name {
   font-weight: bold;
+  font-size: 1.25rem;
 }
 
 .ticket-remaining {
+  background-color: #fef9c3;
+  border-radius: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
   font-weight: bold;
   color: #ec4899;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .ticket-price {
   font-weight: bold;
+  font-size: 1.25rem;
 }
 
 .quantity-control {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 2rem;
 }
 
 .quantity-btn {
-  width: 24px;
-  height: 24px;
-  border: 1px solid #ec4899;
-  background: white;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: #d9d9d9;
   color: #ec4899;
   border-radius: 50%;
   cursor: pointer;
@@ -195,8 +219,18 @@ main {
   justify-content: center;
 }
 
+.quantity-btn.plus {
+  background-color: rgba(236, 72, 153, 0.3);
+  font-size: 1.4rem;
+}
+
+.quantity-btn.minus {
+  font-size: 1.5rem;
+  color: black;
+}
+
 .quantity {
-  min-width: 2rem;
+  font-weight: bold;
   text-align: center;
 }
 
