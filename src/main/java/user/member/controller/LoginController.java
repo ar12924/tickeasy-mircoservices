@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import user.member.entity.Member;
+import user.member.vo.Member;
 import user.member.util.CommonUtil;
 
 import static user.member.util.MemberConstants.SERVICE;
@@ -21,31 +21,31 @@ public class LoginController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Member member = CommonUtil.json2Pojo(req, Member.class);
-        if (member == null) {
-            member = new Member();
-            member.setMessage("無會員資訊");
-            member.setSuccessful(false);
-            CommonUtil.writePojo2Json(resp, member);
-            return;
-        }
+		Member member = CommonUtil.json2Pojo(req, Member.class);
+		if (member == null) {
+			member = new Member();
+			member.setMessage("無會員資訊");
+			member.setSuccessful(false);
+			CommonUtil.writePojo2Json(resp, member);
+			return;
+		}
 
-        member = SERVICE.login(member);
-        if (member.isSuccessful()) {
-        	
-            if (req.getSession(false) != null) {
-                req.changeSessionId();
-            }
-            HttpSession session = req.getSession();
-            session.setAttribute("loggedin", true);
-            session.setAttribute("member", member);
-        }
-        CommonUtil.writePojo2Json(resp, member);
+		member = SERVICE.login(member);
+		if (member.isSuccessful()) {
+
+			if (req.getSession(false) != null) {
+				req.changeSessionId();
+			}
+			HttpSession session = req.getSession();
+			session.setAttribute("loggedin", true);
+			session.setAttribute("member", member);
+			CommonUtil.writePojo2Json(resp, member);
+		} else {
+			Member result = new Member();
+			result.setSuccessful(false);
+			result.setMessage("使用者名稱或密碼錯誤");
+			CommonUtil.writePojo2Json(resp, result);
+		}
 	}
-	
-	 @Override
-	    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	        resp.sendRedirect("/login.html"); // 導回登入頁
-	    }
-	
+
 }

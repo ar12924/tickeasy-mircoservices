@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import user.member.entity.Member;
+import user.member.vo.Member;
 import user.member.service.MemberService;
 import user.member.service.impl.MemberServiceImpl;
 import static user.member.util.CommonUtil.writePojo2Json;
