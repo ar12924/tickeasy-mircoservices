@@ -1,175 +1,63 @@
 package user.member.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import user.member.dao.MemberDao;
-import user.member.util.JdbcUtil;
 import user.member.vo.Member;
-
 
 public class MemberDaoImpl implements MemberDao {
 
-	private DataSource ds;
-	public MemberDaoImpl() {
-		ds = JdbcUtil.getDatasource(); 
+	@Override
+	public boolean insert(Member member) {
+		getSession().save(member);
+		return true;
 	}
 
 	@Override
-	public boolean insert(Member member) {
-		String sql = "INSERT INTO member (user_name, password, email, phone, birth_date, gender,role_level, is_active, unicode, id_card, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	    try (
-	    		Connection conn = ds.getConnection();
-	            PreparedStatement pstmt = conn.prepareStatement(sql)
-	     ) {
-	    		Timestamp now = new Timestamp(System.currentTimeMillis());
-	    	
-	            pstmt.setString(1, member.getUserName());
-	            pstmt.setString(2, member.getPassword());
-	            pstmt.setString(3, member.getEmail());
-	            pstmt.setString(4, member.getPhone());
-	            
-	            pstmt.setDate(5, member.getBirthDate());
-	            pstmt.setString(6, member.getGender());
-	            pstmt.setInt(7, member.getRoleLevel() != null ? member.getRoleLevel() : 0);
-	            pstmt.setInt(8, member.getIsActive() != null ? member.getIsActive() : 1);
-	            pstmt.setString(9, member.getUnicode());
-	            pstmt.setString(10, member.getIdCard());
-	            pstmt.setTimestamp(11, now);
-	            pstmt.setTimestamp(12, now);
-
-	            return pstmt.executeUpdate() > 0;
-
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	        return false;
-	    }
-	
-
-	@Override
 	public boolean update(Member member) {
-        final StringBuilder sql = new StringBuilder()
-                .append("UPDATE member SET ");
-            final String password = member.getPassword();
-            if (password != null && !password.isEmpty()) {
-                sql.append("password = ?, ");
-            }
-            sql.append("email = ?, phone = ?, birth_date = ?, gender = ?, unicode = ?, update_time = CURRENT_TIMESTAMP WHERE user_name = ?");
-
-            try (
-                Connection conn = ds.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql.toString())
-            ) {
-            	if (password != null && !password.isEmpty()) {
-                    pstmt.setString(1, member.getPassword());
-                }
-                pstmt.setString(1, member.getEmail());
-                pstmt.setString(2, member.getPhone());
-                pstmt.setDate(3, member.getBirthDate());
-                pstmt.setString(4, member.getGender());
-                pstmt.setString(5, member.getUnicode());
-                pstmt.setString(6, member.getUserName());
-                return pstmt.executeUpdate() > 0;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return false;
-	    }
+		String hql = "UPDATE Member m SET " + "m.nickName = :nickName, " + "m.email = :email, " + "m.phone = :phone, "
+				+ "m.birthDate = :birthDate, " + "m.gender = :gender, " + "m.password = :password, "
+				+ "m.photo = :photo " + "WHERE m.memberId = :id";
+		Query<?> query = getSession().createQuery(hql);
+		query.setParameter("nickName", member.getNickName());
+		query.setParameter("email", member.getEmail());
+		query.setParameter("phone", member.getPhone());
+		query.setParameter("birthDate", member.getBirthDate());
+		query.setParameter("gender", member.getGender());
+		query.setParameter("password", member.getPassword());
+		query.setParameter("photo", member.getPhoto());
+		query.setParameter("id", member.getMemberId());
+		return query.executeUpdate() > 0;
+	}
 
 	@Override
 	public Member findByUserName(String userName) {
-		final String sql = "SELECT * FROM member WHERE user_name = ?";
-	    try (
-	        Connection conn = ds.getConnection();
-	        PreparedStatement stmt = conn.prepareStatement(sql)
-	    ) {
-	        stmt.setString(1, userName);
-	        ResultSet rs = stmt.executeQuery();
-	        if (rs.next()) {
-	            return mapRowToMember(rs);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return null;
+		Session session = getSession();
+		return session.createQuery("FROM Member WHERE userName = :userName", Member.class)
+				.setParameter("userName", userName).uniqueResult();
 	}
 
 	@Override
 	public Member findById(int memberId) {
-	    final String sql = "SELECT * FROM member WHERE member_id = ?";
-	    try (
-	        Connection conn = ds.getConnection();
-	        PreparedStatement stmt = conn.prepareStatement(sql)
-	    ) {
-	        stmt.setInt(1, memberId);
-	        ResultSet rs = stmt.executeQuery();
-	        if (rs.next()) {
-	            return mapRowToMember(rs);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return null;
+		return getSession().get(Member.class, memberId);
 	}
 
 	@Override
 	public boolean delete(int memberId) {
-        final String sql = "DELETE FROM member WHERE memberId = ?";
-        try (
-            Connection conn = ds.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)
-        ) {
-            pstmt.setInt(1, memberId);
-            return pstmt.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+		Session session = getSession();
+		Member m = session.load(Member.class, memberId);
+		if (m == null)
+			return false;
+		session.remove(m);
+		return true;
 	}
 
 	@Override
 	public List<Member> listAll() {
-		final String sql = "SELECT * FROM member ORDER BY member_id";
-		List<Member> resultList = new ArrayList<>();
-	try (
-		Connection conn = ds.getConnection();
-		PreparedStatement pstmt = conn.prepareStatement(sql);
-		ResultSet rs = pstmt.executeQuery()
-	) {
-		while (rs.next()) {
-            resultList.add(mapRowToMember(rs));
-		}
-	}catch (Exception e) {
-		 e.printStackTrace();
-	}
-		return resultList;
-	}
-	
-	private Member mapRowToMember(ResultSet rs) throws SQLException {
-	    Member member = new Member();
-	    member.setMemberId(rs.getInt("member_id"));
-	    member.setUserName(rs.getString("user_name"));
-	    member.setPassword(rs.getString("password"));
-	    member.setEmail(rs.getString("email"));
-	    member.setPhone(rs.getString("phone"));
-	    member.setBirthDate(rs.getDate("birth_date"));
-	    member.setGender(rs.getString("gender"));
-	    member.setRoleLevel(rs.getInt("role_level"));
-	    member.setIsActive(rs.getInt("is_active"));
-	    member.setUnicode(rs.getString("unicode"));
-	    member.setIdCard(rs.getString("id_card"));
-	    member.setCreateTime(rs.getTimestamp("create_time"));
-	    member.setUpdateTime(rs.getTimestamp("update_time"));
-	    return member;
+		return getSession().createQuery("FROM Member", Member.class).list();
 	}
 
 }
-
