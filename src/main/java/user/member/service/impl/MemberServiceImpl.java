@@ -11,6 +11,7 @@ import user.member.dao.impl.MemberDaoImpl;
 import user.member.dao.impl.VerificationDaoImpl;
 import user.member.service.MailService;
 import user.member.service.MemberService;
+import user.member.util.HashUtil;
 import user.member.vo.Member;
 import user.member.vo.VerificationToken;
 
@@ -27,6 +28,13 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public Member register(Member member) {
+
+		if (member.getAgree() == null || !member.getAgree()) {
+			member.setSuccessful(false);
+			member.setMessage("請先同意服務條款");
+			return member;
+		}
+
 		String username = member.getUserName();
 		if (username == null || username.length() < 5 || username.length() > 50) {
 			member.setMessage("使用者名稱長度須介於 5 到 50 字元");
@@ -41,6 +49,14 @@ public class MemberServiceImpl implements MemberService {
 			return member;
 		}
 
+		if (member.getRePassword() == null || !member.getRePassword().equals(member.getPassword())) {
+			member.setSuccessful(false);
+			member.setMessage("兩次密碼輸入不一致");
+			return member;
+		}
+
+		member.setPassword(HashUtil.hashpw(password));
+
 		String phone = member.getPhone();
 		if (phone == null || !phone.matches("^09\\d{8}$")) {
 			member.setMessage("手機格式錯誤，需為台灣手機號碼 09 開頭共 10 碼");
@@ -51,6 +67,11 @@ public class MemberServiceImpl implements MemberService {
 		String gender = member.getGender();
 		if (gender == null || !(gender.equals("M") || gender.equals("F"))) {
 			member.setMessage("性別請選擇男 (M) 或 女 (F)");
+			member.setSuccessful(false);
+			return member;
+		}
+		if (memberDao.findByPhone(phone) != null) {
+			member.setMessage("此手機號碼已被註冊");
 			member.setSuccessful(false);
 			return member;
 		}
@@ -88,19 +109,13 @@ public class MemberServiceImpl implements MemberService {
 			member.setSuccessful(false);
 			return member;
 		}
-		
-		if (memberDao.findByUserName(username) != null) {
-            member.setMessage("使用者名稱重複");
-            member.setSuccessful(false);
-            return member;
-        }
-		
+
+		boolean wantHost = Boolean.TRUE.equals(member.getHostApply());
+		member.setRoleLevel(wantHost ? 2 : 0);
 
 		// 1. 寫入 member，預設rolelevel = 0
 		try {
-			beginTxn();
 			member.setRoleLevel(0);
-			member.setCreateTime(new Timestamp(System.currentTimeMillis()));
 			memberDao.insert(member);
 			// 2. 寫入 token
 			String tokenName = UUID.randomUUID().toString();
@@ -113,14 +128,12 @@ public class MemberServiceImpl implements MemberService {
 			// 3. 寄認證信，如果產生例外，觸發rollback
 			mailService.sendActivationNotification(member.getEmail(), member.getUserName(), tokenName);
 
-			commit();
 			member.setSuccessful(true);
 			member.setMessage("註冊成功！請查收驗證信以開通會員");
 
 		} catch (Exception e) {
-			rollback();
 			member.setSuccessful(false);
-			member.setMessage("註冊失敗：" + e.getMessage());
+			member.setMessage("註冊成功，但驗證信寄送失敗，請稍後聯絡客服");
 		}
 		return member;
 	}
@@ -181,10 +194,22 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		Member found = memberDao.findByUserName(username);
-		if (found != null && password.equals(found.getPassword())) {
-			found.setMessage("登入成功");
-			found.setSuccessful(true);
-			return found;
+		if (found != null) {
+			String stored = found.getPassword();
+			if (password.equals(stored)) {
+				String newHash = HashUtil.hashpw(password);
+	            found.setPassword(newHash);
+	            memberDao.update(found);
+	            found.setSuccessful(true);
+	            found.setMessage("登入成功");
+	            return found;
+			}
+			if (HashUtil.verify(password,stored)) {
+	            found.setSuccessful(true);
+	            found.setMessage("登入成功");
+	            return found;
+			}
+				
 		}
 
 		Member fail = new Member();
@@ -226,16 +251,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public boolean removeMemberById(Integer memberId) {
-		try {
-			beginTxn();
-			boolean removed = memberDao.delete(memberId);
-			commit();
-			return removed;
-		} catch (Exception e) {
-			rollback();
-			e.printStackTrace();
-			return false;
-		}
+		return memberDao.delete(memberId);
 	}
 
 	@Override
@@ -249,20 +265,10 @@ public class MemberServiceImpl implements MemberService {
 				|| !"EMAIL_VERIFY".equals(token.getTokenType())) {
 			return false;
 		}
-		try {
-            beginTxn();
-            Member m = token.getMember();
-            m.setRoleLevel(1);
-            memberDao.update(m);
-            verifyDao.deleteById(token.getTokenId());
-            commit();
-            return true;
-        } catch (Exception e) {
-            rollback();
-            return false;
-        }
-
-//		return verifyDao.update(token) && memberDao.update(m);
-
+		Member m = token.getMember();
+		m.setRoleLevel(1);
+		memberDao.update(m);
+		verifyDao.deleteById(token.getTokenId());
+		return true;
 	}
 }
