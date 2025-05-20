@@ -16,13 +16,14 @@ import user.buy.service.SearchService;
 import user.buy.service.impl.SearchServiceImpl;
 import user.buy.vo.BuyerTicket;
 
-
-/** 首頁(index.html)我的票券區塊資料界接
- *  請求方法: GET
- *  回應格式: JSON
- *  資料型態: List<BuyerTicket>
+/**
+ * 首頁(index.html)我的票券區塊資料界接 
+ * 請求方法: GET 
+ * 回應格式: JSON 
+ * 資料型態: List<BuyerTicket> 
+ * API: /search-ticket
  */
-@WebServlet("/index-search-ticket")
+@WebServlet("/search-ticket")
 public class SearchTicketController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private SearchService buyServiceImpl;

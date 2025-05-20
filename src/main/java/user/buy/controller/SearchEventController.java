@@ -18,10 +18,14 @@ import user.buy.service.impl.SearchServiceImpl;
 import user.buy.vo.EventInfo;
 
 /**
- * 首頁(index.html)熱門活動區塊資料界接 搜尋頁(search.html)活動區塊資料界接 請求方法: GET 回應格式: JSON 資料型態:
- * Payload<List<EventInfo>>
+ * 首頁(index.html)熱門活動區塊資料界接 
+ * 搜尋頁(search.html)活動區塊資料界接 
+ * 請求方法: GET 
+ * 回應格式: JSON 
+ * 資料型態: Payload<List<EventInfo>>
+ * API: /search-event?keyword="台北"&pageNumber=1&pageSize=3
  */
-@WebServlet("/index-search-event")
+@WebServlet("/search-event")
 public class SearchEventController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private SearchService buyServiceImpl;
