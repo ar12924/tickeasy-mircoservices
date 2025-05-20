@@ -4,10 +4,10 @@
 <hibernate-configuration>
 	<session-factory>
 		<!-- 直接連線設定 -->
-		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/tickeasy</property>
-		<property name="hibernate.connection.username">root</property>
-		<property name="hibernate.connection.password">123456</property>
+		<!-- <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property> 
+			<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/tickeasy</property> 
+			<property name="hibernate.connection.username">root</property> <property 
+			name="hibernate.connection.password">123456</property> -->
 		<property name="hibernate.connection.datasource">
 			java:comp/env/jdbc/tickeasy
 		</property>
