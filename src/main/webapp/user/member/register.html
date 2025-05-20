@@ -1,74 +1,128 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>TickEasy 註冊</title>
-  <link rel="stylesheet" href="css/register.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>會員註冊</title>
+<link rel="stylesheet" href="../../common/index.css">
+<link rel="stylesheet" href="css/register.css">
 </head>
 <body>
- <div class="register-box">
-    <h2>註冊 TickEasy 帳號</h2>
+	<div id="app">
+		<nav>
+			<div class="logo">
+				<a href="/maven-tickeasy-v1/user/buy/index.html">TickEasy</a>
+			</div>
+			<ul class="nav-links">
+				<li><a href="#tickets">我的訂單</a></li>
+				<li><a href="#favorites">我的關注</a></li>
+				<li><a href="#account">我的票券</a></li>
+				<li><a href="#notifications">通知中心</a></li>
+				<li><a href="/user/register.html" class="cta-button">會員中心</a></li>
+			</ul>
+		</nav>
 
-    <div class="form-group">
-      <label for="userName">帳號（5~50字元）</label>
-      <input id="userName" type="text">
-    </div>
+		<main class="my-tickets register-box">
 
-    <div class="form-group">
-      <label for="email">電子郵件</label>
-      <input id="email" type="email">
-    </div>
+				<h2>註冊 TickEasy 帳號</h2>
 
-    <div class="form-group">
-      <label for="password">密碼（至少6字元）</label>
-      <input id="password" type="password">
-    </div>
+				<div class="form-group">
+					<label for="userName">帳號（5~50字元）</label> <input id="userName"
+						type="text">
+				</div>
 
-    <div class="form-group">
-      <label for="rePassword">確認密碼</label>
-      <input id="rePassword" type="password">
-    </div>
+				<div class="form-group">
+					<label for="nickName">暱稱（1~20字元）</label> <input id="nickName"
+						type="text">
+				</div>
 
-    <div class="form-group">
-      <label for="birthDate">出生年月日</label>
-      <input id="birthDate" type="date">
-    </div>
+				
+				<div class="form-group">
+					<label for="photo">大頭貼</label><input id="photo" type="file" accept="image/*"> 
+				</div>
 
-    <div class="form-group">
-      <label for="phone">手機號碼（09開頭，共10碼）</label>
-      <input id="phone" type="text">
-    </div>
+				<div class="form-group">
+					<label for="email">電子郵件</label> <input id="email" type="email">
+				</div>
 
-    <div class="form-group">
-      <label for="gender">性別</label>
-      <select id="gender">
-        <option value="">請選擇</option>
-        <option value="M">男性</option>
-        <option value="F">女性</option>
-      </select>
-    </div>
+				<div class="form-group">
+					<label for="password">密碼（至少6字元）</label> <input id="password"
+						type="password">
+				</div>
 
-    <div class="form-group">
-      <label for="idCard">身分證號（開頭為英文字母）</label>
-      <input id="idCard" type="text">
-    </div>
+				<div class="form-group">
+					<label for="rePassword">確認密碼</label> <input id="rePassword"
+						type="password">
+				</div>
 
-    <div class="form-group">
-      <label for="unicode">統一編號（8碼數字）</label>
-      <input id="unicode" type="text">
-    </div>
+				<div class="form-group">
+					<label for="birthDate">出生年月日</label> <input id="birthDate"
+						type="date">
+				</div>
 
-    <div class="checkbox-group">
-      <label><input type="checkbox" id="agree"> 我同意服務條款</label>
-    </div>
+				<div class="form-group">
+					<label for="phone">手機號碼（09開頭，共10碼）</label> <input id="phone"
+						type="text">
+				</div>
 
-    <div class="checkbox-group">
-      <label><input type="checkbox" id="hostApply"> 我要申請成為活動主辦人</label>
-    </div>
+				<div class="form-group">
+					<label for="gender">性別</label> <select id="gender">
+						<option value="">請選擇</option>
+						<option value="M">男性</option>
+						<option value="F">女性</option>
+					</select>
+				</div>
 
-    <button id="submitBtn">立即註冊</button>
-    <div id="msg"></div>
-  </div>
-  <script src="js/register.js"></script>
+				<div class="form-group">
+					<label for="idCard">身分證號（開頭為英文字母）</label> <input id="idCard"
+						type="text">
+				</div>
+
+				<div class="form-group">
+					<label for="unicode">統一編號（8碼數字）</label> <input id="unicode"
+						type="text">
+				</div>
+
+				<div class="checkbox-group">
+					<label><input type="checkbox" id="agree"> 我同意服務條款</label>
+				</div>
+
+				<div class="checkbox-group">
+					<label><input type="checkbox" id="hostApply">
+						我要申請成為活動主辦人</label>
+				</div>
+
+				<button id="submitBtn">立即註冊</button>
+				<div id="msg"></div>
+		</main>
+		<footer>
+			<div class="footer-content">
+				<div class="footer-section">
+					<h3>關於我們</h3>
+					<ul>
+						<li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
+					</ul>
+				</div>
+				<div class="footer-section">
+					<h3>客戶服務</h3>
+					<ul>
+						<li><a href="#faq">常見問題</a></li>
+						<li><a href="#contact">聯絡我們</a></li>
+					</ul>
+				</div>
+				<div class="footer-section">
+					<h3>售票須知</h3>
+					<ul>
+						<li><a href="#terms">購票說明</a></li>
+						<li><a href="#policy">退票政策</a></li>
+					</ul>
+				</div>
+				<div class="footer-section social-links">
+					<h3>追蹤我們</h3>
+					<a href="#facebook">Facebook</a> <a href="#instagram">Instagram</a>
+				</div>
+			</div>
+		</footer>
+		<script src="js/register.js"></script>
 </body>
 </html>

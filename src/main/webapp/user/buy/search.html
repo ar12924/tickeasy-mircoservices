@@ -12,7 +12,7 @@
       <!-- 導覽列 nav -->
       <nav>
         <div class="logo">
-          <a href="/maven-tickeasy-v1/user/buy/index.html">TickEasy</a>
+          <a href="index.html">TickEasy</a>
         </div>
         <ul class="nav-links">
           <li><a href="#tickets">我的訂單</a></li>
@@ -56,14 +56,47 @@
                     <p class="price">{{ item.eventHost }}</p>
                   </div>
                   <div class="info-right">
-                    <button class="join-button">立即購票</button>
+                    <button class="join-button">檢視活動</button>
                   </div>
-                </div>
-                <div class="info-bottom">
-                  <a href="#" class="more-info">查看活動詳情</a>
                 </div>
               </div>
             </div>
+          </div>
+          <!-- 頁籤 section -->
+          <div class="pagination">
+            <ul class="pagination-list">
+              <li class="pagination-item">
+                <a
+                  href="#"
+                  class="pagination-link pagination-prev"
+                  aria-label="上一頁"
+                  @click.prevent="tabPrev"
+                >
+                  &lt;
+                </a>
+              </li>
+              <li
+                :class="['pagination-item',{'pagination-active':currentPage === page}]"
+                v-for="page in pageNumberArr"
+              >
+                <a
+                  href="#"
+                  :class="['pagination-link',{'pagination-active':currentPage === page}]"
+                  @click.prevent="tabClick"
+                  >{{ page }}</a
+                >
+              </li>
+              <li class="pagination-item">
+                <a
+                  href="#"
+                  class="pagination-link pagination-next"
+                  aria-label="下一頁"
+                  @click.prevent="tabNext"
+                >
+                  &gt;
+                </a>
+              </li>
+            </ul>
           </div>
         </section>
         <!-- 無狀態 section -->
@@ -82,7 +115,7 @@
             </svg>
           </div>
           <h2>找不到符合的活動</h2>
-          <p>我們找不到符合「」的搜尋結果</p>
+          <p>我們找不到符合「{{ searchKeyword }}」的搜尋結果</p>
         </section>
       </main>
 

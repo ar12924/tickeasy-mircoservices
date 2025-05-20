@@ -1,19 +1,32 @@
 package user.buy.dao;
 
 import java.util.List;
-import user.buy.vo.EventVO;
+
+import common.dao.CommonDao;
+import user.buy.vo.EventBuyVO;
+import user.buy.vo.FavoriteVO;
 import user.buy.vo.TicketTypeVO;
 /**
  * 活動資訊數據訪問接口
+ * 創建者: archchang
+ * 創建日期: 2025-05-07
  */
-public interface EventInfoDAO {
-	/**
+public interface EventInfoDAO extends CommonDao {
+    /**
      * 根據活動ID獲取活動資訊
      * 
      * @param eventId 活動ID
      * @return 活動資訊VO
      */
-    EventVO getEventInfoById(Integer eventId);
+    EventBuyVO getEventInfoById(Integer eventId);
+    
+    /**
+     * 獲取活動關鍵字資訊
+     * 
+     * @param eventId 活動ID
+     * @return 帶關鍵字的活動資訊VO
+     */
+    EventBuyVO getEventWithKeywords(Integer eventId);
     
     /**
      * 獲取推薦活動列表
@@ -21,7 +34,7 @@ public interface EventInfoDAO {
      * @param limit 限制數量
      * @return 活動資訊VO列表
      */
-    List<EventVO> getRecommendedEvents(int limit);
+    List<EventBuyVO> getRecommendedEvents(int limit);
     
     /**
      * 根據關鍵字搜索活動
@@ -31,7 +44,7 @@ public interface EventInfoDAO {
      * @param limit 限制數量
      * @return 活動資訊VO列表
      */
-    List<EventVO> searchEventsByKeyword(String keyword, int offset, int limit);
+    List<EventBuyVO> searchEventsByKeyword(String keyword, int offset, int limit);
     
     /**
      * 根據活動ID獲取該活動的票券類型列表
@@ -42,22 +55,12 @@ public interface EventInfoDAO {
     List<TicketTypeVO> getEventTicketTypesByEventId(Integer eventId);
     
     /**
-     * 更新票券類型的剩餘票數
+     * 計算票券類型的剩餘票數
      * 
      * @param typeId 票券類型ID
-     * @param quantity 減少的數量
-     * @return 是否更新成功
+     * @return 剩餘票數
      */
-    boolean updateTicketTypeRemainingQuantity(Integer typeId, Integer quantity);
-    
-    /**
-     * 檢查票券是否有足夠的剩餘數量
-     * 
-     * @param typeId 票券類型ID
-     * @param quantity 需要的數量
-     * @return 是否足夠
-     */
-    boolean hasEnoughRemainingTickets(Integer typeId, Integer quantity);
+    Integer calculateRemainingTickets(Integer typeId);
     
     /**
      * 檢查用戶是否已關注該活動
@@ -71,28 +74,16 @@ public interface EventInfoDAO {
     /**
      * 插入新的關注記錄
      * 
-     * @param memberId 會員ID
-     * @param eventId 活動ID
-     * @param isFollowed 是否關注
+     * @param favorite 關注記錄
      * @return 是否插入成功
      */
-    boolean insertFavorite(Integer memberId, Integer eventId, Integer isFollowed);
+    boolean insertFavorite(FavoriteVO favorite);
     
     /**
      * 更新現有關注記錄
      * 
-     * @param memberId 會員ID
-     * @param eventId 活動ID
-     * @param isFollowed 是否關注
+     * @param favorite 關注記錄
      * @return 是否更新成功
      */
-    boolean updateFavorite(Integer memberId, Integer eventId, Integer isFollowed);
-    
-    /**
-     * 獲取活動圖片
-     * 
-     * @param eventId 活動ID
-     * @return 圖片數據
-     */
-    byte[] getEventImage(Integer eventId);
+    boolean updateFavorite(FavoriteVO favorite);
 }

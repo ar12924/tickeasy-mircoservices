@@ -2,23 +2,44 @@ package user.notify.vo;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "MEMBER_NOTIFICATION")
 public class Notification {
-
-	
+		@Id
+		@GeneratedValue(strategy= GenerationType.IDENTITY)
+		@Column(name="member_notification_id")
 		private Integer memberNotificationId; // 用戶通知ID
+		@Column(name="notification_id")
 		private Integer notificationId;// 通知ID
+		@Column(name="member_id")
 		private Integer memberId;// 用戶ID
-		private Integer isRead; // 是否已讀，0:未讀，1:已讀
+		@Column(name="is_read")
+		private Integer isRead;// 是否已讀，0:未讀，1:已讀
+		@Column(name="is_visible")
 		private Integer isVisible; // 是否可見，0:不可見，1:可見
+		@Column(name="notification_status")
 		private Integer notificationStatus; // 會員通知狀態，0:未發送，1:已發送
+		@Column(name="title")
 		private String title; // 通知標題
+		@Column(name="message")
 		private String message; // 通知內容
+		@Column(name="link_url")
 		private String linkURL; // 相關連結
+		@Column(name="read_time")
 		private Timestamp readTime;  // 閱讀時間
+		@Column(name="send_time")
 		private Timestamp sendTime; // 發送時間
+		@Column(name="create_time")
 		private Timestamp createTime; // 創建時間
+		@Column(name="update_time")
 		private Timestamp updateTime; // 記錄更新時間
-
 		   /* 
 		    `member_notification_id` INT NOT NULL AUTO_INCREMENT COMMENT '用戶通知ID',
 		    `notification_id` INT NOT NULL COMMENT '通知ID',
