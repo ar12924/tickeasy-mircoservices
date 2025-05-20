@@ -4,6 +4,9 @@
 /*  main{
    
   } */
+ /*  html {
+  scroll-behavior: smooth;
+} */
 div#title {
 	margin-left: 200px;
 	margin-top: 20px;
@@ -132,6 +135,23 @@ div.tk {
 	color: #6B7280;
 	border-radius: 10px;
 	/* margin-bottom:20px; */
+	transition: height 0.5s ease;
+}
+div.tk .-view{
+	display:initial;
+}
+div.tk .-unview{
+	display:none;
+}
+div.tk.-on{
+	height:500px;
+}
+
+div.tk.-on .-view{
+	display:none;
+}
+div.tk.-on .-unview{
+	display:initial;
 }
 
 @media all and (max-width:1440px) {
@@ -205,6 +225,7 @@ div.tk_right {
 	}
 }
 
+
 div.tk_status{
 	border-radius:10px;
 	background-color:#DCFCE7;
@@ -274,6 +295,50 @@ div.tk_empty_text {
 	font-size: 40px;
 }
 
+
+
+
+div.tk_region_open{
+	display:inline-block;
+}
+div.tk_botton_left{
+	margin-left:245px;
+	
+}
+div.tk_botton_right{
+	margin-left:2px;
+	vertical-align:top;
+}
+div.tk_content_qrcode img{
+	width:180px;
+	border-radius: 10px;
+}
+
+
+
+div.inner_tk_block {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  height: 0; /* 可選，避免佔位 */
+  overflow: hidden; /* 隱藏超出部分 */
+}
+
+div.inner_tk_block.-on {
+  opacity: 1;
+  visibility: visible;
+  height: auto; /* 讓元素展開 */
+  transition: opacity 1.5s ease;
+}
+
+
+/* div.inner_tk_block{
+	display:none;
+}
+div.inner_tk_block.-on{
+	display:initial;
+	
+} */
 /* 
 
 <div id="notification">

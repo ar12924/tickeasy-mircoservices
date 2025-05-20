@@ -1,4 +1,4 @@
-const notification_el = document.getElementById("ticket");
+/*const notification_el = document.getElementById("ticket");
 const ntf_link_el = document.getElementsByClassName("tk_link");
 const ntf_el = document.getElementsByClassName("tk");
 const ntf_regio_el = document.getElementsByClassName("tk_region");
@@ -12,6 +12,70 @@ const ntf_nav_span_allchange_el = document.querySelector(".allchange_tk");
 
 const now = new Date();
 
+const tk_more_el=document.getElementsByClassName(".tk_more_");
+
+*/
+document.addEventListener("click",function(e){
+	if(e.target.classList.contains("tk_more_")){
+		e.preventDefault();
+	const tk_more_target = e.target.closest(".tk");
+	
+	const tk_more_content= e.target.closest(".tk_region").nextElementSibling;
+	console.log(tk_more_content);
+	tk_more_target.classList.toggle("-on");
+	tk_more_content.classList.toggle("-on");
+	
+	const allTkElements = document.querySelectorAll(".tk");
+	   const isLastTk = tk_more_target === allTkElements[allTkElements.length - 1];
+
+	   if (isLastTk && tk_more_target.classList.contains("-on")) {
+		const scrollContainer = tk_more_target.closest('#ticket'); 
+
+		
+		
+		/*requestAnimationFrame(() => {
+		       smoothScrollTo(scrollContainer, scrollContainer.scrollHeight, 600);
+		     });*/
+		smoothScrollTo(scrollContainer, scrollContainer.scrollHeight, 1000);
+		   /*setTimeout(() => {
+		       if (scrollContainer) {
+		         scrollContainer.scrollTo({
+		           top: scrollContainer.scrollHeight,
+		           behavior: 'smooth'
+		         });
+		       } else {
+		         tk_more_target.scrollIntoView({ behavior: 'smooth', block: 'end' });
+		       }
+		     }, 600);*/
+	   }
+		
+	}
+})
+/*明天搞懂它 */
+function smoothScrollTo(element, targetScrollTop, duration = 600) {
+  const startScrollTop = element.scrollTop;
+  const distance = targetScrollTop - startScrollTop;
+  let startTime = null;
+
+  function animation(currentTime) {
+    if (!startTime) startTime = currentTime;
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // 簡單 ease-in-out 函數
+    const ease = progress < 0.5 
+      ? 2 * progress * progress 
+      : -1 + (4 - 2 * progress) * progress;
+
+    element.scrollTop = startScrollTop + distance * ease;
+
+    if (elapsed < duration) {
+      requestAnimationFrame(animation);
+    }
+  }
+
+  requestAnimationFrame(animation);
+}
+
 
 
 /*document.addEventListener("DOMContentLoaded", function() {
@@ -22,13 +86,13 @@ const now = new Date();
 
 
 })*/
-function category_count() {
+/*function category_count() {
 	fetch('/tickettest/tikcketList', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			memberId: 5,
-			/*category: category*/
+			category: category
 
 		})
 	})
@@ -40,7 +104,7 @@ function category_count() {
 			let change_count = 0;
 			let notificationCount = notifications.length;
 			ntf_nav_span_all_el.innerHTML = notificationCount;
-			/*for (let notification of notifications) {
+			for (let notification of notifications) {
 				var count = 0;
 				
 				if (category == 1) {
@@ -85,7 +149,7 @@ function category_count() {
 			ntf_nav_span_eventMind_el.innerHTML = eventMind_count;
 			ntf_nav_span_sold_el.innerHTML = sold_count;
 			ntf_nav_span_swap_el.innerHTML = swap_count;
-			ntf_nav_span_change_el.innerHTML = change_count;*/
+			ntf_nav_span_change_el.innerHTML = change_count;
 
 
 
@@ -126,7 +190,7 @@ function category_count() {
 
 
 function notification_loaded(category) {
-	/*const category_type=category;*/
+	const category_type=category;
 	notification_el.innerHTML = "";
 
 	fetch('/tickettest/notificationList', {
@@ -134,7 +198,7 @@ function notification_loaded(category) {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			memberId: 5,
-			/*category: category*/
+			category: category
 
 		})
 	})
@@ -142,9 +206,9 @@ function notification_loaded(category) {
 		.then(notifications => {
 
 			if (category == 1) {
-				/*var category_count_get = document.querySelector("span.all_ntf").innerHTML;
+				var category_count_get = document.querySelector("span.all_ntf").innerHTML;
 
-				console.log(category_count_get+"test");*/
+				console.log(category_count_get+"test");
 
 				ntf_isEmpty(notifications.length);
 
@@ -185,15 +249,15 @@ function notification_loaded(category) {
 			for (let notification of notifications) {
 
 
-				/*if(notification.isVisible==1){
-					all_count=all_count+1;*/
+				if(notification.isVisible==1){
+					all_count=all_count+1;
 				if (category == 1) {
-					/*<span class="badge swap_ntf">1</span>*/
-					/*const notificationCount=notifications.length;*/
-					/*count = count + 1;*/
-					/*ntf_nav_span_all_el.innerHTML=notificationCount;*/
+					<span class="badge swap_ntf">1</span>
+					const notificationCount=notifications.length;
+					count = count + 1;
+					ntf_nav_span_all_el.innerHTML=notificationCount;
 					let displayTimeCount = time_count(notification.sendTime);
-					/*const sendTime = new Date(notification.sendTime); 
+					const sendTime = new Date(notification.sendTime); 
 								let diffMs = now - sendTime; // 毫秒差
 								let diffSec = Math.floor(diffMs / 1000);
 								let diffMin = Math.floor(diffSec / 60);
@@ -210,17 +274,17 @@ function notification_loaded(category) {
 								  displayTime = `${diffHr} 小時前`;
 								} else {
 								  displayTime = `${diffDay} 天前`;
-								}*/
+								}
 
-					/* ntf_title_el.innerHTML=body.title;
+					 ntf_title_el.innerHTML=body.title;
 					 ntf_content_el.innerHTML=displayTime;
 					 not_time=ntf_link_el.setAttribute("href",notification.linkURL);
-					 ntf_time_el.innerHTML=body.time;*/
+					 ntf_time_el.innerHTML=body.time;
 
 
-					/*var message=notification.message;
+					var message=notification.message;
 					var memberId =notification.memberId;
-					var updateMessage=message.replace("${notification.memberId}",memberId);*/
+					var updateMessage=message.replace("${notification.memberId}",memberId);
 					notification_el.insertAdjacentHTML("beforeend", `
 						<a href="http://localhost:8080/tickettest${notification.linkURL}.html" class="tk_link" target="blank" >
 						    <div class="tk -unread" data-tk-id="${notification.memberNotificationId}">
@@ -273,15 +337,15 @@ function notification_loaded(category) {
 
 
 
-					/*}*/
+					}
 				}
 				if (category == 2) {
-					/*var category_count_get = document.querySelector("span.eventMind_ntf").innerHTML;
+					var category_count_get = document.querySelector("span.eventMind_ntf").innerHTML;
 
 					console.log(category_count_get);
 
-					ntf_isEmpty(category_count_get);*/
-					/*							console.log("13");*/
+					ntf_isEmpty(category_count_get);
+												console.log("13");
 					if (notification.notificationId == 3 || notification.notificationId == 4 || notification.notificationId == 5) {
 
 
@@ -340,16 +404,16 @@ function notification_loaded(category) {
 
 					}
 
-					/*ntf_nav_span_eventMind_el.innerHTML = count;*/
+					ntf_nav_span_eventMind_el.innerHTML = count;
 
 				}
 				if (category == 3) {
-					/*	var category_count_get = document.querySelector("span.sold_ntf").innerHTML;
+						var category_count_get = document.querySelector("span.sold_ntf").innerHTML;
 	
 						console.log(category_count_get);
 	
-						ntf_isEmpty(category_count_get);*/
-					/*							console.log("13");*/
+						ntf_isEmpty(category_count_get);
+												console.log("13");
 					if (notification.notificationId == 2) {
 
 
@@ -411,12 +475,12 @@ function notification_loaded(category) {
 				}
 
 				if (category == 4) {
-					/*var category_count_get = document.querySelector("span.swap_ntf").innerHTML;
+					var category_count_get = document.querySelector("span.swap_ntf").innerHTML;
 
 					console.log(category_count_get);
 
 					ntf_isEmpty(category_count_get);
-												consle.log("13");*/
+												consle.log("13");
 					if (notification.notificationId == 6) {
 
 
@@ -475,11 +539,11 @@ function notification_loaded(category) {
 					}
 				}
 				if (category == 5) {
-					/*var category_count_get = document.querySelector("span.change_ntf").innerHTML;
+					var category_count_get = document.querySelector("span.change_ntf").innerHTML;
 
 					console.log(category_count_get);
 
-					ntf_isEmpty(category_count_get);*/
+					ntf_isEmpty(category_count_get);
 
 
 
@@ -488,7 +552,7 @@ function notification_loaded(category) {
 
 
 
-					/*							console.log("13");*/
+												console.log("13");
 					if (notification.notificationId == 7) {
 
 
@@ -522,7 +586,7 @@ function notification_loaded(category) {
 
 
 						ntf_el.addEventListener("click", function(e) {
-							/*if (e.target.closest(".ntf_delete")) return;*/
+							if (e.target.closest(".ntf_delete")) return;
 							if (notification.isRead != 1) {
 								fetch('/tickettest/notificationRead', {
 									method: `POST`,
@@ -550,8 +614,8 @@ function notification_loaded(category) {
 				}
 
 			}
-			/*ntf_isEmpty(count);*/
-			/*if(count==0){
+			ntf_isEmpty(count);
+			if(count==0){
 								console.log("123");
 								notification_el.insertAdjacentHTML("beforeend",`<div class="ntf_empty">
 																							<div class="ntf_empty_text">
@@ -562,20 +626,20 @@ function notification_loaded(category) {
 																					  
 																			  
 																				`)
-							}*/
-			/*	category_count().sold_count
+							}
+				category_count().sold_count
 				if(category_count().sold_count){ntf_isEmpty(category_count.sold_count);
 				console.log("12312");
-				}*/
+				}
 		})
 
 
 
-	/*	ntf_nav_span_el.innerHTML=all_count;*/
+		ntf_nav_span_el.innerHTML=all_count;
 
 
 
-	/*ntf_nav_span_el.innerHTML=all_count;*/
+	ntf_nav_span_el.innerHTML=all_count;
 }
 
 
@@ -637,9 +701,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	category_count();
 	notification_loaded(1);
 })
-/*function notification_category(category){
+function notification_category(category){
 	a
-}*/
+}
 
 
 
@@ -652,9 +716,9 @@ document.addEventListener("click", function(e) {
 		e.stopPropagation();
 		let ntf_delete_el = deleteTarget.closest("a.ntf_link");
 		let ntf_el = deleteTarget.closest(".ntf");
-		/*console.log(ntf_el);*/
+		console.log(ntf_el);
 		let ntf_unvisible_el = ntf_el.dataset.ntfId;
-		/*console.log(ntf_unvisible_el);*/
+		console.log(ntf_unvisible_el);
 		ntf_delete_el.remove();
 
 		fetch('/tickettest/notificationUnvisible', {
@@ -672,7 +736,7 @@ document.addEventListener("click", function(e) {
 					alert("訊息已改成隱藏");
 					category_count();
 					let ntf_nav_get = document.querySelector(".ntf_nav.-on");
-					/*console.log(ntf_nav_get);*/
+					console.log(ntf_nav_get);
 					let ntf_tab_dataId_get = ntf_nav_get.querySelector(".ntf_tab").getAttribute("data-tab");
 					console.log(ntf_tab_dataId_get);
 					let notificationCategory_get = ntf_tab_dataId_get.split("_")[1];
@@ -683,16 +747,16 @@ document.addEventListener("click", function(e) {
 					alert("訊息隱藏更新錯誤");
 				}
 			})
-		/*let ntf_category_el=e.target.*/
+		let ntf_category_el=e.target.
 		category_count();
 
-		/*div class="ntf_nav -on*/
-		/*	document.querySelectorAll(".ntf_tab").forEach(button
+		div class="ntf_nav -on
+			document.querySelectorAll(".ntf_tab").forEach(button
 			const tabId = button.getAttribute("data-tab");
-			let notificationCategory = tabId.split("_")[1];*/
+			let notificationCategory = tabId.split("_")[1];
 
-		/*	notification_loaded(notificationCategory_get);
-			*/
+			notification_loaded(notificationCategory_get);
+			
 
 
 	}
@@ -706,7 +770,7 @@ document.addEventListener("click", function(e) {
 
 
 
-/*const tbody=document.querySelector('tbody');
+const tbody=document.querySelector('tbody');
 fetch('manage', { method: 'POST' })
 	.then(resp => resp.json())
 	.then(members =>{
@@ -729,7 +793,7 @@ fetch('manage', { method: 'POST' })
 				`)
 			    
 		}
-	})*/
+	})
 
 
 
@@ -749,12 +813,12 @@ document.querySelectorAll(".ntf_tab").forEach(button => {
 		// 加入新的 active 樣式
 		button.closest("div.ntf_nav").classList.add("-on");
 		let notificationCategory = tabId.split("_")[1];
-		/*console.log(tabId);
-		console.log(notificationCategory);*/
+		console.log(tabId);
+		console.log(notificationCategory);
 
 
-		/*document.getElementById(tabId).classList.add("-on");*/
-		/*	document.querySelector(`[data-id="${tabId}"]`).classList.add("-on");*/
+		document.getElementById(tabId).classList.add("-on");
+			document.querySelector(`[data-id="${tabId}"]`).classList.add("-on");
 
 
 
@@ -780,4 +844,4 @@ document.querySelectorAll(".ntf_tab").forEach(button => {
 		}
 
 	})
-})
+})*/

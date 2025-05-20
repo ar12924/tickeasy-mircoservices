@@ -12,6 +12,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.hibernate.Session;
+
 import user.notify.dao.NotificationDao;
 import user.notify.vo.Notification;
 
@@ -26,40 +28,47 @@ public class NotificationDaoImpl implements NotificationDao {
 	@Override
 	public List<Notification> selectAllByMemberId(int memberId) {
 		List<Notification> notificationList = new ArrayList<>();
-		String sql="select * from MEMBER_NOTIFICATION WHERE MEMBER_ID = ? AND IS_VISIBLE=?";
-	try( Connection conn =ds.getConnection();
-			PreparedStatement pstmt=conn.prepareStatement(sql);
-			){
-			pstmt.setInt(1,memberId);
-			pstmt.setInt(2,1);
-			try(ResultSet rs =pstmt.executeQuery()){
-				while(rs.next()) {
-					Notification notification=new Notification();
-					notification.setMemberNotificationId(rs.getInt("member_notification_id"));
-					notification.setNotificationId(rs.getInt("notification_id"));
-					notification.setMemberId(rs.getInt("member_id"));
-					notification.setIsRead(rs.getInt("is_read"));
-					notification.setIsVisible(rs.getInt("is_visible"));
-					notification.setNotificationStatus(rs.getInt("notification_status"));
-					notification.setTitle(rs.getString("title"));
-					notification.setMessage(rs.getString("message"));
-					notification.setLinkURL(rs.getString("link_url"));
-					notification.setReadTime(rs.getTimestamp("read_time"));
-					notification.setSendTime(rs.getTimestamp("send_time"));
-					notification.setCreateTime(rs.getTimestamp("create_time"));
-					notification.setUpdateTime(rs.getTimestamp("update_time"));
-					notificationList.add(notification);
-					
-					
-	
-				}
-			}
-		
-	}catch(SQLException e) {
-		e.printStackTrace();
-	}
-	System.out.println("查到資料筆數：" + notificationList.size());
-	return notificationList;
+		try {
+			Session session = getSession();
+			String hql = "FROM Notification WHERE memberId=:memberId AND isVisible=1";
+			notificationList = session.createQuery(hql, Notification.class).setParameter("memberId", memberId)
+					.getResultList();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		System.out.println("查到資料筆數：" + notificationList.size());
+		return notificationList;
+		/*
+		 * List<Notification> notificationList = new ArrayList<>(); String
+		 * sql="select * from MEMBER_NOTIFICATION WHERE MEMBER_ID = ? AND IS_VISIBLE=?";
+		 * try( Connection conn =ds.getConnection(); PreparedStatement
+		 * pstmt=conn.prepareStatement(sql); ){ pstmt.setInt(1,memberId);
+		 * pstmt.setInt(2,1); try(ResultSet rs =pstmt.executeQuery()){ while(rs.next())
+		 * { Notification notification=new Notification();
+		 * notification.setMemberNotificationId(rs.getInt("member_notification_id"));
+		 * notification.setNotificationId(rs.getInt("notification_id"));
+		 * notification.setMemberId(rs.getInt("member_id"));
+		 * notification.setIsRead(rs.getInt("is_read"));
+		 * notification.setIsVisible(rs.getInt("is_visible"));
+		 * notification.setNotificationStatus(rs.getInt("notification_status"));
+		 * notification.setTitle(rs.getString("title"));
+		 * notification.setMessage(rs.getString("message"));
+		 * notification.setLinkURL(rs.getString("link_url"));
+		 * notification.setReadTime(rs.getTimestamp("read_time"));
+		 * notification.setSendTime(rs.getTimestamp("send_time"));
+		 * notification.setCreateTime(rs.getTimestamp("create_time"));
+		 * notification.setUpdateTime(rs.getTimestamp("update_time"));
+		 * notificationList.add(notification);
+		 * 
+		 * 
+		 * 
+		 * } }
+		 * 
+		 * }catch(SQLException e) { e.printStackTrace(); } System.out.println("查到資料筆數："
+		 * + notificationList.size()); return notificationList;
+		 */
 }
 
 	@Override

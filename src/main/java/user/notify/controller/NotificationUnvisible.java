@@ -21,7 +21,7 @@ import user.notify.vo.Notification;
 
 
 
-@WebServlet("/notificationUnvisible")
+@WebServlet("/notification-unvisible")
 public class NotificationUnvisible extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
@@ -41,21 +41,7 @@ public class NotificationUnvisible extends HttpServlet{
 			JsonObject info= gson.fromJson(req.getReader(),JsonObject.class);
 	    	String memberNotificationId=info.get("memberNotificationId").getAsString();
 	    	
-			/*Notification notificationMem =gson.fromJson(req.getReader(),Notification.class);
 			
-			notificationMem = notificationService.list(Integer.parseInt(memId));
-			JsonObject respBody =new JsonObject();
-			respBody.addProperty("success", notification!=null );		
-			if(notification !=null) {
-				
-				
-				session.setAttribute("member", member);
-				respBody.addProperty("nickname", member.getNickname());
-				respBody.addProperty("roleid", member.getRoleId());
-			}
-			resp.setContentType("application/json");
-			resp.getWriter().write(respBody.toString());
-			*/
 
 
 	
@@ -70,26 +56,7 @@ public class NotificationUnvisible extends HttpServlet{
 				respBody.addProperty("success", false);
 				respBody.addProperty("message", "更新有錯");
 			}
-			/*
-			 * if(member != null) { String errMsg=memberService.register(member);
-			 * respBody.addProperty("success", errMsg == null); if(errMsg!=null) {
-			 * respBody.addProperty("errMsg", errMsg); } }else {
-			 * respBody.addProperty("success",false); respBody.addProperty("errMsg",
-			 * "無會員資料"); }
-			 */	/* JsonObject respBody =new JsonObject(); */
-			/*
-			 * respBody.addProperty("id", members.getId());
-			 * respBody.addProperty("username",members.getUsername());
-			 * respBody.addProperty("nickname", members.getNickname());
-			 * respBody.addProperty("pass",members.getPass());
-			 * respBody.addProperty("roleId", members.getRoleId());
-			 * respBody.addProperty("creator",members.getCreator());
-			 * respBody.addProperty("createdDate", sdf.format(members.getCreatedDate()));
-			 * respBody.addProperty("updater",members.getUpdater());
-			 * respBody.addProperty("lastUpdatedDate",
-			 * sdf.format(members.getLastUpdatedDate()));
-			 * respBody.addProperty("username",members.getUsername());
-			 */
+			
 			resp.setContentType("application/json");
 			resp.getWriter().write(respBody.toString());
 
