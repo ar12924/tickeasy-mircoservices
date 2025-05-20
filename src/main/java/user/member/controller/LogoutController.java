@@ -1,5 +1,6 @@
 package user.member.controller;
 
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -9,16 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import user.member.vo.Member;
+import user.member.util.CommonUtil;
+
+
 @WebServlet("/user/member/logout")
 public class LogoutController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false); 
-		
-        if (session != null) {
-            session.invalidate();
-        }
-        resp.sendRedirect("login.html"); // 登出後導回登入頁
+        req.getSession().invalidate();
+        Member result = new Member();
+        result.setSuccessful(true);
+        result.setMessage("已成功登出");
+        CommonUtil.writePojo2Json(resp, result);
 	}
 }
