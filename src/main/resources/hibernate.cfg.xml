@@ -18,8 +18,6 @@
 		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.format_sql">true</property>
 		<!-- 設定映射容器 -->
-<<<<<<< HEAD
-=======
 		<!-- nora -->
 		<mapping class="user.member.vo.Member" />
 		<mapping class="user.member.vo.VerificationToken" />
@@ -32,7 +30,6 @@
 		<mapping class="user.buy.vo.FavoriteVO" />
 		<!-- duncan -->
 		<mapping class="manager.event.vo.EventInfo" />
->>>>>>> main
 		<!-- yiwei -->
 		<mapping class="user.buy.vo.BuyerTicket" />
 		<mapping class="user.buy.vo.MemberNotification" />
