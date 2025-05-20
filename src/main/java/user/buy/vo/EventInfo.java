@@ -48,4 +48,5 @@ public class EventInfo {
 	private Timestamp createTime;
 	@Column(name="update_time")
 	private Timestamp updateTime;
+
 }

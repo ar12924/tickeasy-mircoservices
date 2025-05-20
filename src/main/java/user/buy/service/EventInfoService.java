@@ -1,19 +1,25 @@
 package user.buy.service;
+
 import java.util.List;
-import user.buy.vo.EventVO;
-import user.buy.vo.TicketTypeVO; 
+
+import common.service.CommonService;
+import user.buy.vo.EventBuyVO;
+import user.buy.vo.TicketTypeVO;
+
 /**
  * 活動資訊服務接口
+ * 創建者: archchang
+ * 創建日期: 2025-05-07
  */
-public interface EventInfoService {
+public interface EventInfoService extends CommonService{
 	/**
      * 根據活動ID獲取活動詳情
      * 
      * @param eventId 活動ID
      * @param memberId 當前會員ID（可為null）
-     * @return 活動詳情Map
+     * @return 活動詳情
      */
-	EventVO getEventDetail(Integer eventId, Integer memberId);
+	EventBuyVO getEventDetail(Integer eventId, Integer memberId);
     
     /**
      * 獲取推薦活動列表
@@ -22,7 +28,7 @@ public interface EventInfoService {
      * @param memberId 當前會員ID（可為null）
      * @return 活動列表
      */
-	List<EventVO> getRecommendedEvents(int limit, Integer memberId);    
+	List<EventBuyVO> getRecommendedEvents(int limit, Integer memberId);    
     /**
      * 根據關鍵字搜索活動
      * 
@@ -32,7 +38,7 @@ public interface EventInfoService {
      * @param memberId 當前會員ID（可為null）
      * @return 活動列表
      */
-    List<EventVO> searchEvents(String keyword, int page, int pageSize, Integer memberId);
+	List<EventBuyVO> searchEvents(String keyword, int page, int pageSize, Integer memberId);
     
     /**
      * 獲取活動的票券類型列表
@@ -40,7 +46,7 @@ public interface EventInfoService {
      * @param eventId 活動ID
      * @return 票券類型列表
      */
-    List<TicketTypeVO> getEventTicketTypes(Integer eventId);
+	List<TicketTypeVO> getEventTicketTypes(Integer eventId);
     
     /**
      * 檢查票券是否有足夠庫存

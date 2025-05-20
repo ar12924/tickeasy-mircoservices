@@ -1,50 +1,86 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>會員資料編輯</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>會員資料編輯</title>
+<link rel="stylesheet" href="../../common/index.css">
+
 </head>
 <body>
+	<div id="app">
+		<nav>
+			<div class="logo">
+				<a href="/maven-tickeasy-v1/user/buy/index.html">TickEasy</a>
+			</div>
+			<ul class="nav-links">
+				<li><a href="#tickets">我的訂單</a></li>
+				<li><a href="#favorites">我的關注</a></li>
+				<li><a href="#account">我的票券</a></li>
+				<li><a href="#notifications">通知中心</a></li>
+				<li><a href="#profile" class="cta-button">會員中心</a></li>
+			</ul>
+		</nav>
 
-  <div class="top-bar">
-    <div>登入中：<span id="loggedInNickname">--</span></div>
-    <button id="logoutButton">登出</button>
-  </div>
+		<main class="my-tickets">
+			<h2>編輯會員資料</h2>
+			<div class="form-group">
+				<label for="username">使用者帳號</label> <input type="text" id="username"
+					disabled>
+			</div>
+			<div class="form-group">
+				<label for="password">新密碼</label> <input type="password"
+					id="password">
+			</div>
+			<div class="form-group">
+				<label for="cPassword">確認新密碼</label> <input type="password"
+					id="cPassword">
+			</div>
+			<div class="form-group">
+				<label for="nickname">暱稱</label> <input type="text" id="nickname">
+			</div>
+			<div class="form-group">
+				<label for="email">電子信箱</label> <input type="email" id="email">
+			</div>
+			<div class="form-group">
+				<label for="unicode">統一編號</label> <input type="text" id="unicode">
+			</div>
+			<button id="saveButton" class="join-button">儲存變更</button>
+			<div id="msg"></div>
+		</main>
 
-  <div class="form-group">
-    <label for="username">使用者帳號</label>
-    <input type="text" id="username" disabled>
-  </div>
 
-  <div class="form-group">
-    <label for="password">新密碼</label>
-    <input type="password" id="password">
-  </div>
-
-  <div class="form-group">
-    <label for="cPassword">確認新密碼</label>
-    <input type="password" id="cPassword">
-  </div>
-
-  <div class="form-group">
-    <label for="nickname">暱稱</label>
-    <input type="text" id="nickname">
-  </div>
-
-  <div class="form-group">
-    <label for="email">電子信箱</label>
-    <input type="email" id="email">
-  </div>
-
-  <div class="form-group">
-    <label for="unicode">統一編號</label>
-    <input type="text" id="unicode">
-  </div>
-
-  <button id="saveButton">儲存變更</button>
-
-  <div id="msg"></div>
-
-  <script src="js/edit.js"></script>
+		<footer>
+			<div class="footer-content">
+				<div class="footer-section">
+					<h3>關於我們</h3>
+					<ul>
+						<li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
+					</ul>
+				</div>
+				<div class="footer-section">
+					<h3>客戶服務</h3>
+					<ul>
+						<li><a href="#faq">常見問題</a></li>
+						<li><a href="#contact">聯絡我們</a></li>
+					</ul>
+				</div>
+				<div class="footer-section">
+					<h3>售票須知</h3>
+					<ul>
+						<li><a href="#terms">購票說明</a></li>
+						<li><a href="#policy">退票政策</a></li>
+					</ul>
+				</div>
+				<div class="footer-section">
+					<h3>追蹤我們</h3>
+					<div class="social-links">
+						<a href="#facebook">Facebook</a> <a href="#instagram">Instagram</a>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+	<script src="js/edit2.js"></script>
 </body>
 </html>

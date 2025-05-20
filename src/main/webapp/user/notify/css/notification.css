@@ -218,27 +218,3 @@ div.ntf_empty_text{
 	  transform: translate(-50%, -50%);
 	  font-size:40px;
 }
-
-
-/* 
-
-<div id="notification">
-<div class="ntf">
-    <div class="ntf_title">活動提醒<div
-       
-        <div class="ntf_content">2024春季音樂節將於明天舉行</div>
-        <div class="ntf_delete"><img src="./images/delete.png" alt="刪除" ></div>
-        <div class="ntf_time">2小時前</div>
-
-
-
-
-<div id="notification_nav">
-<div class="ntf_nav">
-    <div class="ntf_nav_title">
-        所有通知
-    </div>
-    <div class="ntf_nav_count">
-        2
-    </div>
-</div> */
