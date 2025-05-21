@@ -86,4 +86,21 @@ public interface EventInfoDAO extends CommonDao {
      * @return 是否更新成功
      */
     boolean updateFavorite(FavoriteVO favorite);
+    
+    /**
+     * 計算活動的總剩餘票數
+     *
+     * @param eventId 活動ID
+     * @return 總剩餘票數
+     */
+    Integer calculateTotalRemainingTickets(Integer eventId);
+    
+    /**
+     * 獲取活動的圖片數據
+     * 
+     * @param eventId 活動ID
+     * @return 圖片數據
+     */
+    byte[] getEventImage(Integer eventId);
+    
 }

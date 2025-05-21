@@ -190,4 +190,29 @@ public class EventInfoDAOImpl implements EventInfoDAO {
             return false;
         }
     }
+    
+    @Override
+    public Integer calculateTotalRemainingTickets(Integer eventId) {
+        List<TicketTypeVO> ticketTypes = getEventTicketTypesByEventId(eventId);
+        
+        int totalRemainingTickets = 0;
+        for (TicketTypeVO ticketType : ticketTypes) {
+            totalRemainingTickets += ticketType.getRemainingTickets();
+        }
+        
+        return totalRemainingTickets;
+    }
+    
+    @Override
+    public byte[] getEventImage(Integer eventId) {
+        Session session = getSession();
+        
+        String hql = "SELECT e.image FROM EventBuyVO e WHERE e.eventId = :eventId";
+        
+        byte[] image = session.createQuery(hql, byte[].class)
+                             .setParameter("eventId", eventId)
+                             .uniqueResult();
+        
+        return image;
+    }
 }

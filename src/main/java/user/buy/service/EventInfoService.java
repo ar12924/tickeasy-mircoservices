@@ -74,4 +74,12 @@ public interface EventInfoService extends CommonService{
      * @return 圖片數據
      */
     byte[] getEventImage(Integer eventId);
+    
+    /**
+     * 計算活動的總剩餘票數
+     *
+     * @param eventId 活動ID
+     * @return 總剩餘票數
+     */
+    Integer calculateTotalRemainingTickets(Integer eventId);
 }

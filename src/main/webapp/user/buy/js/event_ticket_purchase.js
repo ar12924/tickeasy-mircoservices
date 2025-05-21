@@ -6,7 +6,7 @@
 const API_BASE_URL = '/maven-tickeasy-v1/api';
 
 // 創建 Vue 應用
-const app = Vue.createApp({
+window.app = Vue.createApp({
     // 資料
     data() {
         return {
@@ -40,14 +40,7 @@ const app = Vue.createApp({
         hasAvailableTickets() {
             if (!this.ticketTypes || this.ticketTypes.length === 0) return false;
             
-            // 檢查是否有任何票券剩餘且當前時間在售票期間內
-            const now = new Date();
-            
-            return this.ticketTypes.some(ticket => {
-                const sellFromTime = new Date(ticket.sellFromTime);
-                const sellToTime = new Date(ticket.sellToTime);
-                return ticket.remainingTickets > 0 && now >= sellFromTime && now <= sellToTime;
-            });
+            return this.ticketTypes.some(ticket => ticket.remainingTickets > 0);
         },
         // 活動時間格式化（開始時間到結束時間）
         eventTimeFormatted() {
@@ -109,7 +102,7 @@ const app = Vue.createApp({
         // 獲取票券類型資料
         async fetchTicketTypes() {
             try {
-                const ticketResponse = await fetch(`${API_BASE_URL}/events/${this.eventId}/tickets`);
+                const ticketResponse = await fetch(`${API_BASE_URL}/event/tickets/${this.eventId}`);
                 
                 if (!ticketResponse.ok) {
                     console.warn(`HTTP錯誤: ${ticketResponse.status}`);
@@ -366,4 +359,4 @@ const app = Vue.createApp({
 });
 
 // 掛載應用
-app.mount('#app');
+window.app.mount('#app');

@@ -27,15 +27,8 @@ public class EventInfoServiceImpl implements EventInfoService {
         EventBuyVO eventVO = eventInfoDAO.getEventWithKeywords(eventId);
         
         if (eventVO != null) {
-            // 獲取票券類型列表
-            List<TicketTypeVO> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId(eventId);
-            
-            // 計算活動的剩餘票券數量
-            int totalRemainingTickets = 0;
-            for (TicketTypeVO ticketType : ticketTypes) {
-                totalRemainingTickets += ticketType.getRemainingTickets();
-            }
-            
+        	// 計算活動的剩餘票券數量
+            Integer totalRemainingTickets = eventInfoDAO.calculateTotalRemainingTickets(eventId);
             eventVO.setRemainingTickets(totalRemainingTickets);
             
             // 如果有登入會員，檢查是否已關注該活動
@@ -57,15 +50,8 @@ public class EventInfoServiceImpl implements EventInfoService {
         
         // 計算每個活動的剩餘票券數量，設置關注狀態
         for (EventBuyVO event : events) {
-            // 獲取票券類型
-            List<TicketTypeVO> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId(event.getEventId());
-            
-            // 計算總剩餘票數
-            int totalRemainingTickets = 0;
-            for (TicketTypeVO ticketType : ticketTypes) {
-                totalRemainingTickets += ticketType.getRemainingTickets();
-            }
-            
+        	// 計算總剩餘票數
+            Integer totalRemainingTickets = eventInfoDAO.calculateTotalRemainingTickets(event.getEventId());
             event.setRemainingTickets(totalRemainingTickets);
             
             // 如果有登入會員，檢查是否已關注該活動
@@ -90,15 +76,8 @@ public class EventInfoServiceImpl implements EventInfoService {
         
         // 計算每個活動的剩餘票券數量，設置關注狀態
         for (EventBuyVO  event : events) {
-            // 獲取票券類型
-            List<TicketTypeVO> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId(event.getEventId());
-            
-            // 計算總剩餘票數
-            int totalRemainingTickets = 0;
-            for (TicketTypeVO ticketType : ticketTypes) {
-                totalRemainingTickets += ticketType.getRemainingTickets();
-            }
-            
+        	// 計算總剩餘票數
+            Integer totalRemainingTickets = eventInfoDAO.calculateTotalRemainingTickets(event.getEventId());
             event.setRemainingTickets(totalRemainingTickets);
             
             // 如果有登入會員，檢查是否已關注該活動
@@ -156,7 +135,12 @@ public class EventInfoServiceImpl implements EventInfoService {
     
     @Override
     public byte[] getEventImage(Integer eventId) {
-    	EventBuyVO event = eventInfoDAO.getEventInfoById(eventId);
-        return event != null ? event.getImage() : null;
+    	
+    	return eventInfoDAO.getEventImage(eventId);
+    }
+    
+    @Override
+    public Integer calculateTotalRemainingTickets(Integer eventId) {
+        return eventInfoDAO.calculateTotalRemainingTickets(eventId);
     }
 }
