@@ -14,21 +14,13 @@ const now = new Date();
 
 
 
-/*document.addEventListener("DOMContentLoaded", function() {
-	notification_el.innerHTML = '';
-	notification_refresh(1);
-	category_count();
-
-
-
-})*/
 function category_count() {
-	fetch('/maven-tickeasy-v1/notificationList', {
+	fetch('/maven-tickeasy-v1/notification-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			memberId: 5,
-			/*category: category*/
+
 
 		})
 	})
@@ -40,56 +32,6 @@ function category_count() {
 			let change_count = 0;
 			let notificationCount = notifications.length;
 			ntf_nav_span_all_el.innerHTML = notificationCount;
-			/*for (let notification of notifications) {
-				var count = 0;
-				
-				if (category == 1) {
-					var notificationCount = notifications.length;
-					ntf_nav_span_all_el.innerHTML = notificationCount;
-				}
-				if (category == 2) {
-					if (notification.notificationId == 3 || notification.notificationId == 4 || notification.notificationId == 5) {
-						count = count + 1;
-					}
-					var eventMind_count=count;
-					ntf_nav_span_eventMind_el.innerHTML = count;
-					
-					
-				}
-				
-				if (category == 3) {
-					if (notification.notificationId == 2) {
-						count = count + 1;
-					}
-					var sold_count=count;
-					ntf_nav_span_sold_el.innerHTML = count;
-				}
-				if (category == 4) {
-					if (notification.notificationId == 6) {
-						count = count + 1;
-					}
-					var swap_count=count;
-					ntf_nav_span_swap_el.innerHTML = count;
-				}
-				if (category == 5) {
-					if (notification.notificationId == 7) {
-						count = count + 1;
-					}
-					var change_count=count;
-					ntf_nav_span_change_el.innerHTML = count;
-				}
-				
-			}
-			
-
-			ntf_nav_span_eventMind_el.innerHTML = eventMind_count;
-			ntf_nav_span_sold_el.innerHTML = sold_count;
-			ntf_nav_span_swap_el.innerHTML = swap_count;
-			ntf_nav_span_change_el.innerHTML = change_count;*/
-
-
-
-
 
 
 
@@ -110,32 +52,22 @@ function category_count() {
 					change_count++;
 				}
 			}
-
-
 			ntf_nav_span_eventMind_el.innerHTML = eventMind_count;
 			ntf_nav_span_sold_el.innerHTML = sold_count;
 			ntf_nav_span_swap_el.innerHTML = swap_count;
 			ntf_nav_span_change_el.innerHTML = change_count;
-
-
-
 		})
 }
-
-
-
 
 function notification_loaded(category) {
 	/*const category_type=category;*/
 	notification_el.innerHTML = "";
 
-	fetch('/maven-tickeasy-v1/notificationList', {
+	fetch('/maven-tickeasy-v1/notification-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			memberId: 5,
-			/*category: category*/
-
 		})
 	})
 		.then(resp => resp.json())
@@ -185,42 +117,11 @@ function notification_loaded(category) {
 			for (let notification of notifications) {
 
 
-				/*if(notification.isVisible==1){
-					all_count=all_count+1;*/
+
 				if (category == 1) {
-					/*<span class="badge swap_ntf">1</span>*/
-					/*const notificationCount=notifications.length;*/
-					/*count = count + 1;*/
-					/*ntf_nav_span_all_el.innerHTML=notificationCount;*/
+
 					let displayTimeCount = time_count(notification.sendTime);
-					/*const sendTime = new Date(notification.sendTime); 
-								let diffMs = now - sendTime; // 毫秒差
-								let diffSec = Math.floor(diffMs / 1000);
-								let diffMin = Math.floor(diffSec / 60);
-								let diffHr = Math.floor(diffMin / 60);
-								let diffDay = Math.floor(diffHr / 24);
-							    
-							    
-								let displayTime;
-								if (diffSec < 60) {
-								  displayTime = '剛剛';
-								} else if (diffMin < 60) {
-								  displayTime = `${diffMin} 分鐘前`;
-								} else if (diffHr < 24) {
-								  displayTime = `${diffHr} 小時前`;
-								} else {
-								  displayTime = `${diffDay} 天前`;
-								}*/
 
-					/* ntf_title_el.innerHTML=body.title;
-					 ntf_content_el.innerHTML=displayTime;
-					 not_time=ntf_link_el.setAttribute("href",notification.linkURL);
-					 ntf_time_el.innerHTML=body.time;*/
-
-
-					/*var message=notification.message;
-					var memberId =notification.memberId;
-					var updateMessage=message.replace("${notification.memberId}",memberId);*/
 					notification_el.insertAdjacentHTML("afterbegin", `
 						<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}.html" class="ntf_link" target="blank" >
 						    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
@@ -249,7 +150,7 @@ function notification_loaded(category) {
 
 					ntf_el.addEventListener("click", function() {
 						if (notification.isRead != 1) {
-							fetch('/maven-tickeasy-v1/notificationRead', {
+							fetch('/maven-tickeasy-v1/notification-read', {
 								method: `POST`,
 								headers: { 'Content-Type': 'application/json' },
 								body: JSON.stringify({
@@ -266,7 +167,7 @@ function notification_loaded(category) {
 										// location.href='edit.html';
 										alert("訊息已閱讀");
 										ntf_el.classList.remove("-unread");
-										
+
 									} else {
 										alert("訊息閱讀更新錯誤");
 									}
@@ -319,7 +220,7 @@ function notification_loaded(category) {
 
 						ntf_el.addEventListener("click", function() {
 							if (notification.isRead != 1) {
-								fetch('/maven-tickeasy-v1/notificationRead', {
+								fetch('/maven-tickeasy-v1/notification-read', {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
@@ -355,10 +256,6 @@ function notification_loaded(category) {
 						ntf_isEmpty(category_count_get);*/
 					/*							console.log("13");*/
 					if (notification.notificationId == 2) {
-
-
-
-
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
 															<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}.html" class="ntf_link" target="blank" >
@@ -389,7 +286,7 @@ function notification_loaded(category) {
 						ntf_el.addEventListener("click", function(e) {
 							if (e.target.closest(".ntf_delete")) return;
 							if (notification.isRead != 1) {
-								fetch('/maven-tickeasy-v1/notificationRead', {
+								fetch('/maven-tickeasy-v1/notification-read', {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
@@ -455,7 +352,7 @@ function notification_loaded(category) {
 
 						ntf_el.addEventListener("click", function() {
 							if (notification.isRead != 1) {
-								fetch('/maven-tickeasy-v1/notificationRead', {
+								fetch('/maven-tickeasy-v1/notification-read', {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
@@ -530,7 +427,7 @@ function notification_loaded(category) {
 						ntf_el.addEventListener("click", function(e) {
 							/*if (e.target.closest(".ntf_delete")) return;*/
 							if (notification.isRead != 1) {
-								fetch('/maven-tickeasy-v1/notificationRead', {
+								fetch('/maven-tickeasy-v1/notification-read', {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
@@ -557,36 +454,10 @@ function notification_loaded(category) {
 				}
 
 			}
-			/*ntf_isEmpty(count);*/
-			/*if(count==0){
-								console.log("123");
-								notification_el.insertAdjacentHTML("beforeend",`<div class="ntf_empty">
-																							<div class="ntf_empty_text">
-																							Oops~目前沒有通知訊息
-																						   </div>
-																										   
-																					  </div>
-																					  
-																			  
-																				`)
-							}*/
-			/*	category_count().sold_count
-				if(category_count().sold_count){ntf_isEmpty(category_count.sold_count);
-				console.log("12312");
-				}*/
+
 		})
 
-
-
-	/*	ntf_nav_span_el.innerHTML=all_count;*/
-
-
-
-	/*ntf_nav_span_el.innerHTML=all_count;*/
 }
-
-
-
 
 function ntf_isEmpty(count) {
 	if (count == 0) {
@@ -603,7 +474,6 @@ function ntf_isEmpty(count) {
 	}
 
 }
-
 
 // div.ntf.-unread
 function time_count(sendtime) {
@@ -644,11 +514,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	category_count();
 	notification_loaded(1);
 })
-/*function notification_category(category){
-	a
-}*/
-
-
 
 document.addEventListener("click", function(e) {
 
@@ -664,7 +529,7 @@ document.addEventListener("click", function(e) {
 		/*console.log(ntf_unvisible_el);*/
 		ntf_delete_el.remove();
 
-		fetch('/maven-tickeasy-v1/notificationUnvisible', {
+		fetch('/maven-tickeasy-v1/notification-unvisible', {
 			method: `POST`,
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -690,61 +555,11 @@ document.addEventListener("click", function(e) {
 					alert("訊息隱藏更新錯誤");
 				}
 			})
-		/*let ntf_category_el=e.target.*/
+
 		category_count();
-
-		/*div class="ntf_nav -on*/
-		/*	document.querySelectorAll(".ntf_tab").forEach(button
-			const tabId = button.getAttribute("data-tab");
-			let notificationCategory = tabId.split("_")[1];*/
-
-		/*	notification_loaded(notificationCategory_get);
-			*/
-
-
 	}
 
 })
-
-
-
-
-
-
-
-
-/*const tbody=document.querySelector('tbody');
-fetch('manage', { method: 'POST' })
-	.then(resp => resp.json())
-	.then(members =>{
-		for(let member of members){
-			tbody.insertAdjacentHTML("beforeend",`
-				<tr>
-					<td>${member.id}</td>
-					<td>${member.username}</td>
-					<td>${member.password}</td>
-					<td>${member.nickname}</td>
-					<td>${member.pass}</td>
-					<td>${member.roleId}</td>
-					<td>${member.creator}</td>
-					<td>${member.createdDate}</td>
-					<td>${member.updater}</td>
-					<td>${member.lastUpdatedDate}</td>
-					<td><button class="delete">刪除</button></td>
-
-				</tr>
-				`)
-			    
-		}
-	})*/
-
-
-
-
-
-
-
-
 document.querySelectorAll(".ntf_tab").forEach(button => {
 	button.addEventListener("click", () => {
 		const tabId = button.getAttribute("data-tab");
@@ -759,12 +574,8 @@ document.querySelectorAll(".ntf_tab").forEach(button => {
 		/*console.log(tabId);
 		console.log(notificationCategory);*/
 
-
 		/*document.getElementById(tabId).classList.add("-on");*/
 		/*	document.querySelector(`[data-id="${tabId}"]`).classList.add("-on");*/
-
-
-
 		if (notificationCategory == 1) {
 			notification_el.innerHTML = '';
 			notification_loaded(1);
