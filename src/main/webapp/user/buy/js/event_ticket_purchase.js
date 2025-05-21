@@ -1,7 +1,5 @@
 /**
  * 活動詳情頁面 Vue 應用
- * 使用 Vue 3 Options API 實現
- * 使用 Fetch API 進行後端通信
  */
 
 // 基礎 API URL (實際使用時需要設定正確的路徑)
