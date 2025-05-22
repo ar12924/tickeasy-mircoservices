@@ -1,4 +1,4 @@
-body {
+/* body {
   font-family: sans-serif;
   background: #f5f5f5;
   display: flex;
@@ -7,20 +7,21 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-}
+} */
 
 .register-box {
+  margin: 2rem auto;
   max-width: 360px;
   width: 100%;
   padding: 40px 30px;
   background: white;
   border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .register-box h2 {
   text-align: center;
-  color: #EC4899;
+  color: #ec4899;
   margin-bottom: 24px;
 }
 
@@ -50,9 +51,22 @@ body {
   font-size: 14px;
 }
 
+.checkbox-group label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-group label input[type="checkbox"] {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+}
+
 button {
   width: 100%;
-  background-color: #EC4899;
+  background-color: #ec4899;
   color: white;
   border: none;
   padding: 12px;
@@ -73,5 +87,5 @@ button:hover {
 }
 
 .my-tickets {
-  background: transparent; 
+  background: transparent;
 }
