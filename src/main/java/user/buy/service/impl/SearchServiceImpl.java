@@ -19,24 +19,19 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public Payload<List<EventInfo>> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize) {
-		Payload<List<EventInfo>> eventPayload = null;
+		Payload<List<EventInfo>> eventPayload = new Payload<>();
+		Long count = null;
 		// 1. 過濾 keywords
 		keyword = keyword == null ? "" : keyword;
 		// 2. 查詢 event_info(事務開始)
-		try {
-			beginTxn();
-			eventPayload = buyDaoImpl.selectEventByKeyword(keyword, pageNumber, pageSize);
-			commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			rollback();
-			return null;
-		}
-		// 3. 判斷回傳資料是否為空的？
-		if (eventPayload.getData().isEmpty()) {
+		eventPayload.setData(buyDaoImpl.selectEventByKeywordWithPages(keyword, pageNumber, pageSize));
+		// 3. 判斷回傳資料總筆數
+		count = buyDaoImpl.selectEventCountByKeyword(keyword);
+		eventPayload.setCount(count);
+		if(count <= 0) {
 			eventPayload.setSuccessful(false);
 			eventPayload.setMessage("查無資料");
-		} else {
+		}else {
 			eventPayload.setSuccessful(true);
 			eventPayload.setMessage("取得資料");
 		}
@@ -45,33 +40,15 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public List<BuyerTicket> searchTicket() {
-		try {
-			beginTxn();
-			// 1. 查詢 buyer_ticket
-			List<BuyerTicket> ticketList = buyDaoImpl.selectTicket();
-			commit();
-			return ticketList;
-		} catch (Exception e) {
-			e.printStackTrace();
-			rollback();
-			return null;
-		}
+		// 1. 查詢 buyer_ticket
+		List<BuyerTicket> ticketList = buyDaoImpl.selectTicket();
+		return ticketList;
 	}
 
 	@Override
 	public List<MemberNotification> searchNotification() {
-		try {
-			beginTxn();
-			// 1. 查詢 member_notification
-			List<MemberNotification> memberNotifLst = buyDaoImpl.selectNotification();
-			commit();
-			return memberNotifLst;
-		} catch (Exception e) {
-			e.printStackTrace();
-			rollback();
-			return null;
-		}
-
+		// 1. 查詢 member_notification
+		List<MemberNotification> memberNotifLst = buyDaoImpl.selectNotification();
+		return memberNotifLst;
 	}
-
 }

@@ -231,7 +231,10 @@ nav {
 /* 通知中心 section 樣式 */
 .notification-center {
   max-width: 1200px;
-  margin: 4rem auto;
+  margin-top: 4rem;
+  margin-bottom: 6rem;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0 1rem;
 }
 
@@ -267,7 +270,7 @@ footer {
   background-color: #1f2937;
   color: white;
   padding: 4rem 1rem;
-  margin-top: 4rem;
+  margin-top: 2rem;
 }
 
 .footer-content {

@@ -41,7 +41,7 @@ public class SearchEventController extends HttpServlet {
 		// 2. 接受前端查詢 (keyword, pageNumber, pageSize)
 		String keyword = req.getParameter("keyword");
 		Integer pageNubmer = Integer.parseInt(req.getParameter("pageNumber"));
-		Integer pageSize = Integer.parseInt(req.getParameter("pageSize"));
+		Integer pageSize = 6; // 固定一頁6筆
 		// 3. 將 (keyword, pageNumber, pageSize) 交給 Service 處理，回傳查詢結果
 		Payload<List<EventInfo>> eventPayload = buyServiceImpl.searchEventByKeyword(keyword, pageNubmer, pageSize);
 		// 4. 轉成 json 格式，並回應 json 字串
