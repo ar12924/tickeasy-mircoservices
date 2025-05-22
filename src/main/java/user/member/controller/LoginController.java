@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import user.member.vo.Member;
-import user.member.util.CommonUtil;
-
+import static user.member.util.CommonUtil.*;
 import static user.member.util.MemberConstants.SERVICE;
 
 @WebServlet("/user/member/login")
@@ -20,31 +19,26 @@ public class LoginController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		Member member = CommonUtil.json2Pojo(req, Member.class);
+		
+		Member member = json2Pojo(req, Member.class);
 		if (member == null) {
-			member = new Member();
-			member.setMessage("無會員資訊");
-			member.setSuccessful(false);
-			CommonUtil.writePojo2Json(resp, member);
+			writeError(resp, "無會員資料");
 			return;
 		}
 
 		member = SERVICE.login(member);
 		if (member.isSuccessful()) {
+			Member full = SERVICE.getByUsername(member.getUserName());
 
 			if (req.getSession(false) != null) {
 				req.changeSessionId();
 			}
 			HttpSession session = req.getSession();
 			session.setAttribute("loggedin", true);
-			session.setAttribute("member", member);
-			CommonUtil.writePojo2Json(resp, member);
+			session.setAttribute("member", full);
+			writeSuccess(resp, "登入成功", full);
 		} else {
-			Member result = new Member();
-			result.setSuccessful(false);
-			result.setMessage("使用者名稱或密碼錯誤");
-			CommonUtil.writePojo2Json(resp, result);
+			writeError(resp, member.getMessage());
 		}
 	}
 
