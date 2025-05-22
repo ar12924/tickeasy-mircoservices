@@ -48,7 +48,7 @@ public class VerificationToken {
     
     // 多對一關聯，連到 Member
     @ManyToOne
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")
     private Member member;
 
     

@@ -14,6 +14,7 @@ import user.member.service.MemberService;
 import user.member.util.HashUtil;
 import user.member.vo.Member;
 import user.member.vo.VerificationToken;
+import static user.member.util.MemberConstants.*;
 
 public class MemberServiceImpl implements MemberService {
 	private final MemberDao memberDao;
@@ -29,14 +30,8 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member register(Member member) {
 
-		if (member.getAgree() == null || !member.getAgree()) {
-			member.setSuccessful(false);
-			member.setMessage("請先同意服務條款");
-			return member;
-		}
-
 		String username = member.getUserName();
-		if (username == null || username.length() < 5 || username.length() > 50) {
+		if (username == null || username.length()< 5 || username.length() > 50) {
 			member.setMessage("使用者名稱長度須介於 5 到 50 字元");
 			member.setSuccessful(false);
 			return member;
@@ -55,10 +50,8 @@ public class MemberServiceImpl implements MemberService {
 			return member;
 		}
 
-		member.setPassword(HashUtil.hashpw(password));
-
 		String phone = member.getPhone();
-		if (phone == null || !phone.matches("^09\\d{8}$")) {
+		if (phone == null || !phone.matches(PHOHE_PATTERN)) {
 			member.setMessage("手機格式錯誤，需為台灣手機號碼 09 開頭共 10 碼");
 			member.setSuccessful(false);
 			return member;
@@ -90,48 +83,60 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		String unicode = member.getUnicode();
-		if (unicode != null && !unicode.matches("\\d{8}")) {
+		if (unicode != null && !unicode.matches(UNICODE_PATTERN)) {
 			member.setMessage("統一編號格式錯誤，應為 8 碼數字");
 			member.setSuccessful(false);
 			return member;
 		}
 
 		String idCard = member.getIdCard();
-		if (idCard != null && !idCard.matches("[A-Za-z].*")) {
+		if (idCard != null && !idCard.matches(ID_PATTERN)) {
 			member.setMessage("身分證開頭應為英文字母");
 			member.setSuccessful(false);
 			return member;
 		}
 
 		String email = member.getEmail();
-		if (email != null && !email.matches("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,6}$")) {
+		if (email != null && !email.matches(EMAIL_PATTERN)) {
 			member.setMessage("電子郵件格式錯誤");
 			member.setSuccessful(false);
 			return member;
 		}
+		
+		if (member.getAgree() == null || !member.getAgree()) {
+			member.setSuccessful(false);
+			member.setMessage("請先同意服務條款");
+			return member;
+		}
+		
+		// 寫入DAO之前進行密碼雜湊、預設member為0		
+		member.setPassword(HashUtil.hashpw(password));
+		member.setRoleLevel(0);
 
 		boolean wantHost = Boolean.TRUE.equals(member.getHostApply());
 		member.setRoleLevel(wantHost ? 2 : 0);
 
-		// 1. 寫入 member，預設rolelevel = 0
+		// 1. 寫入 member，
 		try {
-			member.setRoleLevel(0);
 			memberDao.insert(member);
-			// 2. 寫入 token
+		// 2. 寫入 token
 			String tokenName = UUID.randomUUID().toString();
 			VerificationToken token = new VerificationToken();
 			token.setTokenName(tokenName);
 			token.setTokenType("EMAIL_VERIFY");
-			token.setExpiredTime(new Timestamp(System.currentTimeMillis() + 24L * 3600 * 1000));
-			token.setMember(member);
-			verifyDao.insert(token);
-			// 3. 寄認證信，如果產生例外，觸發rollback
+			token.setExpiredTime(new Timestamp(System.currentTimeMillis() + TOKEN_EXPIRATION));
+			token.setMember(member); // 關聯 Member
+			verifyDao.insert(token); // token永久化(是否為必要??)
+			
+		// 3. 寄認證信，如果產生例外，觸發rollback
 			mailService.sendActivationNotification(member.getEmail(), member.getUserName(), tokenName);
 
 			member.setSuccessful(true);
 			member.setMessage("註冊成功！請查收驗證信以開通會員");
 
 		} catch (Exception e) {
+			// DAO失敗rollback交易、mailService失敗也rollback資料	
+			e.printStackTrace();
 			member.setSuccessful(false);
 			member.setMessage("註冊成功，但驗證信寄送失敗，請稍後聯絡客服");
 		}
@@ -140,36 +145,49 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public Member editMember(Member member) {
-		if (member.getPassword() != null && (member.getPassword().length() < 6)) {
-			member.setMessage("密碼長度須大於 6 字元");
-			member.setSuccessful(false);
+		final Member existingMemberInDB = memberDao.findById(member.getMemberId());
+		if (existingMemberInDB == null) {
+			member.setSuccessful(false); // 可以直接修改傳入的 member 來返回狀態
+			member.setMessage("查無此會員");
 			return member;
 		}
-
+		
+		String newPassword = member.getPassword();
+		if (newPassword != null && !newPassword.isEmpty()) {
+			if (newPassword.length() < 6) { // 假設密碼最小長度為6
+				member.setSuccessful(false); // 修改傳入的 member 以返回錯誤訊息
+				member.setMessage("密碼長度須至少 6 字元");
+				return member;
+			}
+			member.setPassword(HashUtil.hashpw(newPassword)); // 有新密碼依然要雜湊
+		} else {
+			member.setPassword(existingMemberInDB.getPassword()); // 如未輸入要修改密碼，則維持原密碼
+		}
+		
 		String unicode = member.getUnicode();
-		if (unicode != null && !unicode.matches("\\d{8}")) {
+		if (unicode != null && !unicode.matches(UNICODE_PATTERN)) {
 			member.setMessage("統一編號格式錯誤，應為 8 碼數字");
 			member.setSuccessful(false);
 			return member;
 		}
 
 		String email = member.getEmail();
-		if (email != null && !email.matches("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,6}$")) {
+		if (email != null && !email.matches(EMAIL_PATTERN)) {
 			member.setMessage("電子郵件格式錯誤");
 			member.setSuccessful(false);
 			return member;
 		}
+		
 		try {
-			beginTxn();
 			boolean updated = memberDao.update(member);
-			if (!updated) {
-				throw new RuntimeException("系統錯誤，更新失敗");
+			if (updated) {
+				member.setSuccessful(true);
+				member.setMessage("更新成功");
+			}else {
+				member.setSuccessful(false);
+				member.setMessage("更新失敗");
 			}
-			commit();
-			member.setSuccessful(true);
-			member.setMessage("更新成功");
 		} catch (Exception e) {
-			rollback();
 			member.setSuccessful(false);
 			member.setMessage("更新失敗：" + e.getMessage());
 		}

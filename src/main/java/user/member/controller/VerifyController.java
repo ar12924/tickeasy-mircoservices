@@ -8,37 +8,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import user.member.vo.Member;
-import user.member.service.MemberService;
-import user.member.service.impl.MemberServiceImpl;
-import static user.member.util.CommonUtil.writePojo2Json;
+import static user.member.util.MemberConstants.SERVICE;
+import static user.member.util.CommonUtil.*;
 
 @WebServlet("/user/member/verify")
 public class VerifyController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    
-	private final MemberService service = new MemberServiceImpl();
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String tokenStr = req.getParameter("token");
-        Member result = new Member();
-        
-        System.out.println("收到驗證請求 token: " + tokenStr); // ✅ 測試印出 token
+		String tokenStr = req.getParameter("token");
+		boolean result = SERVICE.activateMemberByToken(tokenStr);
 
-        
-        if (tokenStr == null || tokenStr.trim().isEmpty()) 
-        {
-        	result.setSuccessful(false);
-            result.setMessage("未提供驗證 token");
-        } else {
-        	boolean success = service.activateMemberByToken(tokenStr);
-            result.setSuccessful(success);
-            result.setMessage(success ? "帳號啟用成功！" : "驗證失敗：token 無效或已過期。");
+		if (result) {
+			writeSuccess(resp, "驗證成功", null);
+		} else {
+			writeError(resp, "驗證失敗，請確認連結是否有效");
 		}
-        
-        writePojo2Json(resp, result);
-        
 	}
 
 }
