@@ -23,21 +23,21 @@ const app = Vue.createApp({
   methods: {
     // 1. 從後端 api 抓 event_info 資料
     async fetchEventInfo() {
-      const url = `http://localhost:8080/maven-tickeasy-v1/index-search-event?keyword=${this.searchKeyword}&pageNumber=${this.currentPage}&pageSize=${this.pageSize}`;
+      const url = `http://localhost:8080/maven-tickeasy-v1/search-event?keyword=${this.searchKeyword}&pageNumber=${this.currentPage}&pageSize=${this.pageSize}`;
       const resp = await fetch(url);
       const body = await resp.json();
       this.eventPayload = body;
     },
     // 2. 從後端 api 抓 buyer_ticket 資料
     async fetchBuyerTicket() {
-      const url = `http://localhost:8080/maven-tickeasy-v1/index-search-ticket`;
+      const url = `http://localhost:8080/maven-tickeasy-v1/search-ticket`;
       const resp = await fetch(url);
       const body = await resp.json();
       this.ticketList = body;
     },
     // 3. 從後端 api 抓 member_notification 資料
     async fetchMemberNotification() {
-      const url = `http://localhost:8080/maven-tickeasy-v1/index-search-notification`;
+      const url = `http://localhost:8080/maven-tickeasy-v1/search-notification`;
       const resp = await fetch(url);
       const body = await resp.json();
       this.notificationList = body;
