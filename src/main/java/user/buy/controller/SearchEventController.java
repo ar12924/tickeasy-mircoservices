@@ -12,22 +12,28 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import common.util.CommonUtil;
 import common.vo.Payload;
 import user.buy.service.SearchService;
-import user.buy.service.impl.SearchServiceImpl;
 import user.buy.vo.EventInfo;
 
 /**
- * 首頁(index.html)熱門活動區塊資料界接 搜尋頁(search.html)活動區塊資料界接 請求方法: GET 回應格式: JSON 資料型態:
- * Payload<List<EventInfo>>
+ * 首頁(index.html)熱門活動區塊資料界接 
+ * 搜尋頁(search.html)活動區塊資料界接 
+ * 請求方法: GET 
+ * 回應格式: JSON 
+ * 資料型態: Payload<List<EventInfo>>
+ * API: /search-event?keyword="台北"&pageNumber=1&pageSize=3
  */
-@WebServlet("/index-search-event")
+@WebServlet("/search-event")
 public class SearchEventController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private SearchService buyServiceImpl;
 
-	public SearchEventController() {
-		buyServiceImpl = new SearchServiceImpl();
+	// DL 方式注入(暫時性，後續 spring-MVC 會改)
+	@Override
+	public void init() throws ServletException {
+		buyServiceImpl = CommonUtil.getBean(getServletContext(), SearchService.class);
 	}
 
 	@Override
@@ -37,7 +43,7 @@ public class SearchEventController extends HttpServlet {
 		// 2. 接受前端查詢 (keyword, pageNumber, pageSize)
 		String keyword = req.getParameter("keyword");
 		Integer pageNubmer = Integer.parseInt(req.getParameter("pageNumber"));
-		Integer pageSize = Integer.parseInt(req.getParameter("pageSize"));
+		Integer pageSize = 6; // 固定一頁6筆
 		// 3. 將 (keyword, pageNumber, pageSize) 交給 Service 處理，回傳查詢結果
 		Payload<List<EventInfo>> eventPayload = buyServiceImpl.searchEventByKeyword(keyword, pageNubmer, pageSize);
 		// 4. 轉成 json 格式，並回應 json 字串

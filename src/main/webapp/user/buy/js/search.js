@@ -37,7 +37,7 @@ const app = Vue.createApp({
   methods: {
     // 1. 從後端 api 抓 event_info 資料
     async fetchEventInfo() {
-      const url = `http://localhost:8080/maven-tickeasy-v1/index-search-event?keyword=${this.searchKeyword}&pageNumber=${this.currentPage}&pageSize=${this.pageSize}`;
+      const url = `http://localhost:8080/maven-tickeasy-v1/search-event?keyword=${this.searchKeyword}&pageNumber=${this.currentPage}&pageSize=${this.pageSize}`;
       const resp = await fetch(url);
       const body = await resp.json();
       this.eventPayload = body;

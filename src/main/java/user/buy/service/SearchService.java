@@ -2,13 +2,12 @@ package user.buy.service;
 
 import java.util.List;
 
-import common.service.CommonService;
 import common.vo.Payload;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
-public interface SearchService extends CommonService {
+public interface SearchService {
 	/**
 	 * 傳入關鍵字，驗證使用者輸入的關鍵字格式
 	 * 
