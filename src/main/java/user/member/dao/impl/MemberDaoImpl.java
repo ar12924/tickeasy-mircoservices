@@ -23,6 +23,7 @@ public class MemberDaoImpl implements MemberDao {
 	public boolean update(Member member) {
 		Session session = getSession();
 		int result;
+		// 已避免如不更改密碼，空密碼或舊密碼仍會寫入		
 		if (member.getPassword() != null && !member.getPassword().isBlank()) {
 			result = session
 					.createQuery("UPDATE Member SET nickName = :nick, email = :email, phone = :phone, "

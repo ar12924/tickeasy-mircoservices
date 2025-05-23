@@ -80,7 +80,6 @@ public class Member {
 	@UpdateTimestamp
 	@Column(name = "UPDATE_TIME", insertable = false)
 	private Timestamp updateTime;
-
 	
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private transient List<VerificationToken> tokens;

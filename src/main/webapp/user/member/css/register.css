@@ -89,3 +89,12 @@ button:hover {
 .my-tickets {
   background: transparent;
 }
+
+.error {
+  color: red;
+  font-size: 0.875em;
+  margin-left: 0.5em;
+}
+input:invalid, select:invalid {
+  border-color: red;
+}

@@ -29,31 +29,47 @@
 			<div class="form-group">
 				<label for="userName">帳號（5~50字元）</label> <input id="userName"
 					name="userName" type="text" required>
+					<span class="error" id="userNameError"></span>
 			</div>
 
 			<div class="form-group">
 				<label for="nickName">暱稱（1~20字元）</label> <input id="nickName"
-					name="nickName" type="text" required>
+					name="nickName" type="text">
+					<span class="error" id="nickNameError"></span>
 			</div>
 
 			<div class="form-group">
-				<label for="photo">大頭貼</label> <input id="photo" name="photo"
-					type="file" accept="image/*">
+				<label for="photo">個人照片</label> <i id="defaultIcon"
+					class="fa-solid fa-image"
+					style="display: none; font-size: 80px; color: #ccc;"> </i> <img
+					id="photoPreview" src="" alt="大頭貼預覽"
+					style="display: none; max-width: 100px; max-height: 100px;">
+				<input id="photo" name="photo" type="file" accept="image/*">
 			</div>
 
 			<div class="form-group">
-				<label for="email">電子郵件</label> <input id="email" name="email"
-					type="email" required>
+				<label for="email">電子信箱</label> <input id="email" name="email"
+					type="email" required> <select id="domainSelect" name="domainSelect" required>
+					<option value="@gmail.com">@gmail.com</option>
+					<option value="@yahoo.com">@yahoo.com</option>
+					<option value="@hotmail.com">@hotmail.com</option>
+					<option value="other">自行填入</option>
+				</select> <input type="text" id="customDomain" name="customDomain"
+					placeholder="請輸入您個人常使用的信箱" style="display: none;">
+					<span class="error" id="emailError"></span>
+				<button type="button" onclick="combine()">完成</button>
 			</div>
 
 			<div class="form-group">
 				<label for="password">密碼（至少6字元）</label> <input id="password"
-					name="password" type="password"  required>
+					name="password" type="password" required>
+					<span class="error" id="passwordError"></span>
 			</div>
 
 			<div class="form-group">
 				<label for="rePassword">確認密碼</label> <input id="rePassword"
-					name="rePassword" type="password"  required>
+					name="rePassword" type="password" required>
+					<span class="error" id="rePasswordError"></span>
 			</div>
 
 			<div class="form-group">
@@ -64,6 +80,7 @@
 			<div class="form-group">
 				<label for="phone">手機號碼（09開頭，共10碼）</label> <input id="phone"
 					name="phone" type="text" pattern="09\d{8}" required>
+					<span class="error" id="phoneError"></span>
 			</div>
 
 			<div class="form-group">
@@ -78,6 +95,7 @@
 			<div class="form-group">
 				<label for="idCard">身分證號（開頭為英文字母）</label> <input id="idCard"
 					name="idCard" type="text" pattern="[A-Za-z]\d{9}" required>
+					<span class="error" id="idCardError"></span>
 			</div>
 
 			<div class="form-group">
@@ -86,9 +104,10 @@
 			</div>
 
 			<div class="checkbox-group">
-				<label for="agree"> <input id="agree" name="agree" type="checkbox"
-					required> 我同意服務條款
+				<label for="agree"> <input id="agree" name="agree"
+					type="checkbox" required> 我同意服務條款
 				</label>
+				<span class="error" id="agreeError"></span>
 			</div>
 
 			<div class="checkbox-group">

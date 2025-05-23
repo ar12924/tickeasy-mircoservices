@@ -3,6 +3,8 @@ const username = document.querySelector('#userName');
 const nickname = document.querySelector('#nickName');
 const photo = document.querySelector('#photo');
 const email = document.querySelector('#email');
+const domainSelect = document.querySelector('#domainSelect');
+const customDomain = document.querySelector('#customDomain');
 const password = document.querySelector('#password');
 const cPassword = document.querySelector('#rePassword');
 const birthDate = document.querySelector('#birthDate');
@@ -14,80 +16,143 @@ const agree = document.querySelector('#agree');
 const hostApply = document.querySelector('#hostApply');
 const msg = document.querySelector('#msg');
 
+const errorElements = {
+	userName: document.querySelector('#userNameError'),
+	nickName: document.querySelector('#nickNameError'),
+	email: document.querySelector('#emailError'),
+	password: document.querySelector('#passwordError'),
+	rePassword: document.querySelector('#rePasswordError'),
+	phone: document.querySelector('#phoneError'),
+	idCard: document.querySelector('#idCardError'),
+	unicode: document.querySelector('#unicodeError'),
+	agree: document.querySelector('#agreeError')
+};
+
+const validations = [
+	{
+		field: username,
+		errorEl: errorElements.userName,
+		validate: (value) => value.trim().length >= 5 && value.trim().length <= 50,
+		errorMsg: '使用者名稱長度須介於5~50字元'
+	},
+	{
+		field: nickname,
+		errorEl: errorElements.nickName,
+		validate: (value) => value.trim().length >= 1 && value.trim().length <= 20,
+		errorMsg: '暱稱長度須介於1~20字元'
+	},
+	{
+		field: email,
+		errorEl: errorElements.email,
+		validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()),
+		errorMsg: '電子郵件格式錯誤'
+	},
+	{
+		field: password,
+		errorEl: errorElements.password,
+		validate: (value) => value.length >= 6 && value.length <= 12,
+		errorMsg: '密碼長度須介於6~12字元'
+	},
+	{
+		field: cPassword,
+		errorEl: errorElements.rePassword,
+		validate: (value) => value === password.value,
+		errorMsg: '密碼與確認密碼不符合'
+	},
+	{
+		field: phone,
+		errorEl: errorElements.phone,
+		validate: (value) => /^09\d{8}$/.test(value.trim()),
+		errorMsg: '手機格式錯誤，需 09 開頭共 10 碼'
+	},
+	{
+		field: idCard,
+		errorEl: errorElements.idCard,
+		validate: (value) => /^[A-Za-z]\d{9}$/.test(value.trim()),
+		errorMsg: '身分證格式錯誤，開頭英文字母＋9碼數字'
+	},
+	{
+		field: unicode,
+		errorEl: errorElements.unicode,
+		validate: (value) => value.trim() === '' || /^\d{8}$/.test(value.trim()),
+		errorMsg: '統一編號格式錯誤，應為 8 碼數字'
+	},
+	{
+		field: agree,
+		errorEl: errorElements.agree,
+		validate: (value) => value,
+		errorMsg: '請先同意服務條款'
+	}
+];
+
+
+validations.forEach(validation => {
+	validation.field.addEventListener('input', () => {
+		const value = validation.field.type === 'checkbox' ? validation.field.checked : validation.field.value;
+		if (validation.validate(value)) {
+			validation.errorEl.textContent = '';
+			validation.field.classList.remove('error');
+		} else {
+			validation.errorEl.textContent = validation.errorMsg;
+			validation.field.classList.add('error');
+		}
+	});
+});
+
+
+domainSelect.addEventListener('change', () => {
+	if (domainSelect.value === 'other') {
+		customDomain.style.display = 'inline-block';
+		customDomain.required = true;
+	} else {
+		customDomain.style.display = 'none';
+		customDomain.required = false;
+		customDomain.value = '';
+	}
+});
+
+// 圖片即時預覽
+photo.addEventListener('change', e => {
+	const file = e.target.files[0];
+	if (!file) return;
+
+	const reader = new FileReader();
+	reader.onload = () => {
+		photoPreview.src = reader.result;
+		photoPreview.style.display = 'block';
+		defaultIcon.style.display = 'none';
+	};
+	reader.readAsDataURL(file);
+});
+
+function validateForm() {
+	let isValid = true;
+
+	// 清除所有錯誤訊息
+	msg.textContent = '';
+	validations.forEach(validation => {
+		validation.errorEl.textContent = '';
+		validation.field.classList.remove('error');
+	});
+
+	// 驗證每個欄位
+	validations.forEach(validation => {
+		const value = validation.field.type === 'checkbox' ? validation.field.checked : validation.field.value;
+		if (!validation.validate(value)) {
+			validation.errorEl.textContent = validation.errorMsg;
+			validation.field.classList.add('error');
+			isValid = false;
+		}
+	});
+
+	return isValid;
+}
 
 form.addEventListener('submit', async e => {
 	e.preventDefault();
-	msg.textContent = '';
-	msg.style.color = 'red';
-
-	const u = username.value.trim();
-	if (u.length < 5 || u.length > 50) {
-		msg.textContent = '使用者名稱長度須介於5~50字元';
+	if (!validateForm()) {
 		return;
 	}
-	const pw = password.value;
-	if (pw.length < 6 || pw.length > 12) {
-		msg.textContent = '密碼長度須介於6~12字元';
-		return;
-	}
-	if (pw !== cPassword.value) {
-		msg.textContent = '密碼與確認密碼不符合';
-		return;
-	}
-	const nn = nickname.value.trim();
-	if (nn.length < 1 || nn.length > 20) {
-		msg.textContent = '暱稱長度須介於1~20字元';
-		return;
-	}
-	const em = email.value.trim();
-	if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
-		msg.textContent = '電子郵件格式錯誤';
-		return;
-	}
-	const ph = phone.value.trim();
-	if (!/^09\d{8}$/.test(ph)) {
-		msg.textContent = '手機格式錯誤，需 09 開頭共 10 碼';
-		return;
-	}
-	const bd = birthDate.value.trim();
-	if (!/^\d{4}-\d{2}-\d{2}$/.test(bd)) {
-		msg.textContent = '出生日期格式錯誤，請輸入 YYYY-MM-DD';
-		return;
-	}
-	const gen = gender.value;
-	if (!gen) {
-		msg.textContent = '請選擇性別';
-		return;
-	}
-	const idv = idCard.value.trim();
-	if (!/^[A-Za-z]\d{9}$/.test(idv)) {
-		msg.textContent = '身分證格式錯誤，開頭英文字母＋9碼數字';
-		return;
-	}
-	const un = unicode.value.trim();
-	if (un && !/^\d{8}$/.test(un)) {
-		msg.textContent = '統一編號格式錯誤，應為 8 碼數字';
-		return;
-	}
-	if (!agree.checked) {
-		msg.textContent = '請先同意服務條款';
-		return;
-	}
-
-	const payload = {
-		userName: u,
-		nickName: nn,
-		email: em,
-		password: pw,
-		rePassword: cPassword.value,
-		birthDate: bd,
-		phone: ph,
-		gender: gen,
-		idCard: idv,
-		unicode: un,
-		agree: agree.checked,
-		hostApply: hostApply.checked
-	};
 
 	const fd = new FormData();
 	fd.append('json', JSON.stringify(payload));
@@ -104,7 +169,6 @@ form.addEventListener('submit', async e => {
 			if (body.successful || body.message.startsWith('註冊成功')) {
 				msg.style.color = 'red';
 				msg.textContent = body.message;
-				// 2 秒后跳转到登入页
 				setTimeout(() => {
 					window.location.href = 'login.html';
 				}, 2000);

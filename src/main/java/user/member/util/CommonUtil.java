@@ -30,7 +30,7 @@ import com.google.gson.JsonParseException;
 public class CommonUtil {
 	
     public static final Gson GSON = new GsonBuilder()
-            // 针对 java.sql.Date，直接用 Date.valueOf(str)
+            // 針對 java.sql.Date，直接用 Date.valueOf(str)
             .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (je, type, ctx) -> {
                 try {
                     return Date.valueOf(je.getAsString());

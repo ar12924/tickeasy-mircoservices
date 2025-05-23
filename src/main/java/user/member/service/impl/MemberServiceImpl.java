@@ -119,14 +119,14 @@ public class MemberServiceImpl implements MemberService {
 		// 1. 寫入 member，
 		try {
 			memberDao.insert(member);
-		// 2. 寫入 token
+		// 2. 產生 token驗證、與Member關聯
 			String tokenName = UUID.randomUUID().toString();
 			VerificationToken token = new VerificationToken();
 			token.setTokenName(tokenName);
 			token.setTokenType("EMAIL_VERIFY");
 			token.setExpiredTime(new Timestamp(System.currentTimeMillis() + TOKEN_EXPIRATION));
 			token.setMember(member); // 關聯 Member
-			verifyDao.insert(token); // token永久化(是否為必要??)
+			verifyDao.insert(token); 
 			
 		// 3. 寄認證信，如果產生例外，觸發rollback
 			mailService.sendActivationNotification(member.getEmail(), member.getUserName(), tokenName);
