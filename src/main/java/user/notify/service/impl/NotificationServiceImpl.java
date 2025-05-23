@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
 			result = notificationDao.selectAllByMemberId(memberId);
 			tx.commit();
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			session.getTransaction().rollback();
 		}
 		return result;

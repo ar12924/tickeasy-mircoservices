@@ -10,7 +10,7 @@ import org.hibernate.Transaction;
 
 import common.util.HibernateUtil5;
 
-@WebFilter("/*")
+/*@WebFilter("/*")*/
 public class HibernateFilter extends HttpFilter {
 	private static final long serialVersionUID = 1L;
 

@@ -20,8 +20,9 @@ import user.notify.vo.Notification;
 
 
 
-@WebServlet("/notification-list")
-public class NotificationList extends HttpServlet{
+
+@WebServlet("/notification-unvisible")
+public class NotificationUnvisibleController extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 		private NotificationService notificationService;
@@ -38,16 +39,26 @@ public class NotificationList extends HttpServlet{
 		protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			Gson gson =new Gson();
 			JsonObject info= gson.fromJson(req.getReader(),JsonObject.class);
-	    	String memId=info.get("memberId").getAsString();
-		
+	    	String memberNotificationId=info.get("memberNotificationId").getAsString();
+	    	
+			
 
+
+	
 
 			
-			List<Notification> notifications = notificationService.notificationList(Integer.parseInt(memId));
-			String json = gson.toJson(notifications);
+			Integer notificationVisibleUpdate = notificationService.notificationVisibleUpdate(Integer.parseInt(memberNotificationId));
+			JsonObject respBody =new JsonObject();
+				
+			if(notificationVisibleUpdate!=null) {
+				respBody.addProperty("success", true);
+			}else {
+				respBody.addProperty("success", false);
+				respBody.addProperty("message", "更新有錯");
+			}
 			
 			resp.setContentType("application/json");
-			resp.getWriter().write(json);
+			resp.getWriter().write(respBody.toString());
 
 		}
 

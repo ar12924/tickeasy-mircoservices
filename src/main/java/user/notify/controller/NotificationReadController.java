@@ -22,7 +22,7 @@ import user.notify.vo.Notification;
 
 
 @WebServlet("/notification-read")
-public class NotificationRead extends HttpServlet{
+public class NotificationReadController extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 		private NotificationService notificationService;
