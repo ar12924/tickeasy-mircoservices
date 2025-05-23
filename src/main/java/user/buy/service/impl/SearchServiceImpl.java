@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import common.vo.Payload;
 import user.buy.dao.SearchDao;
-import user.buy.dao.impl.SearchDaoImpl;
 import user.buy.service.SearchService;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
@@ -18,10 +17,6 @@ import user.buy.vo.MemberNotification;
 public class SearchServiceImpl implements SearchService {
 	@Autowired
 	private SearchDao buyDaoImpl;
-
-//	public SearchServiceImpl() {
-//		buyDaoImpl = new SearchDaoImpl();
-//	}
 
 	@Transactional
 	@Override
