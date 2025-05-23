@@ -29,7 +29,7 @@ public class ShowEventController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<EventInfo> lalala = showEventService.showEvent();
-		// 4. 轉成 json 格式，並回應 json 字串
+		//  轉成 json 格式，並回應 json 字串
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(lalala);
 		resp.setContentType("application/json");
