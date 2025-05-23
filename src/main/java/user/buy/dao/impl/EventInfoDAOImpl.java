@@ -25,82 +25,14 @@ public class EventInfoDAOImpl implements EventInfoDAO {
     }
     
     @Override
-    public EventBuyVO getEventWithKeywords(Integer eventId) {
-        Session session = getSession();
-        
-        String hql = "SELECT e, k.keywordName1, k.keywordName2, k.keywordName3 " +
-                     "FROM EventBuyVO e LEFT JOIN KeywordCategoryVO k ON e.keywordId = k.keywordId " +
-                     "WHERE e.eventId = :eventId";
-        
-        Object[] result = (Object[]) session.createQuery(hql)
-                                           .setParameter("eventId", eventId)
-                                           .uniqueResult();
-        
-        if (result != null) {
-            EventBuyVO event = (EventBuyVO) result[0];
-            event.setKeyword1((String) result[1]);
-            event.setKeyword2((String) result[2]);
-            event.setKeyword3((String) result[3]);
-            return event;
-        }
-        
-        return null;
-    }
-    
-    @Override
     public List<EventBuyVO> getRecommendedEvents(int limit) {
         Session session = getSession();
-        
-        String hql = "SELECT e, k.keywordName1, k.keywordName2, k.keywordName3 " +
-                     "FROM EventBuyVO e LEFT JOIN KeywordCategoryVO k ON e.keywordId = k.keywordId " +
-                     "WHERE e.posted = 1 AND e.eventFromDate > CURRENT_TIMESTAMP " +
-                     "ORDER BY e.createTime DESC";
-        
-        List<Object[]> results = session.createQuery(hql, Object[].class)
-                                        .setMaxResults(limit)
-                                        .getResultList();
-        
-        List<EventBuyVO> events = new ArrayList<>();
-        for (Object[] result : results) {
-            EventBuyVO event = (EventBuyVO) result[0];
-            event.setKeyword1((String) result[1]);
-            event.setKeyword2((String) result[2]);
-            event.setKeyword3((String) result[3]);
-            events.add(event);
-        }
-        
-        return events;
-    }
-    
-    @Override
-    public List<EventBuyVO> searchEventsByKeyword(String keyword, int offset, int limit) {
-        Session session = getSession();
-        
-        String hql = "SELECT e, k.keywordName1, k.keywordName2, k.keywordName3 " +
-                     "FROM EventBuyVO e LEFT JOIN KeywordCategoryVO k ON e.keywordId = k.keywordId " +
-                     "WHERE e.posted = 1 AND " +
-                     "(e.eventName LIKE :keyword OR e.summary LIKE :keyword OR e.detail LIKE :keyword " +
-                     "OR k.keywordName1 LIKE :keyword OR k.keywordName2 LIKE :keyword OR k.keywordName3 LIKE :keyword) " +
-                     "ORDER BY e.eventFromDate ASC";
-        
-        String searchPattern = "%" + keyword + "%";
-        
-        List<Object[]> results = session.createQuery(hql, Object[].class)
-                                        .setParameter("keyword", searchPattern)
-                                        .setFirstResult(offset)
-                                        .setMaxResults(limit)
-                                        .getResultList();
-        
-        List<EventBuyVO> events = new ArrayList<>();
-        for (Object[] result : results) {
-            EventBuyVO event = (EventBuyVO) result[0];
-            event.setKeyword1((String) result[1]);
-            event.setKeyword2((String) result[2]);
-            event.setKeyword3((String) result[3]);
-            events.add(event);
-        }
-        
-        return events;
+        String hql = "FROM EventBuyVO e " +
+                "WHERE e.posted = 1 AND e.eventFromDate > CURRENT_TIMESTAMP " +
+                "ORDER BY e.createTime DESC";
+        return session.createQuery(hql, EventBuyVO.class)
+                .setMaxResults(limit)
+                .getResultList();
     }
     
     @Override

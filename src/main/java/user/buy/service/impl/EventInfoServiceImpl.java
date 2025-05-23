@@ -23,22 +23,23 @@ public class EventInfoServiceImpl implements EventInfoService {
 
     @Override
     public EventBuyVO getEventDetail(Integer eventId, Integer memberId) {
-    	// 獲取活動基本信息和關鍵字
-        EventBuyVO eventVO = eventInfoDAO.getEventWithKeywords(eventId);
+    	EventBuyVO eventVO = eventInfoDAO.getEventInfoById(eventId);
         
-        if (eventVO != null) {
-        	// 計算活動的剩餘票券數量
-            Integer totalRemainingTickets = eventInfoDAO.calculateTotalRemainingTickets(eventId);
-            eventVO.setRemainingTickets(totalRemainingTickets);
-            
-            // 如果有登入會員，檢查是否已關注該活動
-            if (memberId != null) {
-                Integer favoriteStatus = eventInfoDAO.checkFavoriteStatus(memberId, eventId);
-                eventVO.setFollowed(favoriteStatus != null ? favoriteStatus : 0);
-            } else {
-                eventVO.setFollowed(0); // 預設未關注
-            }
+        // 早期返回，避免巢狀結構
+        if (eventVO == null) {
+            return null;
         }
+        
+        // 計算剩餘票券數量
+        Integer totalRemainingTickets = eventInfoDAO.calculateTotalRemainingTickets(eventId);
+        eventVO.setRemainingTickets(totalRemainingTickets);
+        
+        // 設置關注狀態
+        Integer favoriteStatus = null;
+        if (memberId != null) {
+            favoriteStatus = eventInfoDAO.checkFavoriteStatus(memberId, eventId);
+        }
+        eventVO.setFollowed(favoriteStatus != null ? favoriteStatus : 0);
         
         return eventVO;
     }
@@ -53,40 +54,11 @@ public class EventInfoServiceImpl implements EventInfoService {
         	// 計算總剩餘票數
             Integer totalRemainingTickets = eventInfoDAO.calculateTotalRemainingTickets(event.getEventId());
             event.setRemainingTickets(totalRemainingTickets);
-            
-            // 如果有登入會員，檢查是否已關注該活動
+            Integer favoriteStatus = null;
             if (memberId != null) {
-                Integer favoriteStatus = eventInfoDAO.checkFavoriteStatus(memberId, event.getEventId());
-                event.setFollowed(favoriteStatus != null ? favoriteStatus : 0);
-            } else {
-                event.setFollowed(0); // 預設未關注
+                favoriteStatus = eventInfoDAO.checkFavoriteStatus(memberId, event.getEventId());
             }
-        }
-        
-        return events;
-    }
-
-    @Override
-    public List<EventBuyVO> searchEvents(String keyword, int page, int pageSize, Integer memberId) {
-        // 計算偏移量
-        int offset = (page - 1) * pageSize;
-        
-        // 搜索活動
-        List<EventBuyVO> events = eventInfoDAO.searchEventsByKeyword(keyword, offset, pageSize);
-        
-        // 計算每個活動的剩餘票券數量，設置關注狀態
-        for (EventBuyVO  event : events) {
-        	// 計算總剩餘票數
-            Integer totalRemainingTickets = eventInfoDAO.calculateTotalRemainingTickets(event.getEventId());
-            event.setRemainingTickets(totalRemainingTickets);
-            
-            // 如果有登入會員，檢查是否已關注該活動
-            if (memberId != null) {
-                Integer favoriteStatus = eventInfoDAO.checkFavoriteStatus(memberId, event.getEventId());
-                event.setFollowed(favoriteStatus != null ? favoriteStatus : 0);
-            } else {
-                event.setFollowed(0); // 預設未關注
-            }
+            event.setFollowed(favoriteStatus != null ? favoriteStatus : 0);
         }
         
         return events;
@@ -105,31 +77,17 @@ public class EventInfoServiceImpl implements EventInfoService {
 
     @Override
     public boolean toggleEventFavorite(Integer memberId, Integer eventId, Integer isFollowed) {
-        // 檢查是否已存在關注記錄
-        Integer currentStatus = eventInfoDAO.checkFavoriteStatus(memberId, eventId);
+    	Integer currentStatus = eventInfoDAO.checkFavoriteStatus(memberId, eventId);
         
-     // 使用 try-catch 來處理可能的異常，因為這涉及數據庫寫操作
-        try {
-            if (currentStatus == null) {
-                // 新增關注記錄
-                FavoriteVO favorite = new FavoriteVO();
-                favorite.setMemberId(memberId);
-                favorite.setEventId(eventId);
-                favorite.setFollowed(isFollowed);
-                
-                return eventInfoDAO.insertFavorite(favorite);
-            } else {
-                // 更新現有記錄
-                FavoriteVO favorite = new FavoriteVO();
-                favorite.setMemberId(memberId);
-                favorite.setEventId(eventId);
-                favorite.setFollowed(isFollowed);
-                
-                return eventInfoDAO.updateFavorite(favorite);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        FavoriteVO favorite = new FavoriteVO();
+        favorite.setMemberId(memberId);
+        favorite.setEventId(eventId);
+        favorite.setFollowed(isFollowed);
+        
+        if (currentStatus == null) {
+            return eventInfoDAO.insertFavorite(favorite);
+        } else {
+            return eventInfoDAO.updateFavorite(favorite);
         }
     }
     

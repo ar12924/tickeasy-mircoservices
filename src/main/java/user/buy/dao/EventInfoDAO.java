@@ -21,30 +21,12 @@ public interface EventInfoDAO extends CommonDao {
     EventBuyVO getEventInfoById(Integer eventId);
     
     /**
-     * 獲取活動關鍵字資訊
-     * 
-     * @param eventId 活動ID
-     * @return 帶關鍵字的活動資訊VO
-     */
-    EventBuyVO getEventWithKeywords(Integer eventId);
-    
-    /**
      * 獲取推薦活動列表
      * 
      * @param limit 限制數量
      * @return 活動資訊VO列表
      */
     List<EventBuyVO> getRecommendedEvents(int limit);
-    
-    /**
-     * 根據關鍵字搜索活動
-     * 
-     * @param keyword 關鍵字
-     * @param offset 偏移量
-     * @param limit 限制數量
-     * @return 活動資訊VO列表
-     */
-    List<EventBuyVO> searchEventsByKeyword(String keyword, int offset, int limit);
     
     /**
      * 根據活動ID獲取該活動的票券類型列表

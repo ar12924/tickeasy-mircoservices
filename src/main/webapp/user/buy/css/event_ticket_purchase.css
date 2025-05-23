@@ -209,14 +209,6 @@ footer {
     margin-bottom: 0.3rem;
 }
 
-.event-tag {
-    display: inline-block;
-    background-color: #f3f4f6;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    margin-right: 0.5rem;
-    font-size: 0.75rem;
-}
 
 .event-description {
     margin-top: 1rem;
@@ -237,7 +229,7 @@ footer {
 .event-booking {
     flex: 1;
     min-width: 250px;
-    background-color: #f3f4f6;
+    background-color: #fce7f3; 
     padding: 1.5rem;
     border-radius: 6px;
     margin-left: 1.5rem;
@@ -255,7 +247,7 @@ footer {
     margin-bottom: 0.8rem;
     font-size: 0.95rem;
     padding-bottom: 0.8rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #f3e8ff; 
 }
 
 .ticket-option:last-child {

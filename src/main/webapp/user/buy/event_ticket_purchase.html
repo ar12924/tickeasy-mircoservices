@@ -29,22 +29,20 @@
 
     <!-- 主內容區塊 -->
     <main class="main-content">
-        <!-- 活動導航區塊 -->
-        <div class="event-navigation">
-            <div class="event-back">
-                <a href="#"><span class="arrow-back">‹</span> 2024春季音樂節</a>
-            </div>
-            <div class="event-tabs">
-                <a href="#info" class="tab-link">活動資訊</a>
-                <a href="#price" class="tab-link">票價資訊</a>
-                <a href="#transfer" class="tab-link">轉票專區</a>
-                <a href="#discussion" class="tab-link">討論區</a>
-            </div>
-        </div>
-
-        <!-- 活動內容 -->
         <!-- 活動內容 - 使用Vue應用 -->
         <div id="app">
+            <!-- 活動導航區塊 -->
+            <div class="event-navigation">
+                <div class="event-back">
+                    <a href="#"><span class="arrow-back">‹</span> {{ event ? event.eventName : '載入中...' }}</a>
+                </div>
+                <div class="event-tabs">
+                    <a href="#info" class="tab-link">活動資訊</a>
+                    <a href="#price" class="tab-link">票價資訊</a>
+                    <a href="#transfer" class="tab-link">轉票專區</a>
+                    <a href="#discussion" class="tab-link">討論區</a>
+                </div>
+            </div>
             <!-- 讀取中狀態 -->
             <div v-if="loading" class="loading-container">
                 <div class="loading-spinner"></div>
@@ -65,20 +63,17 @@
                     <div class="event-info">
                         <div class="event-title-row">
                             <h1 class="event-title">{{ event.eventName }}</h1>
-                            <button @click="toggleFavorite" class="favorite-button" :class="{ 'is-favorite': event.isFollowed === 1 }">
+                            <button @click="toggleFavorite" class="favorite-button"
+                                :class="{ 'is-favorite': event.isFollowed === 1 }">
                                 <span v-if="event.isFollowed === 1">♥</span>
                                 <span v-else>♡</span>
                             </button>
                         </div>
                         <div class="event-meta">
-                            <div><strong>活動日期：</strong>{{ formatDate(event.eventFromDate) }} ~ {{ formatDate(event.eventToDate) }}</div>
+                            <div><strong>活動日期：</strong>{{ formatDate(event.eventFromDate) }} ~ {{
+                                formatDate(event.eventToDate) }}</div>
                             <div><strong>地點：</strong>{{ event.place }}</div>
                             <div><strong>主辦單位：</strong>{{ event.eventHost }}</div>
-                            <div v-if="event.keyword1 || event.keyword2 || event.keyword3"><strong>標籤：</strong>
-                                <span v-if="event.keyword1" class="event-tag">{{ event.keyword1 }}</span>
-                                <span v-if="event.keyword2" class="event-tag">{{ event.keyword2 }}</span>
-                                <span v-if="event.keyword3" class="event-tag">{{ event.keyword3 }}</span>
-                            </div>
                         </div>
                         <hr>
                         <div class="event-description">
@@ -103,9 +98,11 @@
                                 <span class="ticket-price">NT$ {{ formatPrice(ticket.price) }}</span>
                             </div>
                             <div class="ticket-sell-period">
-                                <p>售票期間: {{ formatDateShort(ticketTypes[0].sellFromTime) }} ~ {{ formatDateShort(ticketTypes[0].sellToTime) }}</p>
+                                <p>售票期間: {{ formatDateShort(ticketTypes[0].sellFromTime) }} ~ {{
+                                    formatDateShort(ticketTypes[0].sellToTime) }}</p>
                             </div>
-                            <a href="#book-now" class="booking-button" :class="{ 'disabled': !hasAvailableTickets }" @click.prevent="handleBookingClick">
+                            <a href="#book-now" class="booking-button" :class="{ 'disabled': !hasAvailableTickets }"
+                                @click.prevent="handleBookingClick">
                                 {{ hasAvailableTickets ? '立即購票' : '售票已結束' }}
                             </a>
                         </div>

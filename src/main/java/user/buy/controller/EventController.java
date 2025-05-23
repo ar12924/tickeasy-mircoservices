@@ -60,91 +60,16 @@ public class EventController extends HttpServlet {
         // 獲取當前登入用戶的ID
         Integer memberId = getMemberIdFromSession(req);
         
-        // 根據請求路徑處理不同請求
+        Map<String, Object> response = new HashMap<>();
+        
         if (pathInfo == null || pathInfo.equals("/")) {
-            // 獲取推薦活動列表
-            int limit = getIntParameter(req, "limit", 10);
-            List<EventBuyVO> events = eventService.getRecommendedEvents(limit, memberId);
-            
-            if (events != null) {
-                // 將結果轉換為JSON並返回
-                Map<String, Object> response = new HashMap<>();
-                response.put("status", 200);
-                response.put("data", formatEventListForJson(events));
-                out.println(gson.toJson(response));
-            } else {
-                Map<String, Object> response = new HashMap<>();
-                response.put("status", 500);
-                response.put("errorCode", "B0001");
-                response.put("errorMessage", "獲取活動列表失敗");
-                response.put("userMessage", "系統忙碌中，請稍後再試");
-                out.println(gson.toJson(response));
-            }
-        } else if (pathInfo.startsWith("/search")) {
-            // 搜索活動
-            String keyword = req.getParameter("keyword");
-            int page = getIntParameter(req, "page", 1);
-            int pageSize = getIntParameter(req, "pageSize", 10);
-            
-            if (keyword == null || keyword.trim().isEmpty()) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("status", 400);
-                response.put("errorCode", "B0002");
-                response.put("errorMessage", "請提供搜索關鍵字");
-                response.put("userMessage", "請提供搜索關鍵字");
-                out.println(gson.toJson(response));
-                return;
-            }
-            
-            List<EventBuyVO> events = eventService.searchEvents(keyword, page, pageSize, memberId);
-            
-            if (events != null) {
-                // 將結果轉換為JSON並返回
-                Map<String, Object> response = new HashMap<>();
-                response.put("status", 200);
-                response.put("data", formatEventListForJson(events));
-                out.println(gson.toJson(response));
-            } else {
-                Map<String, Object> response = new HashMap<>();
-                response.put("status", 500);
-                response.put("errorCode", "B0003");
-                response.put("errorMessage", "搜索活動失敗");
-                response.put("userMessage", "系統忙碌中，請稍後再試");
-                out.println(gson.toJson(response));
-            }
+            handleRecommendedEvents(req, response, memberId);
         } else {
-            // 獲取活動詳情，路徑格式為 /api/events/{eventId}
-            String eventIdStr = pathInfo.substring(1); // 移除開頭的 /
-            
-            try {
-                Integer eventId = Integer.parseInt(eventIdStr);
-                EventBuyVO event = eventService.getEventDetail(eventId, memberId);
-                
-                if (event != null) {
-                    // 將結果轉換為JSON並返回
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("status", 200);
-                    response.put("data", formatEventForJson(event));
-                    out.println(gson.toJson(response));
-                } else {
-                    // 活動不存在
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("status", 404);
-                    response.put("errorCode", "B0004");
-                    response.put("errorMessage", "活動不存在");
-                    response.put("userMessage", "找不到對應的活動");
-                    out.println(gson.toJson(response));
-                }
-            } catch (NumberFormatException e) {
-                // 活動ID格式錯誤
-                Map<String, Object> response = new HashMap<>();
-                response.put("status", 400);
-                response.put("errorCode", "B0005");
-                response.put("errorMessage", "無效的活動ID");
-                response.put("userMessage", "請提供有效的活動ID");
-                out.println(gson.toJson(response));
-            }
+            // 移除搜索邏輯，直接處理活動詳情
+            handleEventDetail(pathInfo, response, memberId);
         }
+        
+        out.println(gson.toJson(response));
     }
     
     /**
@@ -262,11 +187,7 @@ public class EventController extends HttpServlet {
         eventMap.put("detail", event.getDetail());
         eventMap.put("isPosted", event.getPosted());
         eventMap.put("imageDir", event.getImageDir());
-        eventMap.put("keywordId", event.getKeywordId());
         eventMap.put("memberId", event.getMemberId());
-        eventMap.put("keyword1", event.getKeyword1());
-        eventMap.put("keyword2", event.getKeyword2());
-        eventMap.put("keyword3", event.getKeyword3());
         eventMap.put("remainingTickets", event.getRemainingTickets());
         eventMap.put("isFollowed", event.getFollowed());
         
@@ -314,5 +235,43 @@ public class EventController extends HttpServlet {
             }
         }
         return null;
+    }
+    
+    /**
+     * 處理推薦活動請求
+     */
+    private void handleRecommendedEvents(HttpServletRequest req, Map<String, Object> response, Integer memberId) {
+        int limit = getIntParameter(req, "limit", 10);
+        List<EventBuyVO> events = eventService.getRecommendedEvents(limit, memberId);
+        
+        response.put("status", 200);
+        response.put("data", formatEventListForJson(events));
+    }
+    
+    /**
+     * 處理活動詳情請求
+     */
+    private void handleEventDetail(String pathInfo, Map<String, Object> response, Integer memberId) {
+        String eventIdStr = pathInfo.substring(1); // 移除開頭的 /
+        
+        try {
+            Integer eventId = Integer.parseInt(eventIdStr);
+            EventBuyVO event = eventService.getEventDetail(eventId, memberId);
+            
+            if (event != null) {
+                response.put("status", 200);
+                response.put("data", formatEventForJson(event));
+            } else {
+                response.put("status", 404);
+                response.put("errorCode", "B0004");
+                response.put("errorMessage", "活動不存在");
+                response.put("userMessage", "找不到對應的活動");
+            }
+        } catch (NumberFormatException e) {
+            response.put("status", 400);
+            response.put("errorCode", "B0005");
+            response.put("errorMessage", "無效的活動ID");
+            response.put("userMessage", "請提供有效的活動ID");
+        }
     }
 }

@@ -39,16 +39,16 @@ window.app = Vue.createApp({
         // 是否有可購買的票券
         hasAvailableTickets() {
             if (!this.ticketTypes || this.ticketTypes.length === 0) return false;
-            
+
             return this.ticketTypes.some(ticket => ticket.remainingTickets > 0);
         },
         // 活動時間格式化（開始時間到結束時間）
         eventTimeFormatted() {
             if (!this.event) return '';
-            
+
             const fromDate = new Date(this.event.eventFromDate);
             const toDate = new Date(this.event.eventToDate);
-            
+
             // 如果開始和結束是同一天，只顯示日期一次
             if (fromDate.toDateString() === toDate.toDateString()) {
                 const dateStr = this.formatDateWithoutTime(fromDate);
@@ -67,25 +67,25 @@ window.app = Vue.createApp({
         async fetchEventData() {
             this.loading = true;
             this.error = null;
-            
+
             try {
                 // 確保 eventId 是有效的
                 if (!this.eventId || isNaN(parseInt(this.eventId))) {
                     throw new Error('無效的活動ID');
                 }
-                
+
                 // 獲取活動詳情
                 const eventResponse = await fetch(`${API_BASE_URL}/events/${this.eventId}`);
-                
+
                 if (!eventResponse.ok) {
                     throw new Error(`HTTP錯誤: ${eventResponse.status}`);
                 }
-                
+
                 const eventData = await eventResponse.json();
-                
+
                 if (eventData.status === 200) {
                     this.event = eventData.data;
-                    
+
                     // 獲取票券類型
                     await this.fetchTicketTypes();
                 } else {
@@ -103,18 +103,18 @@ window.app = Vue.createApp({
         async fetchTicketTypes() {
             try {
                 const ticketResponse = await fetch(`${API_BASE_URL}/event/tickets/${this.eventId}`);
-                
+
                 if (!ticketResponse.ok) {
                     console.warn(`HTTP錯誤: ${ticketResponse.status}`);
                     this.ticketTypes = [];
                     return;
                 }
-                
+
                 const ticketData = await ticketResponse.json();
-                
+
                 if (ticketData.status === 200) {
                     this.ticketTypes = ticketData.data;
-                    
+
                     // 對票券類型按價格排序
                     this.ticketTypes.sort((a, b) => a.price - b.price);
                 } else {
@@ -126,12 +126,12 @@ window.app = Vue.createApp({
                 this.ticketTypes = [];
             }
         },
-        
+
         // 切換關注狀態
         async toggleFavorite() {
             // 防止重複點擊
             if (this.favoriteLoading) return;
-            
+
             // 檢查用戶是否已登入
             if (!this.isLoggedIn) {
                 if (confirm('請先登入才能關注活動。是否前往登入頁面？')) {
@@ -140,13 +140,13 @@ window.app = Vue.createApp({
                 }
                 return;
             }
-            
+
             this.favoriteLoading = true;
-            
+
             try {
                 // 切換關注狀態 (1: 關注, 0: 取消關注)
                 const newStatus = this.event.isFollowed === 1 ? 0 : 1;
-                
+
                 const response = await fetch(`${API_BASE_URL}/events/${this.eventId}/favorite?isFollowed=${newStatus}`, {
                     method: 'POST',
                     credentials: 'include',
@@ -154,17 +154,17 @@ window.app = Vue.createApp({
                         'Content-Type': 'application/json'
                     }
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP錯誤: ${response.status}`);
                 }
-                
+
                 const data = await response.json();
-                
+
                 if (data.status === 200) {
                     // 更新前端顯示
                     this.event.isFollowed = newStatus;
-                    
+
                     // 顯示成功訊息（可以考慮使用更友好的通知方式）
                     const message = newStatus === 1 ? '已成功加入我的關注!' : '已取消關注';
                     alert(message);
@@ -178,11 +178,11 @@ window.app = Vue.createApp({
                 this.favoriteLoading = false;
             }
         },
-        
+
         // 處理購票按鈕點擊
         handleBookingClick() {
             if (!this.hasAvailableTickets) return;
-            
+
             // 檢查用戶是否已登入
             if (!this.isLoggedIn) {
                 if (confirm('請先登入才能購票。是否前往登入頁面？')) {
@@ -191,15 +191,15 @@ window.app = Vue.createApp({
                 }
                 return;
             }
-            
+
             // 導向購票頁面
             window.location.href = `/maven-tickeasy-v1/buy/booking.html?eventId=${this.eventId}`;
         },
-        
+
         // 格式化日期 (不含時間)
         formatDate(dateString) {
             if (!dateString) return '';
-            
+
             const date = new Date(dateString);
             const options = {
                 year: 'numeric',
@@ -209,62 +209,62 @@ window.app = Vue.createApp({
                 minute: '2-digit',
                 hour12: false
             };
-            
+
             return new Intl.DateTimeFormat('zh-TW', options).format(date);
         },
-        
+
         // 格式化日期 (不含時間)
         formatDateWithoutTime(date) {
             if (!date) return '';
-            
+
             const options = {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
             };
-            
+
             return new Intl.DateTimeFormat('zh-TW', options).format(date);
         },
 
         // 僅格式化時間
         formatTimeOnly(date) {
             if (!date) return '';
-            
+
             const options = {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
             };
-            
+
             return new Intl.DateTimeFormat('zh-TW', options).format(date);
         },
-        
+
         // 格式化日期（短格式）
         formatDateShort(dateString) {
             if (!dateString) return '';
-            
+
             const date = new Date(dateString);
             const options = {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
             };
-            
+
             return new Intl.DateTimeFormat('zh-TW', options).format(date);
         },
-        
+
         // 格式化價格
         formatPrice(price) {
             return price.toLocaleString('zh-TW');
         },
-        
+
         // 檢查用戶登錄狀態
         checkLoginStatus() {
             // 從 sessionStorage 或 cookie 中獲取用戶資訊
             try {
                 // 檢查 session 中是否有 memberId
                 const memberId = this.getCookie('memberId') || sessionStorage.getItem('memberId');
-                
+
                 if (memberId && !isNaN(parseInt(memberId))) {
                     this.isLoggedIn = true;
                     this.memberId = parseInt(memberId, 10);
@@ -285,15 +285,15 @@ window.app = Vue.createApp({
                 const response = await fetch(`${API_BASE_URL}/member/status`, {
                     credentials: 'include'
                 });
-                
+
                 if (!response.ok) return;
-                
+
                 const data = await response.json();
-                
+
                 if (data.status === 200 && data.data.isLoggedIn) {
                     this.isLoggedIn = true;
                     this.memberId = data.data.memberId;
-                    
+
                     // 保存到 sessionStorage 供其他頁面使用
                     sessionStorage.setItem('memberId', this.memberId);
                 }
@@ -301,11 +301,11 @@ window.app = Vue.createApp({
                 console.error('從伺服器檢查登錄狀態時發生錯誤:', err);
             }
         },
-        
+
         // 獲取 Cookie 值
         getCookie(name) {
             if (!document.cookie) return null;
-            
+
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
@@ -315,41 +315,41 @@ window.app = Vue.createApp({
             }
             return null;
         },
-        
+
         // 判斷是否為有效日期
         isValidDate(dateString) {
             if (!dateString) return false;
-            
+
             const date = new Date(dateString);
             return !isNaN(date.getTime());
         }
     },
-    
+
     // 生命週期鉤子
     created() {
         // 從 URL 獲取活動 ID
         const urlParams = new URLSearchParams(window.location.search);
         this.eventId = urlParams.get('eventId');
-        
+
         // 如果沒有提供活動 ID，使用預設值
         if (!this.eventId) {
             console.warn('未提供活動 ID，使用預設值');
             this.eventId = 1; // 使用預設 ID
         }
-        
+
         // 檢查用戶登錄狀態
         this.checkLoginStatus();
     },
-    
+
     // 在掛載後獲取資料
     mounted() {
         // 獲取活動資料
         this.fetchEventData();
-        
+
         // 添加頁面標題
         document.title = 'TickEasy - 活動詳情';
     },
-    
+
     // 在資料更新後更新頁面標題
     updated() {
         if (this.event) {
