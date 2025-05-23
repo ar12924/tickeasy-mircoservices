@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import common.util.CommonUtil;
 import common.vo.Payload;
 import user.buy.service.SearchService;
 import user.buy.service.impl.SearchServiceImpl;
@@ -26,8 +27,13 @@ public class SearchEventController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private SearchService buyServiceImpl;
 
-	public SearchEventController() {
-		buyServiceImpl = new SearchServiceImpl();
+//	public SearchEventController() {
+//		buyServiceImpl = new SearchServiceImpl();
+//	}
+	// DL 方式注入(暫時性，後續 spring-MVC 會改)
+	@Override
+	public void init() throws ServletException {
+		buyServiceImpl = CommonUtil.getBean(getServletContext(), SearchService.class);
 	}
 
 	@Override

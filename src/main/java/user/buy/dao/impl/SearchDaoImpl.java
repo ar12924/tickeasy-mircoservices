@@ -2,7 +2,11 @@ package user.buy.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import common.vo.Payload;
 import user.buy.dao.SearchDao;
@@ -10,7 +14,10 @@ import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
+@Repository
 public class SearchDaoImpl implements SearchDao {
+	@PersistenceContext
+	private Session session;
 
 	@Override
 	public Payload<List<EventInfo>> selectEventByKeyword(String keyword, Integer pageNumber, Integer pageSize) {
@@ -18,10 +25,10 @@ public class SearchDaoImpl implements SearchDao {
 		String hqlData = "FROM EventInfo WHERE eventName LIKE :keyword ORDER BY eventFromDate";
 		String hqlCount = "SELECT COUNT(e) FROM EventInfo e WHERE e.eventName LIKE :keyword";
 		// 2. 條件式查詢
-		Query<EventInfo> queryData = getSession().createQuery(hqlData, EventInfo.class)
+		Query<EventInfo> queryData = session.createQuery(hqlData, EventInfo.class)
 				.setFirstResult((pageNumber - 1) * pageSize) // 略過比數
 				.setMaxResults(pageSize); // 顯示比數
-		Query<Long> queryCount = getSession().createQuery(hqlCount, Long.class);
+		Query<Long> queryCount = session.createQuery(hqlCount, Long.class);
 		// 3. 判斷 keyword 字串是否為空
 		if (!keyword.isEmpty()) {
 			queryData.setParameter("keyword", "%" + keyword + "%");
@@ -42,13 +49,13 @@ public class SearchDaoImpl implements SearchDao {
 		// 1. 生成 HQL 語句進行搜尋
 		String hql = "FROM BuyerTicket";
 		// 2. 查詢所有 row
-		return getSession().createQuery(hql, BuyerTicket.class).getResultList();
+		return session.createQuery(hql, BuyerTicket.class).getResultList();
 	}
 
 	@Override
 	public List<MemberNotification> selectNotification() {
 		// 1. 生成 HQL 語句進行搜尋
 		String hql = "FROM MemberNotification ORDER BY sendTime";
-		return getSession().createQuery(hql, MemberNotification.class).getResultList();
+		return session.createQuery(hql, MemberNotification.class).getResultList();
 	}
 }

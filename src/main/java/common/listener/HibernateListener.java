@@ -6,7 +6,7 @@ import javax.servlet.annotation.WebListener;
 
 import common.util.HibernateUtil5;
 
-@WebListener
+//@WebListener
 public class HibernateListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
