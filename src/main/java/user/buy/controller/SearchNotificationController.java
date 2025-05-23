@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import common.util.CommonUtil;
 import user.buy.service.SearchService;
-import user.buy.service.impl.SearchServiceImpl;
 import user.buy.vo.MemberNotification;
 
 /**
@@ -28,10 +28,12 @@ public class SearchNotificationController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private SearchService buyServiceImpl;
 
-	public SearchNotificationController() {
-		buyServiceImpl = new SearchServiceImpl();
+	// DL 方式注入(暫時性，後續 spring-MVC 會改)
+	@Override
+	public void init() throws ServletException {
+		buyServiceImpl = CommonUtil.getBean(getServletContext(), SearchService.class);
 	}
-
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 1. 指定允許所有網域

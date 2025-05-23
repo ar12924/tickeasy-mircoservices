@@ -2,14 +2,21 @@ package user.buy.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import user.buy.dao.SearchDao;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
 
+@Repository
 public class SearchDaoImpl implements SearchDao {
+	@PersistenceContext
+	private Session session;
 
 	@Override
 	public List<EventInfo> selectEventByKeywordWithPages(String keyword, Integer pageNumber, Integer pageSize) {
@@ -62,13 +69,13 @@ public class SearchDaoImpl implements SearchDao {
 		// 1. 生成 HQL 語句進行搜尋
 		String hql = "FROM BuyerTicket";
 		// 2. 查詢所有 row
-		return getSession().createQuery(hql, BuyerTicket.class).getResultList();
+		return session.createQuery(hql, BuyerTicket.class).getResultList();
 	}
 
 	@Override
 	public List<MemberNotification> selectNotification() {
 		// 1. 生成 HQL 語句進行搜尋
 		String hql = "FROM MemberNotification ORDER BY sendTime";
-		return getSession().createQuery(hql, MemberNotification.class).getResultList();
+		return session.createQuery(hql, MemberNotification.class).getResultList();
 	}
 }
