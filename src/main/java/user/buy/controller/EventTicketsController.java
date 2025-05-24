@@ -1,6 +1,8 @@
 package user.buy.controller;
 
 import com.google.gson.Gson;
+
+import common.util.CommonUtil;
 import user.buy.service.EventInfoService;
 import user.buy.service.impl.EventInfoServiceImpl;
 import user.buy.vo.TicketTypeVO;
@@ -32,7 +34,7 @@ public class EventTicketsController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        eventService = new EventInfoServiceImpl();
+        eventService = CommonUtil.getBean(getServletContext(), EventInfoService.class);
         gson = new Gson();
         System.out.println("EventTicketsController 初始化完成");
     }

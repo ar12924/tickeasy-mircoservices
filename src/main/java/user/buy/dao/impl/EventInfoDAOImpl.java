@@ -3,8 +3,11 @@ package user.buy.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.PersistenceContext;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import user.buy.dao.EventInfoDAO;
 import user.buy.vo.EventBuyVO;
@@ -16,17 +19,20 @@ import user.buy.vo.TicketTypeVO;
  * 創建者: archchang
  * 創建日期: 2025-05-07
  */
+@Repository
 public class EventInfoDAOImpl implements EventInfoDAO {
-    
+	@PersistenceContext
+	private Session session;
+	
     @Override
     public EventBuyVO getEventInfoById(Integer eventId) {
-        Session session = getSession();
+//        Session session = getSession();
         return session.get(EventBuyVO.class, eventId);
     }
     
     @Override
     public List<EventBuyVO> getRecommendedEvents(int limit) {
-        Session session = getSession();
+//        Session session = getSession();
         String hql = "FROM EventBuyVO e " +
                 "WHERE e.posted = 1 AND e.eventFromDate > CURRENT_TIMESTAMP " +
                 "ORDER BY e.createTime DESC";
@@ -37,7 +43,7 @@ public class EventInfoDAOImpl implements EventInfoDAO {
     
     @Override
     public List<TicketTypeVO> getEventTicketTypesByEventId(Integer eventId) {
-        Session session = getSession();
+//        Session session = getSession();
         
         String hql = "FROM TicketTypeVO WHERE eventId = :eventId ORDER BY price ASC";
         
@@ -56,7 +62,7 @@ public class EventInfoDAOImpl implements EventInfoDAO {
     
     @Override
     public Integer calculateRemainingTickets(Integer typeId) {
-        Session session = getSession();
+//        Session session = getSession();
         
         String sql = "SELECT ett.capacity - COALESCE(" +
                      "  (SELECT COUNT(*) FROM buyer_ticket bt " +
@@ -80,7 +86,7 @@ public class EventInfoDAOImpl implements EventInfoDAO {
     
     @Override
     public Integer checkFavoriteStatus(Integer memberId, Integer eventId) {
-        Session session = getSession();
+//        Session session = getSession();
         
         String hql = "SELECT f.followed FROM FavoriteVO f " +
                      "WHERE f.memberId = :memberId AND f.eventId = :eventId";
@@ -93,7 +99,7 @@ public class EventInfoDAOImpl implements EventInfoDAO {
     
     @Override
     public boolean insertFavorite(FavoriteVO favorite) {
-        Session session = getSession();
+//        Session session = getSession();
         try {
             session.persist(favorite);
             return true;
@@ -105,7 +111,7 @@ public class EventInfoDAOImpl implements EventInfoDAO {
     
     @Override
     public boolean updateFavorite(FavoriteVO favorite) {
-        Session session = getSession();
+//        Session session = getSession();
         try {
             String hql = "UPDATE FavoriteVO SET followed = :followed " +
                          "WHERE memberId = :memberId AND eventId = :eventId";
@@ -137,7 +143,7 @@ public class EventInfoDAOImpl implements EventInfoDAO {
     
     @Override
     public byte[] getEventImage(Integer eventId) {
-        Session session = getSession();
+//        Session session = getSession();
         
         String hql = "SELECT e.image FROM EventBuyVO e WHERE e.eventId = :eventId";
         

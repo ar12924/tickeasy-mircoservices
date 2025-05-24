@@ -9,18 +9,24 @@ import user.buy.vo.TicketTypeVO;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 /**
  * 活動資訊服務實現類
  * 創建者: archchang
  * 創建日期: 2025-05-07
  */
+@Service
 public class EventInfoServiceImpl implements EventInfoService {
-    private EventInfoDAO eventInfoDAO;
+	@Autowired
+	private EventInfoDAO eventInfoDAO;
     
-    public EventInfoServiceImpl() {
-        this.eventInfoDAO = new EventInfoDAOImpl();
-    }
-
+//    public EventInfoServiceImpl() {
+//        this.eventInfoDAO = new EventInfoDAOImpl();
+//    }
+	@Transactional
     @Override
     public EventBuyVO getEventDetail(Integer eventId, Integer memberId) {
     	EventBuyVO eventVO = eventInfoDAO.getEventInfoById(eventId);
@@ -43,7 +49,8 @@ public class EventInfoServiceImpl implements EventInfoService {
         
         return eventVO;
     }
-
+	
+	@Transactional
     @Override
     public List<EventBuyVO> getRecommendedEvents(int limit, Integer memberId) {
         // 獲取推薦活動列表
@@ -64,17 +71,20 @@ public class EventInfoServiceImpl implements EventInfoService {
         return events;
     }
 
+	@Transactional
     @Override
     public List<TicketTypeVO> getEventTicketTypes(Integer eventId) {
         return eventInfoDAO.getEventTicketTypesByEventId(eventId);
     }
 
+	@Transactional
     @Override
     public boolean checkTicketAvailability(Integer typeId, Integer quantity) {
     	Integer remainingTickets = eventInfoDAO.calculateRemainingTickets(typeId);
         return remainingTickets >= quantity;
     }
 
+	@Transactional
     @Override
     public boolean toggleEventFavorite(Integer memberId, Integer eventId, Integer isFollowed) {
     	Integer currentStatus = eventInfoDAO.checkFavoriteStatus(memberId, eventId);
@@ -91,12 +101,14 @@ public class EventInfoServiceImpl implements EventInfoService {
         }
     }
     
+	@Transactional
     @Override
     public byte[] getEventImage(Integer eventId) {
     	
     	return eventInfoDAO.getEventImage(eventId);
     }
     
+	@Transactional
     @Override
     public Integer calculateTotalRemainingTickets(Integer eventId) {
         return eventInfoDAO.calculateTotalRemainingTickets(eventId);
