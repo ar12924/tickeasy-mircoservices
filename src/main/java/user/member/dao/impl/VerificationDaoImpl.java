@@ -8,10 +8,12 @@ import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import user.member.dao.VerificationDao;
 import user.member.vo.VerificationToken;
 
+@Repository
 public class VerificationDaoImpl implements VerificationDao {
 
 	@Override

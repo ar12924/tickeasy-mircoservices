@@ -11,10 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import common.util.CommonUtil;
+import user.member.service.MailService;
+import user.member.service.MemberService;
 import user.member.vo.Member;
 
 import static user.member.util.CommonUtil.*;
-import static user.member.util.MemberConstants.SERVICE;
+//import static user.member.util.MemberConstants.SERVICE;
 
 @WebServlet("/user/member/edit")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
@@ -23,7 +26,15 @@ import static user.member.util.MemberConstants.SERVICE;
 )
 public class EditController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private MemberService service;
+	private MailService mailService;
+	
+	@Override
+	public void init() throws ServletException {
+		service = CommonUtil.getBean(getServletContext(), MemberService.class);
+		mailService = CommonUtil.getBean(getServletContext(), MailService.class);
+	}
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -50,7 +61,7 @@ public class EditController extends HttpServlet {
 			input.setPhoto(photoPart.getInputStream().readAllBytes());
 		}
 
-		Member updated = SERVICE.editMember(input);
+		Member updated = service.editMember(input);
 		writeSuccess(resp, "會員資料已更新", updated);
 	}
 }

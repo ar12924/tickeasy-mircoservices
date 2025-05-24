@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import common.util.CommonUtil;
+import user.member.service.MailService;
+import user.member.service.MemberService;
 import user.member.vo.Member;
-import static user.member.util.MemberConstants.SERVICE;
 
 import static user.member.util.CommonUtil.*;
 import static user.member.util.CommonUtil.json2Pojo;
@@ -24,7 +26,14 @@ import static user.member.util.CommonUtil.json2Pojo;
 		)
 public class RegisterController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private MemberService service;
+	private MailService mailService;
+	
+	@Override
+	public void init() throws ServletException {
+		service = CommonUtil.getBean(getServletContext(), MemberService.class);
+		mailService = CommonUtil.getBean(getServletContext(), MailService.class);
+	}
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
             throws ServletException, IOException {
@@ -42,7 +51,7 @@ public class RegisterController extends HttpServlet {
         	input.setPhoto(photoPart.getInputStream().readAllBytes());
         }
     	
-        Member result = SERVICE.register(input);  
+        Member result = service.register(input);  
         if (result.isSuccessful()) {
 			writeSuccess(resp, "註冊成功", result);
 		} else {

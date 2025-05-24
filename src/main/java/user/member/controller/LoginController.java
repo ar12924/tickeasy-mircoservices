@@ -9,14 +9,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import common.util.CommonUtil;
+import user.member.service.MailService;
+import user.member.service.MemberService;
 import user.member.vo.Member;
 import static user.member.util.CommonUtil.*;
-import static user.member.util.MemberConstants.SERVICE;
 
 @WebServlet("/user/member/login")
 public class LoginController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private MemberService service;
+	private MailService mailService;
+	
+	@Override
+	public void init() throws ServletException {
+		service = CommonUtil.getBean(getServletContext(), MemberService.class);
+		mailService = CommonUtil.getBean(getServletContext(), MailService.class);
+	}
+	
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
@@ -26,9 +37,9 @@ public class LoginController extends HttpServlet {
 			return;
 		}
 
-		member = SERVICE.login(member);
+		member = service.login(member);
 		if (member.isSuccessful()) {
-			Member full = SERVICE.getByUsername(member.getUserName());
+			Member full = service.getByUsername(member.getUserName());
 
 			if (req.getSession(false) != null) {
 				req.changeSessionId();
