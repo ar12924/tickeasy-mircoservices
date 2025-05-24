@@ -1,45 +1,48 @@
-const usernameEl = document.querySelector('#username');
-const passwordEl = document.querySelector('#password');
-const rememberMeEl = document.querySelector('#rememberMe');
-const msgEl = document.querySelector('#msg');
+const username = document.querySelector('#username');
+const password = document.querySelector('#password');
+const remember = document.querySelector('#rememberMe'); // 「記住我」checkbox
+const msg = document.querySelector('#msg');
+const loginBtn = document.querySelector('#loginBtn');
 
-// 載入 localStorage
-window.onload = () => {
-  const remembered = localStorage.getItem("rememberedUser");
-  if (remembered) {
-    usernameEl.value = remembered;
-    rememberMeEl.checked = true;
-  }
-};
+const saved = localStorage.getItem('savedUsername');
+if (saved) {
+	username.value = saved;
+	if (remember) remember.checked = true;
+}
 
-document.querySelector('#loginBtn').addEventListener('click', () => {
-  
-  const username = usernameEl.value.trim();
-  const password = passwordEl.value;
 
-  if (!username || !password) {
-    msgEl.textContent = '請輸入帳號與密碼';
-    return;
-  }
-  
-  fetch('login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userName: username, password })
-  })
-    .then(res => res.json())
-    .then(data => {
-		    
-      if (data.successful) {
-        if (rememberMeEl.checked) {
-          localStorage.setItem("rememberedUser", username);
-        } else {
-          localStorage.removeItem("rememberedUser");
-        }
-		const contextPath = window.location.pathname.split('/')[1];
-        window.location.href = `/${contextPath}/user/member/result.html`;
-      } else {
-        msgEl.textContent = data.message || "登入失敗";
-      }
-    });
+loginBtn.addEventListener('click', () => {
+	msg.textContent = '';
+	msg.style.color = 'red';
+
+	if (!username.value.trim() || !password.value) {
+		msg.textContent = '請輸入帳號與密碼';
+		return;
+	}
+
+	fetch('login', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: "include",
+		body: JSON.stringify({
+			userName: username.value.trim(),
+			password: password.value,
+			rememberMe: remember ? remember.checked : false
+		})
+	})
+		.then(resp => resp.json())
+		.then(body => {
+			if (body.successful) {
+				msg.style.color = 'green';
+				sessionStorage.setItem("loggedInNickname", body.data.nickName);
+				if (remember && remember.checked) {
+					localStorage.setItem('savedUsername', username.value.trim());
+				} else {
+					localStorage.removeItem('savedUsername');
+				}
+				window.location.href = 'result.html';
+			} else {
+				alert(body.message || "登入失敗");
+			}
+		});
 });

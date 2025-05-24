@@ -5,7 +5,7 @@ const params = new URLSearchParams(window.location.search);
 const token = params.get('token');
 
 if (!token) {
-  title.textContent = '❌ 驗證失敗';
+  title.textContent = '驗證失敗';
   msg.textContent = '沒有提供驗證 token。';
 } else {
   fetch(`/verify?token=${token}`)
