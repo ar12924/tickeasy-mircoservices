@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import common.util.CommonUtil;
 import user.notify.service.NotificationService;
 import user.notify.service.impl.NotificationServiceImpl;
 import user.notify.vo.Notification;
@@ -27,11 +28,7 @@ public class NotificationReadController extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 		private NotificationService notificationService;
 		public void init() throws ServletException {
-			try {
-				notificationService = new NotificationServiceImpl();
-			} catch (NamingException e) {
-				e.printStackTrace();
-			}
+			notificationService =CommonUtil.getBean(getServletContext(),NotificationService.class);
 		}
 		
 		
