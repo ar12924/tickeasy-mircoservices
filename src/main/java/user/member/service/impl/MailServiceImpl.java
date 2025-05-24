@@ -10,8 +10,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.stereotype.Component;
+
 import user.member.service.MailService;
 
+@Component
 public class MailServiceImpl implements MailService{
 	
     private static final String SMTP_HOST = "smtp.gmail.com";
