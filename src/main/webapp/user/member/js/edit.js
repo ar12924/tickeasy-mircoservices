@@ -1,100 +1,131 @@
 const loggedInNickname = document.querySelector('#loggedInNickname');
 const logoutButton = document.querySelector('#logoutButton');
+const saveButton = document.querySelector('#saveButton');
 const username = document.querySelector('#username');
+const form = document.querySelector('#editForm');
 const password = document.querySelector('#password');
 const cPassword = document.querySelector('#cPassword');
 const nickname = document.querySelector('#nickname');
 const email = document.querySelector('#email');
 const unicode = document.querySelector('#unicode');
-const saveButton = document.querySelector('#saveButton');
 const msg = document.querySelector('#msg');
+const photoPreview = document.querySelector('#photoPreview');
+const photoInput = document.querySelector('#photoInput');
 
 // 顯示登入者暱稱
-loggedInNickname.textContent = sessionStorage.getItem('loggedInNickname');
+loggedInNickname.textContent = sessionStorage.getItem('loggedInNickname') || '訪客';
 
 // 載入會員資訊
-fetch('find')
-  .then(resp => resp.json())
-  .then(body => {
-    if (body.successful) {
-      username.value = body.userName || '';
-      nickname.value = body.nickName || '';
-      email.value = body.email || '';
-      unicode.value = body.unicode || '';
-    } else {
-      alert(body.message || '請先登入');
-      location.href = 'login.html';
-    }
-  });
+fetch('find', { credentials: 'include' })
+	.then(resp => resp.json())
+	.then(body => {
+		if (!body.successful) {
+			msg.textContent = '尚未登入，請先登入';
+			msg.innerHTML += '<br><a href="login.html">登入頁面</a>';
+			return;
+		}
+		const data = body.data; 
+		username.value = data.userName || '';
+		nickname.value = data.nickName || '';
+		email.value = data.email || '';
+		unicode.value = data.unicode || '';
+		if (data.photo) {
+			photoPreview.src = 'data:image/jpeg;base64,' + data.photo;
+			photoPreview.style.display = 'block';
+			defaultIcon.style.display = 'none';
+		} else {
+			photoPreview.style.display = 'none';
+			defaultIcon.style.display = 'inline-block';;
+		}
+	})
+	.catch(err => {
+		console.error(err);
+		msg.textContent = '載入會員資料失敗';
+		msg.innerHTML += '<br><a href="login.html">重新登入</a>';
+	});
 
-saveButton.addEventListener('click', () => {
-  msg.textContent = '';
-  msg.style.color = 'red';
-
-  const pw = password.value.trim();
-  const cpw = cPassword.value.trim();
-  const nick = nickname.value.trim();
-  const em = email.value.trim();
-  const uni = unicode.value.trim();
-
-  if (pw && pw.length < 6) {
-    msg.textContent = '密碼長度須大於 6 字元';
-    return;
-  }
-
-  if (pw !== cpw) {
-    msg.textContent = '密碼與確認密碼不一致';
-    return;
-  }
-
-  if (nick.length < 1 || nick.length > 20) {
-    msg.textContent = '暱稱長度須介於 1～20 字元';
-    return;
-  }
-
-  if (uni && !/^\d{8}$/.test(uni)) {
-    msg.textContent = '統一編號格式錯誤，應為 8 碼數字';
-    return;
-  }
-
-  if (em && !/^[\w.-]+@[\w.-]+\.[A-Za-z]{2,6}$/.test(em)) {
-    msg.textContent = '電子郵件格式錯誤';
-    return;
-  }
-
-  fetch('edit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      password: pw,
-      nickname: nick,
-      email: em,
-      unicode: uni
-    })
-  })
-    .then(resp => resp.json())
-    .then(body => {
-      if (body.successful) {
-        msg.style.color = 'blue';
-        msg.innerHTML = `修改成功<br>使用者名稱：${body.userName}<br>暱稱：${body.nickName}`;
-        sessionStorage.setItem('loggedInNickname', body.nickName);
-      } else {
-        msg.textContent = body.message || '更新失敗';
-      }
-    });
+// 圖片即時預覽
+photoInput.addEventListener('change', e => {
+	const file = e.target.files[0];
+	if (!file) return;
+	const reader = new FileReader();
+	reader.onload = () => photoPreview.src = reader.result;
+	reader.readAsDataURL(file);
 });
 
+// 儲存變更
+saveButton.addEventListener('click', () => {
+	msg.textContent = '';
+	msg.style.color = 'red';
+
+	const pw = password.value.trim();
+	const cpw = cPassword.value.trim();
+	const nick = nickname.value.trim();
+	const em = email.value.trim();
+	const uni = unicode.value.trim();
+	const fd = new FormData(); // 建立 FormData，含檔案上傳
+
+	if (pw.trim()) {
+		if (pw.length < 6) {
+			msg.textContent = '密碼長度須大於等於 6 字元';
+			return;
+		}
+		if (pw !== cpw) {
+			msg.textContent = '密碼與確認密碼不一致';
+			return;
+		}
+		fd.append('password', pw);
+	}
+	if (nick.length < 1 || nick.length > 20) {
+		msg.textContent = '暱稱長度須介於 1～20 字元';
+		return;
+	}
+	if (uni && !/^\d{8}$/.test(uni)) {
+		msg.textContent = '統一編號格式錯誤，應為 8 碼數字';
+		return;
+	}
+	if (em && !/^[\w.-]+@[\w.-]+\.[A-Za-z]{2,6}$/.test(em)) {
+		msg.textContent = '電子郵件格式錯誤';
+		return;
+	}
+
+	if (nick) fd.append('nickName', nick);
+	if (em) fd.append('email', em);
+	if (uni) fd.append('unicode', uni);
+	if (photoInput.files.length > 0) {
+		fd.append('photo', photoInput.files[0]);
+	}
+
+	fetch('edit', {
+		method: 'POST',
+		credentials: 'include',
+		body: fd
+	})
+		.then(resp => resp.json())
+		.then(body => {
+			if (body.successful) {
+				msg.style.color = 'blue';
+				msg.innerHTML = `修改成功<br>
+                           使用者名稱：${body.userName}<br>
+                           暱稱：${body.nickName}`;
+				sessionStorage.setItem('loggedInNickname', body.nickName);
+			} else {
+				msg.textContent = body.message || '更新失敗';
+			}
+		});
+});
+
+// 登出
 logoutButton.addEventListener('click', () => {
-  if (confirm('是否登出？')) {
-    fetch('logout')
-      .then(resp => resp.json())
-      .then(body => {
-        if (body.successful) {
-          sessionStorage.removeItem('loggedInNickname');
-          location.href = 'login.html';
-        } else {
-          alert(body.message || '登出失敗');
-        }
-      });
-  }
+	if (!confirm('是否登出？')) return;
+	fetch('logout', { credentials: 'include' })
+		.then(resp => resp.json())
+		.then(body => {
+			if (body.successful) {
+				sessionStorage.removeItem('loggedInNickname');
+				location.href = 'login.html';
+			} else {
+				alert(body.message || '登出失敗');
+			}
+		});
 });

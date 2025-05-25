@@ -1,15 +1,7 @@
-/* body {
-  font-family: sans-serif;
-  background: #f5f5f5;
-  display: flex;
-  padding: 2rem 0;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-} */
+@charset "UTF-8";/* edit.css */
 
-.register-box {
+/* Container for edit page, similar to register-box */
+.my-tickets {
   margin: 2rem auto;
   max-width: 360px;
   width: 100%;
@@ -19,7 +11,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.register-box h2 {
+.my-tickets h2 {
   text-align: center;
   color: #ec4899;
   margin-bottom: 24px;
@@ -36,14 +28,29 @@
   font-weight: bold;
 }
 
-.register-box input,
-.register-box select {
+.my-tickets input,
+.my-tickets select {
   width: 100%;
   padding: 10px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+/* Photo preview group */
+.photo-group {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.photo-group img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 0.5rem;
 }
 
 .checkbox-group {
@@ -64,7 +71,7 @@
   height: 1rem;
 }
 
-button {
+button.join-button {
   width: 100%;
   background-color: #ec4899;
   color: white;
@@ -75,7 +82,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button.join-button:hover {
   background-color: #c2185b;
 }
 
@@ -86,15 +93,21 @@ button:hover {
   font-size: 14px;
 }
 
-.my-tickets {
-  background: transparent;
+.user-info {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 1rem;
+  font-size: 0.9rem;
 }
-
-.error {
-  color: red;
-  font-size: 0.875em;
-  margin-left: 0.5em;
+.user-info #loggedInNickname {
+  margin-right: 0.5rem;
 }
-input:invalid, select:invalid {
-  border-color: red;
+.user-info #logoutButton {
+  background: none;
+  border: none;
+  color: #ec4899;
+  cursor: pointer;
+}
+.user-info #logoutButton:hover {
+  text-decoration: underline;
 }
