@@ -79,8 +79,8 @@ function ticket_loaded() {
 		})
 	})
 		.then(resp => resp.json())
-		.then(tickets => {
-			for (let ticket of tickets) {
+		.then(ticketsView => {
+			for (let ticketView of ticketsView) {
 
 
 		
@@ -90,32 +90,32 @@ function ticket_loaded() {
 																<img src="../../common/images/activityPic.png" alt="ticket">
 															</div>
 															<div class="tk_region tk_center">
-																<div class="tk_title">${ticket.eventName}</div>
+																<div class="tk_title">${ticketView.eventName}</div>
 																<div class="tk_content">
 																	<div class="tk_content_set">
 																		<div class="tk_content_title ">活動時間</div>
-																		<div class="tk_content_text tk_content_time">*2024/03/15*</div>
+																		<div class="tk_content_text tk_content_time">${ticketView.eventFromDate}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">活動地點</div>
-																		<div class="tk_content_text tk_content_palce">*台北市信義區|台北流行音樂中心</div>
+																		<div class="tk_content_text tk_content_palce">${ticketView.place}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">票號</div>
-																		<div class="tk_content_text tk_content_tkNo">${ticket.orderId}</div>
+																		<div class="tk_content_text tk_content_tkNo">${ticketView.orderId}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">票種</div>
-																		<div class="tk_content_text tk_content_tkType">**搖滾區</div>
+																		<div class="tk_content_text tk_content_tkType">${ticketView.categoryName}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">序號</div>
-																		<div class="tk_content_text tk_content_No">${ticket.queueId}</div>
+																		<div class="tk_content_text tk_content_No">${ticketView.queueId}</div>
 																	</div>
 																</div>
 															</div>
 															<div class="tk_region tk_right">
-																<div class="tk_status">${ticket.status}</div>
+																<div class="tk_status">${ticketView.status}</div>
 																<div class="tk_more"><a class="tk_more_ -view"href="#">查看票券詳情</a></div>
 																<div class="tk_more"><a class="tk_more_ -unview" href="#">收合票券詳情</a></div>
 															</div>
@@ -125,27 +125,27 @@ function ticket_loaded() {
 																<div class="tk_content">
 																	<div class="tk_content_set">
 																		<div class="tk_content_title ">價格</div>
-																		<div class="tk_content_text tk_content_price">${ticket.price}</div>
+																		<div class="tk_content_text tk_content_price">${ticketView.price}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">是否使用</div>
-																		<div class="tk_content_text tk_content_used">${ticket.isUsed}</div>
+																		<div class="tk_content_text tk_content_used">${ticketView.isUsed}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">姓名</div>
-																		<div class="tk_content_text tk_content_name">${ticket.participantName}</div>
+																		<div class="tk_content_text tk_content_name">${ticketView.participantName}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">手機號碼</div>
-																		<div class="tk_content_text tk_content_phone">${ticket.phone}</div>
+																		<div class="tk_content_text tk_content_phone">${ticketView.phone}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">電子郵件</div>
-																		<div class="tk_content_text tk_content_email">${ticket.email}</div>
+																		<div class="tk_content_text tk_content_email">${ticketView.email}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">身份證字號</div>
-																		<div class="tk_content_text tk_content_id">${ticket.idCard}</div>
+																		<div class="tk_content_text tk_content_id">${ticketView.idCard}</div>
 																	</div>
 																</div>
 															</div>

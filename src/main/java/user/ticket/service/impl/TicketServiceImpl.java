@@ -16,6 +16,7 @@ import user.ticket.dao.TicketDao;
 import user.ticket.dao.impl.TicketDaoImpl;
 import user.ticket.service.TicketService;
 import user.ticket.vo.Ticket;
+import user.ticket.vo.TicketView;
 
 public class TicketServiceImpl implements TicketService{
 
@@ -28,9 +29,9 @@ public class TicketServiceImpl implements TicketService{
 	
 
 	@Override
-	public List<Ticket> ticketList(int memberId) {
+	public List<TicketView> ticketList(int memberId) {
 		
-		List<Ticket> result = new ArrayList<>();
+		List<TicketView> result = new ArrayList<>();
 
 		result = ticketDao.selectAllByMemberId(memberId);
 		

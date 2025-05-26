@@ -21,6 +21,7 @@ import user.notify.service.impl.NotificationServiceImpl;
 import user.ticket.service.TicketService;
 import user.ticket.service.impl.TicketServiceImpl;
 import user.ticket.vo.Ticket;
+import user.ticket.vo.TicketView;
 
 
 
@@ -52,8 +53,9 @@ public class TicketListController extends HttpServlet{
 
 
 			
-			List<Ticket> tickets = ticketService.ticketList(Integer.parseInt(memId));
-			String json = gson.toJson(tickets);
+			List<TicketView> ticketsView = ticketService.ticketList(Integer.parseInt(memId));
+			
+			String json = gson.toJson(ticketsView);
 			
 			resp.setContentType("application/json");
 			resp.getWriter().write(json);
