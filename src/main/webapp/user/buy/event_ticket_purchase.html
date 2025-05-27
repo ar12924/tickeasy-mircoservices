@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TickEasy - 探索精彩活動</title>
+    <link rel="stylesheet" href="./css/event_ticket_purchase.css">
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
+    <!-- is.js 函式庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script>
+</head>
+
+<body>
+    <!-- 主導覽列 nav -->
+    <nav>
+        <div class="logo">
+            <a href="/">TickEasy</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#tickets">我的訂單</a></li>
+            <li><a href="#favorites">我的關注</a></li>
+            <li><a href="#account">我的票券</a></li>
+            <li><a href="#notifications">通知中心</a></li>
+            <li><a href="#profile" class="cta-button">會員中心</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主內容區塊 -->
+    <main class="main-content">
+        <!-- 活動內容 - 使用Vue應用 -->
+        <div id="app">
+            <!-- 活動導航區塊 -->
+            <div class="event-navigation">
+                <div class="event-back">
+                    <a href="#"><span class="arrow-back">‹</span> {{ event ? event.eventName : '載入中...' }}</a>
+                </div>
+                <div class="event-tabs">
+                    <a href="#info" class="tab-link">活動資訊</a>
+                    <a href="#price" class="tab-link">票價資訊</a>
+                    <a href="#transfer" class="tab-link">轉票專區</a>
+                    <a href="#discussion" class="tab-link">討論區</a>
+                </div>
+            </div>
+            <!-- 讀取中狀態 -->
+            <div v-if="loading" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>讀取中，請稍候...</p>
+            </div>
+
+            <!-- 錯誤訊息 -->
+            <div v-if="error" class="error-message">
+                <p>{{ error }}</p>
+                <button @click="fetchEventData" class="retry-button">重試</button>
+            </div>
+
+            <!-- 活動內容 -->
+            <section v-if="event && !loading" class="event-header">
+                <img :src="eventImageUrl" :alt="event.eventName" class="event-image">
+
+                <div class="event-details">
+                    <div class="event-info">
+                        <div class="event-title-row">
+                            <h1 class="event-title">{{ event.eventName }}</h1>
+                            <button @click="toggleFavorite" class="favorite-button"
+                                :class="{ 'is-favorite': event.isFollowed === 1 }">
+                                <span v-if="event.isFollowed === 1">♥</span>
+                                <span v-else>♡</span>
+                            </button>
+                        </div>
+                        <div class="event-meta">
+                            <div><strong>活動日期：</strong>{{ formatDate(event.eventFromDate) }} ~ {{
+                                formatDate(event.eventToDate) }}</div>
+                            <div><strong>地點：</strong>{{ event.place }}</div>
+                            <div><strong>主辦單位：</strong>{{ event.eventHost }}</div>
+                        </div>
+                        <hr>
+                        <div class="event-description">
+                            <h3>活動簡介</h3>
+                            <p>{{ event.summary }}</p>
+                            <h3>活動詳情</h3>
+                            <p>{{ event.detail }}</p>
+                        </div>
+                    </div>
+
+                    <div class="event-booking">
+                        <h3 class="booking-title">票券資訊</h3>
+                        <div v-if="ticketTypes.length === 0" class="no-tickets">
+                            目前沒有可售票券
+                        </div>
+                        <div v-else>
+                            <div v-for="ticket in ticketTypes" :key="ticket.typeId" class="ticket-option">
+                                <div class="ticket-info">
+                                    <span class="ticket-name">{{ ticket.categoryName }}</span>
+                                    <span class="ticket-remaining">剩餘: {{ ticket.remainingTickets }} 張</span>
+                                </div>
+                                <span class="ticket-price">NT$ {{ formatPrice(ticket.price) }}</span>
+                            </div>
+                            <div class="ticket-sell-period">
+                                <p>售票期間: {{ formatDateShort(ticketTypes[0].sellFromTime) }} ~ {{
+                                    formatDateShort(ticketTypes[0].sellToTime) }}</p>
+                            </div>
+                            <a href="#book-now" class="booking-button" :class="{ 'disabled': !hasAvailableTickets }"
+                                @click.prevent="handleBookingClick">
+                                {{ hasAvailableTickets ? '立即購票' : '售票已結束' }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 頁腳 footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>關於我們</h3>
+                <ul>
+                    <li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>客戶服務</h3>
+                <ul>
+                    <li><a href="#faq">常見問題</a></li>
+                    <li><a href="#contact">聯絡我們</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>售票須知</h3>
+                <ul>
+                    <li><a href="#terms">購票說明</a></li>
+                    <li><a href="#policy">退票政策</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>追蹤我們</h3>
+                <div class="social-links">
+                    <a href="#facebook">Facebook</a>
+                    <a href="#instagram">Instagram</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- 引入自定義JavaScript -->
+    <script src="./js/event_ticket_purchase.js"></script>
+</body>
+
+</html>

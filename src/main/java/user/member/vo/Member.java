@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -79,14 +80,23 @@ public class Member {
 	@UpdateTimestamp
 	@Column(name = "UPDATE_TIME", insertable = false)
 	private Timestamp updateTime;
-
-	@OneToMany(mappedBy = "member")
-	private List<VerificationToken> tokens;
+	
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private transient List<VerificationToken> tokens;
 
 	@Transient
 	private boolean successful;
 
 	@Transient
 	private String message;
+
+	@Transient
+	private String rePassword;
+
+	@Transient
+	private Boolean agree;
+
+	@Transient
+	private Boolean hostApply;
 
 }

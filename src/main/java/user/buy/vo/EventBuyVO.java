@@ -51,9 +51,6 @@ public class EventBuyVO {
     @Column(name = "image")
     private byte[] image;
     
-    @Column(name = "keyword_id")
-    private Integer keywordId;
-    
     @Column(name = "member_id", nullable = false)
     private Integer memberId;
     
@@ -64,16 +61,6 @@ public class EventBuyVO {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_time", insertable = false, updatable = false)
     private Date updateTime;
-    
-    // 非資料庫欄位
-    @Transient
-    private String keyword1;
-    
-    @Transient
-    private String keyword2;
-    
-    @Transient
-    private String keyword3;
     
     @Transient
     private Integer remainingTickets;
@@ -178,14 +165,6 @@ public class EventBuyVO {
         this.image = image;
     }
 
-    public Integer getKeywordId() {
-        return keywordId;
-    }
-
-    public void setKeywordId(Integer keywordId) {
-        this.keywordId = keywordId;
-    }
-
     public Integer getMemberId() {
         return memberId;
     }
@@ -208,30 +187,6 @@ public class EventBuyVO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getKeyword1() {
-        return keyword1;
-    }
-
-    public void setKeyword1(String keyword1) {
-        this.keyword1 = keyword1;
-    }
-
-    public String getKeyword2() {
-        return keyword2;
-    }
-
-    public void setKeyword2(String keyword2) {
-        this.keyword2 = keyword2;
-    }
-
-    public String getKeyword3() {
-        return keyword3;
-    }
-
-    public void setKeyword3(String keyword3) {
-        this.keyword3 = keyword3;
     }
 
     public Integer getRemainingTickets() {

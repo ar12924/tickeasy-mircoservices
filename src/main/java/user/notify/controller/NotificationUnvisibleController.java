@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import common.util.CommonUtil;
 import user.notify.service.NotificationService;
 import user.notify.service.impl.NotificationServiceImpl;
 import user.notify.vo.Notification;
@@ -21,17 +22,13 @@ import user.notify.vo.Notification;
 
 
 
-@WebServlet("/notification-read")
-public class NotificationRead extends HttpServlet{
+@WebServlet("/notification-unvisible")
+public class NotificationUnvisibleController extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 		private NotificationService notificationService;
 		public void init() throws ServletException {
-			try {
-				notificationService = new NotificationServiceImpl();
-			} catch (NamingException e) {
-				e.printStackTrace();
-			}
+			notificationService =CommonUtil.getBean(getServletContext(),NotificationService.class);
 		}
 		
 		
@@ -39,19 +36,18 @@ public class NotificationRead extends HttpServlet{
 		protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			Gson gson =new Gson();
 			JsonObject info= gson.fromJson(req.getReader(),JsonObject.class);
-	    	String memId=info.get("memberId").getAsString();
-	    	String memNtfId=info.get("memberNotificationId").getAsString();
-	        	
+	    	String memberNotificationId=info.get("memberNotificationId").getAsString();
+	    	
 			
 
 
 	
 
 			
-			Integer notificationReadUpdate = notificationService.notificationRead(Integer.parseInt(memId),Integer.parseInt(memNtfId));
+			Integer notificationVisibleUpdate = notificationService.notificationVisibleUpdate(Integer.parseInt(memberNotificationId));
 			JsonObject respBody =new JsonObject();
 				
-			if(notificationReadUpdate!=null) {
+			if(notificationVisibleUpdate!=null) {
 				respBody.addProperty("success", true);
 			}else {
 				respBody.addProperty("success", false);

@@ -10,11 +10,16 @@ public interface MemberDao extends CommonDao{
 
 	boolean update(Member member);
 
+	boolean delete(int memberId);
+
 	Member findByUserName(String userName);
 
 	Member findById(int memberId);
 
-	boolean delete(int memberId);
+	Member findByEmail(String email);
+
+	Member findByPhone(String phone);
 
 	List<Member> listAll();
+
 }
