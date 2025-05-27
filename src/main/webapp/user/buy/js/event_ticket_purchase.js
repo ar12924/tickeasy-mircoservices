@@ -322,6 +322,13 @@ window.app = Vue.createApp({
 
             const date = new Date(dateString);
             return !isNaN(date.getTime());
+        },
+
+        //導航至ticket_exchange_area.html
+        goToTicketExchange() {
+            if (this.eventId) {
+                window.location.href = `../ticket/ticket_exchange_area.html?eventId=${this.eventId}`;
+            }
         }
     },
 

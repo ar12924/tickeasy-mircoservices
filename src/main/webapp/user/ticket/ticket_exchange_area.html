@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TickEasy - 轉票專區</title>
+    <link rel="stylesheet" href="./css/ticket_exchange_area.css">
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
+    <!-- is.js 函式庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script>
+</head>
+
+<body>
+    <!-- 主導覽列 nav -->
+    <nav>
+        <div class="logo">
+            <a href="/">TickEasy</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#tickets">我的訂單</a></li>
+            <li><a href="#favorites">我的關注</a></li>
+            <li><a href="#account">我的票券</a></li>
+            <li><a href="#notifications">通知中心</a></li>
+            <li><a href="#profile" class="cta-button">會員中心</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主內容區塊 -->
+    <main class="main-content">
+        <div id="app">
+            <!-- 活動導航區塊 -->
+            <div class="event-navigation">
+                <div class="event-back">
+                    <a href="#" @click.prevent="goBackToEvent"><span class="arrow-back">‹</span> {{ eventName ||
+                        '載入中...' }}</a>
+                </div>
+                <div class="event-tabs">
+                    <a href="#" @click.prevent="goToEventInfo" class="tab-link">活動資訊</a>
+                    <a href="#" @click.prevent="goToTicketPrice" class="tab-link">票價資訊</a>
+                    <a href="#transfer" class="tab-link active">轉票專區</a>
+                    <a href="#discussion" class="tab-link">討論區</a>
+                </div>
+            </div>
+
+            <!-- 轉票專區內容 -->
+            <div class="exchange-area">
+                <h1 class="exchange-title">轉票專區</h1>
+
+                <!-- 載入中狀態 -->
+                <div v-if="loading" class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p>載入中，請稍候...</p>
+                </div>
+
+                <!-- 錯誤訊息 -->
+                <div v-if="error && !loading" class="error-message">
+                    <p>{{ error }}</p>
+                    <button @click="initPage" class="retry-button">重試</button>
+                </div>
+
+                <!-- 發表轉票表單 -->
+                <div v-if="!loading && !error && isLoggedIn" class="ticket-form">
+                    <h2 class="form-title">發表轉票</h2>
+                    <form @submit.prevent="submitSwapPost">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="user-tickets">你的票券</label>
+                                <select v-model="swapForm.ticketId" id="user-tickets" class="form-control form-input"
+                                    required>
+                                    <option value="">請選擇票券</option>
+                                    <option v-for="ticket in userTickets" :key="ticket.ticketId"
+                                        :value="ticket.ticketId">
+                                        {{ ticket.categoryName }} - {{ ticket.participantName }} (NT$ {{
+                                        formatPrice(ticket.price) }})
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="wanted-ticket">希望交換的票區</label>
+                                <input v-model="swapForm.wantedTicketType" type="text" id="wanted-ticket"
+                                    class="form-control form-input" placeholder="VIP區" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <textarea v-model="swapForm.description" id="ticket-description" class="form-control"
+                                rows="3" placeholder="補充說明（選填）" required></textarea>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="submit-button" :disabled="submitting">
+                                {{ submitting ? '發佈中...' : '發起轉票' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 未登入提示 -->
+                <div v-if="!loading && !error && !isLoggedIn" class="login-prompt">
+                    <p>請先登入才能發表轉票貼文</p>
+                    <button @click="goToLogin" class="submit-button">前往登入</button>
+                </div>
+
+                <!-- 轉票列表 -->
+                <div v-if="!loading && !error">
+                    <div v-if="swapPosts.length === 0" class="no-posts">
+                        <p>目前沒有轉票貼文</p>
+                    </div>
+                    <div v-else>
+                        <div v-for="post in swapPosts" :key="post.postId" class="ticket-listing">
+                            <div class="user-content">
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <img v-if="post.member && getMemberPhotoUrl(post.member)"
+                                            :src="getMemberPhotoUrl(post.member)" :alt="post.member.nickName"
+                                            @error="handleImageError($event, post.member)" style="display: block;">
+                                        <div v-else class="avatar-placeholder">{{ getAvatarText(getMemberNickName(post))
+                                            }}</div>
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="user-name">{{ getMemberNickName(post) }}</div>
+                                        <div class="user-role">{{ getRelativeTime(post) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ticket-info">
+                                <div class="ticket-label" :class="{ 'ticket-unavailable': post.status === '轉票已完成' }">
+                                    {{ post.status || '轉票進行中' }}
+                                </div>
+                            </div>
+                            <div class="ticket-exchange-section">
+                                <div class="ticket-exchange-info">
+                                    <div class="exchange-item">
+                                        <span class="exchange-label">持有票券：</span>
+                                        <span class="exchange-value">{{ getTicketCategoryName(post) }} (NT$ {{
+                                            formatPrice(getTicketPrice(post)) }})</span>
+                                    </div>
+                                    <div class="exchange-item">
+                                        <span class="exchange-label">希望交換：</span>
+                                        <span class="exchange-value">{{ extractWantedTicketType(post.postDescription)
+                                            }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ticket-comment">
+                                {{ post.postDescription }}
+                            </div>
+                            <div class="contact-button-section">
+                                <button v-if="!isMyPost(post) && isLoggedIn && !post.showCommentForm"
+                                    @click="showCommentForm(post)" class="contact-button">我要換票</button>
+                                <button v-else-if="!isLoggedIn" @click="goToLogin" class="contact-button">登入後換票</button>
+                                <button v-else-if="isMyPost(post)" @click="deletePost(post.postId)"
+                                    class="contact-button delete-button">刪除貼文</button>
+                                <button v-if="post.showCommentForm" @click="hideCommentForm(post)"
+                                    class="contact-button cancel-button">取消</button>
+                            </div>
+
+                            <!-- 換票留言表單 -->
+                            <div v-if="post.showCommentForm" class="comment-form-section">
+                                <h4>換票留言</h4>
+                                <form @submit.prevent="submitComment(post)">
+                                    <div class="form-group">
+                                        <label>選擇您要交換的票券</label>
+                                        <select v-model="post.commentForm.ticketId" class="form-control" required>
+                                            <option value="">請選擇票券</option>
+                                            <option v-for="ticket in userTickets" :key="ticket.ticketId"
+                                                :value="ticket.ticketId">
+                                                {{ ticket.categoryName }} - {{ ticket.participantName }} (NT$ {{
+                                                formatPrice(ticket.price) }})
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>留言內容</label>
+                                        <textarea v-model="post.commentForm.description" class="form-control" rows="4"
+                                            placeholder="請說明您的換票需求..." required></textarea>
+                                    </div>
+                                    <div class="form-buttons">
+                                        <button type="submit" class="submit-button" :disabled="post.commentSubmitting">
+                                            {{ post.commentSubmitting ? '送出中...' : '送出留言' }}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- 留言按鈕 -->
+                            <div class="comments-toggle">
+                                <button @click="toggleComments(post.postId)" class="toggle-comments-button">
+                                    {{ post.showComments ? '隱藏留言' : '顯示留言' }}
+                                    <span v-if="post.commentCount">({{ post.commentCount }})</span>
+                                </button>
+                            </div>
+
+                            <!-- 留言區塊 -->
+                            <div v-if="post.showComments" class="comments-section">
+                                <div v-if="post.comments && post.comments.length > 0">
+                                    <div v-for="comment in post.comments" :key="comment.commentId" class="comment-item">
+                                        <div class="comment-user">
+                                            <div class="user-avatar small">
+                                                <!-- ✅ 修正：使用 getMemberPhotoUrl 方法和正確的錯誤處理 -->
+                                                <img v-if="comment.member && getMemberPhotoUrl(comment.member)"
+                                                    :src="getMemberPhotoUrl(comment.member)"
+                                                    :alt="comment.member.nickName"
+                                                    @error="handleImageError($event, comment.member)"
+                                                    style="display: block;">
+                                                <div v-else class="avatar-placeholder">
+                                                    {{ getAvatarText(getCommentMemberNickName(comment)) }}
+                                                </div>
+                                            </div>
+                                            <div class="comment-details">
+                                                <span class="comment-user-name">{{ getCommentMemberNickName(comment)
+                                                    }}</span>
+                                                <span class="comment-time">{{ getCommentRelativeTime(comment) }}</span>
+                                                <span class="comment-status"
+                                                    :class="getStatusClass(comment.swappedStatus)">
+                                                    {{ getCommentStatusText(comment) }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="comment-content">
+                                            <p>{{ comment.commentDescription }}</p>
+                                            <div class="comment-ticket-info">
+                                                提供票券: {{ getCommentTicketCategoryName(comment) }} (NT$ {{
+                                                formatPrice(getCommentTicketPrice(comment)) }})
+                                            </div>
+                                        </div>
+                                        <div v-if="canUpdateCommentStatus(post, comment)" class="comment-actions">
+                                            <button v-if="comment.swappedStatus === 0"
+                                                @click="updateCommentStatus(comment.commentId, 1)"
+                                                class="status-button accept">接受</button>
+                                            <button v-if="comment.swappedStatus === 1"
+                                                @click="updateCommentStatus(comment.commentId, 2)"
+                                                class="status-button complete">完成交換</button>
+                                            <button v-if="comment.swappedStatus < 2"
+                                                @click="updateCommentStatus(comment.commentId, 3)"
+                                                class="status-button cancel">取消</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else class="no-comments">
+                                    暫無留言
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 頁腳 footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>關於我們</h3>
+                <ul>
+                    <li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>客戶服務</h3>
+                <ul>
+                    <li><a href="#faq">常見問題</a></li>
+                    <li><a href="#contact">聯絡我們</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>售票須知</h3>
+                <ul>
+                    <li><a href="#terms">購票說明</a></li>
+                    <li><a href="#policy">退票政策</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>追蹤我們</h3>
+                <div class="social-links">
+                    <a href="#facebook">Facebook</a>
+                    <a href="#instagram">Instagram</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 引入自定義JavaScript -->
+    <script src="./js/ticket_exchange_area.js"></script>
+</body>
+
+</html>
