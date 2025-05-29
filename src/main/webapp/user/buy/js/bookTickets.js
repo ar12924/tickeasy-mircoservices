@@ -19,5 +19,5 @@ $(".next").on("click", () => {
     })
     .get();
   console.log(inputsValues);
-  location.href = "bookStep2.html";
+  location.href = "bookDetails.html";
 });
