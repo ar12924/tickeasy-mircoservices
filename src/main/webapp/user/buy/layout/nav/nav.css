@@ -1,0 +1,25 @@
+/* nav 導覽列  */
+nav {
+  & .navbar-brand {
+    & .navbar-item {
+      font-weight: bold;
+      font-size: 30px;
+      color: #ec4899;
+    }
+    & .navbar-burger {
+      color: #ec4899;
+    }
+    & .navbar-burger:hover {
+      background-color: rgba(236, 72, 153, 0.1);
+    }
+  }
+  & .navbar-menu {
+    & .navbar-item {
+      & .button {
+        background-color: #ec4899;
+        color: white;
+      }
+    }
+  }
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
