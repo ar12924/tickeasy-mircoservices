@@ -13,7 +13,7 @@ const ntf_nav_span_change_el = document.querySelector(".change_ntf");
 const now = new Date();
 
 
-
+//計算通知中心各分類頁籤的通知數
 function category_count() {
 	fetch('/maven-tickeasy-v1/notification-list', {
 		method: `POST`,
@@ -30,6 +30,9 @@ function category_count() {
 			let sold_count = 0;
 			let swap_count = 0;
 			let change_count = 0;
+			
+			if(!Array.isArray(notifications)){
+						notifications = [];}
 			let notificationCount = notifications.length;
 			ntf_nav_span_all_el.innerHTML = notificationCount;
 
@@ -59,6 +62,8 @@ function category_count() {
 		})
 }
 
+
+//通知中心各分類的load資料
 function notification_loaded(category) {
 	/*const category_type=category;*/
 	notification_el.innerHTML = "";
@@ -72,6 +77,10 @@ function notification_loaded(category) {
 	})
 		.then(resp => resp.json())
 		.then(notifications => {
+			if(!Array.isArray(notifications)){
+									notifications = [];
+						}
+
 
 			if (category == 1) {
 				/*var category_count_get = document.querySelector("span.all_ntf").innerHTML;
@@ -459,6 +468,8 @@ function notification_loaded(category) {
 
 }
 
+
+//判斷通知中心的分類是否為空需要顯示為空的畫面
 function ntf_isEmpty(count) {
 	if (count == 0) {
 		console.log("123");
@@ -476,6 +487,7 @@ function ntf_isEmpty(count) {
 }
 
 // div.ntf.-unread
+//計算通知中心的各訊息的顯示時間
 function time_count(sendtime) {
 	const sendTime = new Date(sendtime);
 	let diffMs = now - sendTime; // 毫秒差
@@ -498,6 +510,10 @@ function time_count(sendtime) {
 	return displayTime
 }
 
+
+
+//分析資料庫的部份
+
 //           `member_notification_id` INT NOT NULL AUTO_INCREMENT COMMENT '用戶通知ID',
 //暫不理  `notification_id` INT NOT NULL COMMENT '通知ID',
 //暫不接  `member_id` INT NOT NULL COMMENT '用戶ID',
@@ -509,12 +525,16 @@ function time_count(sendtime) {
 //JS  `link_url` VARCHAR(255) NULL COMMENT '相關連結',
 //暫不理  `read_time` DATETIME NULL COMMENT '閱讀時間',
 //JS `send_time` DATETIME NULL COMMENT '發送時間',
+
+//頁面加載的初始值
 document.addEventListener("DOMContentLoaded", function() {
 	notification_el.innerHTML = '';
 	category_count();
 	notification_loaded(1);
 })
 
+
+//處理點擊各通知訊息的delete鈕
 document.addEventListener("click", function(e) {
 
 	const deleteTarget = e.target.closest(".ntf_delete");
@@ -560,6 +580,9 @@ document.addEventListener("click", function(e) {
 	}
 
 })
+
+
+//各頁籤切換的頁面顯示
 document.querySelectorAll(".ntf_tab").forEach(button => {
 	button.addEventListener("click", () => {
 		const tabId = button.getAttribute("data-tab");

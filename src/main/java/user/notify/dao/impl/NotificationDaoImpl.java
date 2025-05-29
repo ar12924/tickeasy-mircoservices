@@ -10,16 +10,21 @@ import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import user.notify.dao.NotificationDao;
 import user.notify.vo.Notification;
 
-
+@Repository
 public class NotificationDaoImpl implements NotificationDao {
 	private DataSource ds;
+	
+	@PersistenceContext
+	private Session session;
 	public NotificationDaoImpl() throws NamingException {
 		ds =(DataSource) new InitialContext()
 				.lookup("java:comp/env/jdbc/tickeasy");
@@ -28,16 +33,13 @@ public class NotificationDaoImpl implements NotificationDao {
 	@Override
 	public List<Notification> selectAllByMemberId(int memberId) {
 		List<Notification> notificationList = new ArrayList<>();
-		try {
-			Session session = getSession();
+	
+			/* session = getSession(); */
 			String hql = "FROM Notification WHERE memberId=:memberId AND isVisible=1";
 			notificationList = session.createQuery(hql, Notification.class).setParameter("memberId", memberId)
 					.getResultList();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
+		
 		System.out.println("查到資料筆數：" + notificationList.size());
 		return notificationList;
 		/*

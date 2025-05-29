@@ -51,7 +51,7 @@ document.addEventListener("click",function(e){
 		
 	}
 })
-/*明天搞懂它 */
+/*待確認 */
 function smoothScrollTo(element, targetScrollTop, duration = 600) {
   const startScrollTop = element.scrollTop;
   const distance = targetScrollTop - startScrollTop;

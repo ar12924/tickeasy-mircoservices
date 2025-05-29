@@ -29,16 +29,6 @@ public interface EventInfoService extends CommonService{
      * @return 活動列表
      */
 	List<EventBuyVO> getRecommendedEvents(int limit, Integer memberId);    
-    /**
-     * 根據關鍵字搜索活動
-     * 
-     * @param keyword 關鍵字
-     * @param page 頁碼（從1開始）
-     * @param pageSize 每頁大小
-     * @param memberId 當前會員ID（可為null）
-     * @return 活動列表
-     */
-	List<EventBuyVO> searchEvents(String keyword, int page, int pageSize, Integer memberId);
     
     /**
      * 獲取活動的票券類型列表
@@ -74,4 +64,12 @@ public interface EventInfoService extends CommonService{
      * @return 圖片數據
      */
     byte[] getEventImage(Integer eventId);
+    
+    /**
+     * 計算活動的總剩餘票數
+     *
+     * @param eventId 活動ID
+     * @return 總剩餘票數
+     */
+    Integer calculateTotalRemainingTickets(Integer eventId);
 }
