@@ -1,0 +1,25 @@
+/* footer 頁底列 */
+footer {
+  background-color: #1f2937;
+  & .section {
+    & .columns {
+      & .column {
+        & .footer-col {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          /* align-items: center; */
+          & h3 {
+            color: white;
+            margin-bottom: 1rem;
+          }
+          & a {
+            text-decoration: none;
+            color: #9ca3af;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+  }
+}
