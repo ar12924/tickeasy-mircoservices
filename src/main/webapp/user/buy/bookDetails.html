@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tickeasy!!!</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/bookDetails.css" />
+    <link rel="stylesheet" href="./layout/nav/nav.css" />
+    <link rel="stylesheet" href="./layout/footer/footer.css" />
+  </head>
+  <body>
+    <!-- nav 導覽列 -->
+    <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
+
+    <!-- header 麵包屑 & 進度條 -->
+    <header>
+      <span class="icon-text">
+        <span class="icon">
+          <i class="fa-solid fa-angle-left"></i>
+        </span>
+        <span class="bread">2024春季音樂節</span>
+      </span>
+      <hr />
+      <div class="columns">
+        <div class="column is-4">
+          <div class="circle passed-circle">
+            <span>
+              <i class="fa-solid fa-check"></i>
+            </span>
+          </div>
+          <span class="passed-step">選擇票券</span>
+        </div>
+        <div class="column is-4">
+          <div class="circle passing-circle"><span>2</span></div>
+          <span class="passing-step">填寫資料</span>
+        </div>
+        <div class="column is-4">
+          <div class="circle"><span>3</span></div>
+          <span>付款確認</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- section 主內容 -->
+    <section class="columns is-centered mt-5 mb-6">
+      <div class="column is-6">
+        <!-- 入場者表單 -->
+        <div class="box custom-box custom-container"></div>
+        <!-- 上/下一步按鈕區塊 -->
+        <div class="buttons is-flex is-justify-content-space-between">
+          <button class="button back">返回</button>
+          <button class="button is-danger next" style="color: white">
+            下一步
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- footer 頁底列 -->
+    <footer></footer>
+  </body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="./js/bookDetails.js"></script>
+  <script src="./layout/nav/nav.js"></script>
+  <script src="./layout/footer/footer.js"></script>
+  <script src="./ui/customBox/customBox.js"></script>
+</html>

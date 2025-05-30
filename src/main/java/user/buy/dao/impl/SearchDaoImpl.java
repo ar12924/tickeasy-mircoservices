@@ -33,10 +33,10 @@ public class SearchDaoImpl implements SearchDao {
 		// 3. 查詢(含 LIMIT)
 		Query<EventInfo> queryData = null;
 		if (isKeyword) {
-			queryData = getSession().createQuery(hqlData, EventInfo.class).setFirstResult((pageNumber - 1) * pageSize) // 略過比數
+			queryData = session.createQuery(hqlData, EventInfo.class).setFirstResult((pageNumber - 1) * pageSize) // 略過比數
 					.setMaxResults(pageSize); // 顯示比數
 		} else {
-			queryData = getSession().createQuery(hqlData, EventInfo.class).setParameter("keyword", "%" + keyword + "%")
+			queryData = session.createQuery(hqlData, EventInfo.class).setParameter("keyword", "%" + keyword + "%")
 					.setFirstResult((pageNumber - 1) * pageSize) // 略過比數
 					.setMaxResults(pageSize); // 顯示比數
 		}
@@ -56,9 +56,9 @@ public class SearchDaoImpl implements SearchDao {
 		Query<Long> queryCount = null;
 		// 3. 查詢整張表並聚合
 		if (!isKeyword) {
-			queryCount = getSession().createQuery(hqlCount, Long.class).setParameter("keyword", "%" + keyword + "%");
+			queryCount = session.createQuery(hqlCount, Long.class).setParameter("keyword", "%" + keyword + "%");
 		} else {
-			queryCount = getSession().createQuery(hqlCount, Long.class);
+			queryCount = session.createQuery(hqlCount, Long.class);
 		}
 		// 4. 回傳總筆數
 		return queryCount.uniqueResult();
