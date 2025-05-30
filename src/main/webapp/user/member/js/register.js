@@ -1,10 +1,12 @@
 const form = document.querySelector("#registerForm");
 const username = document.querySelector("#userName");
 const nickname = document.querySelector("#nickName");
-const photo = document.querySelector("#photo");
 const email = document.querySelector("#email");
 const domainSelect = document.querySelector("#domainSelect");
 const customDomain = document.querySelector("#customDomain");
+const photoInput = document.querySelector("#photo");
+const photoPreview = document.querySelector("#photoPreview");
+const defaultIcon = document.querySelector("#defaultIcon");
 const password = document.querySelector("#password");
 const cPassword = document.querySelector("#rePassword");
 const birthDate = document.querySelector("#birthDate");
@@ -13,219 +15,223 @@ const gender = document.querySelector("#gender");
 const idCard = document.querySelector("#idCard");
 const unicode = document.querySelector("#unicode");
 const agree = document.querySelector("#agree");
-const photoPreview = document.querySelector("#photoPreview");
-const defaultIcon = document.querySelector("#defaultIcon");
 const hostApply = document.querySelector("#hostApply");
 const msg = document.querySelector("#msg");
 
-const errorElements = {
-  userName: document.querySelector("#userNameError"),
-  nickName: document.querySelector("#nickNameError"),
-  email: document.querySelector("#emailError"),
-  password: document.querySelector("#passwordError"),
-  rePassword: document.querySelector("#rePasswordError"),
-  phone: document.querySelector("#phoneError"),
-  idCard: document.querySelector("#idCardError"),
-  unicode: document.querySelector("#unicodeError"),
-  agree: document.querySelector("#agreeError"),
-};
+// 錯誤訊息元素
+const userNameError = document.querySelector("#userNameError");
+const nickNameError = document.querySelector("#nickNameError");
+const emailError = document.querySelector("#emailError");
+const passwordError = document.querySelector("#passwordError");
+const rePasswordError = document.querySelector("#rePasswordError");
+const phoneError = document.querySelector("#phoneError");
+const idCardError = document.querySelector("#idCardError");
+const unicodeError = document.querySelector("#unicodeError");
+const agreeError = document.querySelector("#agreeError");
 
-const validations = [
-  {
-    field: username,
-    errorEl: errorElements.userName,
-    validate: (value) => value.trim().length >= 5 && value.trim().length <= 50,
-    errorMsg: "使用者名稱長度須介於5~50字元",
-  },
-  {
-    field: nickname,
-    errorEl: errorElements.nickName,
-    validate: (value) => value.trim().length >= 1 && value.trim().length <= 20,
-    errorMsg: "暱稱長度須介於1~20字元",
-  },
-  {
-    field: email,
-    errorEl: errorElements.email,
-    validate: (value) => {
-      let tempEmail = value.trim();
-      if (domainSelect.value !== "other") {
-        tempEmail += domainSelect.value;
-      } else if (customDomain.value) {
-        tempEmail += customDomain.value;
-      } else {
-        return false;
-      }
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempEmail);
-    },
-    errorMsg: "電子信箱格式錯誤",
-  },
-  {
-    field: password,
-    errorEl: errorElements.password,
-    validate: (value) => value.length >= 6 && value.length <= 12,
-    errorMsg: "密碼長度須介於6~12字元",
-  },
-  {
-    field: cPassword,
-    errorEl: errorElements.rePassword,
-    validate: (value) => value === password.value,
-    errorMsg: "密碼與確認密碼不符合",
-  },
-  {
-    field: phone,
-    errorEl: errorElements.phone,
-    validate: (value) => /^09\d{8}$/.test(value.trim()),
-    errorMsg: "手機格式錯誤，需 09 開頭共 10 碼",
-  },
-  {
-    field: idCard,
-    errorEl: errorElements.idCard,
-    validate: (value) => /^[A-Za-z]\d{9}$/.test(value.trim()),
-    errorMsg: "身分證格式錯誤，開頭英文字母＋9碼數字",
-  },
-  {
-    field: unicode,
-    errorEl: errorElements.unicode,
-    validate: (value) => value.trim() === "" || /^\d{8}$/.test(value.trim()),
-    errorMsg: "統一編號格式錯誤，應為 8 碼數字",
-  },
-  {
-    field: agree,
-    errorEl: errorElements.agree,
-    validate: (value) => value,
-    errorMsg: "請先同意服務條款",
-  },
-];
-
-validations.forEach((validation) => {
-  validation.field.addEventListener("input", () => {
-    const value =
-      validation.field.type === "checkbox"
-        ? validation.field.checked
-        : validation.field.value;
-    if (validation.validate(value)) {
-      validation.errorEl.textContent = "";
-      validation.field.classList.remove("error");
-    } else {
-      validation.errorEl.textContent = validation.errorMsg;
-      validation.field.classList.add("error");
-    }
-  });
-});
-
-domainSelect.addEventListener("change", () => {
-  if (domainSelect.value === "other") {
-    customDomain.style.display = "inline-block";
-    customDomain.required = true;
-  } else {
-    customDomain.style.display = "none";
-    customDomain.required = false;
-    customDomain.value = "";
-  }
-});
-
-function combine() {
-  if (domainSelect.value === "other") {
-    if (!customDomain.value) {
-      errorElements.email.textContent = "請輸入電子信箱";
-      return;
-    }
-  }
-
-  const event = new Event("input");
-  email.dispatchEvent(event);
+// 顯示／清除錯誤
+function showError(el, errorEl, text) {
+	errorEl.textContent = text;
+	el.classList.add("error");
+}
+function clearError(el, errorEl) {
+	errorEl.textContent = "";
+	el.classList.remove("error");
 }
 
-// 圖片即時預覽
-photo.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    photoPreview.src = reader.result;
-    photoPreview.style.display = "block";
-    defaultIcon.style.display = "none";
-  };
-  reader.readAsDataURL(file);
+// === 即時驗證 ===
+// 使用者名稱
+username.addEventListener("input", function() {
+	clearError(username, userNameError);
+	const len = username.value.trim().length;
+	if (len < 5 || len > 50) {
+		showError(username, userNameError, "使用者名稱長度須介於5~50字元");
+	}
 });
 
-function validateForm() {
-  let isValid = true;
+// 暱稱
+nickname.addEventListener("input", function() {
+	clearError(nickname, nickNameError);
+	const len = nickname.value.trim().length;
+	if (len < 1 || len > 20) {
+		showError(nickname, nickNameError, "暱稱長度須介於1~20字元");
+	}
+});
 
-  // 清除所有錯誤訊息
-  msg.textContent = "";
-  validations.forEach((validation) => {
-    validation.errorEl.textContent = "";
-    validation.field.classList.remove("error");
-  });
+// Email
+function validateEmail() {
+	clearError(email, emailError);
+	let e = email.value.trim();
+	if (!e.includes("@")) {
+		if (domainSelect.value !== "other") e += domainSelect.value;
+		else if (customDomain.value.trim()) {
+			let cd = customDomain.value.trim();
+			if (!cd.startsWith("@")) cd = "@" + cd;
+			e += cd;
+		}
+	}
+	const re = /^[\w.-]+@[\w.-]+\.[A-Za-z]{2,6}$/;
+	if (!re.test(e)) showError(email, emailError, "電子信箱格式錯誤");
+}
+email.addEventListener("input", validateEmail);
+domainSelect.addEventListener("change", validateEmail);
+customDomain.addEventListener("input", validateEmail);
 
-  // 驗證每個欄位
-  validations.forEach((validation) => {
-    const value =
-      validation.field.type === "checkbox"
-        ? validation.field.checked
-        : validation.field.value;
-    if (!validation.validate(value)) {
-      validation.errorEl.textContent = validation.errorMsg;
-      validation.field.classList.add("error");
-      isValid = false;
-    }
-  });
+// 密碼
 
-  return isValid;
+function validateConfirmPassword() {
+	clearError(cPassword, rePasswordError);
+
+	const pwd = password.value;
+	const rep = cPassword.value;
+	if (rep !== "" || pwd !== "") {
+		if (rep !== pwd) {
+			showError(cPassword, rePasswordError, "密碼與確認密碼不一致");
+			return false;
+		}
+	}
+	return true;
 }
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!validateForm()) {
-    return;
-  }
-  let fullEmail = email.value.trim();
-  if (domainSelect.value !== "other") {
-    fullEmail += domainSelect.value;
-  } else if (customDomain.value) {
-    fullEmail += customDomain.value;
-  }
+cPassword.addEventListener("input", validateConfirmPassword);
+password.addEventListener("input", function() {
+	clearError(password, passwordError);
+	clearError(cPassword, rePasswordError);
 
-  const payload = {
-    userName: username.value,
-    nickName: nickname.value,
-    email: fullEmail,
-    password: password.value,
-    birthDate: birthDate.value,
-    phone: phone.value,
-    gender: gender.value,
-    idCard: idCard.value,
-    unicode: unicode.value,
-    agree: agree.checked,
-    hostApply: hostApply.checked,
-  };
+	const len = password.value.length;
+	if (len < 6 || len > 12) {
+		showError(password, passwordError, "密碼長度須介於6~12字元");
+	}
+});
 
-  const fd = new FormData();
-  fd.append("json", JSON.stringify(payload));
-  if (photo.files[0]) {
-    fd.append("photo", photo.files[0]);
-  }
-  fetch(form.action, {
-    method: "POST",
-    body: fd, // 不要手動設定 Content-Type！
-    credentials: "include", // 如需帶 Cookie/Session
-  })
-    .then((resp) => resp.json())
-    .then((body) => {
-      if (body.successful || body.message.startsWith("註冊成功")) {
-        msg.style.color = "red";
-        msg.textContent = body.message;
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 2000);
-      } else {
-        msg.textContent = body.message;
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      msg.textContent = "伺服器錯誤，請稍後再試";
-    });
+
+// 電話
+phone.addEventListener("input", function() {
+	clearError(phone, phoneError);
+	if (!/^09\d{8}$/.test(phone.value.trim())) {
+		showError(phone, phoneError, "手機格式錯誤，需 09 開頭共 10 碼");
+	}
+});
+
+// 身分證
+idCard.addEventListener("input", function() {
+	clearError(idCard, idCardError);
+	if (!/^[A-Za-z]\d{9}$/.test(idCard.value.trim())) {
+		showError(idCard, idCardError, "身分證格式錯誤，開頭英文字母＋9碼數字");
+	}
+});
+
+// 統一編號
+unicode.addEventListener("input", function() {
+	clearError(unicode, unicodeError);
+	const v = unicode.value.trim();
+	if (v !== "" && !/^\d{8}$/.test(v)) {
+		showError(unicode, unicodeError, "統一編號格式錯誤，應為8碼數字");
+	}
+});
+
+// 同意條款
+agree.addEventListener("change", function() {
+	clearError(agree, agreeError);
+	if (!agree.checked) {
+		showError(agree, agreeError, "請先同意服務條款");
+	}
+});
+
+// domainSelect 切換顯示 customDomain
+domainSelect.addEventListener("change", function() {
+	const isOther = domainSelect.value === "other";
+	customDomain.style.display = isOther ? "inline-block" : "none";
+	customDomain.required = isOther;
+	if (!isOther) customDomain.value = "";
+});
+
+// 圖片預覽
+photoInput.addEventListener("change", function(e) {
+	const file = e.target.files[0]; if (!file) return;
+	const reader = new FileReader();
+	reader.onload = function() {
+		photoPreview.src = reader.result;
+		photoPreview.style.display = "block";
+		defaultIcon.style.display = "none";
+	};
+	reader.readAsDataURL(file);
+});
+
+form.addEventListener("submit", function(e) {
+	e.preventDefault();
+	msg.textContent = "";
+
+	// 逐一再執行一次各欄位檢驗
+	validateEmail();
+	username.dispatchEvent(new Event('input'));
+	nickname.dispatchEvent(new Event('input'));
+	password.dispatchEvent(new Event('input'));
+	phone.dispatchEvent(new Event('input'));
+	idCard.dispatchEvent(new Event('input'));
+
+	if (unicode.value.trim()) {
+		unicode.dispatchEvent(new Event("input"));
+	} else {
+		clearError(unicode, unicodeError);
+	}
+	
+	agree.dispatchEvent(new Event('change'));
+
+	const isConfirmValid = validateConfirmPassword();
+	if (!isConfirmValid) {
+		return;
+	}
+
+	const invalidFields = document.querySelectorAll('input.error, select.error, textarea.error');
+	if (invalidFields.length > 0) {
+		return;
+	}
+
+	// 組 Email
+	let fullEmail = email.value.trim();
+	if (!fullEmail.includes("@")) {
+		if (domainSelect.value !== "other") fullEmail += domainSelect.value;
+		else {
+			let cd = customDomain.value.trim();
+			if (!cd.startsWith("@")) cd = "@" + cd;
+			fullEmail += cd;
+		}
+	}
+
+	const payload = {
+		userName: username.value,
+		nickName: nickname.value,
+		email: fullEmail,
+		password: password.value,
+		rePassword: cPassword.value,
+		birthDate: birthDate.value,
+		phone: phone.value,
+		gender: gender.value,
+		idCard: idCard.value,
+		unicode: unicode.value,
+		agree: agree.checked,
+		hostApply: hostApply.checked
+	};
+
+	const fd = new FormData();
+	fd.append("json", JSON.stringify(payload));
+	if (photoInput.files[0]) fd.append("photo", photoInput.files[0]);
+
+	fetch(form.action, {
+		method: "POST",
+		body: fd,
+		credentials: "include"
+	})
+		.then(resp => resp.json())
+		.then(body => {
+			msg.style.color = body.successful ? "green" : "red";
+			msg.textContent = body.message;
+			if (body.successful) setTimeout(() => window.location.href = "login.html", 2000);
+		})
+		.catch(err => {
+			console.error(err);
+			msg.style.color = "red";
+			msg.textContent = "伺服器錯誤，請稍後再試";
+		});
 });

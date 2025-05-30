@@ -79,6 +79,28 @@ button:hover {
   background-color: #c2185b;
 }
 
+.photo-group {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.photo-group img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%; /* 使圖片呈圓形 */
+  margin: 0 auto 0.5rem;
+}
+
+/* 調整預設圖示樣式 */
+.photo-group #defaultIcon {
+  display: block;
+  margin: 0 auto 0.5rem;
+  font-size: 80px;
+  color: #ccc;
+}
+
 #msg {
   color: red;
   text-align: center;
@@ -95,6 +117,7 @@ button:hover {
   font-size: 0.875em;
   margin-left: 0.5em;
 }
-input:invalid, select:invalid {
+input:error, select:error {
   border-color: red;
+  background-color: #fff8f8;
 }
