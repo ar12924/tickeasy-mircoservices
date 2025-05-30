@@ -23,5 +23,7 @@ public interface MemberService extends CommonService {
 	boolean removeMemberById(Integer memberId);
 
 	boolean activateMemberByToken(String tokenStr);
+
+	boolean requestPasswordReset(Integer memberId);
 	
 }

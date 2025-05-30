@@ -62,7 +62,34 @@ public class MailServiceImpl implements MailService{
         } catch (Exception e) {
             throw new RuntimeException("寄送啟用郵件失敗", e);
         }
+
     }
+
+    @Override
+    public void sendPasswordResetNotification(String toEmail, String userName, String tokenName) {
+        try {
+            MimeMessage msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress(FROM_EMAIL, APP_NAME));
+            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            msg.setSubject("【" + APP_NAME + "】密碼重置驗證信", "UTF-8");
+
+            // 注意：這裡的 RESET_PASSWORD_URL 應該指向您處理密碼重置的頁面/控制器
+            // 例如：http://localhost:8080/reset-password?token=
+            String resetLink = "http://localhost:8080/maven-tickeasy-v1/user/member/resetPasswordPage.html?token=" + tokenName; 
+            String html = "<p>親愛的 " + userName + "，您好：</p>"
+                        + "<p>您正在申請重置密碼。請點擊以下連結完成密碼重置：</p>"
+                        + "<p><a href=\"" + resetLink + "\">" + resetLink + "</a></p>"
+                        + "<p>如果您未申請此操作，請忽略此郵件。</p>"
+                        + "<p>本連結有效期為 1 小時。</p>"
+                        + "<br><p>--<br>" + APP_NAME + " TickEasy團隊敬上</p>";
+
+            msg.setContent(html, "text/html; charset=UTF-8");
+            Transport.send(msg);
+        } catch (Exception e) {
+            throw new RuntimeException("寄送密碼重置郵件失敗", e);
+        }
+    }    
+    
 	
 	
 //    以下是Spring寫法，因為DAO還沒有Spring化...
