@@ -12,6 +12,8 @@ const app = Vue.createApp({
       searchKeyword: "",
       // 3. 當前頁數
       currentPage: 1,
+      // 4. 每頁資料個數
+      pageSize: 6,
     };
   },
   computed: {
