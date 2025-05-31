@@ -4,5 +4,4 @@ const customBoxHTMLLoader = async () => {
   let customBoxHTML = await resp.text();
   $(".custom-container").append(customBoxHTML);
 };
-// 動態加入 HTML
-customBoxHTMLLoader();
+customBoxHTMLLoader(); // 插入 HTML 片段
