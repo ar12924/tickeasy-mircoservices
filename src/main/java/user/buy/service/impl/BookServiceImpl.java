@@ -5,14 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import user.buy.dao.TypeDao;
-import user.buy.service.TypeService;
+import user.buy.dao.BookDao;
+import user.buy.service.BookService;
 import user.buy.vo.TicketType;
 
 @Service
-public class TypeServiceImpl implements TypeService{
+public class BookServiceImpl implements BookService {
 	@Autowired
-	private TypeDao dao;
+	private BookDao dao;
 
 	@Override
 	public List<TicketType> findTicketType(Integer eventId) {

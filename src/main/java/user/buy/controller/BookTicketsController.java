@@ -13,25 +13,25 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import common.util.CommonUtil;
-import user.buy.service.TypeService;
+import user.buy.service.BookService;
 import user.buy.vo.TicketType;
 
-@WebServlet("/buy/ticket-types")
-public class TypeController extends HttpServlet {
+@WebServlet("/user/buy/ticket-types")
+public class BookTicketsController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private TypeService service;
+	private BookService service;
 	/**
 	 * 購票頁(bookTickets.html)票種資料界接
 	 * 請求方法: GET 
 	 * 回應格式: JSON 
 	 * 資料型態: List<TicketType> 
-	 * API: /buy/ticket-types?eventId=1
+	 * API: /user/buy/ticket-types?eventId=1
 	 */
 
 	// DL 方式注入(暫時性，後續 spring-MVC 會改)
 	@Override
 	public void init() throws ServletException {
-		service = CommonUtil.getBean(getServletContext(), TypeService.class);
+		service = CommonUtil.getBean(getServletContext(), BookService.class);
 	}
 
 	@Override
