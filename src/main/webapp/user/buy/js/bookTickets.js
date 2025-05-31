@@ -26,7 +26,7 @@ const bookTicketsJSLoader = () => {
       })
       .get();
     console.log(inputsValues);
-    location.href = "bookDetails.html";
+    // location.href = "bookDetails.html";
   });
 };
 bookTicketsJSLoader(); // 載入 JS 事件監聽

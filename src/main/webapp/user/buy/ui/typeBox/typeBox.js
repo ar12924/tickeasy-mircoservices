@@ -10,7 +10,7 @@ const typeBoxHTMLLoader = async ({ categoryName, price, capacity }) => {
 let ticketTypeLst;
 const ticketTypeQuery = async () => {
   const resp = await fetch(
-    "http://localhost:8080/maven-tickeasy-v1/buy/ticket-types?eventId=1"
+    "http://localhost:8080/maven-tickeasy-v1/user/buy/ticket-types?eventId=1"
   ); // 取得 "票種表" 資料(api: buy/ticket-types?eventId=1)
   const data = await resp.json();
   ticketTypeLst = data;
