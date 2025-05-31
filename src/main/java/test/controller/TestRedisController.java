@@ -30,11 +30,11 @@ public class TestRedisController extends HttpServlet {
         // 1. 指定允許所有網域
         resp.setHeader("Access-Control-Allow-Origin", "*");
         // 2. 交給 Service 處理，回傳查詢結果
-        List<Student> savedOne = service.save2Students();
-        Iterable<Student> foundAllTmp = service.findAllStudents();
+        Student savedOne = service.saveStudent();
+        Student foundOne = service.findStudentById("Eng2015001");
         // 3. 轉成 json 格式，並回應 json 字串
         Gson gson = new Gson();
-        String jsonData = gson.toJson(foundAllTmp);
+        String jsonData = gson.toJson(foundOne);
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
         PrintWriter pw = resp.getWriter();
