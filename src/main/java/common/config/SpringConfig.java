@@ -19,41 +19,41 @@ import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@ComponentScan("*.*.*.impl")
+@ComponentScan({"*.*.*.impl", "*.*.impl"})
 @EnableTransactionManagement
 public class SpringConfig {
 
-	// 在 Spring 組態中,託管 JndiObjectFactoryBean 物件 (包含 JNDI 內託管的 DataSource 物件)
-	@Bean
-	public DataSource dataSource() throws IllegalArgumentException, NamingException {
-		JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
-		bean.setResourceRef(true);
-		bean.setJndiName("jdbc/tickeasy");
-		bean.afterPropertiesSet();
-		return (DataSource) bean.getObject();
-	}
+    // 在 Spring 組態中,託管 JndiObjectFactoryBean 物件 (包含 JNDI 內託管的 DataSource 物件)
+    @Bean
+    public DataSource dataSource() throws IllegalArgumentException, NamingException {
+        JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
+        bean.setResourceRef(true);
+        bean.setJndiName("jdbc/tickeasy");
+        bean.afterPropertiesSet();
+        return (DataSource) bean.getObject();
+    }
 
-	// 託管 SessionFactory 物件
-	@Bean
-	public SessionFactory sessionFactory() throws HibernateException, IllegalArgumentException, NamingException {
-		return new LocalSessionFactoryBuilder(dataSource()).scanPackages("*.vo", "*.*.vo")
-				.addProperties(getHibernateProperties()).buildSessionFactory();
-	}
+    // 託管 SessionFactory 物件
+    @Bean
+    public SessionFactory sessionFactory() throws HibernateException, IllegalArgumentException, NamingException {
+        return new LocalSessionFactoryBuilder(dataSource()).scanPackages("*.vo", "*.*.vo")
+                .addProperties(getHibernateProperties()).buildSessionFactory();
+    }
 
-	// 設定 hibernate 組態
-	private Properties getHibernateProperties() {
-		Properties props = new Properties();
-		props.setProperty("hibernate.dialect", MySQLDialect.class.getName());
-		props.setProperty("hibernate.show_sql", "true");
-		props.setProperty("hibernate.format_sql", "true");
-		props.setProperty("hibernate.current_session_context_class", SpringSessionContext.class.getName());
-		return props;
-	}
+    // 設定 hibernate 組態
+    private Properties getHibernateProperties() {
+        Properties props = new Properties();
+        props.setProperty("hibernate.dialect", MySQLDialect.class.getName());
+        props.setProperty("hibernate.show_sql", "true");
+        props.setProperty("hibernate.format_sql", "true");
+        props.setProperty("hibernate.current_session_context_class", SpringSessionContext.class.getName());
+        return props;
+    }
 
-	// 託管 TransactionManager 物件
-	@Bean
-	public TransactionManager transactionManager()
-			throws HibernateException, IllegalArgumentException, NamingException {
-		return new HibernateTransactionManager(sessionFactory());
-	}
+    // 託管 TransactionManager 物件
+    @Bean
+    public TransactionManager transactionManager()
+            throws HibernateException, IllegalArgumentException, NamingException {
+        return new HibernateTransactionManager(sessionFactory());
+    }
 }

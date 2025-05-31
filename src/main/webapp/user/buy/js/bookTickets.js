@@ -30,3 +30,21 @@ const bookTicketsJSLoader = () => {
   });
 };
 bookTicketsJSLoader(); // 載入 JS 事件監聽
+
+const userOrder = [
+  {
+    typeCount: 2,
+    typeName: "VIP區",
+    typePrice: 3000,
+  },
+  {
+    typeCount: 1,
+    typeName: "搖滾區",
+    typePrice: 2000,
+  },
+  {
+    typeCount: 1,
+    typeName: "一般區",
+    typePrice: 1000,
+  },
+];
