@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.util.CommonUtil;
 import user.buy.service.BookService;
-import user.buy.vo.BookTicket;
+import user.buy.vo.BookOrder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,14 +40,9 @@ public class BookTicketsSaveController extends HttpServlet {
         // 2. 承接 json 格式資料 (BookTicket 的陣列)
         Gson gson = new Gson();
         // 3. 使用 TypeToken 來獲取 List<BookTicket> 的 Type 資訊
-        Type listOfBookTicketType = new TypeToken<List<BookTicket>>() {
+        Type listOfBookTicketType = new TypeToken<List<BookOrder>>() {
         }.getType();
-        List<BookTicket> bookTicketLst = gson.fromJson(req.getReader(), listOfBookTicketType);
-        bookTicketLst.forEach(type -> {
-            System.out.println("categoryName: " + type.getCategoryName());
-            System.out.println("count: " + type.getCount());
-            System.out.println("price: " + type.getPrice());
-            System.out.println("----------");
-        });
+        List<BookOrder> bookOrderLst = gson.fromJson(req.getReader(), listOfBookTicketType);
+        service.cacheOrder(bookOrderLst);
     }
 }

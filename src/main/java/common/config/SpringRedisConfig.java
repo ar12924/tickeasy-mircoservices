@@ -12,8 +12,7 @@ import javax.naming.NamingException;
 
 
 @Configuration
-@ComponentScan("test.service.impl")
-@EnableRedisRepositories(basePackages = "test.dao")
+@EnableRedisRepositories("*.*.dao")
 public class SpringRedisConfig {
 
     // 在 Spring 組態中2次託管 JNDI 內的 JedisConnectionFactory 物件
