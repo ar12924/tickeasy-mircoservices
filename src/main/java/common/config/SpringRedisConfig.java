@@ -5,25 +5,30 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.jndi.JndiObjectFactoryBean;
+
+import javax.naming.NamingException;
 
 
 @Configuration
-@ComponentScan("*.*")
+@ComponentScan("test.service.impl")
+@EnableRedisRepositories(basePackages = "test.dao")
 public class SpringRedisConfig {
 
-    // 託管 JedisConnectionFactory 物件
+    // 在 Spring 組態中2次託管 JNDI 內的 JedisConnectionFactory 物件
     @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
-        JedisConnectionFactory jedisConFactory
-                = new JedisConnectionFactory();
-        jedisConFactory.setHostName("localhost");
-        jedisConFactory.setPort(6379);
-        return jedisConFactory;
+    public JedisConnectionFactory jedisConnectionFactory() throws NamingException {
+        JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
+        bean.setResourceRef(true);
+        bean.setJndiName("redis/tickeasy");
+        bean.afterPropertiesSet();
+        return (JedisConnectionFactory) bean.getObject();
     }
 
     // 託管 RedisTemplate 物件 (redis 操作的基礎，如同 hibernate 的 session)
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate() throws NamingException {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
         return template;

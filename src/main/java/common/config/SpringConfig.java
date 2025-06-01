@@ -19,11 +19,11 @@ import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@ComponentScan({"*.*.*.impl", "*.*.impl"})
+@ComponentScan("*.*.*.impl")
 @EnableTransactionManagement
 public class SpringConfig {
 
-    // 在 Spring 組態中,託管 JndiObjectFactoryBean 物件 (包含 JNDI 內託管的 DataSource 物件)
+    // 在 Spring 組態中2次託管 JNDI 內的 DataSource 物件
     @Bean
     public DataSource dataSource() throws IllegalArgumentException, NamingException {
         JndiObjectFactoryBean bean = new JndiObjectFactoryBean();

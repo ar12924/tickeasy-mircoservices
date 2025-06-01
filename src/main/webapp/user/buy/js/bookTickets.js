@@ -11,40 +11,39 @@ const bookTicketsJSLoader = () => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", () => {
-    // post 東西出去(under constructing...)
+    // 抓取頁面數值
     const inputsValues = $(".count")
       .map((index, el) => {
-        const coreParent = $(el).closest(".level");
-        const typeName = coreParent.find(".type-name").text();
-        const typePrice = coreParent.find(".type-price").text();
-        // 模擬 json 格式
+        const parentNode = $(el).closest(".level");
+        const categoryName = parentNode.find(".type-name").text();
+        const price = parentNode
+          .find(".type-price")
+          .text()
+          .replace(/[^0-9.]/g, ""); // 過濾非數字符號
         return {
-          typeCount: $(el).val(),
-          typeName: typeName,
-          typePrice: typePrice,
+          count: $(el).val(),
+          categoryName,
+          price,
         };
       })
       .get();
-    console.log(inputsValues);
+    bookTicketsPost(JSON.stringify(inputsValues));
     // location.href = "bookDetails.html";
   });
 };
 bookTicketsJSLoader(); // 載入 JS 事件監聽
 
-const userOrder = [
-  {
-    typeCount: 2,
-    typeName: "VIP區",
-    typePrice: 3000,
-  },
-  {
-    typeCount: 1,
-    typeName: "搖滾區",
-    typePrice: 2000,
-  },
-  {
-    typeCount: 1,
-    typeName: "一般區",
-    typePrice: 1000,
-  },
-];
+const bookTicketsPost = async (jsonData) => {
+  // post 票種/數資訊給 Redis
+  const resp = await fetch(
+    "http://localhost:8080/maven-tickeasy-v1/user/buy/book-tickets/save",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: jsonData,
+    }
+  );
+  if (!resp.ok) {
+    throw new Error(resp.statusText);
+  }
+};
