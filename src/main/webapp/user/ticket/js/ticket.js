@@ -115,7 +115,7 @@ function ticket_loaded() {
 																</div>
 															</div>
 															<div class="tk_region tk_right">
-																<div class="tk_status">${ticketView.status}</div>
+																<div class="tk_status">${ticketView.statusText}</div>
 																<div class="tk_more"><a class="tk_more_ -view"href="#">查看票券詳情</a></div>
 																<div class="tk_more"><a class="tk_more_ -unview" href="#">收合票券詳情</a></div>
 															</div>
@@ -129,7 +129,7 @@ function ticket_loaded() {
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">是否使用</div>
-																		<div class="tk_content_text tk_content_used">${ticketView.isUsed}</div>
+																		<div class="tk_content_text tk_content_used">${ticketView.isUsedText}</div>
 																	</div>
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">姓名</div>

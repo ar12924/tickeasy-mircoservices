@@ -17,7 +17,7 @@ import com.google.gson.JsonObject;
 import common.util.CommonUtil;
 import user.notify.service.NotificationService;
 import user.notify.service.impl.NotificationServiceImpl;
-
+import user.ticket.dto.TicketViewDto;
 import user.ticket.service.TicketService;
 import user.ticket.service.impl.TicketServiceImpl;
 import user.ticket.vo.Ticket;
@@ -53,7 +53,7 @@ public class TicketListController extends HttpServlet{
 
 
 			
-			List<TicketView> ticketsView = ticketService.ticketList(Integer.parseInt(memId));
+			List<TicketViewDto> ticketsView = ticketService.ticketList(Integer.parseInt(memId));
 			
 			String json = gson.toJson(ticketsView);
 			
