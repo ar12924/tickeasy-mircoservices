@@ -5,26 +5,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TickEasy - 轉票專區</title>
+    <!-- Bulma CSS Framework -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <!-- 共用組件樣式 -->
+    <link rel="stylesheet" href="../layout/nav/nav.css">
+    <link rel="stylesheet" href="../layout/footer/footer.css">
+    <!-- 專用組件樣式 -->
     <link rel="stylesheet" href="./css/ticket_exchange_area.css">
-    <!-- Vue 3 CDN -->
-    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
-    <!-- is.js 函式庫 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script>
 </head>
 
 <body>
     <!-- 主導覽列 nav -->
-    <nav>
-        <div class="logo">
-            <a href="/">TickEasy</a>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#tickets">我的訂單</a></li>
-            <li><a href="#favorites">我的關注</a></li>
-            <li><a href="#account">我的票券</a></li>
-            <li><a href="#notifications">通知中心</a></li>
-            <li><a href="#profile" class="cta-button">會員中心</a></li>
-        </ul>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <!-- nav.html 內容將由 nav.js 動態載入 -->
     </nav>
 
     <!-- 主內容區塊 -->
@@ -250,37 +243,18 @@
 
     <!-- 頁腳 footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>關於我們</h3>
-                <ul>
-                    <li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>客戶服務</h3>
-                <ul>
-                    <li><a href="#faq">常見問題</a></li>
-                    <li><a href="#contact">聯絡我們</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>售票須知</h3>
-                <ul>
-                    <li><a href="#terms">購票說明</a></li>
-                    <li><a href="#policy">退票政策</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>追蹤我們</h3>
-                <div class="social-links">
-                    <a href="#facebook">Facebook</a>
-                    <a href="#instagram">Instagram</a>
-                </div>
-            </div>
-        </div>
+        <!-- footer.html 內容將由 footer.js 動態載入 -->
     </footer>
 
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- is.js 函式庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script>
+    <!-- 引入共用組件JavaScript -->
+    <script src="../layout/nav/nav.js"></script>
+    <script src="../layout/footer/footer.js"></script>
     <!-- 引入自定義JavaScript -->
     <script src="./js/ticket_exchange_area.js"></script>
 </body>
