@@ -1,0 +1,65 @@
+/* header 麵包屑 & 進度條 */
+header {
+  & .icon-text {
+    padding: 1rem;
+    & .icon {
+      color: #6b7280;
+    }
+    & .bread {
+      font-weight: bold;
+      color: #000000;
+    }
+  }
+  & hr {
+    margin: 0;
+  }
+  & .column {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    margin-top: 1rem;
+    & .circle {
+      width: 1.7rem;
+      height: 1.7rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #d3d3d3;
+      text-align: center;
+    }
+    & span {
+      color: #9e9d9d;
+      font-weight: bold;
+    }
+    & .passing-circle {
+      background-color: #ec4899;
+      & span {
+        color: white;
+      }
+    }
+    & .passing-step {
+      color: #ec4899;
+    }
+    & .passed-circle {
+      background-color: #16982b;
+      & span {
+        color: white;
+      }
+    }
+    & .passed-step {
+      color: #16892b;
+    }
+  }
+}
+
+/* section 主內容 */
+section.columns {
+  & .buttons {
+    & .next {
+      background-color: #ec4899;
+      color: white;
+    }
+  }
+}

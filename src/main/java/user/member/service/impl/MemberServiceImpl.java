@@ -305,4 +305,30 @@ public class MemberServiceImpl implements MemberService {
 		verifyDao.deleteById(token.getTokenId());
 		return true;
 	}
+
+	@Transactional
+	@Override
+	public boolean requestPasswordReset(Integer memberId) {
+		Member member = memberDao.findById(memberId); // 假設您有 findById 方法
+    if (member == null) {
+        return false;
+    }
+	String tokenName = UUID.randomUUID().toString();
+    VerificationToken verificationToken = new VerificationToken();
+    verificationToken.setMember(member);
+    verificationToken.setTokenName(tokenName);
+    verificationToken.setTokenType("RESET_PASSWORD");
+    verificationToken.setExpiredTime(new Timestamp(System.currentTimeMillis() + 3600 * 1000)); 
+
+    verifyDao.insert(verificationToken);
+
+    try {
+        mailService.sendPasswordResetNotification(member.getEmail(), member.getNickName(), tokenName);
+        return true;
+    } catch (RuntimeException e) {
+      
+        e.printStackTrace();
+        return false;
+    }
+}
 }

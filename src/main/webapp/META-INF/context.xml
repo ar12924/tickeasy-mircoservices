@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
-	<Resource name="jdbc/tickeasy" type="javax.sql.DataSource"
-		driverClassName="com.mysql.cj.jdbc.Driver"
-		jdbcUrl="jdbc:mysql://localhost:3306/tickeasy"
-		username="root"
-		password="123456"
-		factory="com.zaxxer.hikari.HikariJNDIFactory"
-		dataSource.cachePrepStmts="true"
-		dataSource.prepStmtCacheSize="250"
-		dataSource.prepStmtCacheSqlLimit="2048"
-	/>
+    <!-- DataSource 物件託管給 JNDI -->
+    <Resource name="jdbc/tickeasy" type="javax.sql.DataSource"
+              driverClassName="com.mysql.cj.jdbc.Driver"
+              jdbcUrl="jdbc:mysql://localhost:3306/tickeasy"
+              username="root"
+              password="123456"
+              factory="com.zaxxer.hikari.HikariJNDIFactory"
+              dataSource.cachePrepStmts="true"
+              dataSource.prepStmtCacheSize="250"
+              dataSource.prepStmtCacheSqlLimit="2048"
+    />
+
+    <!-- JedisConnectionFactory 物件託管給 JNDI -->
+    <Resource name="redis/tickeasy"
+              auth="Container"
+              type="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+              factory="org.apache.naming.factory.BeanFactory"
+              hostName="localhost"
+              port="6379"
+              password="mypassword"/>
 </Context>

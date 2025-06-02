@@ -1,0 +1,17 @@
+[
+  {
+    "name": "vip區",
+    "price": 2800,
+    "eventId": 1
+  },
+  {
+    "name": "1樓站區",
+    "price": 2200,
+    "eventId": 1
+  },
+  {
+    "name": "2樓看台區",
+    "price": 1800,
+    "eventId": 1
+  }
+]
