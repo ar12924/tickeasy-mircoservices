@@ -48,6 +48,7 @@ public class TicketServiceImpl implements TicketService{
 			dto.setStatus(ticket.getStatus());
 			dto.setIdCard(ticket.getIdCard());
 			dto.setCurrentHolderMemberId(ticket.getCurrentHolderMemberId());
+			dto.setMemberId(ticket.getMemberId());
 			dto.setIsUsed(ticket.getIsUsed());
 			dto.setParticipantName(ticket.getParticipantName());
 			dto.setEventName(ticket.getEventName());

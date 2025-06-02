@@ -33,9 +33,10 @@ public class TicketDaoImpl implements TicketDao {
 		String sql = "SELECT bt.ticket_id,bt.order_id,bt.email,bt.phone,"
 				+ "bt.price,bt.status,bt.id_card,bt.current_holder_member_id,"
 				+ "bt.is_used,bt.participant_name,bt.event_name,ett.category_name,bt.queue_id,"
-				+ "be.event_from_date,be.place,bt.create_time,bt.update_time\r\n"
+				+ "be.event_from_date,be.place,be.member_id,bt.create_time,bt.update_time\r\n"
 				+ "FROM  buyer_ticket bt\r\n"
-				+ "JOIN (SELECT ei.event_from_date,ei.place,bo.order_id FROM event_info ei JOIN buyer_order bo ON ei.event_id=bo.event_id) AS be ON be.order_id=bt.order_id\r\n"
+				+ "JOIN (SELECT ei.event_from_date,ei.place,bo.order_id,bo.member_id\r\n "
+				+ "FROM event_info ei JOIN buyer_order bo ON ei.event_id=bo.event_id) AS be ON be.order_id=bt.order_id\r\n"
 				+ "JOIN event_ticket_type ett ON ett.type_id=bt.type_id\r\n"
 				+ "WHERE bt.current_holder_member_id=?\r\n";
 
@@ -52,6 +53,7 @@ public class TicketDaoImpl implements TicketDao {
 					ticketView.setStatus(rs.getInt("status"));
 					ticketView.setIdCard(rs.getString("id_card"));
 					ticketView.setCurrentHolderMemberId(rs.getInt("current_holder_member_id"));
+					ticketView.setMemberId(rs.getInt("member_id"));
 					ticketView.setIsUsed(rs.getInt("is_used"));
 					ticketView.setParticipantName(rs.getString("participant_name"));
 					ticketView.setEventName(rs.getString("event_name"));

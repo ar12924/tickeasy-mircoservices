@@ -5,16 +5,17 @@ const ntf_regio_el = document.getElementsByClassName("tk_region");
 const ntf_title_el = document.getElementsByClassName("tk_title");
 const ntf_content_el = document.getElementsByClassName("tk_content");
 const ntf_time_el = document.getElementsByClassName("tk_time");
-const ntf_nav_span_all_el = document.querySelector(".all_tk");
-const ntf_nav_span_coming_el = document.querySelector(".coming_tk");
-const ntf_nav_span_history_el = document.querySelector(".history_tk");
-const ntf_nav_span_allchange_el = document.querySelector(".allchange_tk");
+*/
+
+const tk_nav_span_coming_el = document.querySelector(".coming_tk");
+const tk_nav_span_history_el = document.querySelector(".history_tk");
+const tk_nav_span_change_el = document.querySelector(".allchange_tk");
 
 const now = new Date();
 
 const tk_more_el=document.getElementsByClassName(".tk_more_");
 
-*/
+
 const ticket_el = document.getElementById("ticket");
 document.addEventListener("click",function(e){
 	if(e.target.classList.contains("tk_more_")){
@@ -38,7 +39,7 @@ document.addEventListener("click",function(e){
 		
 	}
 })
-/*待確認 */
+/*點擊時的動畫效果修正 */
 function smoothScrollTo(element, targetScrollTop, duration = 600) {
   const startScrollTop = element.scrollTop;
   const distance = targetScrollTop - startScrollTop;
@@ -64,6 +65,7 @@ function smoothScrollTo(element, targetScrollTop, duration = 600) {
 }
 
 
+//所有票券的load
 
 function ticket_loaded() {
 	
@@ -165,3 +167,76 @@ function ticket_loaded() {
 })
 }
 ticket_loaded();
+
+
+//判斷通知中心的分類是否為空需要顯示為空的畫面
+function tk_isEmpty(count) {
+	if (count == 0) {
+		console.log("123");
+		notification_el.insertAdjacentHTML("beforeend", `<div class="tk_empty">
+																				            <div class="tk_empty_text">
+																							Oops~目前沒有沒有票券
+																				           </div>
+																				                           
+																				      </div>
+																					  
+																				  
+																                `)
+	}
+
+}
+
+
+//計算各分類的數量
+function category_count() {
+	fetch('/maven-tickeasy-v1/ticket-list', {
+		method: `POST`,
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			memberId: 5,
+
+
+		})
+	})
+		.then(resp => resp.json())
+		.then(tickets => {
+			let coming_count = 0;
+			let history_count = 0;
+			let allchange_count = 0;
+			
+			
+			//處理tikcets為空的狀況
+			if(!Array.isArray(tickets)){
+						notifications = [];}
+			/*let ticketCount = tickets.length;
+			tk_nav_span_all_el.innerHTML = ticketCount;*/
+
+
+			//處理ticket各頁籤顯示數量
+			for (let ticket of tickets) {
+				let eventDate = new Date(ticket.eventFromDate);
+				
+				if (eventDate<now) {
+					coming_count++;
+					console.log("testcoming");
+				}
+
+				if (eventDate>now) {
+					history_count++;
+					console.log("testhistory");
+				}
+
+				if (ticket.memberId !== ticket.currentHolderMemberId) {
+					allchange_count++;
+					console.log(ticket.memberId);
+					console.log(ticket.currentHolderMemberId);
+				}
+
+				
+			}
+			tk_nav_span_coming_el.innerHTML = coming_count;
+			tk_nav_span_history_el.innerHTML = history_count;
+			tk_nav_span_change_el.innerHTML = allchange_count;
+		})
+}
+category_count();

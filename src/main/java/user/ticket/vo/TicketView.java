@@ -11,6 +11,7 @@ public class TicketView {
 	private Integer status;
 	private String idCard;
 	private Integer currentHolderMemberId;
+	private Integer memberId;
 	private Integer isUsed;
 	private String participantName;
 	private String eventName;
@@ -20,6 +21,16 @@ public class TicketView {
 	private String place;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+	
+	
+
+
+	public Integer getMemberId() {
+		return memberId;
+	}
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
+	}
 	public Integer getTicketId() {
 		return ticketId;
 	}
