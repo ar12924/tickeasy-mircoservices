@@ -25,9 +25,9 @@ public class SearchServiceImpl implements SearchService {
 		Long count = null;
 		// 1. 過濾 keywords
 		keyword = keyword == null ? "" : keyword;
-		// 2. 查詢 event_info(事務開始)
+		// 2. 查詢 event_info
 		eventPayload.setData(buyDaoImpl.selectEventByKeywordWithPages(keyword, pageNumber, pageSize));
-		// 3. 判斷回傳資料總筆數
+		// 3. 判斷 event_info 資料總筆數
 		count = buyDaoImpl.selectEventCountByKeyword(keyword);
 		eventPayload.setCount(count);
 		if (count <= 0) {

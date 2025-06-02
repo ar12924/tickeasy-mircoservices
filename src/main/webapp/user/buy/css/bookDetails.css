@@ -56,4 +56,10 @@ header {
 
 /* section 主內容 */
 section.columns {
+  & .buttons {
+    & .next {
+      background-color: #ec4899;
+      color: white;
+    }
+  }
 }

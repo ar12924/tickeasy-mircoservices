@@ -1,26 +1,24 @@
-// API "票種表" 資料
+// ------ 票種區塊 ------
+const typeBoxHTMLLoader = async ({ categoryName, price, capacity }) => {
+  const resp = await fetch("./ui/typeBox/typeBox.html");
+  let typeBoxHTML = await resp.text();
+  typeBoxHTML = typeBoxHTML
+    .replace("{{ typeName }}", categoryName)
+    .replace("{{ price }}", price.toLocaleString()); // 將資料放入元素
+  $(".type-container").append(typeBoxHTML);
+};
 let ticketTypeLst;
 const ticketTypeQuery = async () => {
-  // 取得假資料 (寫死在前端)
-  const resp = await fetch("./data/typeSample.json");
+  const resp = await fetch(
+    "http://localhost:8080/maven-tickeasy-v1/buy/ticket-types?eventId=1"
+  ); // 取得 "票種表" 資料(api: buy/ticket-types?eventId=1)
   const data = await resp.json();
   ticketTypeLst = data;
   ticketTypeLst.forEach((eachType) => {
-    // 動態生成 HTML
-    typeBoxHTMLLoader(eachType);
+    typeBoxHTMLLoader(eachType); // 插入 HTML 片段
   });
 };
 ticketTypeQuery();
-// ------ 票種區塊 ------
-const typeBoxHTMLLoader = async (eachType) => {
-  const resp = await fetch("./ui/typeBox/typeBox.html");
-  let typeBoxHTML = await resp.text();
-  // 將資料 (eachType) 放入元素
-  typeBoxHTML = typeBoxHTML
-    .replace("{{typeName}}", eachType.name)
-    .replace("{{price}}", eachType.price.toLocaleString());
-  $(".type-container").append(typeBoxHTML);
-};
 const typeBoxJSLoader = () => {
   $(document).on("click", ".substract", (e) => {
     const control = $(e.target).parent();
@@ -39,5 +37,4 @@ const typeBoxJSLoader = () => {
     input.val(count);
   });
 };
-// 事件委派方式，監聽後來出現的 HTML
-typeBoxJSLoader();
+typeBoxJSLoader(); // 載入 JS 事件監聽

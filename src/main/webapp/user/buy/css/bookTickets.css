@@ -70,10 +70,19 @@ section.columns {
     }
     & .has-text-centered {
       padding-bottom: 1.5rem;
-      & span {
-        font-weight: bold;
-        color: white;
+      & .button {
+        background-color: #ec4899;
+        & span {
+          font-weight: bold;
+          color: white;
+        }
       }
+    }
+  }
+  & .buttons {
+    & .next {
+      background-color: #ec4899;
+      color: white;
     }
   }
 }

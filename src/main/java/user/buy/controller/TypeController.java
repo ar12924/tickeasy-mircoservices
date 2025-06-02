@@ -21,7 +21,7 @@ public class TypeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TypeService service;
 	/**
-	 * 購票頁(bookStep.html)票種資料界接 
+	 * 購票頁(bookTickets.html)票種資料界接
 	 * 請求方法: GET 
 	 * 回應格式: JSON 
 	 * 資料型態: List<TicketType> 
