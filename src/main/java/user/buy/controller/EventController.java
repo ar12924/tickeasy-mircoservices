@@ -44,20 +44,15 @@ public class EventController extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 獲取請求路徑
-        String pathInfo = req.getPathInfo();
-        
-        // 處理圖片請求，路徑格式為 /api/events/{eventId}/image
-        if (pathInfo != null && pathInfo.endsWith("/image")) {
-            handleImageRequest(req, resp);
-            return;
-        }
-        
+         
         // 設置響應類型為JSON
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         
         PrintWriter out = resp.getWriter();
+        
+        // 獲取請求路徑
+        String pathInfo = req.getPathInfo();
         
         // 獲取當前登入用戶的ID
         Integer memberId = getMemberIdFromSession(req);
@@ -72,36 +67,6 @@ public class EventController extends HttpServlet {
         }
         
         out.println(gson.toJson(response));
-    }
-    
-    /**
-     * 處理圖片請求
-     */
-    private void handleImageRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String pathInfo = req.getPathInfo();
-        String eventIdStr = pathInfo.substring(1, pathInfo.lastIndexOf("/"));
-        
-        try {
-            int eventId = Integer.parseInt(eventIdStr);
-            byte[] imageData = eventService.getEventImage(eventId);
-            
-            if (imageData != null && imageData.length > 0) {
-                // 設置響應類型
-                resp.setContentType("image/jpeg"); // 可以根據實際圖片類型調整
-                resp.setContentLength(imageData.length);
-                
-                // 寫入圖片數據
-                try (OutputStream out = resp.getOutputStream()) {
-                    out.write(imageData);
-                }
-            } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "圖片不存在");
-            }
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "無效的活動ID");
-        } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "獲取圖片時發生錯誤");
-        }
     }
     
     @Override
