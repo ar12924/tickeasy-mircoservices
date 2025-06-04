@@ -43,6 +43,7 @@ public class BookTicketsSaveController extends HttpServlet {
         Type listOfBookTicketType = new TypeToken<List<BookOrder>>() {
         }.getType();
         List<BookOrder> bookOrderLst = gson.fromJson(req.getReader(), listOfBookTicketType);
+        // 4. 訂單資訊快取到 Redis
         service.cacheOrder(bookOrderLst);
     }
 }

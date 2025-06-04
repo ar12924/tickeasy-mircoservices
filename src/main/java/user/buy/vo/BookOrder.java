@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-@RedisHash("BookOrder")
 public class BookOrder implements Serializable {
     @Id
     private Integer orderId;

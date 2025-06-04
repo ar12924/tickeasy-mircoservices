@@ -3,7 +3,9 @@ package user.buy.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import user.buy.dao.BookDao;
@@ -17,7 +19,9 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookDao dao;
     @Autowired
-    private RedisBookDao redisDao;
+    private RedisTemplate<String,Object> template;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public List<TicketType> findTicketType(Integer eventId) {
@@ -25,9 +29,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookOrder> cacheOrder(List<BookOrder> bookOrderLst) {
-        return bookOrderLst.stream().map(savedOrder -> {
-            return redisDao.save(savedOrder);
-        }).collect(Collectors.toList());
+    public void cacheOrder(List<BookOrder> bookOrderLst) {
+        // 1. 訂單資訊快取到 Redis
+        int orderId = 1;
+        String key = "BookOrder:" + orderId;
+        template.opsForValue().set(key, bookOrderLst);
     }
 }
