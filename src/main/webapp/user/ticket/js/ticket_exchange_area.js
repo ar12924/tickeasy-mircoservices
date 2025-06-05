@@ -6,6 +6,9 @@
 // 基礎 API URL
 const API_BASE_URL = '/maven-tickeasy-v1/api';
 
+// 會員資訊快取 - 新增
+const memberCache = new Map();
+
 // 創建 Vue 應用
 window.app = Vue.createApp({
     data() {
@@ -16,6 +19,8 @@ window.app = Vue.createApp({
             eventName: '',
             // 會員ID
             memberId: null,
+            // 會員暱稱 - 新增
+            memberNickname: null,
             // 用戶登錄狀態
             isLoggedIn: false,
             // 轉票貼文列表
@@ -68,39 +73,73 @@ window.app = Vue.createApp({
         // 檢查用戶登錄狀態
         async checkLoginStatus() {
             try {
-                // 從 cookie 或 sessionStorage 獲取會員ID
-                let memberId = this.getCookie('memberId') || sessionStorage.getItem('memberId');
+                // 從 sessionStorage 獲取會員暱稱
+                const nickname = sessionStorage.getItem('loggedInNickname');
 
-                if (memberId && !isNaN(parseInt(memberId))) {
+                if (nickname && nickname.trim() !== '') {
                     this.isLoggedIn = true;
-                    this.memberId = parseInt(memberId, 10);
-                    console.log('從本地儲存獲取會員ID:', this.memberId);
-                    return;
-                }
+                    this.memberNickname = nickname;
+                    console.log('從本地儲存獲取會員暱稱:', this.memberNickname);
 
-                // 從伺服器檢查登錄狀態
-                try {
-                    const response = await fetch(`${API_BASE_URL}/member/status`, {
-                        credentials: 'include'
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('伺服器登錄狀態回應:', data);
-
-                        if (data.status === 200 && data.data && data.data.isLoggedIn) {
-                            this.isLoggedIn = true;
-                            this.memberId = data.data.memberId;
-                            sessionStorage.setItem('memberId', this.memberId);
-                            console.log('從伺服器獲取會員ID:', this.memberId);
-                        }
+                    // 獲取會員ID
+                    this.memberId = await this.getMemberIdByNickname(nickname);
+                    if (this.memberId) {
+                        console.log('成功獲取會員ID:', this.memberId);
+                    } else {
+                        console.warn('無法獲取會員ID，可能會影響部分功能');
                     }
-                } catch (apiErr) {
-                    console.log('伺服器登錄狀態檢查失敗:', apiErr.message);
+                } else {
+                    this.isLoggedIn = false;
+                    this.memberNickname = null;
+                    this.memberId = null;
+                    console.log('用戶未登入');
                 }
             } catch (err) {
                 console.error('檢查登錄狀態時發生錯誤:', err);
+                this.isLoggedIn = false;
+                this.memberNickname = null;
+                this.memberId = null;
             }
+        },
+
+        // 根據暱稱獲取會員ID - 新增方法
+        async getMemberIdByNickname(nickname) {
+            if (!nickname || nickname.trim() === '') {
+                return null;
+            }
+
+            // 先檢查快取
+            if (memberCache.has(nickname)) {
+                console.log('從快取獲取會員ID:', memberCache.get(nickname));
+                return memberCache.get(nickname);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/members/nickname/${encodeURIComponent(nickname)}`, {
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('會員查詢API回應:', data);
+
+                    if (data.success && data.data && data.data.memberId) {
+                        const memberId = data.data.memberId;
+                        // 存入快取
+                        memberCache.set(nickname, memberId);
+                        console.log('成功從API獲取會員ID:', memberId);
+                        return memberId;
+                    } else {
+                        console.warn('API返回成功但無會員資料:', data);
+                    }
+                } else {
+                    console.error('會員查詢API HTTP錯誤:', response.status);
+                }
+            } catch (err) {
+                console.error('調用會員查詢API時發生錯誤:', err);
+            }
+
+            return null;
         },
 
         // 獲取活動資訊
@@ -736,7 +775,7 @@ window.app = Vue.createApp({
         // 導向登入頁面
         goToLogin() {
             const currentUrl = encodeURIComponent(window.location.href);
-            window.location.href = `/maven-tickeasy-v1/login?redirect=${currentUrl}`;
+            window.location.href = `http://localhost:8080/maven-tickeasy-v1/user/member/login.html?redirect=${currentUrl}`;
         },
 
         // 導航方法
