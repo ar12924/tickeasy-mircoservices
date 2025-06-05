@@ -1,6 +1,8 @@
 package user.notify.dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,11 +21,11 @@ import org.springframework.stereotype.Repository;
 import user.notify.dao.NotificationDao;
 import user.notify.vo.Notification;
 
-@Repository
+/*@Repository*/
 public class NotificationDaoImpl implements NotificationDao {
 	private DataSource ds;
 	
-	@PersistenceContext
+	/* @PersistenceContext */
 	private Session session;
 	public NotificationDaoImpl() throws NamingException {
 		ds =(DataSource) new InitialContext()
@@ -136,4 +138,82 @@ public class NotificationDaoImpl implements NotificationDao {
 	return null;
 
 	}
+
+	@Override
+	public void sendReminderNotificationForTomorrow() {
+		String sql = "SELECT\r\n" 
+				+ "bt.current_holder_member_id,\r\n" 
+				+ "bo.event_id,\r\n"
+				+ "ei.event_name,\r\n" + "ei.event_from_date\r\n"
+				+ "FROM buyer_order bo\r\n" 
+				+ "JOIN buyer_ticket bt ON bo.order_id = bt.order_id\r\n"
+				+ "JOIN event_info ei ON bo.event_id = ei.event_id\r\n"
+				+ "WHERE DATEDIFF(ei.event_from_date, CURDATE()) = 1";
+		/*
+		 * String sql1 ="select event_id,event_from_date\r\n" + "FROM event_info\r\n" +
+		 * "WHERE DATEDIFF(event_from_date,NOW())=1";
+		 */
+
+		try (Connection conn =ds.getConnection();
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ResultSet rs = ps.executeQuery()) {
+			if (!rs.isBeforeFirst()) {
+			    System.out.println("⚠️ 查無符合條件的活動資料（明天沒有活動）");
+			    return;
+			}
+			while (rs.next()) {
+				
+				int memberId = rs.getInt("current_holder_member_id");
+				int eventId = rs.getInt("event_id");
+				String eventName = rs.getString("event_name");
+				Date eventDate = rs.getDate("event_from_date");
+				/*
+				 * int memberId = rs.getInt("current_holder_member_id"); int eventId =
+				 * rs.getInt("event_id");
+				 */
+				/* Date eventDate = rs.getDate("event_from_date"); */
+
+				// 呼叫發送通知的函式
+				sendReminderNotification(memberId, eventId, eventName, eventDate);
+				
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void sendReminderNotification(int memberId, int eventId, String eventName, Date eventDate) {
+		String sql = "INSERT INTO member_notification (notification_id,member_id,is_read,is_visible,notification_status,title,message,link_url,send_time,create_time,update_time) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())";
+
+		try (Connection conn =ds.getConnection();
+				PreparedStatement ps = conn.prepareStatement(sql)) {
+
+			// 設置通知的資料
+			ps.setInt(1, 5);
+			ps.setInt(2, memberId);
+			ps.setInt(3, 0);
+			ps.setInt(4, 1);
+			ps.setInt(5, 1);
+			ps.setString(6, "活動提醒");
+			ps.setString(7,
+					String.format("親愛的會員 %d，您訂購的活動「%s」將於 %s 演出，請記得準時參加！", memberId, eventName, eventDate.toString()));
+			ps.setString(8, "/event/" + eventId);
+
+			// 執行插入操作
+			int rowsInserted = ps.executeUpdate();
+			if (rowsInserted > 0) {
+				System.out.println("通知已成功加入到 member_notification 表");
+			} else {
+				System.out.println("插入通知失敗");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+		
+	
 }

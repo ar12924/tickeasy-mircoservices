@@ -16,39 +16,38 @@ import user.notify.dao.impl.NotificationDaoImpl;
 import user.notify.service.NotificationService;
 import user.notify.vo.Notification;
 
-@Service
+/*@Service*/
 public class NotificationServiceImpl implements NotificationService {
 
-	@Autowired
+	/* @Autowired */
 	private NotificationDao notificationDao;
 
-	/*
-	 * public NotificationServiceImpl() throws NamingException { notificationDao =
-	 * new NotificationDaoImpl(); }
-	 */
+	public NotificationServiceImpl() throws NamingException {
+		notificationDao = new NotificationDaoImpl();
+	}
 
-	@Transactional
+	/* @Transactional */
 	@Override
 	public List<Notification> notificationList(int memberId) {
-		return notificationDao.selectAllByMemberId(memberId); 
+		return notificationDao.selectAllByMemberId(memberId);
 		/*
 		 * List<Notification> result = null;
 		 * 
 		 * result = notificationDao.selectAllByMemberId(memberId);
 		 */
 		/* Transaction tx = null; Session session = null; */
-		 
+
 		/* try { */
-			/* session = HibernateUtil5.getSessionFactory().getCurrentSession(); */
-			/* tx = session.beginTransaction(); */
-			/* result = notificationDao.selectAllByMemberId(memberId); */
-			/* tx.commit(); */
-			/* } catch (Exception e) { */
-			/*
-			 * session.getTransaction().rollback();
-			 */
-			/* } */
-			/* return result; */
+		/* session = HibernateUtil5.getSessionFactory().getCurrentSession(); */
+		/* tx = session.beginTransaction(); */
+		/* result = notificationDao.selectAllByMemberId(memberId); */
+		/* tx.commit(); */
+		/* } catch (Exception e) { */
+		/*
+		 * session.getTransaction().rollback();
+		 */
+		/* } */
+		/* return result; */
 	}
 
 	@Override
@@ -60,6 +59,14 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public Integer notificationVisibleUpdate(int memberNotificationId) {
 		return notificationDao.updateUnvisible(memberNotificationId);
+	}
+
+	@Override
+	public void sendReminderNotificationForTomorrow() {
+
+		notificationDao.sendReminderNotificationForTomorrow();
+		System.out.println("排程動了");
+
 	}
 
 }
