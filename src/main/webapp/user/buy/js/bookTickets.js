@@ -12,7 +12,7 @@ const bookTicketsJSLoader = () => {
   });
   $(".next").on("click", () => {
     // 抓取頁面數值
-    const inputsValues = $(".count")
+    const inputsValues = $(".type-quantity")
       .map((index, el) => {
         const parentNode = $(el).closest(".level");
         const categoryName = parentNode.find(".type-name").text();
@@ -21,12 +21,14 @@ const bookTicketsJSLoader = () => {
           .text()
           .replace(/[^0-9.]/g, ""); // 過濾非數字符號
         return {
-          count: $(el).val(),
+          quantity: $(el).val(),
           categoryName,
           price,
         };
       })
       .get();
+    console.log(inputsValues);
+    console.log("經過...");
     bookTicketsPost(JSON.stringify(inputsValues));
     // location.href = "bookDetails.html";
   });

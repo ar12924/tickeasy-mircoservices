@@ -19,5 +19,5 @@ public interface BookService {
      *
      * @param 訂單資料
      */
-    void cacheOrder(List<TempOrder> tmpOrderLst);
+    void cacheOrder(TempOrder tempOrder);
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import user.buy.dao.BookDao;
 import user.buy.service.BookService;
 import user.buy.vo.TempOrder;
+import user.buy.vo.TempSelection;
 import user.buy.vo.TicketType;
 
 @Service
@@ -27,10 +28,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void cacheOrder(List<TempOrder> tmpOrderLst) {
+    public void cacheOrder(TempOrder tempOrder) {
         // 1. 訂單資訊快取到 Redis
-        int orderId = 1;
-        String key = "BookOrder:" + orderId;
-        template.opsForValue().set(key, tmpOrderLst);
+    	List<TempSelection> tmpselect = tempOrder.getSelections();
+    	tmpselect.forEach(select->System.out.println(select));
     }
 }
