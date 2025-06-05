@@ -2,7 +2,7 @@ package user.buy.service;
 
 import java.util.List;
 
-import user.buy.vo.BookOrder;
+import user.buy.vo.TempOrder;
 import user.buy.vo.TicketType;
 
 public interface BookService {
@@ -19,5 +19,5 @@ public interface BookService {
      *
      * @param 訂單資料
      */
-    void cacheOrder(List<BookOrder> bookOrderLst);
+    void cacheOrder(List<TempOrder> tmpOrderLst);
 }
