@@ -21,8 +21,6 @@ const bookTicketsJSLoader = () => {
           .text()
           .replace(/[^0-9.]/g, ""); // 過濾非數字符號
         return {
-          orderId: 1, // 寫死，預計與後端串
-          eventId: 1, // 寫死，預計與後端串
           count: $(el).val(),
           categoryName,
           price,

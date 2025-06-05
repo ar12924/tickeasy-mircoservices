@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.util.CommonUtil;
 import user.buy.service.BookService;
-import user.buy.vo.BookOrder;
+import user.buy.vo.TempOrder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,10 +39,14 @@ public class BookTicketsSaveController extends HttpServlet {
         resp.setHeader("Access-Control-Allow-Origin", "*");
         // 2. 承接 json 格式資料 (BookTicket 的陣列)
         Gson gson = new Gson();
+        int memberId = 5; // 先寫死，後來要串 session
+        int eventId = 1; // 先寫死，後來要串 req.getParameter("eventId")
         // 3. 使用 TypeToken 來獲取 List<BookTicket> 的 Type 資訊
-        Type listOfBookTicketType = new TypeToken<List<BookOrder>>() {
+        Type listOfBookTicketType = new TypeToken<List<TempOrder>>() {
         }.getType();
-        List<BookOrder> bookOrderLst = gson.fromJson(req.getReader(), listOfBookTicketType);
-        service.cacheOrder(bookOrderLst);
+        List<TempOrder> tmpOrderLst = gson.fromJson(req.getReader(), listOfBookTicketType);
+        // 4. 訂單資訊快取到 Redis
+        tmpOrderLst.forEach(el -> System.out.println(el));
+//        service.cacheOrder(bookOrderLst);
     }
 }
