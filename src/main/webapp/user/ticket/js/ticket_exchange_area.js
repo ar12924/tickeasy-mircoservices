@@ -6,8 +6,6 @@
 // 基礎 API URL
 const API_BASE_URL = '/maven-tickeasy-v1/api';
 
-// 會員資訊快取 - 新增
-const memberCache = new Map();
 
 // 創建 Vue 應用
 window.app = Vue.createApp({
@@ -73,26 +71,34 @@ window.app = Vue.createApp({
         // 檢查用戶登錄狀態
         async checkLoginStatus() {
             try {
-                // 從 sessionStorage 獲取會員暱稱
-                const nickname = sessionStorage.getItem('loggedInNickname');
+                console.log('從後端檢查登入狀態...');
 
-                if (nickname && nickname.trim() !== '') {
-                    this.isLoggedIn = true;
-                    this.memberNickname = nickname;
-                    console.log('從本地儲存獲取會員暱稱:', this.memberNickname);
+                const response = await fetch(`${API_BASE_URL}/auth/status`, {
+                    credentials: 'include'
+                });
 
-                    // 獲取會員ID
-                    this.memberId = await this.getMemberIdByNickname(nickname);
-                    if (this.memberId) {
-                        console.log('成功獲取會員ID:', this.memberId);
-                    } else {
-                        console.warn('無法獲取會員ID，可能會影響部分功能');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('後端登入狀態回應:', data);
+
+                    if (data.success && data.data) {
+                        if (data.data.isLoggedIn && data.data.nickname) {
+                            this.isLoggedIn = true;
+                            this.memberNickname = data.data.nickname;
+                            this.memberId = null;
+                            console.log('登入成功:', this.memberNickname);
+                        } else {
+                            this.isLoggedIn = false;
+                            this.memberNickname = null;
+                            this.memberId = null;
+                            console.log('用戶未登入');
+                        }
                     }
                 } else {
+                    console.error('檢查登入狀態HTTP錯誤:', response.status);
                     this.isLoggedIn = false;
                     this.memberNickname = null;
                     this.memberId = null;
-                    console.log('用戶未登入');
                 }
             } catch (err) {
                 console.error('檢查登錄狀態時發生錯誤:', err);
@@ -102,45 +108,7 @@ window.app = Vue.createApp({
             }
         },
 
-        // 根據暱稱獲取會員ID - 新增方法
-        async getMemberIdByNickname(nickname) {
-            if (!nickname || nickname.trim() === '') {
-                return null;
-            }
-
-            // 先檢查快取
-            if (memberCache.has(nickname)) {
-                console.log('從快取獲取會員ID:', memberCache.get(nickname));
-                return memberCache.get(nickname);
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/members/nickname/${encodeURIComponent(nickname)}`, {
-                    credentials: 'include'
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('會員查詢API回應:', data);
-
-                    if (data.success && data.data && data.data.memberId) {
-                        const memberId = data.data.memberId;
-                        // 存入快取
-                        memberCache.set(nickname, memberId);
-                        console.log('成功從API獲取會員ID:', memberId);
-                        return memberId;
-                    } else {
-                        console.warn('API返回成功但無會員資料:', data);
-                    }
-                } else {
-                    console.error('會員查詢API HTTP錯誤:', response.status);
-                }
-            } catch (err) {
-                console.error('調用會員查詢API時發生錯誤:', err);
-            }
-
-            return null;
-        },
+        
 
         // 獲取活動資訊
         async fetchEventInfo() {
@@ -275,7 +243,6 @@ window.app = Vue.createApp({
 
             try {
                 const requestData = {
-                    memberId: this.memberId,
                     ticketId: parseInt(this.swapForm.ticketId),
                     description: `希望交換: ${this.swapForm.wantedTicketType}\n${this.swapForm.description}`,
                     eventId: parseInt(this.eventId)
@@ -355,7 +322,6 @@ window.app = Vue.createApp({
             try {
                 const requestData = {
                     postId: post.postId,
-                    memberId: this.memberId,
                     ticketId: parseInt(post.commentForm.ticketId),
                     description: post.commentForm.description
                 };
@@ -450,8 +416,7 @@ window.app = Vue.createApp({
         async updateCommentStatus(commentId, status) {
             try {
                 const requestData = {
-                    status: status,
-                    memberId: this.memberId
+                    status: status
                 };
 
                 console.log('更新留言狀態:', commentId, status);
@@ -499,10 +464,6 @@ window.app = Vue.createApp({
             }
 
             try {
-                const requestData = {
-                    memberId: this.memberId
-                };
-
                 console.log('刪除貼文:', postId);
 
                 const response = await fetch(`${API_BASE_URL}/ticket-exchange/posts/${postId}`, {
@@ -645,7 +606,7 @@ window.app = Vue.createApp({
 
         // 檢查是否為用戶自己的貼文
         isMyPost(post) {
-            return this.isLoggedIn && post.member && post.member.memberId === this.memberId;
+            return this.isLoggedIn && post.member && post.member.nickName === this.memberNickname;
         },
 
         // 檢查是否可以更新留言狀態
@@ -653,8 +614,8 @@ window.app = Vue.createApp({
             if (!this.isLoggedIn) return false;
 
             // 貼文擁有者或留言者可以更新狀態
-            return (post.member && post.member.memberId === this.memberId) ||
-                (comment.member && comment.member.memberId === this.memberId);
+            return (post.member && post.member.nickName === this.memberNickname) ||
+                (comment.member && comment.member.nickName === this.memberNickname);
         },
 
         // 獲取狀態CSS類別

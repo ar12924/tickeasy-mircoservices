@@ -90,4 +90,13 @@ public interface TicketExchangeService {
      * @throws RuntimeException 當留言不存在或無權限時
      */
     void updateSwapCommentStatus(Integer commentId, Integer status, Integer memberId);
+    
+    /**
+     * 根據暱稱獲取會員基本資訊
+     * 
+     * @param nickname 會員暱稱
+     * @return 會員資訊
+     * @throws IllegalArgumentException 當nickname無效時
+     */
+    Map<String, Object> getMemberByNickname(String nickname);
 }

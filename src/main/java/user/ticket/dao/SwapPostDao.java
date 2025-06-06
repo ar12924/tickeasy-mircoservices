@@ -95,4 +95,12 @@ public interface SwapPostDao {
      * @return 是否為擁有者
      */
     boolean isPostOwner(Integer postId, Integer memberId);
+    
+    /**
+     * 根據暱稱查詢會員基本資訊
+     * 
+     * @param nickname 會員暱稱
+     * @return 會員資訊
+     */
+    Map<String, Object> getMemberByNickname(String nickname);
 }

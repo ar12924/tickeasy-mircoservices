@@ -11,6 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -180,13 +182,22 @@ public class TicketExchangeController extends HttpServlet {
 
 	private void handleCreateSwapPost(HttpServletRequest req, PrintWriter out) throws IOException {
 		try {
-			String requestBody = getRequestBody(req);
-			JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
-
-			Integer memberId = jsonObject.get("memberId").getAsInt();
-			Integer ticketId = jsonObject.get("ticketId").getAsInt();
-			String description = jsonObject.get("description").getAsString();
-			Integer eventId = jsonObject.get("eventId").getAsInt();
+			 // 從session獲取會員資訊
+	        Map<String, Object> memberInfo = getMemberFromSession(req);
+	        if (memberInfo == null) {
+	            buildErrorResponse(out, 401, "A0001", "未登入或登入已過期", "請重新登入");
+	            return;
+	        }
+	        
+	        Integer memberId = (Integer) memberInfo.get("memberId");  // ← 從session獲取
+	        
+	        String requestBody = getRequestBody(req);
+	        JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
+	        
+	        
+	        Integer ticketId = jsonObject.get("ticketId").getAsInt();
+	        String description = jsonObject.get("description").getAsString();
+	        Integer eventId = jsonObject.get("eventId").getAsInt();
 
 			Map<String, Object> data = ticketExchangeService.createSwapPost(memberId, ticketId, description, eventId);
 			addPhotoUrlToData(data);
@@ -209,13 +220,22 @@ public class TicketExchangeController extends HttpServlet {
 
 	private void handleCreateSwapComment(HttpServletRequest req, PrintWriter out) throws IOException {
 		try {
-			String requestBody = getRequestBody(req);
-			JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
-
-			Integer postId = jsonObject.get("postId").getAsInt();
-			Integer memberId = jsonObject.get("memberId").getAsInt();
-			Integer ticketId = jsonObject.get("ticketId").getAsInt();
-			String description = jsonObject.get("description").getAsString();
+			// 從session獲取會員資訊
+	        Map<String, Object> memberInfo = getMemberFromSession(req);
+	        if (memberInfo == null) {
+	            buildErrorResponse(out, 401, "A0001", "未登入或登入已過期", "請重新登入");
+	            return;
+	        }
+	        
+	        Integer memberId = (Integer) memberInfo.get("memberId");  
+	        
+	        String requestBody = getRequestBody(req);
+	        JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
+	        
+	        Integer postId = jsonObject.get("postId").getAsInt();
+	        
+	        Integer ticketId = jsonObject.get("ticketId").getAsInt();
+	        String description = jsonObject.get("description").getAsString();
 
 			Map<String, Object> data = ticketExchangeService.createSwapComment(postId, memberId, ticketId, description);
 			addPhotoUrlToData(data);
@@ -286,10 +306,15 @@ public class TicketExchangeController extends HttpServlet {
 
 	private void handleRemoveSwapPost(String postIdStr, HttpServletRequest req, PrintWriter out) throws IOException {
 		try {
-			Integer postId = Integer.parseInt(postIdStr);
-			String requestBody = getRequestBody(req);
-			JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
-			Integer memberId = jsonObject.get("memberId").getAsInt();
+			// 從session獲取會員資訊
+	        Map<String, Object> memberInfo = getMemberFromSession(req);
+	        if (memberInfo == null) {
+	            buildErrorResponse(out, 401, "A0001", "未登入或登入已過期", "請重新登入");
+	            return;
+	        }
+	        
+	        Integer memberId = (Integer) memberInfo.get("memberId");  
+	        Integer postId = Integer.parseInt(postIdStr);
 
 			ticketExchangeService.removeSwapPost(postId, memberId);
 
@@ -313,11 +338,19 @@ public class TicketExchangeController extends HttpServlet {
 	private void handleUpdateSwapCommentStatus(String commentIdStr, HttpServletRequest req, PrintWriter out)
 			throws IOException {
 		try {
-			Integer commentId = Integer.parseInt(commentIdStr);
-			String requestBody = getRequestBody(req);
-			JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
-			Integer status = jsonObject.get("status").getAsInt();
-			Integer memberId = jsonObject.get("memberId").getAsInt();
+			// 從session獲取會員資訊
+	        Map<String, Object> memberInfo = getMemberFromSession(req);
+	        if (memberInfo == null) {
+	            buildErrorResponse(out, 401, "A0001", "未登入或登入已過期", "請重新登入");
+	            return;
+	        }
+	        
+	        Integer memberId = (Integer) memberInfo.get("memberId");
+	        Integer commentId = Integer.parseInt(commentIdStr);
+	        
+	        String requestBody = getRequestBody(req);
+	        JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
+	        Integer status = jsonObject.get("status").getAsInt();
 
 			ticketExchangeService.updateSwapCommentStatus(commentId, status, memberId);
 
@@ -402,6 +435,29 @@ public class TicketExchangeController extends HttpServlet {
 		if (member != null && member.get("memberId") != null) {
 			Integer memberId = (Integer) member.get("memberId");
 			member.put("photoUrl", "/api/member-photos/" + memberId);
+		}
+	}
+
+	/**
+	 * 從session獲取會員資訊
+	 */
+	private Map<String, Object> getMemberFromSession(HttpServletRequest req) {
+		HttpSession session = req.getSession(false);
+		if (session == null) {
+			return null;
+		}
+
+		String nickname = (String) session.getAttribute("loggedInNickname");
+		if (nickname == null || nickname.trim().isEmpty()) {
+			return null;
+		}
+
+		// 透過 Service 層查詢會員資訊（維持三層式架構）
+		try {
+			return ticketExchangeService.getMemberByNickname(nickname);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

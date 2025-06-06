@@ -288,4 +288,20 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
                 return "未知狀態";
         }
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, Object> getMemberByNickname(String nickname) {
+        if (nickname == null || nickname.trim().isEmpty()) {
+            throw new IllegalArgumentException("會員暱稱不能為空");
+        }
+        
+        try {
+            // 統一使用 swapPostDao 來查詢會員資訊
+            return swapPostDao.getMemberByNickname(nickname.trim());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

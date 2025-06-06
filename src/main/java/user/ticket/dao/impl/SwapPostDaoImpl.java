@@ -219,4 +219,32 @@ public class SwapPostDaoImpl implements SwapPostDao {
                 .getResultList();
         return results.isEmpty() ? null : results.get(0);
     }
+    
+    @Override
+    public Map<String, Object> getMemberByNickname(String nickname) {
+        try {
+            String hql = "FROM MemberVO m WHERE m.nickName = :nickname AND m.active = 1";
+            List<MemberVO> results = session
+                    .createQuery(hql, MemberVO.class)
+                    .setParameter("nickname", nickname)
+                    .setMaxResults(1)
+                    .getResultList();
+                    
+            if (results.isEmpty()) {
+                return null;
+            }
+            
+            MemberVO member = results.get(0);
+            Map<String, Object> memberInfo = new HashMap<>();
+            memberInfo.put("memberId", member.getMemberId());
+            memberInfo.put("nickname", member.getNickName());
+            memberInfo.put("email", member.getEmail());
+            memberInfo.put("roleLevel", member.getRoleLevel());
+            
+            return memberInfo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
