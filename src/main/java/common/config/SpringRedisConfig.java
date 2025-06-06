@@ -31,14 +31,17 @@ public class SpringRedisConfig {
     // 託管 RedisTemplate 物件 (redis 操作的基礎，如同 hibernate 的 session)
     @Bean
     public RedisTemplate<String, Object> redisTemplate() throws NamingException {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
+        RedisTemplate<String, Object> template = new RedisTemplate<>(); // 實例化，為必要
+        template.setConnectionFactory(jedisConnectionFactory()); // 從連線物件設定連線，為必要
 
-        // 讓 Redis 儲存或讀取時，用 JSON 格式處理
+        // 初始化 JSON 序列化器，沒有設定時會使用預設 JDK 序列化器（無法跨語言兼容）
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
         template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
         template.setValueSerializer(serializer);
-        template.afterPropertiesSet();
+
+        template.afterPropertiesSet(); // 內部初始化，沒有 boot 時為必要
         return template;
     }
 

@@ -29,8 +29,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void cacheOrder(TempOrder tempOrder) {
-        // 1. 訂單資訊快取到 Redis
-    	List<TempSelection> tmpselect = tempOrder.getSelections();
-    	tmpselect.forEach(select->System.out.println(select));
+        // 1. 訂單資訊快取到 Redis(儲存為 Hash)
+        String key = "tempOrder:" + tempOrder.getMemberId();
+
     }
 }
