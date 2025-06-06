@@ -36,8 +36,10 @@ public class SpringConfig {
     // 託管 SessionFactory 物件
     @Bean
     public SessionFactory sessionFactory() throws HibernateException, IllegalArgumentException, NamingException {
-        return new LocalSessionFactoryBuilder(dataSource()).scanPackages("*.vo", "*.*.vo")
-                .addProperties(getHibernateProperties()).buildSessionFactory();
+        return new LocalSessionFactoryBuilder(dataSource())
+        		.scanPackages("*.vo", "*.*.vo")
+                .addProperties(getHibernateProperties())
+                .buildSessionFactory();
     }
 
     // 設定 hibernate 組態
