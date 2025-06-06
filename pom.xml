@@ -87,7 +87,7 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
-        <!-- 配置 spring 相關依賴 -->
+        <!-- 配置 spring -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -109,21 +109,17 @@
             <artifactId>log4j-core</artifactId>
             <version>2.24.3</version>
         </dependency>
-        <!-- 配置 spring-data-redis -->
+        <!-- 配置 spring-MVC -->
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
-            <version>2.7.18</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
         </dependency>
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>3.8.0</version>
-        </dependency>
+        <!-- 前後端分離 JSON 轉換用 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.5</version>
+            <version>2.19.0</version>
         </dependency>
     </dependencies>
 
