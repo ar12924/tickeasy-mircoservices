@@ -3,7 +3,7 @@ const bookTicketsJSLoader = () => {
   $(".update").on("mouseenter mouseleave", (e) => {
     $(e.target).closest(".update").toggleClass("is-focused");
   });
-  // ------ 上/下一步按鈕區塊 ------
+  // ====== 上/下一步按鈕區塊 ======
   $(".back").on("click", () => {
     location.href = "https://www.google.com";
   });
@@ -11,8 +11,7 @@ const bookTicketsJSLoader = () => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", () => {
-    // 抓取頁面數值
-    const inputsValues = $(".type-quantity")
+    const inputsValues = $(".type-quantity") // 抓取頁面數值
       .map((index, el) => {
         const parentNode = $(el).closest(".level");
         const categoryName = parentNode.find(".type-name").text();
@@ -27,25 +26,22 @@ const bookTicketsJSLoader = () => {
         };
       })
       .get();
-    console.log(inputsValues);
-    console.log("經過...");
-    bookTicketsPost(JSON.stringify(inputsValues));
-    // location.href = "bookDetails.html";
+    const reqBody = inputsValues;
+    bookTicketsSave(JSON.stringify(reqBody)); // post 票種/數量給 Redis
+    location.href = "bookDetails.html";
   });
 };
 bookTicketsJSLoader(); // 載入 JS 事件監聽
 
-const bookTicketsPost = async (jsonData) => {
-  // post 票種/數資訊給 Redis
+const bookTicketsSave = async (reqBody) => {
   const resp = await fetch(
     "http://localhost:8080/maven-tickeasy-v1/user/buy/book-tickets/save",
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: jsonData,
+      body: reqBody,
     }
   );
-  if (!resp.ok) {
-    throw new Error(resp.statusText);
-  }
+  const respBody = await resp.json();
+  console.log(respBody);
 };

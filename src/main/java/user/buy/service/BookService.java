@@ -20,5 +20,5 @@ public interface BookService {
      *
      * @param 訂單資料
      */
-    Core<String> cacheBook(TempBook tempBook);
+    Core<String> saveBook(TempBook tempBook);
 }

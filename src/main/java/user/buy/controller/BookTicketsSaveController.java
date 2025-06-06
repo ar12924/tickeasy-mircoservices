@@ -51,7 +51,7 @@ public class BookTicketsSaveController extends HttpServlet {
 		}.getType();
 		tempBook.setSelections(gson.fromJson(req.getReader(), bookTicketLstType));
 		// 4. 訂單資訊快取到 Redis
-		Core<String> message = service.cacheBook(tempBook);
+		Core<String> message = service.saveBook(tempBook);
 		// 5. 回應 json 字串
 		String jsonMessage = gson.toJson(message);
 		resp.setContentType("application/json");
