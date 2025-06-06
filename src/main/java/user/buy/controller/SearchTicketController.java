@@ -26,12 +26,12 @@ import user.buy.vo.BuyerTicket;
 @WebServlet("/search-ticket")
 public class SearchTicketController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private SearchService buyServiceImpl;
+	private SearchService service;
 
 	// DL 方式注入(暫時性，後續 spring-MVC 會改)
 	@Override
 	public void init() throws ServletException {
-		buyServiceImpl = CommonUtil.getBean(getServletContext(), SearchService.class);
+		service = CommonUtil.getBean(getServletContext(), SearchService.class);
 	}
 	
 	@Override
@@ -39,7 +39,7 @@ public class SearchTicketController extends HttpServlet {
 		// 1. 指定允許所有網域
 		resp.setHeader("Access-Control-Allow-Origin", "*");
 		// 2. 交給 Service 處理，回傳查詢結果
-		List<BuyerTicket> buyerTicketList = buyServiceImpl.searchTicket();
+		List<BuyerTicket> buyerTicketList = service.searchTicket();
 		// 3. 將活動陣列轉成 json 格式
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(buyerTicketList);

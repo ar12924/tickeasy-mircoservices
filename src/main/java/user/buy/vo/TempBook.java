@@ -4,11 +4,11 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class TempOrder {
+public class TempBook {
 	/**
-	 * 購票頁面下一步暫存 vo
+	 * 購票頁面暫存 vo (儲存使用者暫存訂購資訊)
 	 */
-	private int MemberId;
+	private int memberId;
 	private int eventId;
 	private String eventName;
 	private List<TempSelection> selections;

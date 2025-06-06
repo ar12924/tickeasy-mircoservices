@@ -2,7 +2,7 @@ package user.buy.service;
 
 import java.util.List;
 
-import common.vo.Payload;
+import common.vo.Core;
 import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
 import user.buy.vo.MemberNotification;
@@ -14,7 +14,7 @@ public interface SearchService {
 	 * @param 關鍵字, 頁數, 每頁筆數
 	 * @return 符合條件的數筆活動資料
 	 */
-	Payload<List<EventInfo>> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize);
+	Core<EventInfo> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize);
 
 	/**
 	 * ...

@@ -2,8 +2,8 @@ package user.buy.dao;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import user.buy.vo.TempOrder;
+import user.buy.vo.TempBook;
 
 @Repository
-public interface RedisBookDao extends CrudRepository<TempOrder, Integer> {
+public interface RedisBookDao extends CrudRepository<TempBook, Integer> {
 }

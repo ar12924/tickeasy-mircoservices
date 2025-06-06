@@ -28,7 +28,7 @@ org.springframework.web.context.support.AnnotationConfigWebApplicationContext
 	<!-- 指定 java 組態類別 -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>common.config.SpringConfig, common.config.SpringRedisConfig</param-value>
+		<param-value>common.config.SpringConfig, common.config.SpringDataConfig</param-value>
 	</context-param>
 
 	<!-- 註冊 OpenSessionInViewFilter 替代自定義的 Filter -->
