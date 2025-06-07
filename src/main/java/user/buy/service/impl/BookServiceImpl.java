@@ -12,7 +12,7 @@ import user.buy.dao.BookDao;
 import user.buy.service.BookService;
 import user.buy.vo.TempBook;
 import user.buy.vo.TempSelection;
-import user.buy.vo.TicketType;
+import user.buy.vo.EventTicketType;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -22,7 +22,7 @@ public class BookServiceImpl implements BookService {
     private RedisTemplate<String, Object> template;
 
     @Override
-    public List<TicketType> findTicketType(Integer eventId) {
+    public List<EventTicketType> findTicketType(Integer eventId) {
         // 1. 查詢活動資訊 (event_info)
         return dao.selectById(eventId);
     }

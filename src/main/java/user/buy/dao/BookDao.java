@@ -1,7 +1,7 @@
 package user.buy.dao;
 
 import java.util.List;
-import user.buy.vo.TicketType;
+import user.buy.vo.EventTicketType;
 
 public interface BookDao {
 	/**
@@ -10,5 +10,5 @@ public interface BookDao {
 	 * @param 活動 id
 	 * @return 符合條件的數筆票種資料
 	 */
-	List<TicketType> selectById(Integer eventId);
+	List<EventTicketType> selectById(Integer eventId);
 }

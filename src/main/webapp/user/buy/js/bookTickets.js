@@ -86,7 +86,7 @@ const initBookTicketsJSEvents = () => {
       alert("請至少選擇1種票券!!");
       return;
     }
-    saveBookTicketSelections(selectedBookTickets, eventId); // post 選擇到的票種至 Redis
+    saveBookTicketSelections(selectedBookTickets, eventId); // post 使用者選的票種至 Redis
     location.href = `bookDetails.html?eventId=${eventId}`;
   });
 };

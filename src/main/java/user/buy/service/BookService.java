@@ -4,7 +4,7 @@ import java.util.List;
 
 import common.vo.Core;
 import user.buy.vo.TempBook;
-import user.buy.vo.TicketType;
+import user.buy.vo.EventTicketType;
 
 public interface BookService {
     /**
@@ -13,7 +13,7 @@ public interface BookService {
      * @param 活動 id
      * @return 符合條件的票種資料
      */
-    List<TicketType> findTicketType(Integer eventId);
+    List<EventTicketType> findTicketType(Integer eventId);
 
     /**
      * 接收訂單資料，向 redis 暫存
