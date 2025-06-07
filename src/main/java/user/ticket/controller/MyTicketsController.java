@@ -3,7 +3,7 @@ package user.ticket.controller;
 import com.google.gson.Gson;
 import common.util.CommonUtil;
 import user.ticket.service.TicketExchangeService;
-
+import user.member.vo.Member;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -48,12 +48,18 @@ public class MyTicketsController extends HttpServlet {
 				return;
 			}
 
-			String nickname = (String) session.getAttribute("loggedInNickname");
-			if (nickname == null || nickname.trim().isEmpty()) {
-				buildErrorResponse(out, "未登入或登入已過期");
-				return;
-			}
+			Member member = (Member) session.getAttribute("member");
+	        if (member == null) {
+	            buildErrorResponse(out, "未登入或登入已過期");
+	            return;
+	        }
 
+	        String nickname = member.getNickName();
+	        if (nickname == null || nickname.trim().isEmpty()) {
+	            buildErrorResponse(out, "無法取得會員資訊");
+	            return;
+	        }
+	        
 			// 透過 Service 獲取用戶票券
 			List<Map<String, Object>> tickets = ticketExchangeService.getUserTicketsByNickname(nickname);
 

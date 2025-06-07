@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.util.CommonUtil;
 import user.ticket.service.TicketExchangeService;
-
+import user.member.vo.Member;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -447,17 +447,18 @@ public class TicketExchangeController extends HttpServlet {
 			return null;
 		}
 
-		String nickname = (String) session.getAttribute("loggedInNickname");
-		if (nickname == null || nickname.trim().isEmpty()) {
+		Member member = (Member) session.getAttribute("member");
+		if (member == null) {
 			return null;
 		}
 
-		// 透過 Service 層查詢會員資訊（維持三層式架構）
-		try {
-			return ticketExchangeService.getMemberByNickname(nickname);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		// 建立會員資訊 Map
+	    Map<String, Object> memberInfo = new HashMap<>();
+	    memberInfo.put("memberId", member.getMemberId());
+	    memberInfo.put("nickname", member.getNickName());
+	    memberInfo.put("email", member.getEmail());
+	    memberInfo.put("roleLevel", member.getRoleLevel());
+	    
+	    return memberInfo;
 	}
 }
