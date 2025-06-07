@@ -304,4 +304,23 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             return null;
         }
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getUserTicketsByNickname(String nickname) {
+        if (nickname == null || nickname.trim().isEmpty()) {
+            throw new IllegalArgumentException("會員暱稱不能為空");
+        }
+        
+        // 先獲取會員資訊
+        Map<String, Object> memberInfo = getMemberByNickname(nickname);
+        if (memberInfo == null) {
+            return new ArrayList<>();
+        }
+        
+        Integer memberId = (Integer) memberInfo.get("memberId");
+        
+        // 查詢該會員的票券
+        return swapPostDao.getUserTickets(memberId);
+    }
 }

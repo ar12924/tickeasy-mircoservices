@@ -103,4 +103,7 @@ public interface SwapPostDao {
      * @return 會員資訊
      */
     Map<String, Object> getMemberByNickname(String nickname);
+    
+    // 查會員票券
+    List<Map<String, Object>> getUserTickets(Integer memberId);
 }

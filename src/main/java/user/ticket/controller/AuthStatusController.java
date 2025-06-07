@@ -2,6 +2,8 @@ package user.ticket.controller;
 
 import com.google.gson.Gson;
 
+import user.member.vo.Member;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -42,12 +44,13 @@ public class AuthStatusController extends HttpServlet {
 			Map<String, Object> response = new HashMap<>();
 
 			if (session != null) {
-				String nickname = (String) session.getAttribute("loggedInNickname");
+	            Boolean loggedIn = (Boolean) session.getAttribute("loggedin");
+	            Member member = (Member) session.getAttribute("member");
 
-				if (nickname != null && !nickname.trim().isEmpty()) {
+				if (loggedIn != null && loggedIn && member != null) {
 					Map<String, Object> userData = new HashMap<>();
 					userData.put("isLoggedIn", true);
-					userData.put("nickname", nickname);
+					userData.put("nickname", member.getNickName());
 
 					response.put("success", true);
 					response.put("data", userData);

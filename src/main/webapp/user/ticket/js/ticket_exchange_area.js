@@ -50,16 +50,22 @@ window.app = Vue.createApp({
                 // 檢查登錄狀態
                 await this.checkLoginStatus();
 
-                // 獲取活動資訊
-                await this.fetchEventInfo();
+                // 確認登入狀態已經設定後，再執行其他操作
+                console.log('登入狀態確認完成，isLoggedIn:', this.isLoggedIn);
 
-                // 獲取轉票貼文
-                await this.fetchSwapPosts();
+                // 平行執行其他操作
+                const promises = [
+                    this.fetchEventInfo(),
+                    this.fetchSwapPosts()
+                ];
 
-                // 如果已登入，獲取用戶票券
+                // 如果已登入，加入獲取用戶票券
                 if (this.isLoggedIn) {
-                    await this.fetchUserTickets();
+                    promises.push(this.fetchUserTickets());
                 }
+
+                // 等待所有操作完成
+                await Promise.all(promises);
             } catch (err) {
                 console.error('初始化頁面時發生錯誤:', err);
                 this.error = '頁面載入失敗，請重新整理頁面';
@@ -108,7 +114,7 @@ window.app = Vue.createApp({
             }
         },
 
-        
+
 
         // 獲取活動資訊
         async fetchEventInfo() {
@@ -181,47 +187,29 @@ window.app = Vue.createApp({
 
         // 獲取用戶票券列表
         async fetchUserTickets() {
-            if (!this.memberId) return;
+            if (!this.isLoggedIn) return;
 
             try {
-                console.log('獲取用戶票券，memberId:', this.memberId, 'eventId:', this.eventId);
+                console.log('獲取用戶票券...');
 
-                // 使用正確的 API 路徑（根據您的資料庫結構）
-                const possibleUrls = [
-                    `${API_BASE_URL}/buyer-tickets/member/${this.memberId}`, // 不限制 eventId
-                    `${API_BASE_URL}/tickets/member/${this.memberId}`,
-                    `${API_BASE_URL}/member/${this.memberId}/tickets`
-                ];
+                const response = await fetch(`${API_BASE_URL}/my-tickets`, {
+                    credentials: 'include'  // 重要：攜帶 session
+                });
 
-                for (const url of possibleUrls) {
-                    try {
-                        console.log('嘗試URL:', url);
-                        const response = await fetch(url, {
-                            credentials: 'include'
-                        });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('用戶票券回應:', data);
 
-                        if (response.ok) {
-                            const data = await response.json();
-                            console.log('用戶票券回應:', data);
-
-                            if (data.success && data.data) {
-                                // 如果 API 返回所有票券，在前端過濾
-                                this.userTickets = data.data.filter(ticket => {
-                                    // 只顯示未使用且當前用戶持有的票券
-                                    return !ticket.is_used && ticket.current_holder_member_id === this.memberId;
-                                });
-                                console.log('已載入用戶票券數量:', this.userTickets.length);
-                                return;
-                            }
-                        }
-                    } catch (urlErr) {
-                        console.log('URL嘗試失敗:', url, urlErr.message);
-                        continue;
+                    if (data.success && data.data) {
+                        this.userTickets = data.data;
+                        console.log('已載入用戶票券數量:', this.userTickets.length);
+                    } else {
+                        this.userTickets = [];
                     }
+                } else {
+                    console.error('獲取用戶票券HTTP錯誤:', response.status);
+                    this.userTickets = [];
                 }
-
-                console.warn('所有票券API路徑都失敗，票券列表為空');
-                this.userTickets = [];
             } catch (err) {
                 console.error('獲取用戶票券時發生錯誤:', err);
                 this.userTickets = [];
@@ -468,11 +456,7 @@ window.app = Vue.createApp({
 
                 const response = await fetch(`${API_BASE_URL}/ticket-exchange/posts/${postId}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(requestData)
+                    credentials: 'include'
                 });
 
                 if (response.ok) {
@@ -571,12 +555,6 @@ window.app = Vue.createApp({
                 alert('請輸入希望交換的票區');
                 return false;
             }
-
-            if (!this.swapForm.description.trim()) {
-                alert('請輸入補充說明');
-                return false;
-            }
-
             return true;
         },
 
@@ -699,7 +677,7 @@ window.app = Vue.createApp({
         },
 
         // 處理圖片載入錯誤
-        handleImageError(event) {
+        handleImageError(event, member) {
             try {
                 console.log('圖片載入失敗:', event.target.src);
                 const img = event.target;
@@ -799,4 +777,10 @@ window.app = Vue.createApp({
 
 // 掛載應用
 console.log('掛載 Vue 應用');
-window.app.mount('#app');
+// 確保 nav 和 footer 載入完成後再掛載 Vue
+$(document).ready(() => {
+    setTimeout(() => {
+        window.app.mount('#app');
+        console.log('Vue 應用已掛載');
+    }, 100);
+});

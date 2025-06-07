@@ -99,4 +99,7 @@ public interface TicketExchangeService {
      * @throws IllegalArgumentException 當nickname無效時
      */
     Map<String, Object> getMemberByNickname(String nickname);
+    
+    // 在 TicketExchangeService 介面中新增
+    List<Map<String, Object>> getUserTicketsByNickname(String nickname);
 }

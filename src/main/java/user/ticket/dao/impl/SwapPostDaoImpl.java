@@ -247,4 +247,37 @@ public class SwapPostDaoImpl implements SwapPostDao {
             return null;
         }
     }
+    
+    // 查會員票券
+    @Override
+    public List<Map<String, Object>> getUserTickets(Integer memberId) {
+        String hql = "FROM BuyerTicketVO bt WHERE bt.currentHolderMemberId = :memberId " +
+                     "AND bt.used = 0 ORDER BY bt.ticketId DESC";
+        
+        List<BuyerTicketVO> tickets = session
+                .createQuery(hql, BuyerTicketVO.class)
+                .setParameter("memberId", memberId)
+                .getResultList();
+        
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (BuyerTicketVO ticket : tickets) {
+            Map<String, Object> ticketInfo = new HashMap<>();
+            ticketInfo.put("ticketId", ticket.getTicketId());
+            ticketInfo.put("participantName", ticket.getParticipantName());
+            ticketInfo.put("eventName", ticket.getEventName());
+            ticketInfo.put("price", ticket.getPrice());
+            
+            // 查詢票種資訊
+            if (ticket.getTypeId() != null) {
+                EventTicketTypeVO ticketType = getEventTicketTypeById(ticket.getTypeId());
+                if (ticketType != null) {
+                    ticketInfo.put("categoryName", ticketType.getCategoryName());
+                }
+            }
+            
+            result.add(ticketInfo);
+        }
+        
+        return result;
+    }
 }
