@@ -6,11 +6,11 @@
  * @param {number} eventId - 事件 ID。
  * @returns {Promise<Array<Object>>} 票種數據的數組。
  */
-const fetchTicketTypes = async (eventId) => {
+export const fetchTicketTypes = async (eventId) => {
   const resp = await fetch(
     `http://localhost:8080/maven-tickeasy-v1/user/buy/book-tickets?eventId=${eventId}`
   ); // api 取得 "票種表" 資料
-  return (ticketTypeLst = await resp.json());
+  return await resp.json();
 };
 
 // ==================== 2. UI 渲染層 (UI Rendering Layer) ====================
@@ -19,7 +19,7 @@ const fetchTicketTypes = async (eventId) => {
 /**
  * 預先載入 typeBox.html 模板。
  */
-const fetchTypeBoxTemplate = async () => {
+export const fetchTypeBoxTemplate = async () => {
   const resp = await fetch("./ui/typeBox/typeBox.html");
   return await resp.text();
 };
@@ -28,7 +28,7 @@ const fetchTypeBoxTemplate = async () => {
  * 根據提供的票種數據，動態生成並插入單個票種區塊的 HTML。
  * @param {Object} ticketType - 單個票種的數據，包含 categoryName 和 price。
  */
-const renderTypeBox = async (ticketType) => {
+export const renderTypeBox = async (ticketType) => {
   const templateHTML = $(await fetchTypeBoxTemplate());
 
   templateHTML.find(".type-name").text(ticketType.categoryName); // 顯示票種
@@ -40,7 +40,7 @@ const renderTypeBox = async (ticketType) => {
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
-const initTypeBoxJSEvents = () => {
+export const initTypeBoxJSEvents = () => {
   // "-" 按鈕點擊事件
   $(document).on("click", ".substract", (e) => {
     const control = $(e.target).parent();
@@ -60,20 +60,3 @@ const initTypeBoxJSEvents = () => {
     input.val(count);
   });
 };
-
-// ==================== 5. 頁面初始化 (Initialization) ====================
-// 確保 DOM 加載完成後再執行初始化邏輯
-
-$(async () => {
-  const eventId = getUrlParam("eventId");
-  const ticketTypes = await fetchTicketTypes(eventId);
-  if (ticketTypes.length > 0) {
-    for (type of ticketTypes) {
-      await renderTypeBox(type);
-    }
-  } else {
-    alert("載入票種失敗!!");
-    return;
-  }
-  initTypeBoxJSEvents();
-});

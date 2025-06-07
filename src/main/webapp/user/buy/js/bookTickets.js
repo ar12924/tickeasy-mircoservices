@@ -6,7 +6,7 @@
  * @param {string} paramName - 要獲取的參數名稱。
  * @returns {string|null} 參數的值，如果不存在則為 null。
  */
-const getUrlParam = (paramName) => {
+export const getUrlParam = (paramName) => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get(paramName);
@@ -43,14 +43,14 @@ const saveBookTicketSelections = async (selectionLst, eventId) => {
 const getTicketInputsValues = () => {
   const inputsValues = $(".type-quantity")
     .map((i, input) => {
-      const parentNode = $(el).closest(".level");
+      const parentNode = $(input).closest(".level");
       const categoryName = parentNode.find(".type-name").text();
       const price = parentNode
         .find(".type-price")
         .text()
         .replace(/[^0-9.]/g, ""); // 過濾非數字符號
       return {
-        quantity: $(el).val(),
+        quantity: $(input).val(),
         categoryName,
         price,
       };
@@ -82,11 +82,11 @@ const initBookTicketsJSEvents = () => {
       return;
     }
     const selectedBookTickets = getTicketInputsValues();
-    if (selectedBookTickets.length <= 0) {
+    if (selectedBookTickets.length === 0) {
       alert("請至少選擇1種票券!!");
       return;
     }
-    saveBookTicketSelections(selectionLst, eventId); // post 選擇到的票種至 Redis
+    saveBookTicketSelections(selectedBookTickets, eventId); // post 選擇到的票種至 Redis
     location.href = `bookDetails.html?eventId=${eventId}`;
   });
 };
@@ -94,6 +94,43 @@ const initBookTicketsJSEvents = () => {
 // ==================== 5. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
+// Nav 部分
+import { fetchNavTemplate } from "../../layout/nav/nav.js";
+import { renderNav } from "../../layout/nav/nav.js";
+import { initNavJSEvents } from "../../layout/nav/nav.js";
+$(async () => {
+  const templateHTML = await fetchNavTemplate();
+  await renderNav(templateHTML);
+  initNavJSEvents();
+});
+
+// bookTickets 部分
 $(() => {
   initBookTicketsJSEvents(); // 載入 JS 事件監聽
+});
+
+// typeBox 部分
+import { fetchTicketTypes } from "../ui/typeBox/typeBox.js";
+import { renderTypeBox } from "../ui/typeBox/typeBox.js";
+import { initTypeBoxJSEvents } from "../ui/typeBox/typeBox.js";
+$(async () => {
+  const eventId = getUrlParam("eventId");
+  const ticketTypes = await fetchTicketTypes(eventId);
+  if (ticketTypes.length > 0) {
+    for (const ticketType of ticketTypes) {
+      await renderTypeBox(ticketType);
+    }
+  } else {
+    alert("載入票種失敗!!");
+    return;
+  }
+  initTypeBoxJSEvents();
+});
+
+// footer 部分
+import { fetchFooterTemplate } from "../../layout/footer/footer.js";
+import { renderFooter } from "../../layout/footer/footer.js";
+$(async () => {
+  const templateHTML = await fetchFooterTemplate();
+  await renderFooter(templateHTML);
 });
