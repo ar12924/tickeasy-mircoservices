@@ -91,7 +91,7 @@ window.app = Vue.createApp({
                         if (data.data.isLoggedIn && data.data.nickname) {
                             this.isLoggedIn = true;
                             this.memberNickname = data.data.nickname;
-                            this.memberId = null;
+                            // this.memberId = null;
                             console.log('登入成功:', this.memberNickname);
                         } else {
                             this.isLoggedIn = false;

@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // 如果沒有提供活動 ID，使用預設值
             if (!this.eventId) {
                 console.warn('未提供活動 ID，使用預設值');
-                this.eventId = 1; // 使用預設 ID
+                this.eventId = 11; // 使用預設 ID
             }
 
             // 檢查用戶登錄狀態
