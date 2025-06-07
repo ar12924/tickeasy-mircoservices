@@ -6,11 +6,11 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
-import user.buy.dao.TypeDao;
+import user.buy.dao.BookDao;
 import user.buy.vo.TicketType;
 
 @Repository
-public class TypeDaoImpl implements TypeDao{
+public class BookDaoImpl implements BookDao {
 	@PersistenceContext
 	private Session session;
 	
