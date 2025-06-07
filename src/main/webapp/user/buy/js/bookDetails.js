@@ -1,7 +1,8 @@
 // ====== section 主內容 ======
 const bookDetailsJSLoader = () => {
   $(".back").on("click", () => {
-    location.href = "bookTickets.html";
+    const eventId = eventIdHolder();
+    location.href = `bookTickets.html?eventId=${eventId}`;
   });
   $(".next").on("click", () => {
     location.href = "#";
