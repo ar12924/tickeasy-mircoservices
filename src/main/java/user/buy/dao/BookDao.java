@@ -1,14 +1,13 @@
 package user.buy.dao;
 
 import java.util.List;
-import user.buy.vo.EventTicketType;
 
 public interface BookDao {
 	/**
-	 * 選定某活動，查詢所有票種
+	 * 透過活動 id，查詢 "票種" + "活動資訊"。
 	 * 
-	 * @param 活動 id
-	 * @return 符合條件的數筆票種資料
+	 * @param {Integer} eventId - 活動 id。
+	 * @return {List<Object[]>} 活動 id 下的 "票種" + "活動資訊"。
 	 */
-	List<EventTicketType> selectById(Integer eventId);
+	List<Object[]> selectTypeJoinEventById(int eventId);
 }

@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import common.vo.Core;
 import user.buy.dao.BookDao;
 import user.buy.service.BookService;
 import user.buy.vo.TempBook;
 import user.buy.vo.TempSelection;
-import user.buy.vo.EventTicketType;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -21,10 +21,11 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private RedisTemplate<String, Object> template;
 
+    @Transactional
     @Override
-    public List<EventTicketType> findTicketType(Integer eventId) {
-        // 1. 查詢活動資訊 (event_info)
-        return dao.selectById(eventId);
+    public List<Object[]> findTypeAndEventById(int eventId) {
+        // 1. 查詢 "票種" + "活動資訊"
+        return dao.selectTypeJoinEventById(eventId);
     }
 
     @Override

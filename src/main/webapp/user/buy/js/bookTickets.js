@@ -63,20 +63,24 @@ const getTicketInputsValues = () => {
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
 const initBookTicketsJSEvents = () => {
+  // 共同變數，url 後方的活動 id
+  const eventId = getUrlParam("eventId");
+
   // ====== "更新票券" 按鈕點擊事件 ======
   $(".update").on("mouseenter mouseleave", (e) => {
     $(e.target).closest(".update").toggleClass("is-focused");
   });
+
   // ====== "上一步" 按鈕點擊事件 ======
   $(".back").on("click", () => {
     location.href = "https://www.google.com";
   });
+
   // ====== "下一步" 按鈕點擊事件 ======
   $(".next").on("mouseenter mouseleave", (e) => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", () => {
-    const eventId = getUrlParam("eventId");
     if (!eventId) {
       alert("缺少活動id，無法繼續!!");
       return;
@@ -99,8 +103,8 @@ import { fetchNavTemplate } from "../../layout/nav/nav.js";
 import { renderNav } from "../../layout/nav/nav.js";
 import { initNavJSEvents } from "../../layout/nav/nav.js";
 $(async () => {
-  const templateHTML = await fetchNavTemplate();
-  await renderNav(templateHTML);
+  const template = await fetchNavTemplate();
+  await renderNav(template);
   initNavJSEvents();
 });
 
@@ -111,14 +115,17 @@ $(() => {
 
 // typeBox 部分
 import { fetchTicketTypes } from "../ui/typeBox/typeBox.js";
+import { fetchTypeBoxTemplate } from "../ui/typeBox/typeBox.js";
 import { renderTypeBox } from "../ui/typeBox/typeBox.js";
 import { initTypeBoxJSEvents } from "../ui/typeBox/typeBox.js";
 $(async () => {
   const eventId = getUrlParam("eventId");
   const ticketTypes = await fetchTicketTypes(eventId);
+  const template = await fetchTypeBoxTemplate();
+  console.log(ticketTypes);
   if (ticketTypes.length > 0) {
     for (const ticketType of ticketTypes) {
-      await renderTypeBox(ticketType);
+      await renderTypeBox(ticketType, template);
     }
   } else {
     alert("載入票種失敗!!");
@@ -131,6 +138,6 @@ $(async () => {
 import { fetchFooterTemplate } from "../../layout/footer/footer.js";
 import { renderFooter } from "../../layout/footer/footer.js";
 $(async () => {
-  const templateHTML = await fetchFooterTemplate();
-  await renderFooter(templateHTML);
+  const template = await fetchFooterTemplate();
+  await renderFooter(template);
 });

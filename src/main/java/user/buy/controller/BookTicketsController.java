@@ -1,15 +1,21 @@
 package user.buy.controller;
 
-import common.vo.Core;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import common.vo.Core;
 import user.buy.service.BookService;
 import user.buy.vo.TempBook;
 import user.buy.vo.TempSelection;
-import user.buy.vo.EventTicketType;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("user/buy")
@@ -20,8 +26,8 @@ public class BookTicketsController {
     @CrossOrigin(origins = "*")
     @GetMapping("book-tickets")
     @ResponseBody
-    public List<EventTicketType> bookTickets(@RequestParam("eventId") int eventId) {
-        return service.findTicketType(eventId);
+    public List<Object[]> bookTickets(@RequestParam("eventId") int eventId) {
+        return service.findTypeAndEventById(eventId);
     }
 
     @CrossOrigin(origins = "*")

@@ -17,7 +17,8 @@ export const fetchTicketTypes = async (eventId) => {
 // 這些函數負責動態生成或更新 HTML 內容。
 
 /**
- * 預先載入 typeBox.html 模板。
+ * 預先載入 customBox.html 模板。
+ * @return {Promise<string>} HTML 模板。
  */
 export const fetchTypeBoxTemplate = async () => {
   const resp = await fetch("./ui/typeBox/typeBox.html");
@@ -27,14 +28,15 @@ export const fetchTypeBoxTemplate = async () => {
 /**
  * 根據提供的票種數據，動態生成並插入單個票種區塊的 HTML。
  * @param {Object} ticketType - 單個票種的數據，包含 categoryName 和 price。
+ * @param {string} templateHTML - HTML 模板。
  */
-export const renderTypeBox = async (ticketType) => {
-  const templateHTML = $(await fetchTypeBoxTemplate());
+export const renderTypeBox = async (ticketType, templateHTML) => {
+  const templateJQeury = $(templateHTML);
 
-  templateHTML.find(".type-name").text(ticketType.categoryName); // 顯示票種
-  templateHTML.find(".type-price").text(`NT$ ${ticketType.price}`); // 顯示價格
+  templateJQeury.find(".type-name").text(ticketType.categoryName); // 顯示票種
+  templateJQeury.find(".type-price").text(`NT$ ${ticketType.price}`); // 顯示價格
 
-  $(".type-container").append(templateHTML); // 插入整塊元素到父容器
+  $(".type-container").append(templateJQeury); // 插入整塊元素到父容器
 };
 
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
