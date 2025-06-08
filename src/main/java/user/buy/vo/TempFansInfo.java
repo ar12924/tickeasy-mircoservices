@@ -3,6 +3,6 @@ package user.buy.vo;
 import lombok.Data;
 
 @Data
-public class TempFansInfos {
+public class TempFansInfo {
 
 }
