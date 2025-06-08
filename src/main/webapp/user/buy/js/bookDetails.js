@@ -65,33 +65,33 @@ const initBookDetailsJSEvents = () => {
 // ==================== 5. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
-// Nav 部分
+// ====== Nav 部分 ======
 import { fetchNavTemplate } from "../../layout/nav/nav.js";
 import { renderNav } from "../../layout/nav/nav.js";
 import { initNavJSEvents } from "../../layout/nav/nav.js";
-$(async () => {
+(async () => {
   const template = await fetchNavTemplate();
   await renderNav(template);
   initNavJSEvents();
-});
+})();
 
-// bookDetails 部分
-$(() => {
+// ====== bookDetails 部分 ======
+(() => {
   initBookDetailsJSEvents(); // 載入 JS 事件監聽
-});
+})();
 
-// customBox 部分
+// ====== customBox 部分 ======
 import { fetchCustomBoxTemplate } from "../ui/customBox/customBox.js";
 import { renderCustomBox } from "../ui/customBox/customBox.js";
-$(async () => {
+(async () => {
   const template = await fetchCustomBoxTemplate();
   await renderCustomBox(template);
-});
+})();
 
-// footer 部分
+// ====== footer 部分 ======
 import { fetchFooterTemplate } from "../../layout/footer/footer.js";
 import { renderFooter } from "../../layout/footer/footer.js";
-$(async () => {
+(async () => {
   const template = await fetchFooterTemplate();
   await renderFooter(template);
-});
+})();

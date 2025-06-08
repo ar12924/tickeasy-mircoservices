@@ -4,9 +4,9 @@
 /**
  * 從後端 API 獲取特定事件的票種數據。
  * @param {number} eventId - 事件 ID。
- * @returns {Promise<Array<Object>>} 票種數據的數組。
+ * @returns {Promise<Array<Object>>} "票種" + "活動資訊" 數據的數組。
  */
-export const fetchTicketTypes = async (eventId) => {
+export const fetchTypeAndEvents = async (eventId) => {
   const resp = await fetch(
     `http://localhost:8080/maven-tickeasy-v1/user/buy/book-tickets?eventId=${eventId}`
   ); // api 取得 "票種表" 資料
@@ -17,7 +17,7 @@ export const fetchTicketTypes = async (eventId) => {
 // 這些函數負責動態生成或更新 HTML 內容。
 
 /**
- * 預先載入 customBox.html 模板。
+ * 預先載入 typeBox.html 模板。
  * @return {Promise<string>} HTML 模板。
  */
 export const fetchTypeBoxTemplate = async () => {
