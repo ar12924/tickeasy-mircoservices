@@ -26,10 +26,9 @@
 		<!-- archchang -->
 		<mapping class="user.buy.vo.EventBuyVO" />
 		<mapping class="user.buy.vo.TicketTypeVO" />
-		<mapping class="user.buy.vo.KeywordCategoryVO" />
 		<mapping class="user.buy.vo.FavoriteVO" />
 		<!-- duncan -->
-		<mapping class="manager.event.vo.EventInfo" />
+		<mapping class="manager.event.vo.EventInfo2" />
 		<!-- yiwei -->
 		<mapping class="user.buy.vo.BuyerTicket" />
 		<mapping class="user.buy.vo.MemberNotification" />
