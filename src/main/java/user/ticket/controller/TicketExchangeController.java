@@ -13,6 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -22,182 +33,50 @@ import java.util.Map;
 /**
  * 票券交換控制器 創建者: archchang 創建日期: 2025-05-26
  */
-@WebServlet("/api/ticket-exchange/*")
-public class TicketExchangeController extends HttpServlet {
+@RestController
+@RequestMapping("/api/ticket-exchange")
+public class TicketExchangeController {
 
-	private static final long serialVersionUID = 1L;
+	@Autowired
 	private TicketExchangeService ticketExchangeService;
-	private Gson gson;
-
-	@Override
-	public void init() throws ServletException {
-		super.init();
-		ticketExchangeService = CommonUtil.getBean(getServletContext(), TicketExchangeService.class);
-		gson = new Gson();
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-
-		String pathInfo = req.getPathInfo();
-		PrintWriter out = resp.getWriter();
-
+	
+	/**
+     * 依活動ID查詢換票貼文列表
+     */
+	@GetMapping("/posts/event/{eventId}")
+	public ResponseEntity<Map<String, Object>> getSwapPostsByEventId(@PathVariable Integer eventId) {
 		try {
-			if (pathInfo == null) {
-				buildErrorResponse(out, 400, "A0001", "無效的請求路徑", "請提供有效的請求路徑");
-				return;
-			}
+			if (eventId == null || eventId <= 0) {
+                return ResponseEntity.badRequest().body(buildErrorResponse("A0001", "無效的活動ID", "請提供有效的活動ID"));
+            }
 
-			String[] pathParts = pathInfo.substring(1).split("/");
-
-			if (pathParts.length >= 3 && "posts".equals(pathParts[0]) && "event".equals(pathParts[1])) {
-				// GET /api/ticket-exchange/posts/event/{eventId}
-				handleGetSwapPostsByEventId(pathParts[2], out);
-			} else if (pathParts.length >= 3 && "posts".equals(pathParts[0]) && "member".equals(pathParts[1])) {
-				// GET /api/ticket-exchange/posts/member/{memberId}
-				handleGetMemberSwapPosts(pathParts[2], out);
-			} else if (pathParts.length >= 3 && "comments".equals(pathParts[0]) && "member".equals(pathParts[1])) {
-				// GET /api/ticket-exchange/comments/member/{memberId}
-				handleGetMemberSwapComments(pathParts[2], out);
-			} else if (pathParts.length >= 3 && "posts".equals(pathParts[0]) && "comments".equals(pathParts[2])) {
-				// GET /api/ticket-exchange/posts/{postId}/comments
-				handleGetSwapCommentsByPostId(pathParts[1], out);
-			} else {
-				buildErrorResponse(out, 404, "A0008", "不支援的請求路徑", "請檢查請求路徑是否正確");
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			buildErrorResponse(out, 500, "B0001", "系統內部錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試");
-		}
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-
-		String pathInfo = req.getPathInfo();
-		PrintWriter out = resp.getWriter();
-
-		try {
-			if (pathInfo == null) {
-				buildErrorResponse(out, 400, "A0002", "無效的請求路徑", "請提供有效的請求路徑");
-				return;
-			}
-
-			String[] pathParts = pathInfo.substring(1).split("/");
-
-			if (pathParts.length == 1 && "posts".equals(pathParts[0])) {
-				// POST /api/ticket-exchange/posts
-				handleCreateSwapPost(req, out);
-			} else if (pathParts.length == 1 && "comments".equals(pathParts[0])) {
-				// POST /api/ticket-exchange/comments
-				handleCreateSwapComment(req, out);
-			} else {
-				buildErrorResponse(out, 404, "A0009", "不支援的請求路徑", "請檢查請求路徑是否正確");
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			buildErrorResponse(out, 500, "B0002", "系統內部錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試");
-		}
-	}
-
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-
-		String pathInfo = req.getPathInfo();
-		PrintWriter out = resp.getWriter();
-
-		try {
-			if (pathInfo == null) {
-				buildErrorResponse(out, 400, "A0006", "無效的請求路徑", "請提供有效的請求路徑");
-				return;
-			}
-
-			String[] pathParts = pathInfo.substring(1).split("/");
-
-			if (pathParts.length == 2 && "posts".equals(pathParts[0])) {
-				// DELETE /api/ticket-exchange/posts/{postId}
-				handleRemoveSwapPost(pathParts[1], req, out);
-			} else {
-				buildErrorResponse(out, 404, "A0010", "不支援的請求路徑", "請檢查請求路徑是否正確");
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			buildErrorResponse(out, 500, "B0006", "系統內部錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試");
-		}
-	}
-
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-
-		String pathInfo = req.getPathInfo();
-		PrintWriter out = resp.getWriter();
-
-		try {
-			if (pathInfo == null) {
-				buildErrorResponse(out, 400, "A0009", "無效的請求路徑", "請提供有效的請求路徑");
-				return;
-			}
-
-			String[] pathParts = pathInfo.substring(1).split("/");
-
-			if (pathParts.length == 3 && "comments".equals(pathParts[0]) && "status".equals(pathParts[2])) {
-				// PUT /api/ticket-exchange/comments/{commentId}/status
-				handleUpdateSwapCommentStatus(pathParts[1], req, out);
-			} else {
-				buildErrorResponse(out, 404, "A0011", "不支援的請求路徑", "請檢查請求路徑是否正確");
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			buildErrorResponse(out, 500, "B0009", "系統內部錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試");
-		}
-	}
-
-	private void handleGetSwapPostsByEventId(String eventIdStr, PrintWriter out) {
-		try {
-			Integer eventId = Integer.parseInt(eventIdStr);
-			List<Map<String, Object>> posts = ticketExchangeService.listSwapPostsByEventId(eventId);
-			posts.forEach(this::addPhotoUrlToData);
-
-			Map<String, Object> response = buildSuccessResponse(posts, posts.size());
-			out.println(gson.toJson(response));
-
-		} catch (NumberFormatException e) {
-			buildErrorResponse(out, 400, "A0001", "無效的活動ID", "請提供有效的活動ID");
+            List<Map<String, Object>> posts = ticketExchangeService.listSwapPostsByEventId(eventId);
+            posts.forEach(this::addPhotoUrlToData);
+            
+            return ResponseEntity.ok(buildSuccessResponse(posts, posts.size()));
 		} catch (IllegalArgumentException e) {
-			buildErrorResponse(out, 400, "A0001", e.getMessage(), "請提供有效的活動ID");
+			return ResponseEntity.badRequest().body(buildErrorResponse("A0001", e.getMessage(), "請提供有效的活動ID"));
+		} catch (Exception e) {
+			return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "系統內部錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試"));
 		}
 	}
-
-	private void handleCreateSwapPost(HttpServletRequest req, PrintWriter out) throws IOException {
+	
+	/**
+     * 創建換票貼文
+     */
+	@PostMapping("/posts")
+	public ResponseEntity<Map<String, Object>> createSwapPost(@RequestBody Map<String, Object> requestData, HttpSession session) {
 		try {
-			 // 從session獲取會員資訊
-	        Map<String, Object> memberInfo = getMemberFromSession(req);
-	        if (memberInfo == null) {
-	            buildErrorResponse(out, 401, "A0001", "未登入或登入已過期", "請重新登入");
-	            return;
-	        }
-	        
-	        Integer memberId = (Integer) memberInfo.get("memberId");  // ← 從session獲取
-	        
-	        String requestBody = getRequestBody(req);
-	        JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
-	        
-	        
-	        Integer ticketId = jsonObject.get("ticketId").getAsInt();
-	        String description = jsonObject.get("description").getAsString();
-	        Integer eventId = jsonObject.get("eventId").getAsInt();
+			// 從session獲取會員資訊
+			Map<String, Object> memberInfo = getMemberFromSession(session);
+			if (memberInfo == null) {
+				return ResponseEntity.status(401).body(buildErrorResponse("A0001", "未登入或登入已過期", "請重新登入"));
+			}
+
+			Integer memberId = (Integer) memberInfo.get("memberId");
+            Integer ticketId = (Integer) requestData.get("ticketId");
+            String description = (String) requestData.get("description");
+            Integer eventId = (Integer) requestData.get("eventId");
 
 			Map<String, Object> data = ticketExchangeService.createSwapPost(memberId, ticketId, description, eventId);
 			addPhotoUrlToData(data);
@@ -207,35 +86,33 @@ public class TicketExchangeController extends HttpServlet {
 			response.put("data", data);
 			response.put("message", "換票貼文創建成功");
 
-			out.println(gson.toJson(response));
+			return ResponseEntity.ok(response);
 
 		} catch (IllegalArgumentException e) {
-			buildErrorResponse(out, 400, "A0002", e.getMessage(), "請檢查輸入的資料是否正確");
+			return ResponseEntity.badRequest().body(buildErrorResponse("A0002", e.getMessage(), "請檢查輸入的資料是否正確"));
 		} catch (RuntimeException e) {
 			String errorCode = getErrorCodeFromMessage(e.getMessage());
-			String userMessage = getUserMessageByError(e.getMessage());
-			buildErrorResponse(out, 400, errorCode, e.getMessage(), userMessage);
+            String userMessage = getUserMessageByError(e.getMessage());
+            return ResponseEntity.badRequest().body(buildErrorResponse(errorCode, e.getMessage(), userMessage));
 		}
 	}
-
-	private void handleCreateSwapComment(HttpServletRequest req, PrintWriter out) throws IOException {
+	
+	 /**
+     * 創建換票留言
+     */
+    @PostMapping("/comments")
+    public ResponseEntity<Map<String, Object>> createSwapComment(@RequestBody Map<String, Object> requestData, HttpSession session) {
 		try {
 			// 從session獲取會員資訊
-	        Map<String, Object> memberInfo = getMemberFromSession(req);
-	        if (memberInfo == null) {
-	            buildErrorResponse(out, 401, "A0001", "未登入或登入已過期", "請重新登入");
-	            return;
-	        }
-	        
-	        Integer memberId = (Integer) memberInfo.get("memberId");  
-	        
-	        String requestBody = getRequestBody(req);
-	        JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
-	        
-	        Integer postId = jsonObject.get("postId").getAsInt();
-	        
-	        Integer ticketId = jsonObject.get("ticketId").getAsInt();
-	        String description = jsonObject.get("description").getAsString();
+			Map<String, Object> memberInfo = getMemberFromSession(session);
+			if (memberInfo == null) {
+				return ResponseEntity.status(401).body(buildErrorResponse("A0001", "未登入或登入已過期", "請重新登入"));
+			}
+
+			Integer memberId = (Integer) memberInfo.get("memberId");
+            Integer postId = (Integer) requestData.get("postId");
+            Integer ticketId = (Integer) requestData.get("ticketId");
+            String description = (String) requestData.get("description");
 
 			Map<String, Object> data = ticketExchangeService.createSwapComment(postId, memberId, ticketId, description);
 			addPhotoUrlToData(data);
@@ -245,220 +122,184 @@ public class TicketExchangeController extends HttpServlet {
 			response.put("data", data);
 			response.put("message", "換票留言創建成功");
 
-			out.println(gson.toJson(response));
+			return ResponseEntity.ok(response);
 
 		} catch (IllegalArgumentException e) {
-			buildErrorResponse(out, 400, "A0003", e.getMessage(), "請檢查輸入的資料是否正確");
+			return ResponseEntity.badRequest().body(buildErrorResponse("A0003", e.getMessage(), "請檢查輸入的資料是否正確"));
 		} catch (RuntimeException e) {
 			String errorCode = getErrorCodeFromMessage(e.getMessage());
-			String userMessage = getUserMessageByError(e.getMessage());
-			buildErrorResponse(out, 400, errorCode, e.getMessage(), userMessage);
+            String userMessage = getUserMessageByError(e.getMessage());
+            return ResponseEntity.badRequest().body(buildErrorResponse(errorCode, e.getMessage(), userMessage));
 		}
 	}
 
-	private void handleGetMemberSwapPosts(String memberIdStr, PrintWriter out) {
+    /**
+     * 查詢貼文的留言列表
+     */
+    @GetMapping("/posts/{postId}/comments")
+    public ResponseEntity<Map<String, Object>> getSwapCommentsByPostId(@PathVariable Integer postId) {
 		try {
-			Integer memberId = Integer.parseInt(memberIdStr);
-			List<Map<String, Object>> posts = ticketExchangeService.listMemberSwapPosts(memberId);
-			posts.forEach(this::addPhotoUrlToData);
+			if (postId == null || postId <= 0) {
+                return ResponseEntity.badRequest().body(buildErrorResponse("A0008", "無效的貼文ID", "請提供有效的貼文ID"));
+            }
 
-			Map<String, Object> response = buildSuccessResponse(posts, posts.size());
-			out.println(gson.toJson(response));
-
-		} catch (NumberFormatException e) {
-			buildErrorResponse(out, 400, "A0004", "無效的會員ID", "請提供有效的會員ID");
+            List<Map<String, Object>> comments = ticketExchangeService.listSwapCommentsByPostId(postId);
+            comments.forEach(this::addPhotoUrlToData);
+            
+            return ResponseEntity.ok(buildSuccessResponse(comments, comments.size()));
 		} catch (IllegalArgumentException e) {
-			buildErrorResponse(out, 400, "A0004", e.getMessage(), "請提供有效的會員ID");
+			return ResponseEntity.badRequest().body(buildErrorResponse("A0008", e.getMessage(), "請提供有效的貼文ID"));
 		}
 	}
 
-	private void handleGetMemberSwapComments(String memberIdStr, PrintWriter out) {
+    /**
+     * 更新換票留言狀態
+     */
+    @PutMapping("/comments/{commentId}/status")
+    public ResponseEntity<Map<String, Object>> updateSwapCommentStatus(@PathVariable Integer commentId, @RequestBody Map<String, Object> requestData, HttpSession session) {
 		try {
-			Integer memberId = Integer.parseInt(memberIdStr);
-			List<Map<String, Object>> comments = ticketExchangeService.listMemberSwapComments(memberId);
-			comments.forEach(this::addPhotoUrlToData);
+			Map<String, Object> memberInfo = getMemberFromSession(session);
+            if (memberInfo == null) {
+                return ResponseEntity.status(401).body(buildErrorResponse("A0001", "未登入或登入已過期", "請重新登入"));
+            }
 
-			Map<String, Object> response = buildSuccessResponse(comments, comments.size());
-			out.println(gson.toJson(response));
+            Integer memberId = (Integer) memberInfo.get("memberId");
+            Integer status = (Integer) requestData.get("status");
 
-		} catch (NumberFormatException e) {
-			buildErrorResponse(out, 400, "A0005", "無效的會員ID", "請提供有效的會員ID");
+            ticketExchangeService.updateSwapCommentStatus(commentId, status, memberId);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "留言狀態更新成功");
+
+            return ResponseEntity.ok(response);
 		} catch (IllegalArgumentException e) {
-			buildErrorResponse(out, 400, "A0005", e.getMessage(), "請提供有效的會員ID");
-		}
+            return ResponseEntity.badRequest().body(buildErrorResponse("A0009", e.getMessage(), "請提供有效的參數"));
+        } catch (RuntimeException e) {
+            String errorCode = getErrorCodeFromMessage(e.getMessage());
+            String userMessage = getUserMessageByError(e.getMessage());
+            return ResponseEntity.badRequest().body(buildErrorResponse(errorCode, e.getMessage(), userMessage));
+        }
 	}
-
-	private void handleGetSwapCommentsByPostId(String postIdStr, PrintWriter out) {
-		try {
-			Integer postId = Integer.parseInt(postIdStr);
-			List<Map<String, Object>> comments = ticketExchangeService.listSwapCommentsByPostId(postId);
-			comments.forEach(this::addPhotoUrlToData);
-
-			Map<String, Object> response = buildSuccessResponse(comments, comments.size());
-			out.println(gson.toJson(response));
-
-		} catch (NumberFormatException e) {
-			buildErrorResponse(out, 400, "A0008", "無效的貼文ID", "請提供有效的貼文ID");
-		} catch (IllegalArgumentException e) {
-			buildErrorResponse(out, 400, "A0008", e.getMessage(), "請提供有效的貼文ID");
-		}
-	}
-
-	private void handleRemoveSwapPost(String postIdStr, HttpServletRequest req, PrintWriter out) throws IOException {
+    
+    /**
+     * 刪除換票貼文
+     */
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Map<String, Object>> removeSwapPost(@PathVariable Integer postId, HttpSession session) {
 		try {
 			// 從session獲取會員資訊
-	        Map<String, Object> memberInfo = getMemberFromSession(req);
-	        if (memberInfo == null) {
-	            buildErrorResponse(out, 401, "A0001", "未登入或登入已過期", "請重新登入");
-	            return;
-	        }
-	        
-	        Integer memberId = (Integer) memberInfo.get("memberId");  
-	        Integer postId = Integer.parseInt(postIdStr);
+			Map<String, Object> memberInfo = getMemberFromSession(session);
+			if (memberInfo == null) {
+				return ResponseEntity.status(401).body(buildErrorResponse("A0001", "未登入或登入已過期", "請重新登入"));
+			}
 
-			ticketExchangeService.removeSwapPost(postId, memberId);
+			Integer memberId = (Integer) memberInfo.get("memberId");
+            ticketExchangeService.removeSwapPost(postId, memberId);
 
-			Map<String, Object> response = new HashMap<>();
-			response.put("success", true);
-			response.put("message", "換票貼文刪除成功");
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "換票貼文刪除成功");
 
-			out.println(gson.toJson(response));
-
-		} catch (NumberFormatException e) {
-			buildErrorResponse(out, 400, "A0006", "無效的貼文ID", "請提供有效的參數");
+            return ResponseEntity.ok(response);
 		} catch (IllegalArgumentException e) {
-			buildErrorResponse(out, 400, "A0006", e.getMessage(), "請提供有效的參數");
+			return ResponseEntity.badRequest().body(buildErrorResponse("A0006", e.getMessage(), "請提供有效的參數"));
 		} catch (RuntimeException e) {
 			String errorCode = getErrorCodeFromMessage(e.getMessage());
-			String userMessage = getUserMessageByError(e.getMessage());
-			buildErrorResponse(out, 400, errorCode, e.getMessage(), userMessage);
+            String userMessage = getUserMessageByError(e.getMessage());
+            return ResponseEntity.badRequest().body(buildErrorResponse(errorCode, e.getMessage(), userMessage));
 		}
 	}
+    
+    /**
+     * 建立成功回應
+     */
+    private Map<String, Object> buildSuccessResponse(Object data, Integer total) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("data", data);
+        if (total != null) {
+            response.put("total", total);
+        }
+        return response;
+    }
 
-	private void handleUpdateSwapCommentStatus(String commentIdStr, HttpServletRequest req, PrintWriter out)
-			throws IOException {
-		try {
-			// 從session獲取會員資訊
-	        Map<String, Object> memberInfo = getMemberFromSession(req);
-	        if (memberInfo == null) {
-	            buildErrorResponse(out, 401, "A0001", "未登入或登入已過期", "請重新登入");
-	            return;
-	        }
-	        
-	        Integer memberId = (Integer) memberInfo.get("memberId");
-	        Integer commentId = Integer.parseInt(commentIdStr);
-	        
-	        String requestBody = getRequestBody(req);
-	        JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
-	        Integer status = jsonObject.get("status").getAsInt();
+    /**
+     * 建立錯誤回應
+     */
+    private Map<String, Object> buildErrorResponse(String errorCode, String errorMessage, String userMessage) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("success", false);
+        errorResponse.put("errorCode", errorCode);
+        errorResponse.put("errorMessage", errorMessage);
+        errorResponse.put("userMessage", userMessage);
+        errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+        return errorResponse;
+    }
 
-			ticketExchangeService.updateSwapCommentStatus(commentId, status, memberId);
+    /**
+     * 從錯誤訊息獲取錯誤代碼
+     */
+    private String getErrorCodeFromMessage(String message) {
+        if (message.contains("已發布換票貼文")) {
+            return "E0001";
+        } else if (message.contains("已用於換票留言")) {
+            return "E0003";
+        } else if (message.contains("找不到換票貼文")) {
+            return "E0011";
+        } else if (message.contains("權限不足")) {
+            return "E0012";
+        }
+        return "E0000";
+    }
 
-			Map<String, Object> response = new HashMap<>();
-			response.put("success", true);
-			response.put("message", "留言狀態更新成功");
+    /**
+     * 從錯誤訊息獲取用戶友好訊息
+     */
+    private String getUserMessageByError(String errorMessage) {
+        if (errorMessage.contains("已發布換票貼文")) {
+            return "此票券已經發布過換票貼文，請選擇其他票券";
+        } else if (errorMessage.contains("已用於換票留言")) {
+            return "此票券已經用於換票留言，請選擇其他票券";
+        } else if (errorMessage.contains("找不到換票貼文")) {
+            return "找不到該換票貼文";
+        } else if (errorMessage.contains("權限不足")) {
+            return "您沒有權限進行此操作";
+        }
+        return "操作失敗，請稍後再試";
+    }
 
-			out.println(gson.toJson(response));
+    /**
+     * 為資料添加照片URL
+     */
+    @SuppressWarnings("unchecked")
+    private void addPhotoUrlToData(Map<String, Object> data) {
+        Map<String, Object> member = (Map<String, Object>) data.get("member");
+        if (member != null && member.get("memberId") != null) {
+            Integer memberId = (Integer) member.get("memberId");
+            member.put("photoUrl", "/api/member-photos/" + memberId);
+        }
+    }
 
-		} catch (NumberFormatException e) {
-			buildErrorResponse(out, 400, "A0009", "無效的留言ID", "請提供有效的參數");
-		} catch (IllegalArgumentException e) {
-			buildErrorResponse(out, 400, "A0009", e.getMessage(), "請提供有效的參數");
-		} catch (RuntimeException e) {
-			String errorCode = getErrorCodeFromMessage(e.getMessage());
-			String userMessage = getUserMessageByError(e.getMessage());
-			buildErrorResponse(out, 400, errorCode, e.getMessage(), userMessage);
-		}
-	}
+    /**
+     * 從session獲取會員資訊
+     */
+    private Map<String, Object> getMemberFromSession(HttpSession session) {
+        if (session == null) {
+            return null;
+        }
 
-	private String getRequestBody(HttpServletRequest req) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		String line;
-		while ((line = req.getReader().readLine()) != null) {
-			sb.append(line);
-		}
-		return sb.toString();
-	}
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            return null;
+        }
 
-	private Map<String, Object> buildSuccessResponse(Object data, Integer total) {
-		Map<String, Object> response = new HashMap<>();
-		response.put("success", true);
-		response.put("data", data);
-		if (total != null) {
-			response.put("total", total);
-		}
-		return response;
-	}
+        Map<String, Object> memberInfo = new HashMap<>();
+        memberInfo.put("memberId", member.getMemberId());
+        memberInfo.put("nickname", member.getNickName());
+        memberInfo.put("email", member.getEmail());
+        memberInfo.put("roleLevel", member.getRoleLevel());
 
-	private void buildErrorResponse(PrintWriter out, int httpStatus, String errorCode, String errorMessage,
-			String userMessage) {
-		Map<String, Object> errorResponse = new HashMap<>();
-		errorResponse.put("success", false);
-		errorResponse.put("httpStatus", httpStatus);
-		errorResponse.put("errorCode", errorCode);
-		errorResponse.put("errorMessage", errorMessage);
-		errorResponse.put("userMessage", userMessage);
-		errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
-
-		out.println(gson.toJson(errorResponse));
-	}
-
-	private String getErrorCodeFromMessage(String message) {
-		if (message.contains("已發布換票貼文")) {
-			return "E0001";
-		} else if (message.contains("已用於換票留言")) {
-			return "E0003";
-		} else if (message.contains("找不到換票貼文")) {
-			return "E0011";
-		} else if (message.contains("權限不足")) {
-			return "E0012";
-		}
-		return "E0000";
-	}
-
-	private String getUserMessageByError(String errorMessage) {
-		if (errorMessage.contains("已發布換票貼文")) {
-			return "此票券已經發布過換票貼文，請選擇其他票券";
-		} else if (errorMessage.contains("已用於換票留言")) {
-			return "此票券已經用於換票留言，請選擇其他票券";
-		} else if (errorMessage.contains("找不到換票貼文")) {
-			return "找不到該換票貼文";
-		} else if (errorMessage.contains("權限不足")) {
-			return "您沒有權限進行此操作";
-		}
-		return "操作失敗，請稍後再試";
-	}
-
-	@SuppressWarnings("unchecked")
-	private void addPhotoUrlToData(Map<String, Object> data) {
-		Map<String, Object> member = (Map<String, Object>) data.get("member");
-		if (member != null && member.get("memberId") != null) {
-			Integer memberId = (Integer) member.get("memberId");
-			member.put("photoUrl", "/api/member-photos/" + memberId);
-		}
-	}
-
-	/**
-	 * 從session獲取會員資訊
-	 */
-	private Map<String, Object> getMemberFromSession(HttpServletRequest req) {
-		HttpSession session = req.getSession(false);
-		if (session == null) {
-			return null;
-		}
-
-		Member member = (Member) session.getAttribute("member");
-		if (member == null) {
-			return null;
-		}
-
-		// 建立會員資訊 Map
-	    Map<String, Object> memberInfo = new HashMap<>();
-	    memberInfo.put("memberId", member.getMemberId());
-	    memberInfo.put("nickname", member.getNickName());
-	    memberInfo.put("email", member.getEmail());
-	    memberInfo.put("roleLevel", member.getRoleLevel());
-	    
-	    return memberInfo;
-	}
+        return memberInfo;
+    }
 }

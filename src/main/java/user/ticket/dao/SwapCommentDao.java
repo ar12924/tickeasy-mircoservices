@@ -8,6 +8,8 @@ import user.ticket.vo.SwapCommentVO;
 import user.ticket.vo.MemberVO;
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventTicketTypeVO;
+
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 public interface SwapCommentDao {
@@ -77,6 +79,7 @@ public interface SwapCommentDao {
      * @return 會員照片位元組陣列
      */
     byte[] getMemberPhoto(Integer memberId);
+    InputStream getMemberPhotoStream(Integer memberId);
 
     /**
      * 檢查票券是否已存在換票留言

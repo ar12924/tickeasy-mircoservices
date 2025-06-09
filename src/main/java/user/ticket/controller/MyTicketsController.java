@@ -10,6 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -20,66 +27,50 @@ import java.util.Map;
  * 創建者: archchang 
  * 創建日期: 2025-06-06
  */
-@WebServlet("/api/my-tickets")
-public class MyTicketsController extends HttpServlet {
+@RestController
+@RequestMapping("/api/my-tickets")
+public class MyTicketsController {
 
-	private static final long serialVersionUID = 1L;
+	@Autowired
 	private TicketExchangeService ticketExchangeService;
-	private Gson gson;
+		
+	/**
+     * 獲取當前會員的票券列表
+     */
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getMyTickets(HttpSession session) {
+        try {
+            if (session == null) {
+                return ResponseEntity.status(401).body(buildErrorResponse("未登入或登入已過期"));
+            }
 
-	@Override
-	public void init() throws ServletException {
-		super.init();
-		ticketExchangeService = CommonUtil.getBean(getServletContext(), TicketExchangeService.class);
-		gson = new Gson();
-	}
+            Member member = (Member) session.getAttribute("member");
+            if (member == null) {
+                return ResponseEntity.status(401).body(buildErrorResponse("未登入或登入已過期"));
+            }
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
+            String nickname = member.getNickName();
+            if (nickname == null || nickname.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(buildErrorResponse("無法取得會員資訊"));
+            }
 
-		PrintWriter out = resp.getWriter();
+            List<Map<String, Object>> tickets = ticketExchangeService.getUserTicketsByNickname(nickname);
 
-		try {
-			HttpSession session = req.getSession(false);
-			if (session == null) {
-				buildErrorResponse(out, "未登入或登入已過期");
-				return;
-			}
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", tickets);
+            response.put("total", tickets.size());
 
-			Member member = (Member) session.getAttribute("member");
-	        if (member == null) {
-	            buildErrorResponse(out, "未登入或登入已過期");
-	            return;
-	        }
-
-	        String nickname = member.getNickName();
-	        if (nickname == null || nickname.trim().isEmpty()) {
-	            buildErrorResponse(out, "無法取得會員資訊");
-	            return;
-	        }
-	        
-			// 透過 Service 獲取用戶票券
-			List<Map<String, Object>> tickets = ticketExchangeService.getUserTicketsByNickname(nickname);
-
-			Map<String, Object> response = new HashMap<>();
-			response.put("success", true);
-			response.put("data", tickets);
-			response.put("total", tickets.size());
-
-			out.println(gson.toJson(response));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			buildErrorResponse(out, "獲取票券時發生錯誤");
-		}
-	}
-
-	private void buildErrorResponse(PrintWriter out, String message) {
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(buildErrorResponse("獲取票券時發生錯誤"));
+        }
+    }
+	
+	private Map<String, Object> buildErrorResponse(String message) {
 		Map<String, Object> errorResponse = new HashMap<>();
 		errorResponse.put("success", false);
 		errorResponse.put("message", message);
-		out.println(gson.toJson(errorResponse));
+		return errorResponse;
 	}
 }

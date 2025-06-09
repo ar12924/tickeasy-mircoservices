@@ -10,6 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -20,27 +26,17 @@ import java.util.Map;
  * 創建者: archchang 
  * 創建日期: 2025-06-05
  */
-@WebServlet("/api/auth/status")
-public class AuthStatusController extends HttpServlet {
+@RestController
+@RequestMapping("/api/auth")
+public class AuthStatusController {
 
-	private static final long serialVersionUID = 1L;
-	private Gson gson;
-
-	@Override
-	public void init() throws ServletException {
-		super.init();
-		gson = new Gson();
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-
-		PrintWriter out = resp.getWriter();
-
+	/**
+     * 檢查登入狀態
+     */
+	@GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> checkAuthStatus(HttpSession session) {
+		
 		try {
-			HttpSession session = req.getSession(false);
 			Map<String, Object> response = new HashMap<>();
 
 			if (session != null) {
@@ -72,14 +68,13 @@ public class AuthStatusController extends HttpServlet {
 				response.put("message", "未登入");
 			}
 
-			out.println(gson.toJson(response));
+			return ResponseEntity.ok(response);
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			Map<String, Object> errorResponse = new HashMap<>();
 			errorResponse.put("success", false);
 			errorResponse.put("message", "系統錯誤");
-			out.println(gson.toJson(errorResponse));
+			return ResponseEntity.internalServerError().body(errorResponse);
 		}
 	}
 }

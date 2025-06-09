@@ -9,6 +9,8 @@ import user.ticket.vo.MemberVO;
 import user.ticket.vo.EventInfoVO;
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventTicketTypeVO;
+
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 public interface SwapPostDao {
@@ -78,6 +80,7 @@ public interface SwapPostDao {
      * @return 會員照片位元組陣列
      */
     byte[] getMemberPhoto(Integer memberId);
+    InputStream getMemberPhotoStream(Integer memberId);
 
     /**
      * 檢查票券是否已存在換票貼文

@@ -9,6 +9,9 @@ import user.ticket.vo.MemberVO;
 import user.ticket.vo.EventInfoVO;
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventTicketTypeVO;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -104,6 +107,20 @@ public class SwapPostDaoImpl implements SwapPostDao {
                 .setParameter("ticketId", ticketId)
                 .getResultList();
         return results.isEmpty() ? null : convertSwapPostToMap(results.get(0));
+    }
+    
+    @Override
+    public InputStream getMemberPhotoStream(Integer memberId) {
+        try {
+            MemberVO member = session.get(MemberVO.class, memberId);
+            if (member != null && member.getPhoto() != null && member.getPhoto().length > 0) {
+                return new ByteArrayInputStream(member.getPhoto());
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
