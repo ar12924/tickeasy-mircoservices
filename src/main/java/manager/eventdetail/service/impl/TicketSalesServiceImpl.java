@@ -55,7 +55,7 @@ public class TicketSalesServiceImpl implements TicketSalesService {
         return result;
     }
     
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public Map<String, Object> getTicketTypeDetail(Integer typeId) {
         Map<String, Object> result = new HashMap<>();

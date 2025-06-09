@@ -4,18 +4,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import manager.eventdetail.dao.TicketSalesDao;
 import manager.eventdetail.vo.EventTicketType;
 
+import javax.persistence.PersistenceContext;
+
 @Repository
 public class TicketSalesDaoImpl implements TicketSalesDao {
+
+    @PersistenceContext
+    private Session session;
 
     @Override
     public List<EventTicketType> getEventTicketTypes(Integer eventId) {
         String hql = "FROM EventTicketType WHERE eventId = :eventId ORDER BY typeId";
-        return getSession().createQuery(hql, EventTicketType.class)
+        return session.createQuery(hql, EventTicketType.class)
                 .setParameter("eventId", eventId)
                 .getResultList();
     }
@@ -23,7 +29,7 @@ public class TicketSalesDaoImpl implements TicketSalesDao {
     @Override
     public Integer getSoldTicketCount(Integer typeId) {
         String hql = "SELECT COUNT(*) FROM BuyerTicketEventVer WHERE typeId = :typeId";
-        return ((Long) getSession().createQuery(hql)
+        return ((Long) session.createQuery(hql)
                 .setParameter("typeId", typeId)
                 .uniqueResult()).intValue();
     }
@@ -31,7 +37,7 @@ public class TicketSalesDaoImpl implements TicketSalesDao {
     @Override
     public Integer getUsedTicketCount(Integer typeId) {
         String hql = "SELECT COUNT(*) FROM BuyerTicketEventVer WHERE typeId = :typeId AND isUsed = 1";
-        return ((Long) getSession().createQuery(hql)
+        return ((Long) session.createQuery(hql)
                 .setParameter("typeId", typeId)
                 .uniqueResult()).intValue();
     }

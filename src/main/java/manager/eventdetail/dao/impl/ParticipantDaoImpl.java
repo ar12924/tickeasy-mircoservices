@@ -66,66 +66,89 @@ public class ParticipantDaoImpl implements ParticipantDao {
     @Override
     public Map<String, Object> searchParticipants(Integer eventId, Map<String, Object> searchParams) {
         Map<String, Object> result = new HashMap<>();
-        StringBuilder hql = new StringBuilder();
-        hql.append("FROM BuyerTicketEventVer bt ")
-                .append("LEFT JOIN FETCH bt.buyerOrder bo ")
-                .append("LEFT JOIN FETCH bt.eventTicketType ett ")
-                .append("WHERE ett.eventId = :eventId ");
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("eventId", eventId);
+        // --- 資料查詢 (Data Query) ---
+        StringBuilder dataHqlBuilder = new StringBuilder(
+            "FROM BuyerTicketEventVer bt " +
+            "LEFT JOIN FETCH bt.buyerOrder bo " +
+            "LEFT JOIN FETCH bt.eventTicketType ett " +
+            "WHERE ett.eventId = :eventId ");
+        Map<String, Object> dataParams = new HashMap<>();
+        dataParams.put("eventId", eventId);
 
-        // 加入查詢條件
         if (searchParams.containsKey("participantName")) {
-            hql.append("AND bt.participantName LIKE :participantName ");
-            parameters.put("participantName", "%" + searchParams.get("participantName") + "%");
+            dataHqlBuilder.append("AND bt.participantName LIKE :participantName ");
+            dataParams.put("participantName", "%" + searchParams.get("participantName") + "%");
         }
         if (searchParams.containsKey("email")) {
-            hql.append("AND bt.email LIKE :email ");
-            parameters.put("email", "%" + searchParams.get("email") + "%");
+            dataHqlBuilder.append("AND bt.email LIKE :email ");
+            dataParams.put("email", "%" + searchParams.get("email") + "%");
         }
         if (searchParams.containsKey("phone")) {
-            hql.append("AND bt.phone LIKE :phone ");
-            parameters.put("phone", "%" + searchParams.get("phone") + "%");
+            dataHqlBuilder.append("AND bt.phone LIKE :phone ");
+            dataParams.put("phone", "%" + searchParams.get("phone") + "%");
         }
         if (searchParams.containsKey("status")) {
-            hql.append("AND bt.status = :status ");
-            parameters.put("status", searchParams.get("status"));
+            dataHqlBuilder.append("AND bt.status = :status ");
+            dataParams.put("status", searchParams.get("status"));
         }
         if (searchParams.containsKey("ticketTypeId")) {
-            hql.append("AND bt.typeId = :typeId ");
-            parameters.put("typeId", searchParams.get("ticketTypeId"));
+            dataHqlBuilder.append("AND bt.typeId = :typeId ");
+            dataParams.put("typeId", searchParams.get("ticketTypeId"));
         }
         if (searchParams.containsKey("isUsed")) {
-            hql.append("AND bt.isUsed = :isUsed ");
-            parameters.put("isUsed", searchParams.get("isUsed"));
+            dataHqlBuilder.append("AND bt.isUsed = :isUsed ");
+            dataParams.put("isUsed", searchParams.get("isUsed"));
         }
-
-        // 分頁處理
+        
+        Query<BuyerTicketEventVer> dataQuery = session.createQuery(dataHqlBuilder.toString(), BuyerTicketEventVer.class);
+        dataParams.forEach(dataQuery::setParameter);
+        
         int pageNumber = (int) searchParams.getOrDefault("pageNumber", 1);
         int pageSize = (int) searchParams.getOrDefault("pageSize", 10);
         int firstResult = (pageNumber - 1) * pageSize;
+        dataQuery.setFirstResult(firstResult);
+        dataQuery.setMaxResults(pageSize);
+        List<BuyerTicketEventVer> list = dataQuery.list();
 
-        // 執行查詢
-        Query<BuyerTicketEventVer> query = session.createQuery(hql.toString(), BuyerTicketEventVer.class);
-        parameters.forEach(query::setParameter);
-        query.setFirstResult(firstResult);
-        query.setMaxResults(pageSize);
-        List<BuyerTicketEventVer> list = query.list();
+        // --- 總數查詢 (Count Query) ---
+        StringBuilder countHqlBuilder = new StringBuilder(
+            "SELECT COUNT(bt.ticketId) " +
+            "FROM BuyerTicketEventVer bt " +
+            "JOIN bt.eventTicketType ett " +
+            "WHERE ett.eventId = :eventId ");
+        Map<String, Object> countParams = new HashMap<>();
+        countParams.put("eventId", eventId);
 
-        // 獲取總數
-        String countHql = "SELECT COUNT(bt.ticketId) "
-                + "FROM BuyerTicketEventVer bt "
-                + "JOIN bt.eventTicketType ett "
-                + "WHERE ett.eventId = :eventId";
+        if (searchParams.containsKey("participantName")) {
+            countHqlBuilder.append("AND bt.participantName LIKE :participantName ");
+            countParams.put("participantName", "%" + searchParams.get("participantName") + "%");
+        }
+        if (searchParams.containsKey("email")) {
+            countHqlBuilder.append("AND bt.email LIKE :email ");
+            countParams.put("email", "%" + searchParams.get("email") + "%");
+        }
+        if (searchParams.containsKey("phone")) {
+            countHqlBuilder.append("AND bt.phone LIKE :phone ");
+            countParams.put("phone", "%" + searchParams.get("phone") + "%");
+        }
+        if (searchParams.containsKey("status")) {
+            countHqlBuilder.append("AND bt.status = :status ");
+            countParams.put("status", searchParams.get("status"));
+        }
+        if (searchParams.containsKey("ticketTypeId")) {
+            countHqlBuilder.append("AND bt.typeId = :typeId ");
+            countParams.put("typeId", searchParams.get("ticketTypeId"));
+        }
+        if (searchParams.containsKey("isUsed")) {
+            countHqlBuilder.append("AND bt.isUsed = :isUsed ");
+            countParams.put("isUsed", searchParams.get("isUsed"));
+        }
 
-        Query<Long> countQuery = session.createQuery(countHql, Long.class);
-        parameters.forEach(countQuery::setParameter);
+        Query<Long> countQuery = session.createQuery(countHqlBuilder.toString(), Long.class);
+        countParams.forEach(countQuery::setParameter);
         Long total = countQuery.uniqueResult();
 
-        // 設置分頁
-        query.setFirstResult(firstResult);
-        query.setMaxResults(pageSize);
         result.put("total", total);
         result.put("data", list);
         return result;
@@ -134,7 +157,7 @@ public class ParticipantDaoImpl implements ParticipantDao {
     @Override
     public List<EventTicketType> getEventTicketTypes(Integer eventId) {
         String hql = "FROM EventTicketType ett WHERE ett.eventId = :eventId";
-        return getSession().createQuery(hql, EventTicketType.class)
+        return session.createQuery(hql, EventTicketType.class)
                 .setParameter("eventId", eventId)
                 .list();
     }
@@ -142,7 +165,7 @@ public class ParticipantDaoImpl implements ParticipantDao {
     @Override
     public boolean updateTicketStatus(Long ticketId, Integer status, Integer isUsed) {
         String hql = "UPDATE BuyerTicketEventVer SET status = :status, isUsed = :isUsed WHERE ticketId = :ticketId";
-        int updated = getSession().createQuery(hql)
+        int updated = session.createQuery(hql)
                 .setParameter("status", status)
                 .setParameter("isUsed", isUsed)
                 .setParameter("ticketId", ticketId)
