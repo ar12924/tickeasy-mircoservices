@@ -4,20 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tickeasy!!!</title>
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css"
     />
     <link rel="stylesheet" href="./css/bookTickets.css" class="main-css" />
     <link rel="stylesheet" href="../layout/nav/nav.css" />
     <link rel="stylesheet" href="../layout/footer/footer.css" />
   </head>
   <body>
-    <!-- nav 導覽列 -->
+    <!-- nav 導覽列(元件化) -->
     <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
 
     <!-- header 麵包屑 & 進度條 -->
@@ -60,7 +57,7 @@
                 <p class="title is-4">票券一覽</p>
               </div>
             </div>
-            <!-- 票種區塊 -->
+            <!-- 票種區塊(元件化) -->
             <div class="type-container"></div>
           </div>
           <div class="has-text-centered">
@@ -78,13 +75,10 @@
       </div>
     </section>
 
-    <!-- footer 頁底列 -->
+    <!-- footer 頁底列(元件化) -->
     <footer></footer>
   </body>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="./js/bookTickets.js"></script>
-  <script src="../layout/nav/nav.js"></script>
-  <script src="../layout/footer/footer.js"></script>
-  <script src="./ui/typeBox/typeBox.js"></script>
+  <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
+  <script type="module" src="./js/bookTickets.js"></script>
 </html>
