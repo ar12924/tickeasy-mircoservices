@@ -6,7 +6,7 @@ public interface BookDao {
 	/**
 	 * 透過活動 id，查詢 "票種" + "活動資訊"。
 	 * 
-	 * @param {Integer} eventId - 活動 id。
+	 * @param {int} eventId - 活動 id。
 	 * @return {List<Object[]>} 活動 id 下的 "票種" + "活動資訊"。
 	 */
 	List<Object[]> selectTypeJoinEventById(int eventId);

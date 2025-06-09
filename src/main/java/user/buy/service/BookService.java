@@ -17,7 +17,8 @@ public interface BookService {
     /**
      * 接收訂單資料，向 redis 暫存
      *
-     * @param 訂單資料
+     * @param {TempBook} tempbook - 訂單資料。
+     * @return {Core<String>} 訂單儲存操作結果。
      */
     Core<String> saveBook(TempBook tempBook);
 }

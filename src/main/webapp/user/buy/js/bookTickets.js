@@ -96,7 +96,7 @@ const initBookTicketsJSEvents = () => {
     });
     console.log(tempBook);
     saveTempBook(tempBook, eventId); // post 使用者選的票種至 Redis
-    // location.href = `bookDetails.html?eventId=${eventId}`;
+    location.href = `bookDetails.html?eventId=${eventId}`;
   });
 };
 

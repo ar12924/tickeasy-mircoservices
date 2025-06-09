@@ -2,11 +2,11 @@
 // 這些函數負責動態生成或更新 HTML 內容。
 
 /**
- * 預先載入 customBox.html 模板。
+ * 預先載入 infoBox.html 模板。
  * @return {Promise<string>} HTML 模板。
  */
-export const fetchCustomBoxTemplate = async () => {
-  const resp = await fetch("./ui/customBox/customBox.html");
+export const fetchFansInfoBoxTemplate = async () => {
+  const resp = await fetch("./ui/infoBox/fansInfoBox.html");
   return await resp.text();
 };
 
@@ -14,7 +14,7 @@ export const fetchCustomBoxTemplate = async () => {
  * 動態生成並插入導覽列的 HTML。
  * @param {string} templateHTML - HTML模板。
  */
-export const renderCustomBox = async (templateHTML) => {
+export const renderFansInfoBox = async (templateHTML) => {
   const templateJQeury = $(templateHTML);
-  $(".custom-container").append(templateJQeury);
+  $(".fans-info-container").append(templateJQeury);
 };

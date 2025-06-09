@@ -34,9 +34,8 @@ public class BookTicketsController {
 	@ResponseBody
 	public Core<String> bookTicketsSave(@RequestParam int eventId, @RequestBody TempBook tempBook) {
 		int memberId = 5; // 預計由 session 物件取得
-		// 1. 包裝 url 參數, session 屬性及請求物件
+		// 1. 包裝 url 參數, session 屬性及請求本體
 		tempBook.setMemberId(memberId);
-		// 2. 訂單快取至 Redis
 		return service.saveBook(tempBook);
 	}
 }

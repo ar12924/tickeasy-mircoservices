@@ -38,7 +38,7 @@ export const getUrlParam = (paramName) => {
 //   return inputsValues;
 // };
 
-// ==================== 4. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
+// ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
 const initBookDetailsJSEvents = () => {
@@ -62,7 +62,7 @@ const initBookDetailsJSEvents = () => {
   });
 };
 
-// ==================== 5. 頁面初始化 (Initialization) ====================
+// ==================== 4. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
 // ====== Nav 部分 ======
@@ -80,12 +80,20 @@ import { initNavJSEvents } from "../../layout/nav/nav.js";
   initBookDetailsJSEvents(); // 載入 JS 事件監聽
 })();
 
-// ====== customBox 部分 ======
-import { fetchCustomBoxTemplate } from "../ui/customBox/customBox.js";
-import { renderCustomBox } from "../ui/customBox/customBox.js";
+// ====== contactInfoBox 部分 ======
+import { fetchContactInfoBoxTemplate } from "../ui/infoBox/contactInfoBox.js";
+import { renderContactInfoBox } from "../ui/infoBox/contactInfoBox.js";
 (async () => {
-  const template = await fetchCustomBoxTemplate();
-  await renderCustomBox(template);
+  const template = await fetchContactInfoBoxTemplate();
+  await renderContactInfoBox(template);
+})();
+
+// ====== fansInfoBox 部分 ======
+import { fetchFansInfoBoxTemplate } from "../ui/infoBox/fansInfoBox.js";
+import { renderFansInfoBox } from "../ui/infoBox/fansInfoBox.js";
+(async () => {
+  const template = await fetchFansInfoBoxTemplate();
+  await renderFansInfoBox(template);
 })();
 
 // ====== footer 部分 ======
