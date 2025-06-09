@@ -8,7 +8,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -16,54 +28,50 @@ import java.io.OutputStream;
  * 創建者: archchang
  * 創建日期: 2025-06-03
  */
-@WebServlet("/api/events/image/*")
-public class EventImageController extends HttpServlet {
-    
-    private static final long serialVersionUID = 1L;
+@RestController
+@RequestMapping("/api/events/image")
+public class EventImageController {
+	@Autowired
     private EventInfoService eventService;
-    
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        eventService = CommonUtil.getBean(getServletContext(), EventInfoService.class);
-    }
-    
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 獲取路徑資訊
-        String pathInfo = req.getPathInfo();
+	
+	@GetMapping("/{eventId}")
+    public void getEventImage(@PathVariable Integer eventId, HttpServletResponse response) throws IOException{
         
-        if (pathInfo == null || pathInfo.length() <= 1) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "無效的請求路徑");
-            return;
-        }
-        
-        // 從路徑中提取活動ID，路徑格式為 /api/events/image/{eventId}
-        String eventIdStr = pathInfo.substring(1); // 移除開頭的 /
-        
-        try {
-            Integer eventId = Integer.parseInt(eventIdStr);
-            byte[] imageData = eventService.getEventImage(eventId);
-            
-            if (imageData != null && imageData.length > 0) {
-                // 設置響應類型
-                resp.setContentType("image/jpeg");
-                resp.setContentLength(imageData.length);
+		try (InputStream imageStream = eventService.getEventImageStream(eventId)) {
+            if (imageStream != null) {
+                // 設定響應標頭
+                response.setContentType("image/jpeg");
+                response.setHeader("Cache-Control", "public, max-age=3600");
                 
-                // 設置緩存控制
-                resp.setHeader("Cache-Control", "public, max-age=3600");
-                
-                // 寫入圖片數據
-                try (OutputStream out = resp.getOutputStream()) {
-                    out.write(imageData);
+                // 串流傳輸圖片
+                try (OutputStream outputStream = response.getOutputStream()) {
+                    byte[] buffer = new byte[8192]; // 8KB 緩衝區
+                    int bytesRead;
+                    while ((bytesRead = imageStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
                 }
             } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "圖片不存在");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "圖片不存在");
             }
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "無效的活動ID格式");
         } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "獲取圖片時發生錯誤");
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "獲取圖片時發生錯誤");
         }
+		/*
+		byte[] imageData = eventService.getEventImage(eventId);
+        
+        if (imageData != null && imageData.length > 0) {
+        	response.setContentType("image/jpeg");
+            response.setContentLength(imageData.length);
+            response.setHeader("Cache-Control", "public, max-age=3600");
+            
+            try (OutputStream out = response.getOutputStream()) {
+                out.write(imageData);
+            }
+        } else {
+        	response.sendError(HttpServletResponse.SC_NOT_FOUND, "圖片不存在");
+        }
+        */
     }
 }
