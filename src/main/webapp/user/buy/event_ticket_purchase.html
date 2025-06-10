@@ -109,17 +109,12 @@
     <footer>
         <!-- footer.html 內容將由 footer.js 動態載入 -->
     </footer>
-    <!-- Vue 3 CDN -->
-    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
     <!-- is.js 函式庫 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script>
-    <!-- 引入共用組件JavaScript -->
-    <script src="../layout/nav/nav.js"></script>
-    <script src="../layout/footer/footer.js"></script>
-    <!-- 引入自定義JavaScript -->
-    <script src="./js/event_ticket_purchase.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script> -->
+    <!-- 使用 ES6 modules 載入主要 JavaScript -->
+    <script type="module" src="./js/event_ticket_purchase.js"></script>
 </body>
 
 </html>
