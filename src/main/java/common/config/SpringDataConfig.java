@@ -43,13 +43,4 @@ public class SpringDataConfig {
 		template.afterPropertiesSet(); // 內部初始化，沒有 boot 時為必要
 		return template;
 	}
-
-	// 託管 ObjectMapper 物件
-	@Bean
-	public ObjectMapper objectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),
-				ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-		return objectMapper;
-	}
 }

@@ -12,4 +12,6 @@ public class TempBook {
 	private int eventId;
 	private String eventName;
 	private List<TempSelection> selections;
+	private TempContactInfo contactInfo;
+	private List<TempFansInfo> fansInfos;
 }
