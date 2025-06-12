@@ -113,25 +113,25 @@ let tempBook = {
   fansInfos: [], // 入場者資訊
 };
 
-// ====== Nav 部分 ======
 import { fetchNavTemplate } from "../../layout/nav/nav.js";
 import { renderNav } from "../../layout/nav/nav.js";
 import { initNavJSEvents } from "../../layout/nav/nav.js";
-(async () => {
-  const template = await fetchNavTemplate();
-  await renderNav(template);
-  initNavJSEvents();
-})();
-
-// ====== typeBox 部分 ======
 import { fetchTypeAndEvents } from "../ui/typeBox/typeBox.js";
 import { fetchTypeBoxTemplate } from "../ui/typeBox/typeBox.js";
 import { renderTypeBox } from "../ui/typeBox/typeBox.js";
 import { initTypeBoxJSEvents } from "../ui/typeBox/typeBox.js";
+import { fetchFooterTemplate } from "../../layout/footer/footer.js";
+import { renderFooter } from "../../layout/footer/footer.js";
 (async () => {
+  // ====== Nav 部分 ======
+  const navTemplate = await fetchNavTemplate();
+  await renderNav(navTemplate);
+  initNavJSEvents();
+
+  // ====== typeBox 部分 ======
   const eventId = getUrlParam("eventId");
   const typeAndEvents = await fetchTypeAndEvents(eventId);
-  const template = await fetchTypeBoxTemplate();
+  const TypeBoxTemplate = await fetchTypeBoxTemplate();
   if (typeAndEvents.length > 0) {
     for (const typeAndEvent of typeAndEvents) {
       // 存入 tempBook 變數 (memberId 應由後端決定)
@@ -142,21 +142,18 @@ import { initTypeBoxJSEvents } from "../ui/typeBox/typeBox.js";
         categoryName: typeAndEvent[0].categoryName,
       });
       // 輸出至模板
-      await renderTypeBox(typeAndEvent[0], template);
+      await renderTypeBox(typeAndEvent[0], TypeBoxTemplate);
     }
   } else {
     alert("載入票種失敗!!");
     return;
   }
   initTypeBoxJSEvents();
+
   // ====== bookTickets 部分 ======
   initBookTicketsJSEvents(); // 事件會用到 TypeBox 區塊的元素，所以放到 typeBox 後面
-})();
 
-// ====== footer 部分 ======
-import { fetchFooterTemplate } from "../../layout/footer/footer.js";
-import { renderFooter } from "../../layout/footer/footer.js";
-(async () => {
-  const template = await fetchFooterTemplate();
-  await renderFooter(template);
+  // ====== footer 部分 ======
+  const footerTemplate = await fetchFooterTemplate();
+  await renderFooter(footerTemplate);
 })();
