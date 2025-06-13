@@ -2,14 +2,13 @@
 // 這些函數負責與後端 API 進行互動。
 
 /**
- * 從後端 API 獲取特定事件的票種數據。
- * @param {number} eventId - 事件 ID。
- * @returns {Promise<Array<Object>>} "票種" + "活動資訊" 數據的數組。
+ * 從後端 api 獲取特定 event 的 type 數據。
+ * @param {number} eventId - 活動 id。
+ * @returns {Promise<Array<Object>>} type + event 數據的數組。
  */
+import { getContextPath } from "../../js/bookType.js";
 export const fetchTypeAndEvents = async (eventId) => {
-  const resp = await fetch(
-    `http://localhost:8080/maven-tickeasy-v1/user/buy/book-tickets?eventId=${eventId}`
-  ); // api 取得 "票種表" 資料
+  const resp = await fetch(`${getContextPath()}/buy/book-type/${eventId}`);
   return await resp.json();
 };
 

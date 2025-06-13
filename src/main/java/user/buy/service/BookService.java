@@ -3,16 +3,17 @@ package user.buy.service;
 import java.util.List;
 
 import common.vo.Core;
+import user.buy.vo.BookTypeInfoDto;
 import user.buy.vo.TempBook;
 
 public interface BookService {
 	/**
-	 * 透過活動 id，查詢 "票種" + "活動資訊"。
+	 * 透過活動 id，查詢 type + event。
 	 * 
 	 * @param {Integer} eventId - 活動 id。
-	 * @return {List<Object[]>} 活動 id 下的 "票種" + "活動資訊"。
+	 * @return {List<BookInfoDto>} 活動 id 下的 type + event。
 	 */
-	List<Object[]> findTypeAndEventById(int eventId);
+	List<BookTypeInfoDto> findTypeAndEventById(Integer eventId);
 
     /**
      * 接收訂單資料，向 redis 暫存

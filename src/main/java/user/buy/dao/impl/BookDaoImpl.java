@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import user.buy.dao.BookDao;
+import user.buy.vo.BookTypeInfoDto;
 
 @Repository
 public class BookDaoImpl implements BookDao {
@@ -17,19 +18,20 @@ public class BookDaoImpl implements BookDao {
 	private Session session;
 
 	@Override
-	public List<Object[]> selectTypeJoinEventById(int eventId) {
+	public List<BookTypeInfoDto> selectTypeJoinEventById(Integer eventId) {
 		// 1. HQL 語句
-		var hqlTemp = new StringBuilder("SELECT ett.typeId, ett.categoryName, ett.price, ett.capacity, ");
-		hqlTemp.append("ei.eventId, ei.eventName, ei.isPosted ");
+		var hqlTemp = new StringBuilder("SELECT new user.buy.vo.BookTypeInfoDto(");
+		hqlTemp.append("ett.typeId, ett.categoryName, ett.price, ett.capacity, ");
+		hqlTemp.append("ei.eventId, ei.eventName, ei.isPosted) ");
 		hqlTemp.append("FROM EventTicketType ett ");
 		hqlTemp.append("JOIN EventInfo ei ON ett.eventId = ei.eventId ");
 		hqlTemp.append("WHERE ett.eventId = :eventId");
 		var hql = hqlTemp.toString();
+
 		// 2. 透過 eventId 查詢 type + event
-		Query<Object[]> query = session.createQuery(hql, Object[].class);
+		Query<BookTypeInfoDto> query = session.createQuery(hql, BookTypeInfoDto.class);
 		query.setParameter("eventId", eventId);
-		List<Object[]> typeAndEventList = query.getResultList();
-		return typeAndEventList;
+		return query.getResultList();
 	}
 
 }

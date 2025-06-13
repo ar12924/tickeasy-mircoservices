@@ -12,6 +12,17 @@ export const getUrlParam = (paramName) => {
   return urlParams.get(paramName);
 };
 
+/**
+ * 擷取 http 到專案名稱部分網址。
+ * @returns {string|null} 參數的值，如果不存在則為 null。
+ */
+export const getContextPath = () => {
+  return window.location.pathname.substring(
+    0,
+    window.location.pathname.indexOf("/", 2)
+  );
+};
+
 // ==================== 2. API 服務層 (API Service Layer) ====================
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
 
@@ -21,14 +32,12 @@ export const getUrlParam = (paramName) => {
  * @param {number} eventId - 事件 ID。
  */
 const saveTempBook = async (tempBook, eventId) => {
-  const resp = await fetch(
-    `http://localhost:8080/maven-tickeasy-v1/user/buy/book-tickets?eventId=${eventId}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(tempBook),
-    }
-  );
+  tempBook.eventId = eventId;
+  const resp = await fetch(`${getContextPath()}buy/book-type`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(tempBook),
+  });
   const respBody = await resp.json();
   console.log("Redis Save Response: ", respBody);
 };
@@ -62,7 +71,7 @@ const getTicketInputsValues = () => {
 // ==================== 4. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
-const initBookTicketsJSEvents = () => {
+const initBookTypeJSEvents = () => {
   // 共同變數，url 後方的活動 id
   const eventId = getUrlParam("eventId");
 
@@ -103,16 +112,6 @@ const initBookTicketsJSEvents = () => {
 // ==================== 5. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
-// ====== 資料儲存變數區 ======
-let tempBook = {
-  memberId: -1, // 購票人 id
-  eventId: -1, // 活動 id
-  eventName: null, // 活動名稱
-  selections: [], // 選擇票種/票數結果
-  contactInfo: {}, // 購票人資訊
-  fansInfos: [], // 入場者資訊
-};
-
 import { fetchNavTemplate } from "../../layout/nav/nav.js";
 import { renderNav } from "../../layout/nav/nav.js";
 import { initNavJSEvents } from "../../layout/nav/nav.js";
@@ -122,7 +121,17 @@ import { renderTypeBox } from "../ui/typeBox/typeBox.js";
 import { initTypeBoxJSEvents } from "../ui/typeBox/typeBox.js";
 import { fetchFooterTemplate } from "../../layout/footer/footer.js";
 import { renderFooter } from "../../layout/footer/footer.js";
+
 (async () => {
+  // ====== 資料儲存變數區 ======
+  const tempBook = {
+    memberId: -1, // 購票人 id
+    eventId: -1, // 活動 id
+    eventName: null, // 活動名稱
+    selections: [], // 選擇票種/票數結果
+    contactInfo: {}, // 購票人資訊
+    fansInfos: [], // 入場者資訊
+  };
   // ====== Nav 部分 ======
   const navTemplate = await fetchNavTemplate();
   await renderNav(navTemplate);
@@ -135,14 +144,14 @@ import { renderFooter } from "../../layout/footer/footer.js";
   if (typeAndEvents.length > 0) {
     for (const typeAndEvent of typeAndEvents) {
       // 存入 tempBook 變數 (memberId 應由後端決定)
-      tempBook.eventName = typeAndEvent[1].eventName;
-      tempBook.eventId = typeAndEvent[0].eventId;
+      tempBook.eventName = typeAndEvent.eventName;
+      tempBook.eventId = typeAndEvent.eventId;
       tempBook.selections.push({
-        typeId: typeAndEvent[0].typeId,
-        categoryName: typeAndEvent[0].categoryName,
+        typeId: typeAndEvent.typeId,
+        categoryName: typeAndEvent.categoryName,
       });
       // 輸出至模板
-      await renderTypeBox(typeAndEvent[0], TypeBoxTemplate);
+      await renderTypeBox(typeAndEvent, TypeBoxTemplate);
     }
   } else {
     alert("載入票種失敗!!");
@@ -150,8 +159,8 @@ import { renderFooter } from "../../layout/footer/footer.js";
   }
   initTypeBoxJSEvents();
 
-  // ====== bookTickets 部分 ======
-  initBookTicketsJSEvents(); // 事件會用到 TypeBox 區塊的元素，所以放到 typeBox 後面
+  // ====== bookType 部分 ======
+  initBookTypeJSEvents(); // 事件會用到 TypeBox 區塊的元素，所以放到 typeBox 後面
 
   // ====== footer 部分 ======
   const footerTemplate = await fetchFooterTemplate();
