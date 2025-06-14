@@ -8,7 +8,7 @@
  */
 import { getContextPath } from "../../js/bookType.js";
 export const fetchTypeAndEvents = async (eventId) => {
-  const resp = await fetch(`${getContextPath()}/buy/book-type/${eventId}`);
+  const resp = await fetch(`${getContextPath()}/book-type/${eventId}`);
   return await resp.json();
 };
 

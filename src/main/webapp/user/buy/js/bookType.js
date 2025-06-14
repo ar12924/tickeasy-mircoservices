@@ -33,7 +33,7 @@ export const getContextPath = () => {
  */
 const saveTempBook = async (tempBook, eventId) => {
   tempBook.eventId = eventId;
-  const resp = await fetch(`${getContextPath()}buy/book-type`, {
+  const resp = await fetch(`${getContextPath()}/book-type`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(tempBook),

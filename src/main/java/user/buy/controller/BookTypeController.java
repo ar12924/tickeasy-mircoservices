@@ -17,7 +17,7 @@ import user.buy.vo.BookTypeInfoDto;
 import user.buy.vo.TempBook;
 
 @RestController
-@RequestMapping("buy/book-type")
+@RequestMapping("book-type")
 public class BookTypeController {
 	@Autowired
 	private BookService service;
