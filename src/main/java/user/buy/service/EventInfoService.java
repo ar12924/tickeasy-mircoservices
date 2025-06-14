@@ -1,5 +1,6 @@
 package user.buy.service;
 
+import java.io.InputStream;
 import java.util.List;
 
 import common.service.CommonService;
@@ -11,7 +12,7 @@ import user.buy.vo.TicketTypeVO;
  * 創建者: archchang
  * 創建日期: 2025-05-07
  */
-public interface EventInfoService extends CommonService{
+public interface EventInfoService {
 	/**
      * 根據活動ID獲取活動詳情
      * 
@@ -64,6 +65,8 @@ public interface EventInfoService extends CommonService{
      * @return 圖片數據
      */
     byte[] getEventImage(Integer eventId);
+    
+    InputStream getEventImageStream(Integer eventId);
     
     /**
      * 計算活動的總剩餘票數
