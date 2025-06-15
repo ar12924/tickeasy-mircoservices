@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>TickEasy | 編輯會員</title>
+
+    <!--Primary Meta Tags-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="TickEasy | 編輯會員" />
+    <meta name="author" content="TIA203-G2" />
+    <meta name="description"
+        content="TickEasy is build by Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS." />
+    <meta name="keywords" content="TickEasy, ticket, concert, ticket admin dashboard" />
+    <link rel="icon" href="../common/assets/img/Member_icon.ico">
+    <!--Fonts-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+    <!--Third Party Plugin(OverlayScrollbars)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+        integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+    <!--Third Party Plugin(Bootstrap Icons)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+    <!--Required Plugin(AdminLTE)-->
+    <link rel="stylesheet" href="../common/css/adminlte.css" />
+    <!-- apexcharts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+    <!--Summernote-->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+</head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+        <nav class="app-header navbar navbar-expand bg-body">
+            <div class="container-fluid">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                            <i class="bi bi-list"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item d-none d-md-block"><a href="index.html" class="nav-link">Home</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+                            <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                            <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown user-menu">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img src="../common/assets/img/user2-128x128.png" class="user-image rounded-circle shadow"
+                                alt="User Image" />
+                            <span class="d-none d-md-inline">Alexander Pierce</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                            <!--begin::User Image-->
+                            <li class="user-header text-bg-primary">
+                                <img src="../common/assets/img/user2-128x128.png" class="rounded-circle shadow"
+                                    alt="User Image" />
+                                <p>
+                                    Alexander Pierce - Web Developer
+                                    <small>Member since Nov. 2023</small>
+                                </p>
+                            </li>
+                            <li class="user-body">
+                                <div class="row">
+                                    <div class="col-6 text-center">
+                                        <a href="#">活動場次</a><br>
+                                        <a href="#" class="fs-4">1000</a>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <a href="#">Friends</a><br>
+                                        <a href="#" class="fs-4">1000</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="user-footer">
+                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+            <div class="sidebar-brand">
+                <div class="brand-link">
+                    <a href="./index.html" class="brand-link">
+                        <span class="brand-text fs-1">TickEasy</span>
+                    </a>
+                    <span class="brand-text fs-7">活動方</span>
+                </div>
+            </div>
+            <div class="sidebar-wrapper">
+                <nav class="mt-2">
+                    <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu"
+                        data-accordion="false">
+                        <li class="nav-header">活動方</li>
+                        <li class="nav-item">
+                            <a href="./event_new.html" class="nav-link">
+                                <i class="nav-icon bi bi-patch-plus-fill"></i>
+                                <p>建立活動</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi-gear-wide-connected"></i>
+                                <p>
+                                    活動管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-list-task"></i>
+                                        <p>活動列表</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi bi-people-fill"></i>
+                                <p>
+                                    會員管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-person-fill-gear"></i>
+                                        <p>會員設定</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-shield-lock-fill"></i>
+                                        <p>會員密碼</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-header">平台方</li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi-gear-wide-connected"></i>
+                                <p>
+                                    活動管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-calendar3-range-fill"></i>
+                                        <p>活動列表</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-ticket-perforated-fill"></i>
+                                        <p>票券列表</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi bi-people-fill"></i>
+                                <p>
+                                    會員管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./member_list.html" class="nav-link">
+                                        <i class="nav-icon bi bi-person-lines-fill"></i>
+                                        <p>會員列表</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-person-heart"></i>
+                                        <p>購票者</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-bookmark-check-fill"></i>
+                                        <p>活動方</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi-cone-striped"></i>
+                                <p>
+                                    平台管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-check2-square"></i>
+                                        <p>活動單位審核</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-backspace-reverse-fill"></i>
+                                        <p>平台帳號管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi bi-person-hearts"></i>
+                                <p>
+                                    粉絲交流管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-list-task"></i>
+                                        <p>討論區列表</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+        <main class="app-main">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">編輯會員資料</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item"><a href="#">平台管理</a></li>
+                                <li class="breadcrumb-item"><a href="member_list.html">會員列表</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">編輯會員</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="app-content">
+                <div class="container-fluid">
+                    <form id="memberEditForm">
+                        <div class="row">
+                            <!-- 基本資料卡片 -->
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">基本資料</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="userName" class="form-label">帳號名稱 <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="userName" name="userName"
+                                                    value="event_host1" readonly>
+                                                <div class="form-text">帳號名稱不可修改</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="nickName" class="form-label">會員暱稱 <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="nickName" name="nickName"
+                                                    value="Event Master" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="email" class="form-label">電子郵件 <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="email" class="form-control" id="email" name="email"
+                                                    value="host1@tickeasy.com" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="phone" class="form-label">手機號碼</label>
+                                                <input type="tel" class="form-control" id="phone" name="phone"
+                                                    value="0923456789" placeholder="09XXXXXXXX">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="birthDate" class="form-label">出生日期</label>
+                                                <input type="date" class="form-control" id="birthDate" name="birthDate"
+                                                    value="1985-05-15">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="gender" class="form-label">性別</label>
+                                                <select class="form-select" id="gender" name="gender">
+                                                    <option value="">請選擇</option>
+                                                    <option value="M">男性</option>
+                                                    <option value="F" selected>女性</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="idCard" class="form-label">身份證號碼</label>
+                                                <input type="text" class="form-control" id="idCard" name="idCard"
+                                                    value="B123456789" maxlength="10">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="unicode" class="form-label">統一編號</label>
+                                                <input type="text" class="form-control" id="unicode" name="unicode"
+                                                    value="23456789" maxlength="10">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 權限設定卡片 -->
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h3 class="card-title">權限設定</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="roleLevel" class="form-label">會員等級 <span
+                                                        class="text-danger">*</span></label>
+                                                <select class="form-select" id="roleLevel" name="roleLevel" required>
+                                                    <option value="0">未開通</option>
+                                                    <option value="1">購票方</option>
+                                                    <option value="2" selected>活動方</option>
+                                                    <option value="3">平台方</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="isActive" class="form-label">帳號狀態 <span
+                                                        class="text-danger">*</span></label>
+                                                <select class="form-select" id="isActive" name="isActive" required>
+                                                    <option value="1" selected>啟用</option>
+                                                    <option value="0">停用</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="alert alert-info mb-0" role="alert">
+                                                    <i class="bi bi-info-circle"></i>
+                                                    變更會員等級將影響其系統權限，請謹慎操作。
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 密碼重設卡片 -->
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h3 class="card-title">密碼管理</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="resetPassword"
+                                                        name="resetPassword">
+                                                    <label class="form-check-label" for="resetPassword">
+                                                        重設密碼
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" id="newPasswordGroup" style="display: none;">
+                                                <label for="newPassword" class="form-label">新密碼</label>
+                                                <input type="password" class="form-control" id="newPassword"
+                                                    name="newPassword">
+                                                <div class="form-text">密碼長度至少6個字元</div>
+                                            </div>
+                                            <div class="col-md-6" id="confirmPasswordGroup" style="display: none;">
+                                                <label for="confirmPassword" class="form-label">確認密碼</label>
+                                                <input type="password" class="form-control" id="confirmPassword"
+                                                    name="confirmPassword">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 右側資訊卡片 -->
+                            <div class="col-md-4">
+                                <!-- 會員頭像卡片 -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">會員頭像</h3>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <img src="../common/assets/img/user2-128x128.png"
+                                            class="img-fluid rounded-circle mb-3" alt="Member Photo"
+                                            style="width: 150px; height: 150px; object-fit: cover;">
+                                        <div class="mb-3">
+                                            <input type="file" class="form-control" id="photo" name="photo"
+                                                accept="image/*">
+                                            <div class="form-text">支援 JPG、PNG 格式，建議尺寸 300x300</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 帳號資訊卡片 -->
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h3 class="card-title">系統資訊</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-5">會員ID:</dt>
+                                            <dd class="col-sm-7">2</dd>
+
+                                            <dt class="col-sm-5">註冊時間:</dt>
+                                            <dd class="col-sm-7">2025/01/15 10:30:00</dd>
+
+                                            <dt class="col-sm-5">最後更新:</dt>
+                                            <dd class="col-sm-7">2025/05/18 15:08:43</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 操作按鈕 -->
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 d-flex justify-content-between">
+                                                <button type="button" class="btn btn-secondary"
+                                                    onclick="window.location.href='member_list.html'">
+                                                    <i class="bi bi-arrow-left"></i> 返回列表
+                                                </button>
+                                                <div>
+                                                    <button type="reset" class="btn btn-warning me-2">
+                                                        <i class="bi bi-arrow-clockwise"></i> 重置
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="bi bi-check-lg"></i> 儲存變更
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+        <footer class="app-footer">
+            <div class="float-end d-none d-sm-inline">TIA203-G2</div>
+            <strong>
+                Copyright &copy; 2025&nbsp;
+                <a href="https://gamma.app/docs/TickEasy-gd84wknpd0a0roz?mode=doc"
+                    class="text-decoration-none">TickEasy</a>.
+            </strong>
+            All rights reserved.
+        </footer>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+        integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+    <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <!--end::Required Plugin(AdminLTE)--><!--begin::Required Plugin(AdminLTE)-->
+    <script src="../common/js/adminlte.js"></script>
+    <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+    <script>
+        const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+        const Default = {
+            scrollbarTheme: 'os-theme-light',
+            scrollbarAutoHide: 'leave',
+            scrollbarClickScroll: true,
+        };
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                    scrollbars: {
+                        theme: Default.scrollbarTheme,
+                        autoHide: Default.scrollbarAutoHide,
+                        clickScroll: Default.scrollbarClickScroll,
+                    },
+                });
+            }
+        });
+    </script>
+    <!--end::OverlayScrollbars Configure-->
+    <!-- OPTIONAL SCRIPTS -->
+    <!--Summernote-->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+    <!-- apexcharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+
+    <!-- 頁面自定義腳本 -->
+    <script>
+        // 密碼重設功能
+        document.getElementById('resetPassword').addEventListener('change', function () {
+            const passwordGroups = ['newPasswordGroup', 'confirmPasswordGroup'];
+            passwordGroups.forEach(id => {
+                document.getElementById(id).style.display = this.checked ? 'block' : 'none';
+            });
+
+            if (!this.checked) {
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            }
+        });
+
+        // 圖片預覽功能
+        document.getElementById('photo').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.querySelector('.card-body img').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 表單提交處理
+        document.getElementById('memberEditForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // 密碼驗證
+            if (document.getElementById('resetPassword').checked) {
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (newPassword.length < 6) {
+                    alert('密碼長度至少需要6個字元！');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    alert('兩次輸入的密碼不一致！');
+                    return;
+                }
+            }
+
+            // 模擬提交成功
+            if (confirm('確定要儲存變更嗎？')) {
+                alert('會員資料已更新成功！');
+                // 實際應用中這裡會發送 AJAX 請求到後端
+                // window.location.href = 'member_list.html';
+            }
+        });
+
+        // 手機號碼格式驗證
+        document.getElementById('phone').addEventListener('input', function (e) {
+            // 只允許數字
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            // 檢查是否為09開頭
+            if (this.value.length >= 2 && !this.value.startsWith('09')) {
+                this.setCustomValidity('手機號碼必須以09開頭');
+            } else if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // 身份證號碼格式驗證
+        document.getElementById('idCard').addEventListener('input', function (e) {
+            this.value = this.value.toUpperCase();
+
+            // 簡單的身份證格式驗證
+            const pattern = /^[A-Z][12]\d{8}$/;
+            if (this.value.length === 10 && !pattern.test(this.value)) {
+                this.setCustomValidity('請輸入有效的身份證號碼');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // 統一編號格式驗證
+        document.getElementById('unicode').addEventListener('input', function (e) {
+            // 只允許數字
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            if (this.value.length > 8) {
+                this.value = this.value.slice(0, 8);
+            }
+        });
+
+        // 會員等級變更提醒
+        document.getElementById('roleLevel').addEventListener('change', function (e) {
+            const roleName = {
+                '0': '未開通',
+                '1': '購票方',
+                '2': '活動方',
+                '3': '平台方'
+            };
+
+            const currentRole = this.options[this.selectedIndex].text;
+            const originalRole = '活動方'; // 假設原始角色
+
+            if (currentRole !== originalRole) {
+                const confirmMsg = `確定要將會員等級從「${originalRole}」變更為「${currentRole}」嗎？\n此操作將影響該會員的系統權限。`;
+                if (!confirm(confirmMsg)) {
+                    // 還原選項
+                    this.value = '2'; // 還原為原始值
+                }
+            }
+        });
+
+        // 帳號狀態變更提醒
+        document.getElementById('isActive').addEventListener('change', function (e) {
+            if (this.value === '0') {
+                const confirmMsg = '確定要停用此帳號嗎？\n停用後該會員將無法登入系統。';
+                if (!confirm(confirmMsg)) {
+                    this.value = '1'; // 還原為啟用狀態
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
