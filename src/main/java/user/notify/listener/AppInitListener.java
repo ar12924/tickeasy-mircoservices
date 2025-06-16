@@ -1,4 +1,4 @@
-package user.notify.lisenter;
+package user.notify.listener;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

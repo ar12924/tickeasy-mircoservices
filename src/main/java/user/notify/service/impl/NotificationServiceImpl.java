@@ -65,8 +65,15 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendReminderNotificationForTomorrow() {
 
 		notificationDao.sendReminderNotificationForTomorrow();
-		System.out.println("排程動了");
+		System.out.println("Reminder排程動了");
 
+	}
+
+	@Override
+	public void sendFavoriteSellReminderNotificationForTomorrow() {
+		notificationDao.sendFavoriteSellReminderNotificationForTomorrow();
+		System.out.println("Favorite排程動了");
+		
 	}
 
 }
