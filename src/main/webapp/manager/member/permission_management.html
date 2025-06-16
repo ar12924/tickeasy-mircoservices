@@ -3,11 +3,11 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>TickEasy | 權限管理</title>
+    <title>TickEasy | 角色權限設定</title>
 
     <!--Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="title" content="TickEasy | 權限管理" />
+    <meta name="title" content="TickEasy | 角色權限設定" />
     <meta name="author" content="TIA203-G2" />
     <meta name="description"
         content="TickEasy is build by Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS." />
@@ -253,7 +253,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">權限管理</h3>
+                            <h3 class="mb-0">角色權限設定</h3>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
@@ -273,7 +273,8 @@
                             <div class="card card-primary card-outline mb-4">
                                 <div class="card-header">
                                     <h3 class="card-title">
-                                        <i class="bi bi-shield-check me-2"></i>角色權限設定
+                                        <i class="bi bi-shield-check me-2"></i>
+                                        <span id="roleTitle">載入中...</span>
                                     </h3>
                                     <div class="card-tools">
                                         <a href="role_management.html" class="btn btn-sm btn-secondary">
@@ -283,25 +284,22 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-8">
                                             <dl class="row mb-0">
-                                                <dt class="col-sm-4">角色名稱：</dt>
-                                                <dd class="col-sm-8"><span id="roleName"
-                                                        class="badge bg-warning text-dark fs-6">載入中...</span></dd>
-                                                <dt class="col-sm-4">角色等級：</dt>
-                                                <dd class="col-sm-8"><span id="roleLevel"
+                                                <dt class="col-sm-3">角色等級：</dt>
+                                                <dd class="col-sm-9"><span id="roleLevel"
                                                         class="badge bg-info">載入中...</span></dd>
-                                                <dt class="col-sm-4">角色說明：</dt>
-                                                <dd class="col-sm-8" id="roleDescription">載入中...</dd>
-                                                <dt class="col-sm-4">會員數量：</dt>
-                                                <dd class="col-sm-8"><span id="memberCount"
+                                                <dt class="col-sm-3">角色說明：</dt>
+                                                <dd class="col-sm-9" id="roleDescription">載入中...</dd>
+                                                <dt class="col-sm-3">會員數量：</dt>
+                                                <dd class="col-sm-9"><span id="memberCount"
                                                         class="text-primary fw-bold">0</span> 位會員</dd>
                                             </dl>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="alert alert-info mb-0">
-                                                <h5 class="alert-heading"><i class="bi bi-info-circle"></i> 權限說明</h5>
-                                                <p class="mb-0">系統權限根據角色等級(role_level)預設分配，每個角色擁有不同的系統功能存取權限。</p>
+                                                <h6 class="alert-heading"><i class="bi bi-info-circle"></i> 權限說明</h6>
+                                                <p class="mb-0 small">設定此角色對會員資料的存取權限</p>
                                             </div>
                                         </div>
                                     </div>
@@ -310,311 +308,342 @@
                         </div>
                     </div>
 
-                    <!-- 權限設定區域 -->
+                    <!-- 會員欄位權限設定 -->
                     <div class="row">
-                        <!-- 活動管理權限 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card card-outline card-primary">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        <i class="bi bi-calendar-event"></i> 活動管理權限
-                                    </h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="event_view">
-                                            <label class="custom-control-label" for="event_view">
-                                                <i class="bi bi-eye text-info"></i> 查看活動列表
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="event_create">
-                                            <label class="custom-control-label" for="event_create">
-                                                <i class="bi bi-plus-circle text-success"></i> 建立新活動
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="event_edit">
-                                            <label class="custom-control-label" for="event_edit">
-                                                <i class="bi bi-pencil-square text-warning"></i> 編輯活動資訊
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="event_delete">
-                                            <label class="custom-control-label" for="event_delete">
-                                                <i class="bi bi-trash text-danger"></i> 刪除活動
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="event_publish">
-                                            <label class="custom-control-label" for="event_publish">
-                                                <i class="bi bi-broadcast text-primary"></i> 發布/下架活動
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 票券管理權限 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card card-outline card-success">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        <i class="bi bi-ticket-perforated"></i> 票券管理權限
-                                    </h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="ticket_view">
-                                            <label class="custom-control-label" for="ticket_view">
-                                                <i class="bi bi-eye text-info"></i> 查看票券資訊
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="ticket_manage">
-                                            <label class="custom-control-label" for="ticket_manage">
-                                                <i class="bi bi-gear text-primary"></i> 管理票種設定
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="ticket_price">
-                                            <label class="custom-control-label" for="ticket_price">
-                                                <i class="bi bi-currency-dollar text-success"></i> 設定票價
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="order_view">
-                                            <label class="custom-control-label" for="order_view">
-                                                <i class="bi bi-receipt text-info"></i> 查看訂單
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="order_manage">
-                                            <label class="custom-control-label" for="order_manage">
-                                                <i class="bi bi-clipboard-check text-warning"></i> 管理訂單狀態
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 會員管理權限 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card card-outline card-warning">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        <i class="bi bi-people"></i> 會員管理權限
-                                    </h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="member_view">
-                                            <label class="custom-control-label" for="member_view">
-                                                <i class="bi bi-eye text-info"></i> 查看會員列表
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="member_edit">
-                                            <label class="custom-control-label" for="member_edit">
-                                                <i class="bi bi-pencil-square text-warning"></i> 編輯會員資料
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="member_role">
-                                            <label class="custom-control-label" for="member_role">
-                                                <i class="bi bi-person-badge text-primary"></i> 變更會員角色
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="member_status">
-                                            <label class="custom-control-label" for="member_status">
-                                                <i class="bi bi-toggle-on text-success"></i> 啟用/停用會員
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="member_delete">
-                                            <label class="custom-control-label" for="member_delete">
-                                                <i class="bi bi-trash text-danger"></i> 刪除會員
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 報表權限 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card card-outline card-info">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        <i class="bi bi-graph-up"></i> 報表與分析權限
-                                    </h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="report_sales">
-                                            <label class="custom-control-label" for="report_sales">
-                                                <i class="bi bi-bar-chart text-success"></i> 銷售報表
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="report_member">
-                                            <label class="custom-control-label" for="report_member">
-                                                <i class="bi bi-people-fill text-primary"></i> 會員分析
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="report_finance">
-                                            <label class="custom-control-label" for="report_finance">
-                                                <i class="bi bi-cash-coin text-warning"></i> 財務報表
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="report_export">
-                                            <label class="custom-control-label" for="report_export">
-                                                <i class="bi bi-download text-info"></i> 匯出報表
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 系統管理權限 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card card-outline card-danger">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        <i class="bi bi-gear-wide-connected"></i> 系統管理權限
-                                    </h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="system_setting">
-                                            <label class="custom-control-label" for="system_setting">
-                                                <i class="bi bi-sliders text-primary"></i> 系統設定
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="system_backup">
-                                            <label class="custom-control-label" for="system_backup">
-                                                <i class="bi bi-database text-success"></i> 資料備份
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="system_log">
-                                            <label class="custom-control-label" for="system_log">
-                                                <i class="bi bi-journal-text text-info"></i> 系統日誌
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="system_permission">
-                                            <label class="custom-control-label" for="system_permission">
-                                                <i class="bi bi-shield-lock text-danger"></i> 權限管理
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 通知管理權限 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card card-outline card-secondary">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        <i class="bi bi-bell"></i> 通知管理權限
-                                    </h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="notification_view">
-                                            <label class="custom-control-label" for="notification_view">
-                                                <i class="bi bi-eye text-info"></i> 查看通知
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="notification_send">
-                                            <label class="custom-control-label" for="notification_send">
-                                                <i class="bi bi-send text-primary"></i> 發送通知
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input"
-                                                id="notification_template">
-                                            <label class="custom-control-label" for="notification_template">
-                                                <i class="bi bi-file-text text-warning"></i> 管理通知模板
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="notification_batch">
-                                            <label class="custom-control-label" for="notification_batch">
-                                                <i class="bi bi-broadcast-pin text-success"></i> 批次發送
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 操作按鈕區域 -->
-                    <div class="row mt-4">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <button type="button" class="btn btn-secondary" onclick="selectAll()">
-                                                <i class="bi bi-check-square"></i> 全選
-                                            </button>
-                                            <button type="button" class="btn btn-secondary" onclick="clearAll()">
-                                                <i class="bi bi-square"></i> 清除全部
-                                            </button>
-                                            <button type="button" class="btn btn-info" onclick="resetToDefault()">
-                                                <i class="bi bi-arrow-clockwise"></i> 恢復預設
-                                            </button>
-                                        </div>
-                                        <div>
-                                            <button type="button" class="btn btn-success" onclick="savePermissions()">
-                                                <i class="bi bi-save"></i> 儲存設定
-                                            </button>
-                                            <a href="role_management.html" class="btn btn-secondary">
-                                                <i class="bi bi-x-circle"></i> 取消
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 權限預覽區域 -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card card-secondary">
                                 <div class="card-header">
                                     <h3 class="card-title">
-                                        <i class="bi bi-list-check"></i> 已選擇的權限預覽
+                                        <i class="bi bi-table me-2"></i>會員欄位權限設定
                                     </h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                            <i class="fas fa-minus"></i>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 25%">欄位名稱</th>
+                                                    <th style="width: 25%">欄位說明</th>
+                                                    <th style="width: 15%" class="text-center">檢視</th>
+                                                    <th style="width: 15%" class="text-center">編輯</th>
+                                                    <th style="width: 20%">備註</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- 基本資料 -->
+                                                <tr class="table-secondary">
+                                                    <td colspan="5"><strong>基本資料</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>user_name</td>
+                                                    <td>使用者名稱（帳號）</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_user_name" checked disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_user_name" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">帳號不可修改</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>nick_name</td>
+                                                    <td>會員暱稱</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_nick_name">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_nick_name">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>email</td>
+                                                    <td>電子郵件</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_email">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_email">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>phone</td>
+                                                    <td>手機號碼</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_phone">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_phone">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>member_id</td>
+                                                    <td>會員編號</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_member_id" checked>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_member_id" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">系統自動產生</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>photo</td>
+                                                    <td>會員照片</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_photo">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_photo">
+                                                        </div>
+                                                    </td>
+                                                    <td>個人頭像</td>
+                                                </tr>
+                                                <!-- 個人資料 -->
+                                                <tr class="table-secondary">
+                                                    <td colspan="5"><strong>個人資料</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>birth_date</td>
+                                                    <td>出生日期</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_birth_date">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_birth_date">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>gender</td>
+                                                    <td>性別</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_gender">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_gender">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>id_card</td>
+                                                    <td>身份證號碼</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_id_card">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_id_card">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-danger">敏感資料</td>
+                                                </tr>
+
+                                                <!-- 企業資料 -->
+                                                <tr class="table-secondary">
+                                                    <td colspan="5"><strong>企業資料</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>unicode</td>
+                                                    <td>統一編號</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_unicode">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_unicode">
+                                                        </div>
+                                                    </td>
+                                                    <td>企業用戶專用</td>
+                                                </tr>
+
+                                                <!-- 系統資料 -->
+                                                <tr class="table-secondary">
+                                                    <td colspan="5"><strong>系統資料</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>role_level</td>
+                                                    <td>會員等級</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_role_level">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_role_level">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-warning">需謹慎操作</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>is_active</td>
+                                                    <td>帳號狀態</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_is_active">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_is_active">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>password</td>
+                                                    <td>密碼</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_password" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_password">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">僅可重設</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>create_time</td>
+                                                    <td>註冊時間</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_create_time">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_create_time" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">系統自動記錄</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>update_time</td>
+                                                    <td>最後更新時間</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_update_time">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_update_time" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">系統自動更新</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- 快速設定按鈕 -->
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                            onclick="selectAllView()">
+                                            <i class="bi bi-check-square"></i> 全選檢視
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                            onclick="selectAllEdit()">
+                                            <i class="bi bi-check-square"></i> 全選編輯
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            onclick="clearAll()">
+                                            <i class="bi bi-square"></i> 清除全部
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-info"
+                                            onclick="loadDefaultPermissions()">
+                                            <i class="bi bi-arrow-clockwise"></i> 載入預設
                                         </button>
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <div id="selectedPermissions" class="d-flex flex-wrap gap-2">
-                                        <!-- 動態顯示已選擇的權限 -->
-                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按鈕 -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <button type="button" class="btn btn-success" onclick="savePermissions()">
+                                        <i class="bi bi-save"></i> 儲存權限設定
+                                    </button>
+                                    <a href="role_management.html" class="btn btn-secondary ms-2">
+                                        <i class="bi bi-x-circle"></i> 取消
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -676,95 +705,64 @@
         const roleData = {
             0: {
                 name: '未開通',
-                level: 0,
                 description: '註冊但尚未啟用的會員，無任何系統權限',
+                badgeClass: 'secondary',
                 memberCount: 1,
-                permissions: []
+                permissions: {
+                    view: [],
+                    edit: []
+                }
             },
             1: {
                 name: '購票方',
-                level: 1,
                 description: '一般會員，可瀏覽活動、購買票券、管理個人訂單',
+                badgeClass: 'success',
                 memberCount: 5,
-                permissions: ['event_view', 'ticket_view', 'order_view', 'notification_view']
+                permissions: {
+                    view: ['user_name', 'nick_name'],  // 只能看到基本公開資訊
+                    edit: []  // 不能編輯其他會員資料
+                }
             },
             2: {
                 name: '活動方',
-                level: 2,
                 description: '活動主辦方，可建立活動、管理票券、查看銷售報表',
+                badgeClass: 'warning text-dark',
                 memberCount: 3,
-                permissions: [
-                    'event_view', 'event_create', 'event_edit', 'event_publish',
-                    'ticket_view', 'ticket_manage', 'ticket_price',
-                    'order_view', 'order_manage',
-                    'member_view',
-                    'report_sales', 'report_member',
-                    'notification_view', 'notification_send'
-                ]
+                permissions: {
+                    view: ['user_name', 'nick_name', 'email', 'phone', 'role_level', 'is_active'],  // 可以看到購票者的聯絡資訊
+                    edit: ['nick_name', 'email', 'phone']  // 可以編輯部分欄位
+                }
             },
             3: {
                 name: '平台方',
-                level: 3,
                 description: '系統管理員，擁有所有系統權限',
+                badgeClass: 'danger',
                 memberCount: 1,
-                permissions: 'all' // 全部權限
+                permissions: {
+                    view: 'all',  // 可以看到所有欄位
+                    edit: 'all'   // 可以編輯所有欄位（除了不可修改的）
+                }
             }
         };
 
-        // 權限對照表
-        const permissionLabels = {
-            'event_view': '查看活動列表',
-            'event_create': '建立新活動',
-            'event_edit': '編輯活動資訊',
-            'event_delete': '刪除活動',
-            'event_publish': '發布/下架活動',
-            'ticket_view': '查看票券資訊',
-            'ticket_manage': '管理票種設定',
-            'ticket_price': '設定票價',
-            'order_view': '查看訂單',
-            'order_manage': '管理訂單狀態',
-            'member_view': '查看會員列表',
-            'member_edit': '編輯會員資料',
-            'member_role': '變更會員角色',
-            'member_status': '啟用/停用會員',
-            'member_delete': '刪除會員',
-            'report_sales': '銷售報表',
-            'report_member': '會員分析',
-            'report_finance': '財務報表',
-            'report_export': '匯出報表',
-            'system_setting': '系統設定',
-            'system_backup': '資料備份',
-            'system_log': '系統日誌',
-            'system_permission': '權限管理',
-            'notification_view': '查看通知',
-            'notification_send': '發送通知',
-            'notification_template': '管理通知模板',
-            'notification_batch': '批次發送'
-        };
+        // 所有可設定的欄位
+        const allFields = [
+            'user_name', 'nick_name', 'email', 'phone',
+            'birth_date', 'gender', 'id_card', 'unicode',
+            'role_level', 'is_active', 'password'
+        ];
 
-        // 取得所有權限
-        function getAllPermissions() {
-            return Object.keys(permissionLabels);
-        }
-
-        // 初始化頁面
         let currentRoleLevel = null;
 
+        // 初始化
         document.addEventListener('DOMContentLoaded', function () {
             // 從 URL 參數取得角色等級
             const urlParams = new URLSearchParams(window.location.search);
             currentRoleLevel = parseInt(urlParams.get('role')) || 1;
 
-            // 載入角色資訊
             loadRoleInfo();
-
-            // 載入權限設定
-            loadPermissions();
-
-            // 監聽權限變更
-            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', updatePermissionPreview);
-            });
+            loadDefaultPermissions();
+            setupEventListeners();
         });
 
         // 載入角色資訊
@@ -776,106 +774,173 @@
                 return;
             }
 
-            document.getElementById('roleName').textContent = role.name;
-            document.getElementById('roleLevel').textContent = `Level ${role.level}`;
+            document.getElementById('roleTitle').textContent = `${role.name} - 權限設定`;
+            document.getElementById('roleLevel').innerHTML = `<span class="badge bg-${role.badgeClass}">Level ${currentRoleLevel}</span>`;
             document.getElementById('roleDescription').textContent = role.description;
             document.getElementById('memberCount').textContent = role.memberCount;
         }
 
-        // 載入權限設定
-        function loadPermissions() {
+        // 載入預設權限
+        function loadDefaultPermissions() {
             const role = roleData[currentRoleLevel];
 
-            // 清除所有勾選
-            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = false;
-                checkbox.disabled = false;
-            });
+            // 先清除所有勾選
+            clearAll();
 
-            // 如果是平台方，全部勾選
-            if (role.permissions === 'all') {
-                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.checked = true;
+            // 設定檢視權限
+            if (role.permissions.view === 'all') {
+                allFields.forEach(field => {
+                    const checkbox = document.getElementById(`view_${field}`);
+                    if (checkbox && !checkbox.disabled) {
+                        checkbox.checked = true;
+                    }
                 });
             } else {
-                // 勾選該角色擁有的權限
-                role.permissions.forEach(permission => {
-                    const checkbox = document.getElementById(permission);
+                role.permissions.view.forEach(field => {
+                    const checkbox = document.getElementById(`view_${field}`);
                     if (checkbox) {
                         checkbox.checked = true;
                     }
                 });
             }
 
-            // 未開通角色禁用所有權限
-            if (currentRoleLevel === 0) {
-                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.disabled = true;
+            // 設定編輯權限
+            if (role.permissions.edit === 'all') {
+                allFields.forEach(field => {
+                    const checkbox = document.getElementById(`edit_${field}`);
+                    if (checkbox && !checkbox.disabled) {
+                        checkbox.checked = true;
+                    }
+                });
+            } else {
+                role.permissions.edit.forEach(field => {
+                    const checkbox = document.getElementById(`edit_${field}`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
                 });
             }
 
-            updatePermissionPreview();
-        }
-
-        // 更新權限預覽
-        function updatePermissionPreview() {
-            const selectedPermissions = document.getElementById('selectedPermissions');
-            selectedPermissions.innerHTML = '';
-
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-                const badge = document.createElement('span');
-                badge.className = 'badge bg-primary';
-                badge.innerHTML = `<i class="bi bi-check-circle me-1"></i>${permissionLabels[checkbox.id] || checkbox.id}`;
-                selectedPermissions.appendChild(badge);
-            });
-
-            if (selectedPermissions.innerHTML === '') {
-                selectedPermissions.innerHTML = '<span class="text-muted">尚未選擇任何權限</span>';
+            // 如果是未開通角色，禁用所有權限
+            if (currentRoleLevel === 0) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.disabled = true;
+                });
             }
         }
 
-        // 全選
-        function selectAll() {
-            document.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(checkbox => {
-                checkbox.checked = true;
+        // 設定事件監聽器
+        function setupEventListeners() {
+            // 當勾選檢視權限時，自動勾選相應的編輯權限檢查
+            document.querySelectorAll('input[id^="view_"]').forEach(viewCheckbox => {
+                viewCheckbox.addEventListener('change', function () {
+                    const field = this.id.replace('view_', '');
+                    const editCheckbox = document.getElementById(`edit_${field}`);
+
+                    if (editCheckbox && !this.checked) {
+                        // 如果取消檢視權限，也要取消編輯權限
+                        editCheckbox.checked = false;
+                    }
+                });
             });
-            updatePermissionPreview();
+
+            // 當勾選編輯權限時，自動勾選檢視權限
+            document.querySelectorAll('input[id^="edit_"]').forEach(editCheckbox => {
+                editCheckbox.addEventListener('change', function () {
+                    const field = this.id.replace('edit_', '');
+                    const viewCheckbox = document.getElementById(`view_${field}`);
+
+                    if (viewCheckbox && this.checked) {
+                        // 如果勾選編輯權限，必須也要有檢視權限
+                        viewCheckbox.checked = true;
+                    }
+                });
+            });
         }
 
-        // 清除全部
+        // 全選檢視權限
+        function selectAllView() {
+            document.querySelectorAll('input[id^="view_"]').forEach(checkbox => {
+                if (!checkbox.disabled) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+
+        // 全選編輯權限
+        function selectAllEdit() {
+            document.querySelectorAll('input[id^="edit_"]').forEach(checkbox => {
+                if (!checkbox.disabled) {
+                    checkbox.checked = true;
+                    // 同時勾選對應的檢視權限
+                    const field = checkbox.id.replace('edit_', '');
+                    const viewCheckbox = document.getElementById(`view_${field}`);
+                    if (viewCheckbox && !viewCheckbox.disabled) {
+                        viewCheckbox.checked = true;
+                    }
+                }
+            });
+        }
+
+        // 清除所有勾選
         function clearAll() {
-            document.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(checkbox => {
-                checkbox.checked = false;
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (!checkbox.disabled) {
+                    checkbox.checked = false;
+                }
             });
-            updatePermissionPreview();
-        }
-
-        // 恢復預設
-        function resetToDefault() {
-            loadPermissions();
         }
 
         // 儲存權限設定
         function savePermissions() {
-            // 收集已選擇的權限
-            const selectedPermissions = [];
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-                selectedPermissions.push(checkbox.id);
+            // 收集已勾選的權限
+            const permissions = {
+                view: [],
+                edit: []
+            };
+
+            allFields.forEach(field => {
+                const viewCheckbox = document.getElementById(`view_${field}`);
+                const editCheckbox = document.getElementById(`edit_${field}`);
+
+                if (viewCheckbox && viewCheckbox.checked) {
+                    permissions.view.push(field);
+                }
+                if (editCheckbox && editCheckbox.checked) {
+                    permissions.edit.push(field);
+                }
             });
 
-            // 模擬儲存到資料庫
-            console.log('儲存角色權限:', {
-                roleLevel: currentRoleLevel,
-                permissions: selectedPermissions
+            // 這裡應該要呼叫 API 儲存到資料庫
+            console.log('儲存權限設定:', {
+                role_level: currentRoleLevel,
+                permissions: permissions
             });
 
             // 顯示成功訊息
-            alert('權限設定已儲存成功！');
+            showSuccessMessage();
+        }
 
-            // 可選擇返回角色列表或停留在當前頁面
-            if (confirm('是否返回角色列表？')) {
+        // 顯示成功訊息
+        function showSuccessMessage() {
+            const alertHtml = `
+               <div class="alert alert-success alert-dismissible fade show" role="alert">
+                   <i class="bi bi-check-circle-fill me-2"></i>
+                   權限設定已儲存成功！
+                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+               </div>
+           `;
+
+            const container = document.querySelector('.app-content .container-fluid');
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = alertHtml;
+            container.insertBefore(tempDiv.firstElementChild, container.firstChild);
+
+            // 2秒後跳轉回角色列表
+            setTimeout(() => {
                 window.location.href = 'role_management.html';
-            }
+            }, 2000);
         }
     </script>
 </body>
