@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import common.vo.Core;
 import user.buy.service.BookService;
-import user.buy.vo.BookTypeInfoDto;
+import user.buy.vo.BookEventDto;
+import user.buy.vo.BookTypeDto;
 import user.buy.vo.TempBook;
 
 @RestController
@@ -22,13 +23,36 @@ public class BookTypeController {
 	@Autowired
 	private BookService service;
 
+	/**
+	 * 透過活動 id 查詢票種資訊
+	 * 
+	 * @param {Integer} eventId - 活動 id。
+	 * @return {List<BookTypeDto>} 活動 id 下的票種資訊。
+	 */
 	@CrossOrigin(origins = "*")
-	@GetMapping("{eventId}")
-	public List<BookTypeInfoDto> getTypeAndEvent(@PathVariable Integer eventId) {
-		// 1. 查詢 type + event
-		return service.findTypeAndEventById(eventId);
+	@GetMapping("event/{eventId}/event-ticket-type")
+	public List<BookTypeDto> getTicketType(@PathVariable Integer eventId) {
+		return service.getTypeById(eventId);
 	}
 
+	/**
+	 * 透過活動 id 查詢活動資訊
+	 * 
+	 * @param {Integer} eventId - 活動 id。
+	 * @return {BookTypeDto} 活動 id 下的活動資訊。
+	 */
+	@CrossOrigin(origins = "*")
+	@GetMapping("event/{eventId}")
+	public BookEventDto getTicketEvent(@PathVariable Integer eventId) {
+		return service.getEventById(eventId);
+	}
+
+	/**
+	 * 將票券訂購資訊，暫存到 Redis 中
+	 * 
+	 * @param {Integer} eventId - 活動 id。
+	 * @return {BookTypeDto} 活動 id 下的活動資訊。
+	 */
 	@CrossOrigin(origins = "*")
 	@PostMapping
 	public Core<String> save(@RequestBody TempBook tempBook) {

@@ -7,8 +7,10 @@
  * @returns {Promise<Array<Object>>} type + event 數據的數組。
  */
 import { getContextPath } from "../../js/bookType.js";
-export const fetchTypeAndEvents = async (eventId) => {
-  const resp = await fetch(`${getContextPath()}/book-type/${eventId}`);
+export const fetchTicketType = async (eventId) => {
+  const resp = await fetch(
+    `${getContextPath()}/book-type/event/${eventId}/event-ticket-type`
+  );
   return await resp.json();
 };
 
@@ -26,14 +28,14 @@ export const fetchTypeBoxTemplate = async () => {
 
 /**
  * 根據提供的票種數據，動態生成並插入單個票種區塊的 HTML。
- * @param {Object} ticketType - 單個票種的數據，包含 categoryName 和 price。
+ * @param {Object} typeInfo - 單個票種的數據，包含 categoryName 和 price。
  * @param {string} templateHTML - HTML 模板。
  */
-export const renderTypeBox = async (ticketType, templateHTML) => {
+export const renderTypeBox = async (typeInfo, templateHTML) => {
   const templateJQeury = $(templateHTML);
 
-  templateJQeury.find(".type-name").text(ticketType.categoryName); // 顯示票種
-  templateJQeury.find(".type-price").text(`NT$ ${ticketType.price}`); // 顯示價格
+  templateJQeury.find(".type-name").text(typeInfo.categoryName); // 顯示票種
+  templateJQeury.find(".type-price").text(`NT$ ${typeInfo.price}`); // 顯示價格
 
   $(".type-container").append(templateJQeury); // 插入整塊元素到父容器
 };

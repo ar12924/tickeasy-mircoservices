@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import common.vo.Core;
 import user.buy.dao.BookDao;
 import user.buy.service.BookService;
-import user.buy.vo.BookTypeInfoDto;
+import user.buy.vo.BookEventDto;
+import user.buy.vo.BookTypeDto;
 import user.buy.vo.TempBook;
 import user.buy.vo.TempSelection;
 
@@ -24,9 +25,14 @@ public class BookServiceImpl implements BookService {
 
 	@Transactional
 	@Override
-	public List<BookTypeInfoDto> findTypeAndEventById(Integer eventId) {
-		// 1. 查詢 type + event
-		return dao.selectTypeJoinEventById(eventId);
+	public List<BookTypeDto> getTypeById(Integer eventId) {
+		return dao.selectTypeById(eventId);
+	}
+
+	@Transactional
+	@Override
+	public BookEventDto getEventById(Integer eventId) {
+		return dao.selectEventById(eventId);
 	}
 
 	@Override

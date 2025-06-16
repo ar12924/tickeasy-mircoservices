@@ -115,7 +115,7 @@ const initBookTypeJSEvents = () => {
 import { fetchNavTemplate } from "../../layout/nav/nav.js";
 import { renderNav } from "../../layout/nav/nav.js";
 import { initNavJSEvents } from "../../layout/nav/nav.js";
-import { fetchTypeAndEvents } from "../ui/typeBox/typeBox.js";
+import { fetchTicketType } from "../ui/typeBox/typeBox.js";
 import { fetchTypeBoxTemplate } from "../ui/typeBox/typeBox.js";
 import { renderTypeBox } from "../ui/typeBox/typeBox.js";
 import { initTypeBoxJSEvents } from "../ui/typeBox/typeBox.js";
@@ -124,14 +124,16 @@ import { renderFooter } from "../../layout/footer/footer.js";
 
 (async () => {
   // ====== 資料儲存變數區 ======
-  const tempBook = {
+  const book = {
     memberId: -1, // 購票人 id
     eventId: -1, // 活動 id
     eventName: null, // 活動名稱
-    selections: [], // 選擇票種/票數結果
-    contactInfo: {}, // 購票人資訊
-    fansInfos: [], // 入場者資訊
+    selected: [], // [{票種1}, {票種2}, ...]
+    progress: -1, // 1: 購票頁完成; 2: 填寫完成; 3: 下訂完成
+    contact: {}, // {聯絡人}
+    attendees: [], // [{入場者1}, {入場者2}, ...]
   };
+
   // ====== Nav 部分 ======
   const navTemplate = await fetchNavTemplate();
   await renderNav(navTemplate);
@@ -139,19 +141,18 @@ import { renderFooter } from "../../layout/footer/footer.js";
 
   // ====== typeBox 部分 ======
   const eventId = getUrlParam("eventId");
-  const typeAndEvents = await fetchTypeAndEvents(eventId);
+  const ticketType = await fetchTicketType(eventId);
   const TypeBoxTemplate = await fetchTypeBoxTemplate();
-  if (typeAndEvents.length > 0) {
-    for (const typeAndEvent of typeAndEvents) {
-      // 存入 tempBook 變數 (memberId 應由後端決定)
-      tempBook.eventName = typeAndEvent.eventName;
-      tempBook.eventId = typeAndEvent.eventId;
-      tempBook.selections.push({
-        typeId: typeAndEvent.typeId,
-        categoryName: typeAndEvent.categoryName,
+  if (ticketType.length > 0) {
+    for (const typeInfo of ticketType) {
+      // 存入 book 變數中
+      book.eventId = eventId;
+      book.selected.push({
+        typeId: typeInfo.typeId,
+        categoryName: typeInfo.categoryName,
       });
-      // 輸出至模板
-      await renderTypeBox(typeAndEvent, TypeBoxTemplate);
+      // 輸出 typeBox.html 模板
+      await renderTypeBox(typeInfo, TypeBoxTemplate);
     }
   } else {
     alert("載入票種失敗!!");
