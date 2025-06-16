@@ -12,6 +12,17 @@ export const getUrlParam = (paramName) => {
   return urlParams.get(paramName);
 };
 
+/**
+ * 擷取 http 到專案名稱部分網址。
+ * @returns {string|null} 參數的值，如果不存在則為 null。
+ */
+export const getContextPath = () => {
+  return window.location.pathname.substring(
+    0,
+    window.location.pathname.indexOf("/", 2)
+  );
+};
+
 // ==================== 2. 數據處理層 (Data Processing) ====================
 // 這些函數負責從 DOM 中提取數據，並對數據進行格式化或轉換。
 
@@ -44,20 +55,20 @@ export const getUrlParam = (paramName) => {
 const initBookDetailsJSEvents = () => {
   // 共同變數，url 後方的活動 id
   const eventId = getUrlParam("eventId");
+  if (!eventId) {
+    alert("缺少活動id，無法繼續!!");
+    return;
+  }
 
   // ====== "上一步" 按鈕點擊事件 ======
   $(".back").on("click", () => {
-    location.href = `bookTickets.html?eventId=${eventId}`;
+    location.href = `book-type.html?eventId=${eventId}`;
   });
   // ====== "下一步" 按鈕點擊事件 ======
   $(".next").on("mouseenter mouseleave", (e) => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", () => {
-    if (!eventId) {
-      alert("缺少活動id，無法繼續!!");
-      return;
-    }
     location.href = "#";
   });
 };
@@ -65,41 +76,42 @@ const initBookDetailsJSEvents = () => {
 // ==================== 4. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
-// ====== Nav 部分 ======
-import { fetchNavTemplate } from "../../layout/nav/nav.js";
-import { renderNav } from "../../layout/nav/nav.js";
-import { initNavJSEvents } from "../../layout/nav/nav.js";
+import {
+  fetchNavTemplate,
+  renderNav,
+  initNavJSEvents,
+} from "../../layout/nav/nav.js";
+import {
+  fetchContactBoxTemplate,
+  renderContactBox,
+} from "../ui/book-info/contact-box.js";
+import {
+  fetchAttendeeBoxTemplate,
+  renderAttendeeBox,
+} from "../ui/book-info/attendee-box.js";
+import {
+  fetchFooterTemplate,
+  renderFooter,
+} from "../../layout/footer/footer.js";
+
 (async () => {
-  const template = await fetchNavTemplate();
-  await renderNav(template);
+  // ====== nav 部分 ======
+  const navTemplate = await fetchNavTemplate();
+  renderNav(navTemplate);
   initNavJSEvents();
-})();
 
-// ====== bookDetails 部分 ======
-(() => {
+  // ====== book-info 部分 ======
   initBookDetailsJSEvents(); // 載入 JS 事件監聽
-})();
 
-// ====== contactInfoBox 部分 ======
-import { fetchContactInfoBoxTemplate } from "../ui/infoBox/contactInfoBox.js";
-import { renderContactInfoBox } from "../ui/infoBox/contactInfoBox.js";
-(async () => {
-  const template = await fetchContactInfoBoxTemplate();
-  await renderContactInfoBox(template);
-})();
+  // ====== contact-box 部分 ======
+  const contactBoxTemplate = await fetchContactBoxTemplate();
+  renderContactBox(contactBoxTemplate);
 
-// ====== fansInfoBox 部分 ======
-import { fetchFansInfoBoxTemplate } from "../ui/infoBox/fansInfoBox.js";
-import { renderFansInfoBox } from "../ui/infoBox/fansInfoBox.js";
-(async () => {
-  const template = await fetchFansInfoBoxTemplate();
-  await renderFansInfoBox(template);
-})();
+  // ====== attendee-box 部分 ======
+  const attendeeBoxTemplate = await fetchAttendeeBoxTemplate();
+  renderAttendeeBox(attendeeBoxTemplate);
 
-// ====== footer 部分 ======
-import { fetchFooterTemplate } from "../../layout/footer/footer.js";
-import { renderFooter } from "../../layout/footer/footer.js";
-(async () => {
-  const template = await fetchFooterTemplate();
-  await renderFooter(template);
+  // ====== footer 部分 ======
+  const footerTemplate = await fetchFooterTemplate();
+  renderFooter(footerTemplate);
 })();

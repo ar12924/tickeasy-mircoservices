@@ -14,7 +14,7 @@ export const fetchFooterTemplate = async () => {
  * 動態生成並插入導覽列的 HTML。
  * @param {string} templateHTML - HTML模板。
  */
-export const renderFooter = async (templateHTML) => {
+export const renderFooter = (templateHTML) => {
   const templateJQeury = $(templateHTML);
   $("footer").append(templateJQeury);
 };

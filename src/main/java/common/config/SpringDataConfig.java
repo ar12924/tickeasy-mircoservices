@@ -32,13 +32,13 @@ public class SpringDataConfig {
 		template.setConnectionFactory(jedisConnectionFactory()); // 從連線物件設定連線，為必要
 
 		// 設定序列化器
-		GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
+		var serializer = new GenericJackson2JsonRedisSerializer();
 		template.setKeySerializer(new StringRedisSerializer()); // Key 使用 String 序列化器
+		template.setValueSerializer(serializer); // Value 使用 JSON 序列化器(Jackson)
 		template.setHashKeySerializer(new StringRedisSerializer());
-		template.setHashValueSerializer(serializer); // Value 使用 JSON 序列化器（Jackson）
-		template.setValueSerializer(serializer);
+		template.setHashValueSerializer(serializer); 
 
-		template.afterPropertiesSet(); // 內部初始化，沒有 boot 時為必要
+		template.afterPropertiesSet(); // 內部初始化，沒有 spring boot 時為必要
 		return template;
 	}
 }

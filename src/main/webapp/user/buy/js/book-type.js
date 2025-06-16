@@ -27,17 +27,26 @@ export const getContextPath = () => {
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
 
 /**
- * 將選定的票種和數量數據 POST 到後端 Redis 進行保存。
+ * 將選定的票種和數量 POST 到後端 Redis 進行保存。
+ * @param {number} eventId - 活動 id。
  * @param {Object} book - 包含票種選擇訊息的物件。
  */
-const saveBook = async (book) => {
+const saveBook = async (eventId, book) => {
   const resp = await fetch(`${getContextPath()}/book-type`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(book),
   });
-  const respBody = await resp.json();
-  console.log("Redis Save Response: ", respBody);
+  const { message, successful } = await resp.json();
+  // 要求使用者，請先登入
+  if (!successful) {
+    alert(message);
+    sessionStorage.setItem("core-message", message);
+    location.href = `${getContextPath()}/user/member/login.html`;
+  } else {
+    sessionStorage.setItem("core-message", message);
+    location.href = `book-info.html?eventId=${eventId}`;
+  }
 };
 
 // ==================== 3. 數據處理層 (Data Processing) ====================
@@ -105,11 +114,8 @@ const initBookTypeJSEvents = (book) => {
     if (!success) {
       return;
     } else {
-      book.progress = 1; // 表示購票頁資料OK，可以送到後端
-      console.log(book);
-      saveBook(book); // post 使用者選的票種至 Redis
-      // location.href = `bookDetails.html?eventId=${eventId}`;
-      return;
+      book.progress = 2; // 表示選票完成，送到後端後下一步
+      saveBook(eventId, book); // post 使用者選的票種至 Redis，並跳轉至下一步
     }
   });
 };
@@ -117,17 +123,26 @@ const initBookTypeJSEvents = (book) => {
 // ==================== 5. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
-import { fetchNavTemplate } from "../../layout/nav/nav.js";
-import { renderNav } from "../../layout/nav/nav.js";
-import { initNavJSEvents } from "../../layout/nav/nav.js";
-import { fetchHeaderTemplate } from "../ui/book-type/header.js";
-import { renderHeader } from "../ui/book-type/header.js";
-import { fetchTicketType } from "../ui/book-type/type-box.js";
-import { fetchTypeBoxTemplate } from "../ui/book-type/type-box.js";
-import { renderTypeBox } from "../ui/book-type/type-box.js";
-import { initTypeBoxJSEvents } from "../ui/book-type/type-box.js";
-import { fetchFooterTemplate } from "../../layout/footer/footer.js";
-import { renderFooter } from "../../layout/footer/footer.js";
+import {
+  fetchNavTemplate,
+  renderNav,
+  initNavJSEvents,
+} from "../../layout/nav/nav.js";
+import {
+  fetchHeaderTemplate,
+  fetchTicketEvent,
+  renderHeader,
+} from "../ui/header.js";
+import {
+  fetchTicketType,
+  fetchTypeBoxTemplate,
+  renderTypeBox,
+  initTypeBoxJSEvents,
+} from "../ui/book-type/type-box.js";
+import {
+  fetchFooterTemplate,
+  renderFooter,
+} from "../../layout/footer/footer.js";
 
 (async () => {
   // ====== 資料儲存變數區 ======
@@ -143,20 +158,30 @@ import { renderFooter } from "../../layout/footer/footer.js";
     eventId: -1, // 活動 id
     eventName: null, // 活動名稱
     selected: [], // [{票種1}, {票種2}, ...]
-    progress: -1, // 1: 購票頁完成; 2: 填寫完成; 3: 下訂完成
+    progress: 1, // 1: 選票中; 2: 填寫資料中; 3: 確認訂單中
   };
 
-  // ====== Nav 部分 ======
+  // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
   renderNav(navTemplate);
   initNavJSEvents();
 
-  // ====== Header 部分 ======
-  const headerTemplate = await fetchHeaderTemplate();
-  renderHeader(headerTemplate);
-
-  // ====== typeBox 部分 ======
+  // ====== header 部分 ======
   const eventId = getUrlParam("eventId");
+  const headerTemplate = await fetchHeaderTemplate();
+  const eventInfo = await fetchTicketEvent(eventId);
+  if (!eventInfo) {
+    alert("載入活動名稱失敗!!");
+  } else {
+    // 存入 book 變數中，儲存 eventName
+    book.eventName = eventInfo.eventName;
+    // 存取 progress 以顯示對應進度條
+    // 存取 eventName 以顯示當前活動名稱
+    // 輸出 header.html 模板
+    renderHeader(eventInfo, book, headerTemplate);
+  }
+
+  // ====== type-box 部分 ======
   const ticketType = await fetchTicketType(eventId);
   const TypeBoxTemplate = await fetchTypeBoxTemplate();
   if (ticketType.length > 0) {
@@ -176,7 +201,7 @@ import { renderFooter } from "../../layout/footer/footer.js";
   }
   initTypeBoxJSEvents();
 
-  // ====== bookType 部分 ======
+  // ====== book-type 部分 ======
   initBookTypeJSEvents(book); // book 傳入，接收購票人選擇的票數 quantity 並送到後端
 
   // ====== footer 部分 ======

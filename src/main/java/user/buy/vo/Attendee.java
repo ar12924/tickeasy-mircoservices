@@ -3,9 +3,9 @@ package user.buy.vo;
 import lombok.Data;
 
 @Data
-public class TempContactInfo {
-	private int memberId;
-    private String name;
+public class Attendee {
+	private int userName;
     private String email;
     private String phone;
+    private String idCard;
 }
