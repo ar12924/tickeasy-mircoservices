@@ -53,36 +53,3 @@ header {
     }
   }
 }
-
-/* section 主內容 */
-section.columns {
-  & .card {
-    & .box {
-      box-shadow: none;
-      border: 2px solid #dbdbdb;
-      & .level-item {
-        & .control {
-          input {
-            padding-bottom: 7px;
-          }
-        }
-      }
-    }
-    & .has-text-centered {
-      padding-bottom: 1.5rem;
-      & .button {
-        background-color: #ec4899;
-        & span {
-          font-weight: bold;
-          color: white;
-        }
-      }
-    }
-  }
-  & .buttons {
-    & .next {
-      background-color: #ec4899;
-      color: white;
-    }
-  }
-}

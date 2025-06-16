@@ -14,7 +14,7 @@ export const fetchNavTemplate = async () => {
  * 動態生成並插入導覽列的 HTML。
  * @param {string} templateHTML - HTML模板。
  */
-export const renderNav = async (templateHTML) => {
+export const renderNav = (templateHTML) => {
   const templateJQuery = $(templateHTML);
   $(".navbar").append(templateJQuery);
 };

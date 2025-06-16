@@ -13,8 +13,8 @@ import user.buy.dao.BookDao;
 import user.buy.service.BookService;
 import user.buy.vo.BookEventDto;
 import user.buy.vo.BookTypeDto;
-import user.buy.vo.TempBook;
-import user.buy.vo.TempSelection;
+import user.buy.vo.BookDto;
+import user.buy.vo.Selected;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -36,12 +36,12 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Core<String> saveBook(TempBook tempBook) {
+	public Core<String> saveBook(BookDto book) {
 		HashOperations<String, Object, Object> hashOps = template.opsForHash();
 		Core<String> message = new Core<>();
 
 		// 1. 若 memberId 沒有抓到，則不進行訂單暫存
-		if (tempBook.getMemberId() <= 0) {
+		if (book.getMemberId() <= 0) {
 			message.setMessage("無會員資料，訂單暫存失敗!!");
 			message.setSuccessful(false);
 			return message;
@@ -49,18 +49,18 @@ public class BookServiceImpl implements BookService {
 
 		// 2. 訂單基本資料
 		// hash 型態的 key 為 tempBook:{memberId}:{eventId}
-		String key = "tempBook:" + tempBook.getMemberId() + ":" + tempBook.getEventId();
+		String key = "tempBook:" + book.getMemberId() + ":" + book.getEventId();
 		String innerKey = key + ":selections";
-		hashOps.put(key, "memberId", tempBook.getMemberId());
-		hashOps.put(key, "eventId", tempBook.getEventId());
-		hashOps.put(key, "eventName", tempBook.getEventName());
-		hashOps.put(key, "selections", innerKey); // 關聯 -> selections[]
+		hashOps.put(key, "memberId", book.getMemberId());
+		hashOps.put(key, "eventId", book.getEventId());
+		hashOps.put(key, "eventName", book.getEventName());
+		hashOps.put(key, "selected", innerKey); // 關聯 -> selections[]
 
 		// 3. selections: 訂單的 "票券" 資料
 		// hash 型態的 key 為 tempBook:{memberId}:{eventId}:selections:{index}
-		for (int i = 0; i < tempBook.getSelections().size(); i++) {
+		for (int i = 0; i < book.getSelected().size(); i++) {
 			key = innerKey + ":" + (i + 1);
-			TempSelection selection = tempBook.getSelections().get(i);
+			Selected selection = book.getSelected().get(i);
 			hashOps.put(key, "typeId", selection.getTypeId());
 			hashOps.put(key, "quantity", selection.getQuantity());
 			hashOps.put(key, "categoryName", selection.getCategoryName());

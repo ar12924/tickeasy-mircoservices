@@ -5,7 +5,7 @@ import java.util.List;
 import common.vo.Core;
 import user.buy.vo.BookEventDto;
 import user.buy.vo.BookTypeDto;
-import user.buy.vo.TempBook;
+import user.buy.vo.BookDto;
 
 public interface BookService {
 	/**
@@ -30,5 +30,5 @@ public interface BookService {
      * @param {TempBook} tempbook - 訂單資料。
      * @return {Core<String>} 訂單儲存操作結果。
      */
-    Core<String> saveBook(TempBook tempBook);
+    Core<String> saveBook(BookDto tempBook);
 }

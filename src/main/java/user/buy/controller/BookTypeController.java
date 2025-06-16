@@ -15,7 +15,7 @@ import common.vo.Core;
 import user.buy.service.BookService;
 import user.buy.vo.BookEventDto;
 import user.buy.vo.BookTypeDto;
-import user.buy.vo.TempBook;
+import user.buy.vo.BookDto;
 
 @RestController
 @RequestMapping("book-type")
@@ -55,10 +55,11 @@ public class BookTypeController {
 	 */
 	@CrossOrigin(origins = "*")
 	@PostMapping
-	public Core<String> save(@RequestBody TempBook tempBook) {
+	public Core<String> saveBook(@RequestBody BookDto book) {
 		int memberId = 5; // 預計由 session 物件取得
 		// 1. 包裝 url 參數, session 屬性及請求本體
-		tempBook.setMemberId(memberId);
-		return service.saveBook(tempBook);
+		book.setMemberId(memberId);
+		System.out.println(book.toString());
+		return null;
 	}
 }

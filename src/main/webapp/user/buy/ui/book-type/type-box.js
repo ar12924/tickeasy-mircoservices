@@ -6,7 +6,7 @@
  * @param {number} eventId - 活動 id。
  * @returns {Promise<Array<Object>>} type + event 數據的數組。
  */
-import { getContextPath } from "../../js/bookType.js";
+import { getContextPath } from "../../js/book-type.js";
 export const fetchTicketType = async (eventId) => {
   const resp = await fetch(
     `${getContextPath()}/book-type/event/${eventId}/event-ticket-type`
@@ -22,7 +22,9 @@ export const fetchTicketType = async (eventId) => {
  * @return {Promise<string>} HTML 模板。
  */
 export const fetchTypeBoxTemplate = async () => {
-  const resp = await fetch("./ui/typeBox/typeBox.html");
+  const resp = await fetch(
+    `${getContextPath()}/user/buy/ui/book-type/type-box.html`
+  );
   return await resp.text();
 };
 
@@ -31,11 +33,11 @@ export const fetchTypeBoxTemplate = async () => {
  * @param {Object} typeInfo - 單個票種的數據，包含 categoryName 和 price。
  * @param {string} templateHTML - HTML 模板。
  */
-export const renderTypeBox = async (typeInfo, templateHTML) => {
+export const renderTypeBox = ({ categoryName, price }, templateHTML) => {
   const templateJQeury = $(templateHTML);
 
-  templateJQeury.find(".type-name").text(typeInfo.categoryName); // 顯示票種
-  templateJQeury.find(".type-price").text(`NT$ ${typeInfo.price}`); // 顯示價格
+  templateJQeury.find(".type-name").text(categoryName); // 顯示票種
+  templateJQeury.find(".type-price").text(`NT$ ${price}`); // 顯示價格
 
   $(".type-container").append(templateJQeury); // 插入整塊元素到父容器
 };

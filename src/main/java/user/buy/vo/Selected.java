@@ -3,8 +3,8 @@ package user.buy.vo;
 import lombok.Data;
 
 @Data
-public class TempSelection {
-	private int typeId;
-	private int quantity;
+public class Selected {
+	private Integer typeId;
+	private Integer quantity;
 	private String categoryName;
 }
