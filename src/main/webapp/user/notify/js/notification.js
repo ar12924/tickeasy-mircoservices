@@ -15,7 +15,7 @@ const now = new Date();
 
 //計算通知中心各分類頁籤的通知數
 function category_count() {
-	fetch('/maven-tickeasy-v1/notification-list', {
+	fetch('/maven-tickeasy-v1/notify/notification-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
@@ -68,7 +68,7 @@ function notification_loaded(category) {
 	/*const category_type=category;*/
 	notification_el.innerHTML = "";
 
-	fetch('/maven-tickeasy-v1/notification-list', {
+	fetch('/maven-tickeasy-v1/notify/notification-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
