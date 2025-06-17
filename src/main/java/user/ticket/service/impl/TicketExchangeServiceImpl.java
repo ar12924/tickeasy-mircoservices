@@ -197,7 +197,7 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
     /**
      * 豐富貼文資料，添加額外資訊
      */
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
     private void enrichPostData(Map<String, Object> post) {
         // 添加相對時間顯示
         String createTime = (String) post.get("createTime");
@@ -223,7 +223,7 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
     /**
      * 豐富留言資料，添加額外資訊
      */
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
     private void enrichCommentData(Map<String, Object> comment) {
         // 添加相對時間顯示
         String createTime = (String) comment.get("createTime");
