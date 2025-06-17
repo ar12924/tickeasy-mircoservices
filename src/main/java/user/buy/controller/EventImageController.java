@@ -1,27 +1,18 @@
 package user.buy.controller;
 
-import common.util.CommonUtil;
-import user.buy.service.EventInfoService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import user.buy.service.EventInfoService;
 
 /**
  * 活動圖片控制器，專門處理活動圖片相關請求

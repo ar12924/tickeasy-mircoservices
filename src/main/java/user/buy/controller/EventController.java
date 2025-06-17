@@ -1,18 +1,9 @@
 package user.buy.controller;
 
-import com.google.gson.Gson;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import common.util.CommonUtil;
-import user.buy.service.EventInfoService;
-import user.buy.service.impl.EventInfoServiceImpl;
-import user.buy.vo.EventBuyVO;
-import user.buy.vo.TicketTypeVO;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import user.buy.service.EventInfoService;
+import user.buy.vo.EventBuyVO;
 
 /**
  * 活動控制器，處理活動相關RESTful API請求

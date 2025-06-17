@@ -1,14 +1,8 @@
 package user.ticket.controller;
 
-import com.google.gson.Gson;
+import java.util.HashMap;
+import java.util.Map;
 
-import user.member.vo.Member;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
@@ -16,10 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+import user.member.vo.Member;
 
 /**
  * 登入狀態檢查控制器 
