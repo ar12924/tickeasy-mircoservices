@@ -29,12 +29,7 @@ public class FavoriteSellReminderListener implements ServletContextListener {
 		 * sendReminderNotificationForTomorrow, getInitialDelay(), 24, TimeUnit.HOURS);
 		 */
 		scheduler.scheduleAtFixedRate(()->{
-			try {
-				new NotificationServiceImpl().sendFavoriteSellReminderNotificationForTomorrow();
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			new NotificationServiceImpl().sendFavoriteSellReminderNotificationForTomorrow();
 		}, 1, 24 * 60,
 				TimeUnit.MINUTES);
 

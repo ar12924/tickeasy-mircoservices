@@ -32,12 +32,7 @@ public class EventReminderListener implements ServletContextListener {
 		 * sendReminderNotificationForTomorrow, getInitialDelay(), 24, TimeUnit.HOURS);
 		 */
 		scheduler.scheduleAtFixedRate(()->{
-			try {
-				new NotificationServiceImpl().sendReminderNotificationForTomorrow();
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			new NotificationServiceImpl().sendReminderNotificationForTomorrow();
 		}, 1, 24 * 60,
 				TimeUnit.MINUTES);
 

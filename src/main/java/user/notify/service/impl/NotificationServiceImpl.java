@@ -16,17 +16,18 @@ import user.notify.dao.impl.NotificationDaoImpl;
 import user.notify.service.NotificationService;
 import user.notify.vo.Notification;
 
-/*@Service*/
+@Service
 public class NotificationServiceImpl implements NotificationService {
 
-	/* @Autowired */
+	@Autowired
 	private NotificationDao notificationDao;
 
-	public NotificationServiceImpl() throws NamingException {
-		notificationDao = new NotificationDaoImpl();
-	}
+	/*
+	 * public NotificationServiceImpl() throws NamingException { notificationDao =
+	 * new NotificationDaoImpl(); }
+	 */
 
-	/* @Transactional */
+	@Transactional
 	@Override
 	public List<Notification> notificationList(int memberId) {
 		return notificationDao.selectAllByMemberId(memberId);
@@ -49,18 +50,21 @@ public class NotificationServiceImpl implements NotificationService {
 		/* } */
 		/* return result; */
 	}
-
+	
+	@Transactional
 	@Override
 	public Integer notificationRead(int memberId, int memberNotificationId) {
 
 		return notificationDao.updateIsRead(memberId, memberNotificationId);
 	}
 
+	@Transactional
 	@Override
 	public Integer notificationVisibleUpdate(int memberNotificationId) {
 		return notificationDao.updateUnvisible(memberNotificationId);
 	}
 
+	@Transactional
 	@Override
 	public void sendReminderNotificationForTomorrow() {
 
@@ -69,6 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	}
 
+	@Transactional
 	@Override
 	public void sendFavoriteSellReminderNotificationForTomorrow() {
 		notificationDao.sendFavoriteSellReminderNotificationForTomorrow();

@@ -21,16 +21,16 @@ import org.springframework.stereotype.Repository;
 import user.notify.dao.NotificationDao;
 import user.notify.vo.Notification;
 
-/*@Repository*/
+@Repository
 public class NotificationDaoImpl implements NotificationDao {
 	private DataSource ds;
 	
-	/* @PersistenceContext */
+	@PersistenceContext
 	private Session session;
-	public NotificationDaoImpl() throws NamingException {
-		ds =(DataSource) new InitialContext()
-				.lookup("java:comp/env/jdbc/tickeasy");
-	}
+	/*
+	 * public NotificationDaoImpl() throws NamingException { ds =(DataSource) new
+	 * InitialContext() .lookup("java:comp/env/jdbc/tickeasy"); }
+	 */
 
 	@Override
 	public List<Notification> selectAllByMemberId(int memberId) {
