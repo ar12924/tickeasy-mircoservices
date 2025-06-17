@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +20,7 @@ import user.buy.vo.TicketTypeVO;
  */
 @RestController
 @RequestMapping("/api/event/tickets")
-public class EventTicketsController extends HttpServlet {
+public class EventTicketsController {
 	@Autowired
     private EventInfoService eventService;
 	
