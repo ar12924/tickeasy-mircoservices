@@ -1,7 +1,7 @@
 package user.buy.dao;
 
 import java.util.List;
-
+import java.io.InputStream;
 import common.dao.CommonDao;
 import user.buy.vo.EventBuyVO;
 import user.buy.vo.FavoriteVO;
@@ -11,7 +11,7 @@ import user.buy.vo.TicketTypeVO;
  * 創建者: archchang
  * 創建日期: 2025-05-07
  */
-public interface EventInfoDAO extends CommonDao {
+public interface EventInfoDAO {
     /**
      * 根據活動ID獲取活動資訊
      * 
@@ -84,5 +84,7 @@ public interface EventInfoDAO extends CommonDao {
      * @return 圖片數據
      */
     byte[] getEventImage(Integer eventId);
+    
+    InputStream getEventImageStream(Integer eventId);
     
 }
