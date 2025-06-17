@@ -24,7 +24,7 @@ import user.notify.vo.Notification;
 @Repository
 public class NotificationDaoImpl implements NotificationDao {
 	private DataSource ds;
-	
+
 	@PersistenceContext
 	private Session session;
 	/*
@@ -35,13 +35,12 @@ public class NotificationDaoImpl implements NotificationDao {
 	@Override
 	public List<Notification> selectAllByMemberId(int memberId) {
 		List<Notification> notificationList = new ArrayList<>();
-	
-			/* session = getSession(); */
-			String hql = "FROM Notification WHERE memberId=:memberId AND isVisible=1";
-			notificationList = session.createQuery(hql, Notification.class).setParameter("memberId", memberId)
-					.getResultList();
 
-		
+		/* session = getSession(); */
+		String hql = "FROM Notification WHERE memberId=:memberId AND isVisible=1";
+		notificationList = session.createQuery(hql, Notification.class).setParameter("memberId", memberId)
+				.getResultList();
+
 		System.out.println("查到資料筆數：" + notificationList.size());
 		return notificationList;
 		/*
@@ -73,79 +72,100 @@ public class NotificationDaoImpl implements NotificationDao {
 		 * }catch(SQLException e) { e.printStackTrace(); } System.out.println("查到資料筆數："
 		 * + notificationList.size()); return notificationList;
 		 */
-}
+	}
 
 	@Override
 	public Integer updateIsRead(int memberId, int memberNotificationId) {
-		
-		String sql="UPDATE MEMBER_NOTIFICATION SET IS_READ= ?,READ_TIME=? ,UPDATE_TIME =? WHERE MEMBER_ID = ? AND MEMBER_NOTIFICATION_ID=?";
-	try( Connection conn =ds.getConnection();
-			PreparedStatement pstmt=conn.prepareStatement(sql);
-			){
-			pstmt.setInt(1,1);
-			pstmt.setTimestamp(2,new Timestamp(System.currentTimeMillis()));
-			pstmt.setTimestamp(3,new Timestamp(System.currentTimeMillis()));
-			pstmt.setInt(4,memberId);
-			pstmt.setInt(5,memberNotificationId);
-			
-			int rowsUpdated = pstmt.executeUpdate();
-			 if (rowsUpdated > 0) {
-				 System.out.println("更新資料筆數：" + rowsUpdated);   
-				 return rowsUpdated;
-			        
-			    } else {
-			        return null;
-			    }
-	
-	
-		
-	}catch(SQLException e) {
-		e.printStackTrace();
-	}
+
+		/* List<Notification> notificationList = new ArrayList<>(); */
+
+		/* session = getSession(); */
+		String hql = "UPDATE Notification SET IS_READ= :isRead,READ_TIME=:readTime ,UPDATE_TIME =:updateTime WHERE MEMBER_ID = :memberId AND MEMBER_NOTIFICATION_ID=:memberNotificationId";
+
+		int result = session.createQuery(hql).setParameter("isRead", 1)
+				.setParameter("readTime", new Timestamp(System.currentTimeMillis()))
+				.setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
+				.setParameter("memberId", memberId).setParameter("memberNotificationId", memberNotificationId)
+				.executeUpdate();
+
+		if (result > 0) {
+			System.out.println("更新資料筆數：" + result);
+			return result;
+
+		} else {
+			return null;
+		}
+
 	
 
-	return null;
-
+		/*
+		 * String
+		 * sql="UPDATE MEMBER_NOTIFICATION SET IS_READ= ?,READ_TIME=? ,UPDATE_TIME =? WHERE MEMBER_ID = ? AND MEMBER_NOTIFICATION_ID=?"
+		 * ;
+		 * 
+		 * try( Connection conn =ds.getConnection(); PreparedStatement
+		 * pstmt=conn.prepareStatement(sql); ){ pstmt.setInt(1,1);
+		 * pstmt.setTimestamp(2,new Timestamp(System.currentTimeMillis()));
+		 * pstmt.setTimestamp(3,new Timestamp(System.currentTimeMillis()));
+		 * pstmt.setInt(4,memberId); pstmt.setInt(5,memberNotificationId);
+		 * 
+		 * int rowsUpdated = pstmt.executeUpdate(); if (rowsUpdated > 0) {
+		 * System.out.println("更新資料筆數：" + rowsUpdated); return rowsUpdated;
+		 * 
+		 * } else { return null; }
+		 * 
+		 * 
+		 * 
+		 * }catch(SQLException e) { e.printStackTrace(); }
+		 * 
+		 * 
+		 * return null;
+		 */
 	}
 
 	@Override
 	public Integer updateUnvisible(int memberNotificationId) {
 		
-		String sql="UPDATE MEMBER_NOTIFICATION SET IS_VISIBLE= ?,UPDATE_TIME =? WHERE MEMBER_NOTIFICATION_ID=?";
-	try( Connection conn =ds.getConnection();
-			PreparedStatement pstmt=conn.prepareStatement(sql);
-			){
-			pstmt.setInt(1,0);
-			pstmt.setTimestamp(2,new Timestamp(System.currentTimeMillis()));
-			pstmt.setInt(3,memberNotificationId);
-			
-			int rowsUpdated = pstmt.executeUpdate();
-			 if (rowsUpdated > 0) {
-				 System.out.println("更新隱藏資料筆數：" + rowsUpdated);   
-				 return rowsUpdated;
-			        
-			    } else {
-			        return null;
-			    }
-	
-	
 		
-	}catch(SQLException e) {
-		e.printStackTrace();
-	}
-	
+		String hql = "UPDATE Notification SET IS_VISIBLE= :isVisible,UPDATE_TIME =:updateTime WHERE MEMBER_NOTIFICATION_ID=:memberNotificationId";
 
-	return null;
+		int result = session.createQuery(hql).setParameter("isVisible", 0)
+				.setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
+				.setParameter("memberNotificationId", memberNotificationId)
+				.executeUpdate();
+
+		if (result > 0) {
+			System.out.println("更新隱藏資料筆數：" + result);
+			return result;
+
+		} else {
+			return null;
+		}
+
+		/*
+		 * String sql =
+		 * "UPDATE MEMBER_NOTIFICATION SET IS_VISIBLE= ?,UPDATE_TIME =? WHERE MEMBER_NOTIFICATION_ID=?"
+		 * ; try (Connection conn = ds.getConnection(); PreparedStatement pstmt =
+		 * conn.prepareStatement(sql);) { pstmt.setInt(1, 0); pstmt.setTimestamp(2, new
+		 * Timestamp(System.currentTimeMillis())); pstmt.setInt(3,
+		 * memberNotificationId);
+		 * 
+		 * int rowsUpdated = pstmt.executeUpdate(); if (rowsUpdated > 0) {
+		 * System.out.println("更新隱藏資料筆數：" + rowsUpdated); return rowsUpdated;
+		 * 
+		 * } else { return null; }
+		 * 
+		 * } catch (SQLException e) { e.printStackTrace(); }
+		 * 
+		 * return null;
+		 */
 
 	}
 
 	@Override
 	public void sendReminderNotificationForTomorrow() {
-		String sql = "SELECT\r\n" 
-				+ "bt.current_holder_member_id,\r\n" 
-				+ "bo.event_id,\r\n"
-				+ "ei.event_name,\r\n" + "ei.event_from_date\r\n"
-				+ "FROM buyer_order bo\r\n" 
+		String sql = "SELECT\r\n" + "bt.current_holder_member_id,\r\n" + "bo.event_id,\r\n" + "ei.event_name,\r\n"
+				+ "ei.event_from_date\r\n" + "FROM buyer_order bo\r\n"
 				+ "JOIN buyer_ticket bt ON bo.order_id = bt.order_id\r\n"
 				+ "JOIN event_info ei ON bo.event_id = ei.event_id\r\n"
 				+ "WHERE DATEDIFF(ei.event_from_date, CURDATE()) = 1";
@@ -154,15 +174,15 @@ public class NotificationDaoImpl implements NotificationDao {
 		 * "WHERE DATEDIFF(event_from_date,NOW())=1";
 		 */
 
-		try (Connection conn =ds.getConnection();
+		try (Connection conn = ds.getConnection();
 				PreparedStatement ps = conn.prepareStatement(sql);
 				ResultSet rs = ps.executeQuery()) {
 			if (!rs.isBeforeFirst()) {
-			    System.out.println("⚠️ 查無符合條件的活動資料（明天沒有活動）");
-			    return;
+				System.out.println("⚠️ 查無符合條件的活動資料（明天沒有活動）");
+				return;
 			}
 			while (rs.next()) {
-				
+
 				int memberId = rs.getInt("current_holder_member_id");
 				int eventId = rs.getInt("event_id");
 				String eventName = rs.getString("event_name");
@@ -175,7 +195,7 @@ public class NotificationDaoImpl implements NotificationDao {
 
 				// 呼叫發送通知的函式
 				sendReminderNotification(memberId, eventId, eventName, eventDate);
-				
+
 			}
 
 		} catch (SQLException e) {
@@ -188,8 +208,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		String sql = "INSERT INTO member_notification (notification_id,member_id,is_read,is_visible,notification_status,title,message,link_url,send_time,create_time,update_time) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())";
 
-		try (Connection conn =ds.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sql)) {
+		try (Connection conn = ds.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
 			// 設置通知的資料
 			ps.setInt(1, 5);
@@ -221,18 +240,17 @@ public class NotificationDaoImpl implements NotificationDao {
 				+ "FROM favorite f\r\n"
 				+ "JOIN (SELECT ei.event_id,ei.event_name,ett.sell_from_time ,ett.sell_to_time ,ett.category_name FROM event_info ei \r\n"
 				+ "JOIN event_ticket_type ett ON ett.event_id=ei.event_id ) AS eiett ON f.event_id=eiett.event_id \r\n"
-				+ "WHERE DATEDIFF(eiett.sell_from_time, CURDATE()) = 1 AND f.is_followed = 1\r\n" ;
-		 
+				+ "WHERE DATEDIFF(eiett.sell_from_time, CURDATE()) = 1 AND f.is_followed = 1\r\n";
 
-		try (Connection conn =ds.getConnection();
+		try (Connection conn = ds.getConnection();
 				PreparedStatement ps = conn.prepareStatement(sql);
 				ResultSet rs = ps.executeQuery()) {
 			if (!rs.isBeforeFirst()) {
-			    System.out.println("⚠️ 查無符合條件的關注會員資料（明天沒有活動開賣提醒）");
-			    return;
+				System.out.println("⚠️ 查無符合條件的關注會員資料（明天沒有活動開賣提醒）");
+				return;
 			}
 			while (rs.next()) {
-				
+
 				int memberId = rs.getInt("member_id");
 				int eventId = rs.getInt("event_id");
 				String eventName = rs.getString("event_name");
@@ -246,14 +264,15 @@ public class NotificationDaoImpl implements NotificationDao {
 				/* Date eventDate = rs.getDate("event_from_date"); */
 
 				// 呼叫發送通知的函式
-				sendFavoriteSellReminderNotification(memberId, eventId, eventName, eventSellFromTime,eventSellToTime,categoryName);
-				
+				sendFavoriteSellReminderNotification(memberId, eventId, eventName, eventSellFromTime, eventSellToTime,
+						categoryName);
+
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@Override
@@ -262,8 +281,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		String sql = "INSERT INTO member_notification (notification_id,member_id,is_read,is_visible,notification_status,title,message,link_url,send_time,create_time,update_time) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())";
 
-		try (Connection conn =ds.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sql)) {
+		try (Connection conn = ds.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
 			// 設置通知的資料
 			ps.setInt(1, 5);
@@ -272,8 +290,8 @@ public class NotificationDaoImpl implements NotificationDao {
 			ps.setInt(4, 1);
 			ps.setInt(5, 1);
 			ps.setString(6, "關注活動開賣提醒");
-			ps.setString(7,
-					String.format("親愛的會員 %d，您訂購的活動「%s」%s票種 將於 %s 開賣至 %s，請記得準備購買！", memberId, eventName, categoryName,eventSellFromTime.toString(),eventSellToTime.toString()));
+			ps.setString(7, String.format("親愛的會員 %d，您訂購的活動「%s」%s票種 將於 %s 開賣至 %s，請記得準備購買！", memberId, eventName,
+					categoryName, eventSellFromTime.toString(), eventSellToTime.toString()));
 			ps.setString(8, "/event/" + eventId);
 
 			// 執行插入操作
@@ -287,8 +305,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-		
-	
+
 }
