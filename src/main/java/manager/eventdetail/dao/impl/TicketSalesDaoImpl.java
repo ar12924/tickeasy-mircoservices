@@ -1,5 +1,6 @@
 package manager.eventdetail.dao.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,5 +70,47 @@ public class TicketSalesDaoImpl implements TicketSalesDao {
         return result;
     }
     
+    @Override
+    public Map<String, Object> getSalesDashboardData(Integer eventId) {
+        String salesHql = "SELECT " +
+                "ett.categoryName, " +
+                "COUNT(bt.ticketId), " +
+                "COALESCE(SUM(ett.price), 0.0) " +
+                "FROM BuyerTicketEventVer bt " +
+                "JOIN bt.eventTicketType ett " +
+                "WHERE ett.eventId = :eventId " +
+                "GROUP BY ett.categoryName";
 
+        List<Object[]> queryResult = session.createQuery(salesHql, Object[].class)
+                .setParameter("eventId", eventId)
+                .list();
+
+        List<Map<String, Object>> salesData = new ArrayList<>();
+        long totalTickets = 0L;
+        double totalRevenue = 0.0;
+
+        if (queryResult != null) {
+            for (Object[] row : queryResult) {
+                Map<String, Object> stat = new HashMap<>();
+                stat.put("categoryName", row[0]);
+                stat.put("ticketsSold", row[1]);
+                stat.put("totalRevenue", row[2]);
+                salesData.add(stat);
+
+                if (row[1] != null && row[1] instanceof Number) {
+                    totalTickets += ((Number) row[1]).longValue();
+                }
+                if (row[2] != null && row[2] instanceof Number) {
+                    totalRevenue += ((Number) row[2]).doubleValue();
+                }
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("salesData", salesData);
+        result.put("totalTickets", totalTickets);
+        result.put("totalRevenue", totalRevenue);
+
+        return result;
+    }
 }
