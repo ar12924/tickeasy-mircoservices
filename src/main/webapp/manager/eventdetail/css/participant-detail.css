@@ -1,0 +1,8 @@
+/* Add your custom styles for participant-detail.html here */
+.card-header {
+  font-weight: bold;
+}
+p > strong {
+  display: inline-block;
+  width: 120px;
+}
