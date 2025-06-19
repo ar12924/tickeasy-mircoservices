@@ -66,6 +66,7 @@ public class BookTypeController {
 			core.setMessage("請先登入");
 			core.setSuccessful(false);
 			return core;
+			
 		} else {
 			// 將 eventId, member 存入 book 物件
 			book.setUserName(member.getUserName());

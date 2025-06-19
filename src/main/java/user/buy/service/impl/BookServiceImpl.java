@@ -12,6 +12,7 @@ import user.buy.dao.BookDao;
 import user.buy.service.BookService;
 import user.buy.vo.BookEventDto;
 import user.buy.vo.BookTypeDto;
+import user.member.vo.Member;
 import user.buy.vo.BookDto;
 
 @Service
@@ -69,5 +70,16 @@ public class BookServiceImpl implements BookService {
 	public BookDto getBook(String userName) {
 		// 以 key = userName 從 Redis 中查詢 book 物件
 		return (BookDto) template.opsForValue().get(userName);
+	}
+	
+	/**
+	 * 透過 userName 查詢購票人資訊(member)。
+	 * 
+	 * @param {String} userName - 購票人 userName。
+	 * @return {Member} member 購票人資訊。
+	 */
+	@Override
+	public Member getMember(String userName) {
+		return dao.selectMemberByUserName(userName);
 	}
 }

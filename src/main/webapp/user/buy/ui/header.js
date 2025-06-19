@@ -1,3 +1,5 @@
+import { getContextPath } from "../../common/utils.js";
+
 // ==================== 1. API 服務層 (API Service Layer) ====================
 // 這些函數負責與後端 API 進行互動。
 
@@ -6,7 +8,6 @@
  * @param {number} eventId - 活動 id。
  * @returns {Promise<Object>} event 數據的物件。
  */
-import { getContextPath } from "../js/book-type.js";
 export const fetchTicketEvent = async (eventId) => {
   const resp = await fetch(`${getContextPath()}/book-type/event/${eventId}`);
   return await resp.json();
@@ -56,7 +57,7 @@ export const renderHeader = ({ eventName }, { progress }, templateHTML) => {
 
   // 插入整塊元素到父容器
   templateJQeury.find(".event-name").text(eventName);
-  $("header").append(templateJQeury);
+  $("header").html(templateJQeury);
 };
 
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================

@@ -8,7 +8,7 @@
           style="--fa-rotate-angle: -45deg"
         ></i>
       </span>
-      <h2 class="title is-4 mb-0 mx-2">入場者資料</h2>
+      <h2 class="title is-4 mb-0 mx-2 info-title"></h2>
     </div>
   </div>
   <div class="level-right is-hidden-touch">
@@ -24,7 +24,7 @@
     <div class="field">
       <label class="label">帳號<span class="has-text-danger">*</span></label>
       <div class="control">
-        <input class="input" type="text" placeholder="請輸入帳號" />
+        <input class="input account" type="text" placeholder="請輸入帳號" />
       </div>
     </div>
   </div>
@@ -34,15 +34,15 @@
         >電子郵件<span class="has-text-danger">*</span></label
       >
       <div class="control">
-        <input class="input" type="email" placeholder="請輸入電子郵件" />
+        <input class="input email" type="email" placeholder="請輸入電子郵件" />
       </div>
     </div>
   </div>
   <div class="column is-half">
     <div class="field">
-      <label class="label">姓名<span class="has-text-danger">*</span></label>
+      <label class="label">暱稱<span class="has-text-danger"></span></label>
       <div class="control">
-        <input class="input" type="text" placeholder="請輸入姓名" />
+        <input class="input nick-name" type="text" placeholder="請輸入暱稱" />
       </div>
     </div>
   </div>
@@ -52,7 +52,7 @@
         >手機號碼<span class="has-text-danger">*</span></label
       >
       <div class="control">
-        <input class="input" type="tel" placeholder="請輸入手機號碼" />
+        <input class="input phone" type="tel" placeholder="請輸入手機號碼" />
       </div>
     </div>
   </div>
@@ -62,7 +62,11 @@
         >身分證字號<span class="has-text-danger">*</span></label
       >
       <div class="control">
-        <input class="input" type="text" placeholder="請輸入身分證字號" />
+        <input
+          class="input id-card"
+          type="text"
+          placeholder="請輸入身分證字號"
+        />
       </div>
     </div>
   </div>
@@ -70,7 +74,7 @@
     <div class="field">
       <label class="label">票種</label>
       <div class="control">
-        <input class="input" type="text" value="VIP區" readonly />
+        <input class="input type-name" type="text" value="VIP區" readonly />
       </div>
     </div>
   </div>

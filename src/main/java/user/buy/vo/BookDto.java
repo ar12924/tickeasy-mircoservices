@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class BookDto {
 	/**
-	 * 購票頁面暫存 vo (儲存使用者暫存訂購資訊)
+	 * 購票頁 -> 填寫資料頁 -> 確認頁
 	 */
 	private Integer eventId;
 	private String userName;

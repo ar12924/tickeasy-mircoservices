@@ -4,6 +4,7 @@ import java.util.List;
 
 import user.buy.vo.BookEventDto;
 import user.buy.vo.BookTypeDto;
+import user.member.vo.Member;
 import user.buy.vo.BookDto;
 
 public interface BookService {
@@ -15,4 +16,6 @@ public interface BookService {
 	public void saveBook(BookDto book, long timeoutMinutes);
     
     public BookDto getBook(String userName);
+    
+    public Member getMember(String userName);
 }

@@ -16,7 +16,7 @@ export const fetchNavTemplate = async () => {
  */
 export const renderNav = (templateHTML) => {
   const templateJQuery = $(templateHTML);
-  $(".navbar").append(templateJQuery);
+  $(".navbar").html(templateJQuery);
 };
 
 // ==================== 2. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================

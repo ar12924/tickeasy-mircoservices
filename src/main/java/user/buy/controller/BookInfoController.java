@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
@@ -46,5 +47,17 @@ public class BookInfoController {
 		core.setMessage("成功查詢購票頁資訊");
 		core.setSuccessful(true);
 		return core;
+	}
+	
+	/**
+	 * 透過 userName 查詢購票人資訊(member)。
+	 * 
+	 * @param {String} userName - 購票人 userName。
+	 * @return {Member} member 購票人資訊。
+	 */
+	@CrossOrigin(origins = "*")
+	@GetMapping("member/{userName}")
+	public Member getMember(@PathVariable String userName) {
+		return service.getMember(userName);
 	}
 }

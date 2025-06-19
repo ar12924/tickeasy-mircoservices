@@ -1,27 +1,26 @@
-// ==================== 1. 工具函數 (Utilities) ====================
-// 這些函數負責處理一些通用的、無關特定業務邏輯的任務
-
-/**
- * 從 URL 查詢參數中獲取指定參數的值。
- * @param {string} paramName - 要獲取的參數名稱。
- * @returns {string|null} 參數的值，如果不存在則為 null。
- */
-export const getUrlParam = (paramName) => {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  return urlParams.get(paramName);
-};
-
-/**
- * 擷取 http 到專案名稱部分網址。
- * @returns {string|null} 參數的值，如果不存在則為 null。
- */
-export const getContextPath = () => {
-  return window.location.pathname.substring(
-    0,
-    window.location.pathname.indexOf("/", 2)
-  );
-};
+// ==================== 1. 載入模組 (All Imports At Top) ====================
+import { getUrlParam } from "../../common/utils.js";
+import { getContextPath } from "../../common/utils.js";
+import {
+  fetchNavTemplate,
+  renderNav,
+  initNavJSEvents,
+} from "../../layout/nav/nav.js";
+import {
+  fetchHeaderTemplate,
+  fetchTicketEvent,
+  renderHeader,
+} from "../ui/header.js";
+import {
+  fetchTicketType,
+  fetchTypeBoxTemplate,
+  renderTypeBox,
+  initTypeBoxJSEvents,
+} from "../ui/book-type/type-box.js";
+import {
+  fetchFooterTemplate,
+  renderFooter,
+} from "../../layout/footer/footer.js";
 
 // ==================== 2. API 服務層 (API Service Layer) ====================
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
@@ -45,7 +44,7 @@ const saveBook = async (eventId, book) => {
     location.href = `${getContextPath()}/user/member/login.html`;
   } else {
     sessionStorage.setItem("core-message", message);
-    location.href = `book-info.html?eventId=${eventId}`;
+    location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
   }
 };
 
@@ -123,37 +122,8 @@ const initBookTypeJSEvents = (book) => {
 // ==================== 5. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
-import {
-  fetchNavTemplate,
-  renderNav,
-  initNavJSEvents,
-} from "../../layout/nav/nav.js";
-import {
-  fetchHeaderTemplate,
-  fetchTicketEvent,
-  renderHeader,
-} from "../ui/header.js";
-import {
-  fetchTicketType,
-  fetchTypeBoxTemplate,
-  renderTypeBox,
-  initTypeBoxJSEvents,
-} from "../ui/book-type/type-box.js";
-import {
-  fetchFooterTemplate,
-  renderFooter,
-} from "../../layout/footer/footer.js";
-
 (async () => {
   // ====== 資料儲存變數區 ======
-  // const book = {
-  //   eventId: -1, // 活動 id
-  //   eventName: null, // 活動名稱
-  //   selected: [], // [{票種1}, {票種2}, ...]
-  //   progress: -1, // 1: 購票頁完成; 2: 填寫完成; 3: 下訂完成
-  //   contact: {}, // {聯絡人}
-  //   attendees: [], // [{入場者1}, {入場者2}, ...]
-  // };
   const book = {
     eventId: -1, // 活動 id
     eventName: null, // 活動名稱

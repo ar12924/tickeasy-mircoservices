@@ -1,3 +1,5 @@
+import { getContextPath } from "../../../common/utils.js";
+
 // ==================== 1. API 服務層 (API Service Layer) ====================
 // 這些函數負責與後端 API 進行互動。
 
@@ -6,7 +8,6 @@
  * @param {number} eventId - 活動 id。
  * @returns {Promise<Array<Object>>} type + event 數據的數組。
  */
-import { getContextPath } from "../../js/book-type.js";
 export const fetchTicketType = async (eventId) => {
   const resp = await fetch(
     `${getContextPath()}/book-type/event/${eventId}/event-ticket-type`

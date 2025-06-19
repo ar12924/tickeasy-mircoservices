@@ -16,5 +16,5 @@ export const fetchFooterTemplate = async () => {
  */
 export const renderFooter = (templateHTML) => {
   const templateJQeury = $(templateHTML);
-  $("footer").append(templateJQeury);
+  $("footer").html(templateJQeury);
 };
