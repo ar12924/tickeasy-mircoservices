@@ -1,25 +1,63 @@
 package user.notify.controller;
 
-import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import common.util.CommonUtil;
 import user.notify.service.NotificationService;
-import user.notify.service.impl.NotificationServiceImpl;
 import user.notify.vo.Notification;
 
 
+
+@Controller
+@RequestMapping("notify")
+
+public class NotificationUnvisibleController{
+	
+	@Autowired
+	private NotificationService notificationService;
+	
+	@PostMapping("notification-unvisible")
+	@ResponseBody
+	public Map<String, Object> notificationUnvisible(@RequestBody Notification notification) {
+		
+		Map<String, Object> respBody = new HashMap<>();
+    	Integer memNtfId=notification.getMemberNotificationId();
+	
+  	
+		
+
+		
+		Integer notificationVisibleUpdate = notificationService.notificationVisibleUpdate(memNtfId);
+		
+		
+		if(notificationVisibleUpdate!=null) {
+			respBody.put("success", true);
+		}else {
+			respBody.put("success", false);
+			respBody.put("message", "更新有錯");
+		}
+			
+		
+		return respBody;
+		
+	}
+}
+
+
+
+
+
+
+
+
+/*
 
 
 @WebServlet("/notification-unvisible")
@@ -60,5 +98,5 @@ public class NotificationUnvisibleController extends HttpServlet{
 		}
 
 	}
-
+*/
 

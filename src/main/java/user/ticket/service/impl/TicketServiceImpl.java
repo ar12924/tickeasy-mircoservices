@@ -1,35 +1,30 @@
 package user.ticket.service.impl;
 
-import java.net.SocketTimeoutException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
-
-import user.notify.dao.NotificationDao;
-import user.notify.dao.impl.NotificationDaoImpl;
-import user.notify.vo.Notification;
 import user.ticket.dao.TicketDao;
-import user.ticket.dao.impl.TicketDaoImpl;
 import user.ticket.dto.TicketViewDto;
 import user.ticket.service.TicketService;
-import user.ticket.vo.Ticket;
 import user.ticket.vo.TicketView;
 
+
+@Service
 public class TicketServiceImpl implements TicketService{
 
+	@Autowired
 	private TicketDao ticketDao;
 
-	public TicketServiceImpl() throws NamingException {
-		ticketDao = new TicketDaoImpl();
-	}
+	/*
+	 * public TicketServiceImpl() throws NamingException { ticketDao = new
+	 * TicketDaoImpl(); }
+	 */
 	
-
+	@Transactional
 	@Override
 	public List<TicketViewDto> ticketList(int memberId) {
 		

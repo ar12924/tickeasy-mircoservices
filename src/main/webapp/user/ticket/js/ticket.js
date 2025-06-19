@@ -71,7 +71,7 @@ function ticket_loaded() {
 	
 	
 
-	fetch('/maven-tickeasy-v1/ticket-list', {
+	fetch('/maven-tickeasy-v1/ticket/ticket-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
@@ -189,7 +189,7 @@ function tk_isEmpty(count) {
 
 //計算各分類的數量
 function category_count() {
-	fetch('/maven-tickeasy-v1/ticket-list', {
+	fetch('/maven-tickeasy-v1/ticket/ticket-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({

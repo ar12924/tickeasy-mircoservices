@@ -2,28 +2,66 @@ package user.ticket.vo;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "ticket_view") 
 public class TicketView {
+	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@Column(name="ticket_id")
 	private Integer ticketId;
+	@Column(name="order_id")
 	private Integer orderId;
+	@Column(name="email")
 	private String email;
+	@Column(name="phone")
 	private String phone;
+	@Column(name="price")
 	private Double price;
+	@Column(name="status")
 	private Integer status;
+	@Column(name="id_card")
 	private String idCard;
+	@Column(name="current_holder_member_id")
 	private Integer currentHolderMemberId;
+	@Column(name="member_id")
 	private Integer memberId;
+	@Column(name="is_used")
 	private Integer isUsed;
+	@Column(name="participant_name")
 	private String participantName;
+	@Column(name="event_name")
 	private String eventName;
+	@Column(name="category_name")
 	private String categoryName;
+	@Column(name="queue_id")
 	private Integer queueId;
+	@Column(name="event_from_date")
 	private Timestamp eventFromDate;
+	@Column(name="place")
 	private String place;
+	@Column(name="create_time")
 	private Timestamp createTime;
+	@Column(name="update_time")
 	private Timestamp updateTime;
 	
 	
-
+/*
 
 	public Integer getMemberId() {
 		return memberId;
@@ -135,7 +173,7 @@ public class TicketView {
 		this.updateTime = updateTime;
 	}
 	
-	
+	*/
 	
 	
 }
