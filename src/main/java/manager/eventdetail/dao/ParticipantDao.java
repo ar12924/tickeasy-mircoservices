@@ -22,4 +22,6 @@ public interface ParticipantDao extends CommonDao {
     List<EventTicketType> getEventTicketTypes(Integer eventId);
 
     boolean updateTicketStatus(Long ticketId, Integer status, Integer isUsed);
+
+    String getEventNameById(Integer eventId);
 }

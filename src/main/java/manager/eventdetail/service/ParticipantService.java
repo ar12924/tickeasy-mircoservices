@@ -20,4 +20,6 @@ public interface ParticipantService {
     Map<String, Object> searchParticipants(Integer eventId, Map<String, Object> searchParams);
 
     boolean updateTicketStatus(Long ticketId, Integer status, Integer isUsed);
+
+    Map<String, Object> getSalesDashboardData(Integer eventId);
 }

@@ -172,4 +172,12 @@ public class ParticipantDaoImpl implements ParticipantDao {
                 .executeUpdate();
         return updated > 0;
     }
+
+    @Override
+    public String getEventNameById(Integer eventId) {
+        String hql = "SELECT e.eventName FROM EventVO e WHERE e.eventId = :eventId";
+        return session.createQuery(hql, String.class)
+                .setParameter("eventId", eventId)
+                .uniqueResult();
+    }
 }

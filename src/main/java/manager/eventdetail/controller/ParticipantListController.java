@@ -2,7 +2,10 @@ package manager.eventdetail.controller;
 
 import common.util.CommonUtil;
 import manager.eventdetail.service.ParticipantService;
+import manager.eventdetail.service.EventInfoVOService;
+import manager.eventdetail.vo.EventInfoEventVer;
 import manager.eventdetail.vo.EventTicketType;
+import user.member.vo.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,14 +24,24 @@ import static user.member.util.CommonUtil.*;
 public class ParticipantListController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ParticipantService participantService;
+    private EventInfoVOService eventInfoVOService;
 
     @Override
     public void init() throws ServletException {
         participantService = CommonUtil.getBean(getServletContext(), ParticipantService.class);
+        eventInfoVOService = CommonUtil.getBean(getServletContext(), EventInfoVOService.class);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 0. 權限驗證：活動方只能查詢自己活動
+        Member loginUser = (Member) req.getSession().getAttribute("member");
+        if (loginUser == null || loginUser.getRoleLevel() != 2) {
+            writeError(resp, "未登入或無權限");
+            return;
+        }
+        Integer loginMemberId = loginUser.getMemberId();
+
         // 1. 檢查必要參數
         String eventIdStr = req.getParameter("eventId");
         if (eventIdStr == null || eventIdStr.trim().isEmpty()) {
@@ -42,6 +55,13 @@ public class ParticipantListController extends HttpServlet {
             eventId = Integer.valueOf(eventIdStr);
         } catch (NumberFormatException e) {
             writeError(resp, "無效的活動ID格式");
+            return;
+        }
+
+        // 2.5 驗證 eventId 是否屬於該活動方
+        EventInfoEventVer event = eventInfoVOService.getEventById(eventId);
+        if (event == null || !event.getMemberId().equals(loginMemberId)) {
+            writeError(resp, "無權限查詢此活動");
             return;
         }
 

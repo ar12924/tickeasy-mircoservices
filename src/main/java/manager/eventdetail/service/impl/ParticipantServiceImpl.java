@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import manager.eventdetail.dao.ParticipantDao;
+import manager.eventdetail.dao.TicketSalesDao;
 import manager.eventdetail.service.ParticipantService;
 import manager.eventdetail.vo.BuyerOrderEventVer;
 import manager.eventdetail.vo.BuyerTicketEventVer;
@@ -19,6 +20,9 @@ public class ParticipantServiceImpl implements ParticipantService {
     
     @Autowired
     private ParticipantDao participantDao;
+
+    @Autowired
+    private TicketSalesDao ticketSalesDao;
 
     // 報名人列表
     @Override
@@ -87,7 +91,22 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     @Transactional
     public Map<String, Object> searchParticipants(Integer eventId, Map<String, Object> searchParams) {
-        return participantDao.searchParticipants(eventId, searchParams);
+        // First, get the search results (participants and total count) from DAO
+        Map<String, Object> searchResult = participantDao.searchParticipants(eventId, searchParams);
+        
+        // Then, get the event name from DAO
+        String eventName = participantDao.getEventNameById(eventId);
+        
+        // Create a new map to hold the final result
+        Map<String, Object> finalResult = new HashMap<>();
+        
+        // Put all search results (which should include 'participants' and 'totalCount') into the final map
+        finalResult.putAll(searchResult);
+        
+        // Add the event name to the final map
+        finalResult.put("eventName", eventName);
+        
+        return finalResult;
     }
 
     @Override
@@ -100,5 +119,14 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Transactional
     public List<EventTicketType> getEventTicketTypes(Integer eventId) {
         return participantDao.getEventTicketTypes(eventId);
+    }
+
+    @Override
+    @Transactional
+    public Map<String, Object> getSalesDashboardData(Integer eventId) {
+        Map<String, Object> dashboardData = ticketSalesDao.getSalesDashboardData(eventId);
+        String eventName = participantDao.getEventNameById(eventId);
+        dashboardData.put("eventName", eventName);
+        return dashboardData;
     }
 }
