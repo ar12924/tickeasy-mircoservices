@@ -1,4 +1,6 @@
+// ==================== 載入模組 (All Imports At Top) ====================
 import { getContextPath } from "../../../common/utils.js";
+
 // ==================== 1. UI 渲染層 (UI Rendering Layer) ====================
 // 這些函數負責動態生成或更新 HTML 內容。
 

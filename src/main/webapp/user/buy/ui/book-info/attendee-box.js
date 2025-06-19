@@ -1,4 +1,6 @@
+// ==================== 載入模組 (All Imports At Top) ====================
 import { getContextPath } from "../../../common/utils.js";
+
 // ==================== 1. UI 渲染層 (UI Rendering Layer) ====================
 // 這些函數負責動態生成或更新 HTML 內容。
 
@@ -23,14 +25,14 @@ export const renderAttendeeBox = (templateHTML, selected) => {
   let num = 0;
   selected.forEach((ticketType) => {
     for (let i = 0; i < ticketType.quantity; i++) {
-      const templateJQeury = $(templateHTML);
+      const templateJQuery = $(templateHTML);
       console.log(`i: ${i}`);
       console.log(`ticket-type: ${ticketType}`);
-      num++;
-      templateJQeury
+      num++; // 票券標題附加編號(以區別不同張)
+      templateJQuery
         .find(".info-title")
         .text(`${ticketType.categoryName}(${num})`);
-      $(".attendee-container").append(templateJQeury);
+      $(".attendee-container").append(templateJQuery);
     }
   });
 };

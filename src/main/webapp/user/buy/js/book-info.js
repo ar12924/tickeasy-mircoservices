@@ -1,4 +1,4 @@
-// ==================== 1. 載入模組 (All Imports At Top) ====================
+// ==================== 載入模組 (All Imports At Top) ====================
 import { getUrlParam } from "../../common/utils.js";
 import { getContextPath } from "../../common/utils.js";
 import {
@@ -24,7 +24,7 @@ import {
   renderFooter,
 } from "../../layout/footer/footer.js";
 
-// ==================== 2. API 服務層 (API Service Layer) ====================
+// ==================== 1. API 服務層 (API Service Layer) ====================
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
 
 /**
@@ -67,7 +67,7 @@ const fetchMember = async (userName) => {
   return await resp.json();
 };
 
-// ==================== 3. 數據處理層 (Data Processing) ====================
+// ==================== 2. 數據處理層 (Data Processing) ====================
 // 這些函數負責從 DOM 中提取數據，並對數據進行格式化或轉換。
 
 /**
@@ -93,7 +93,7 @@ const fetchMember = async (userName) => {
 //   return inputsValues;
 // };
 
-// ==================== 4. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
+// ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
 const initBookInfoJSEvents = () => {
@@ -119,7 +119,7 @@ const initBookInfoJSEvents = () => {
   });
 };
 
-// ==================== 5. 頁面初始化 (Initialization) ====================
+// ==================== 4. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
 (async () => {
