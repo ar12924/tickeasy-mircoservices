@@ -46,9 +46,11 @@ public class TicketExchangeController {
             return ResponseEntity.ok(buildSuccessResponse(posts, posts.size()));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(buildErrorResponse("A0001", e.getMessage(), "請提供有效的活動ID"));
-		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "系統內部錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試"));
-		}
+		} catch (RuntimeException e) {
+	        return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "系統內部錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試"));
+	    } catch (Exception e) {  
+	        return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "未知錯誤: " + e.getMessage(), "系統發生未知錯誤，請聯繫管理員"));
+	    }
 	}
 	
 	/**
@@ -84,7 +86,9 @@ public class TicketExchangeController {
 			String errorCode = getErrorCodeFromMessage(e.getMessage());
             String userMessage = getUserMessageByError(e.getMessage());
             return ResponseEntity.badRequest().body(buildErrorResponse(errorCode, e.getMessage(), userMessage));
-		}
+		} catch (Exception e) {  // ✓ 確保有這個
+	        return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "系統發生未知錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試"));
+	    }
 	}
 	
 	 /**
@@ -120,7 +124,9 @@ public class TicketExchangeController {
 			String errorCode = getErrorCodeFromMessage(e.getMessage());
             String userMessage = getUserMessageByError(e.getMessage());
             return ResponseEntity.badRequest().body(buildErrorResponse(errorCode, e.getMessage(), userMessage));
-		}
+		} catch (Exception e) {  
+	        return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "系統發生未知錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試"));
+	    }
 	}
 
     /**
@@ -139,7 +145,11 @@ public class TicketExchangeController {
             return ResponseEntity.ok(buildSuccessResponse(comments, comments.size()));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(buildErrorResponse("A0008", e.getMessage(), "請提供有效的貼文ID"));
-		}
+		} catch (RuntimeException e) {
+	        return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "系統內部錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試"));
+	    } catch (Exception e) {
+	        return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "未知錯誤: " + e.getMessage(), "系統發生未知錯誤，請聯繫管理員"));
+	    }
 	}
 
     /**
@@ -169,6 +179,8 @@ public class TicketExchangeController {
             String errorCode = getErrorCodeFromMessage(e.getMessage());
             String userMessage = getUserMessageByError(e.getMessage());
             return ResponseEntity.badRequest().body(buildErrorResponse(errorCode, e.getMessage(), userMessage));
+        } catch (Exception e) {  
+            return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "系統發生未知錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試"));
         }
 	}
     
@@ -198,7 +210,9 @@ public class TicketExchangeController {
 			String errorCode = getErrorCodeFromMessage(e.getMessage());
             String userMessage = getUserMessageByError(e.getMessage());
             return ResponseEntity.badRequest().body(buildErrorResponse(errorCode, e.getMessage(), userMessage));
-		}
+		} catch (Exception e) { 
+	        return ResponseEntity.internalServerError().body(buildErrorResponse("B0001", "系統發生未知錯誤: " + e.getMessage(), "系統暫時無法處理您的請求，請稍後再試"));
+	    }
 	}
     
     /**

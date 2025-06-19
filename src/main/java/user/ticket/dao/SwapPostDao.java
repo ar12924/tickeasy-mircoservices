@@ -2,6 +2,12 @@ package user.ticket.dao;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+
+import user.ticket.vo.BuyerTicketVO;
+import user.ticket.vo.EventInfoVO;
+import user.ticket.vo.EventTicketTypeVO;
+import user.ticket.vo.MemberVO;
+import user.ticket.vo.SwapPostVO;
 public interface SwapPostDao {
 	/**
      * 依活動ID查詢換票貼文列表
@@ -9,7 +15,7 @@ public interface SwapPostDao {
      * @param eventId 活動ID
      * @return 換票貼文資料列表
      */
-    List<Map<String, Object>> listSwapPostsByEventId(Integer eventId);
+    List<SwapPostVO> listSwapPostsByEventId(Integer eventId);
 
     /**
      * 依ID查詢換票貼文
@@ -17,7 +23,7 @@ public interface SwapPostDao {
      * @param postId 貼文ID
      * @return 換票貼文資料
      */
-    Map<String, Object> getSwapPostById(Integer postId);
+    SwapPostVO getSwapPostById(Integer postId);
 
     /**
      * 新增換票貼文
@@ -28,7 +34,7 @@ public interface SwapPostDao {
      * @param eventId 活動ID
      * @return 新增的換票貼文資料
      */
-    Map<String, Object> saveSwapPost(Integer memberId, Integer ticketId, String description, Integer eventId);
+    SwapPostVO saveSwapPost(Integer memberId, Integer ticketId, String description, Integer eventId);
 
     /**
      * 更新換票貼文
@@ -37,7 +43,7 @@ public interface SwapPostDao {
      * @param description 貼文描述
      * @return 更新的換票貼文資料
      */
-    Map<String, Object> updateSwapPost(Integer postId, String description);
+    SwapPostVO updateSwapPost(Integer postId, String description);
 
     /**
      * 刪除換票貼文
@@ -52,7 +58,7 @@ public interface SwapPostDao {
      * @param memberId 會員ID
      * @return 換票貼文資料列表
      */
-    List<Map<String, Object>> listSwapPostsByMemberId(Integer memberId);
+    List<SwapPostVO> listSwapPostsByMemberId(Integer memberId);
 
     /**
      * 依票券ID查詢換票貼文
@@ -60,7 +66,7 @@ public interface SwapPostDao {
      * @param ticketId 票券ID
      * @return 換票貼文資料
      */
-    Map<String, Object> getSwapPostByTicketId(Integer ticketId);
+    SwapPostVO getSwapPostByTicketId(Integer ticketId);
 
     /**
      * 依會員ID讀取會員照片
@@ -69,6 +75,7 @@ public interface SwapPostDao {
      * @return 會員照片位元組陣列
      */
     byte[] getMemberPhoto(Integer memberId);
+    
     InputStream getMemberPhotoStream(Integer memberId);
 
     /**
@@ -94,8 +101,16 @@ public interface SwapPostDao {
      * @param nickname 會員暱稱
      * @return 會員資訊
      */
-    Map<String, Object> getMemberByNickname(String nickname);
+    MemberVO getMemberByNickname(String nickname);
     
     // 查會員票券
-    List<Map<String, Object>> getUserTickets(Integer memberId);
+    List<BuyerTicketVO> getUserTickets(Integer memberId);
+    
+    MemberVO getMemberById(Integer memberId);
+    
+    EventInfoVO getEventInfoById(Integer eventId);
+    
+    BuyerTicketVO getBuyerTicketById(Integer ticketId);
+    
+    EventTicketTypeVO getEventTicketTypeById(Integer typeId);
 }

@@ -5,6 +5,12 @@ import org.springframework.transaction.annotation.Transactional;
 import user.ticket.dao.SwapPostDao;
 import user.ticket.dao.SwapCommentDao;
 import user.ticket.service.TicketExchangeService;
+import user.ticket.vo.BuyerTicketVO;
+import user.ticket.vo.EventInfoVO;
+import user.ticket.vo.EventTicketTypeVO;
+import user.ticket.vo.MemberVO;
+import user.ticket.vo.SwapCommentVO;
+import user.ticket.vo.SwapPostVO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,14 +37,16 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             throw new IllegalArgumentException("活動ID不能為空或小於等於0");
         }
 
-        List<Map<String, Object>> posts = swapPostDao.listSwapPostsByEventId(eventId);
+        List<SwapPostVO> posts = swapPostDao.listSwapPostsByEventId(eventId);
         
-        // 為每個貼文添加額外資訊
-        for (Map<String, Object> post : posts) {
-            enrichPostData(post);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (SwapPostVO post : posts) {
+            Map<String, Object> postInfo = convertSwapPostToMap(post);
+            enrichPostData(postInfo);
+            result.add(postInfo);
         }
         
-        return posts;
+        return result;
     }
 
     @Override
@@ -62,10 +70,11 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             throw new RuntimeException("此票券已發布換票貼文");
         }
         
-        Map<String, Object> savedPost = swapPostDao.saveSwapPost(memberId, ticketId, description, eventId);
-        enrichPostData(savedPost);
+        SwapPostVO savedPost = swapPostDao.saveSwapPost(memberId, ticketId, description, eventId);
+        Map<String, Object> postInfo = convertSwapPostToMap(savedPost);
+        enrichPostData(postInfo);
         
-        return savedPost;
+        return postInfo;
     }
 
     @Override
@@ -89,10 +98,11 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             throw new RuntimeException("此票券已用於換票留言");
         }
         
-        Map<String, Object> savedComment = swapCommentDao.saveSwapComment(postId, memberId, ticketId, description);
-        enrichCommentData(savedComment);
+        SwapCommentVO savedComment = swapCommentDao.saveSwapComment(postId, memberId, ticketId, description);
+        Map<String, Object> commentInfo = convertSwapCommentToMap(savedComment);
+        enrichCommentData(commentInfo);
         
-        return savedComment;
+        return commentInfo;
     }
 
     @Override
@@ -102,14 +112,17 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             throw new IllegalArgumentException("會員ID不能為空或小於等於0");
         }
 
-        List<Map<String, Object>> posts = swapPostDao.listSwapPostsByMemberId(memberId);
+        List<SwapPostVO> posts = swapPostDao.listSwapPostsByMemberId(memberId);
         
         // 為每個貼文添加額外資訊
-        for (Map<String, Object> post : posts) {
-            enrichPostData(post);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (SwapPostVO post : posts) {
+            Map<String, Object> postInfo = convertSwapPostToMap(post);
+            enrichPostData(postInfo);
+            result.add(postInfo);
         }
         
-        return posts;
+        return result;
     }
 
     @Override
@@ -119,14 +132,17 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             throw new IllegalArgumentException("會員ID不能為空或小於等於0");
         }
 
-        List<Map<String, Object>> comments = swapCommentDao.listSwapCommentsByMemberId(memberId);
+        List<SwapCommentVO> comments = swapCommentDao.listSwapCommentsByMemberId(memberId);
         
         // 為每個留言添加額外資訊
-        for (Map<String, Object> comment : comments) {
-            enrichCommentData(comment);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (SwapCommentVO comment : comments) {
+            Map<String, Object> commentInfo = convertSwapCommentToMap(comment);
+            enrichCommentData(commentInfo);
+            result.add(commentInfo);
         }
         
-        return comments;
+        return result;
     }
 
     @Override
@@ -138,7 +154,7 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             throw new IllegalArgumentException("會員ID不能為空或小於等於0");
         }
 
-        Map<String, Object> post = swapPostDao.getSwapPostById(postId);
+        SwapPostVO post = swapPostDao.getSwapPostById(postId);
         if (post == null) {
             throw new RuntimeException("找不到換票貼文");
         }
@@ -157,14 +173,16 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             throw new IllegalArgumentException("貼文ID不能為空或小於等於0");
         }
 
-        List<Map<String, Object>> comments = swapCommentDao.listSwapCommentsByPostId(postId);
+        List<SwapCommentVO> comments = swapCommentDao.listSwapCommentsByPostId(postId);
         
-        // 為每個留言添加額外資訊
-        for (Map<String, Object> comment : comments) {
-            enrichCommentData(comment);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (SwapCommentVO comment : comments) {
+        	Map<String, Object> commentInfo = convertSwapCommentToMap(comment);
+            enrichCommentData(commentInfo);
+            result.add(commentInfo);
         }
         
-        return comments;
+        return result;
     }
 
     @Override
@@ -296,13 +314,18 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
             throw new IllegalArgumentException("會員暱稱不能為空");
         }
         
-        try {
-            // 統一使用 swapPostDao 來查詢會員資訊
-            return swapPostDao.getMemberByNickname(nickname.trim());
-        } catch (Exception e) {
-            e.printStackTrace();
+        MemberVO member = swapPostDao.getMemberByNickname(nickname.trim());
+        if (member == null) {
             return null;
         }
+        
+        Map<String, Object> memberInfo = new HashMap<>();
+        memberInfo.put("memberId", member.getMemberId());
+        memberInfo.put("nickname", member.getNickName());
+        memberInfo.put("email", member.getEmail());
+        memberInfo.put("roleLevel", member.getRoleLevel());
+        
+        return memberInfo;
     }
     
     @Override
@@ -321,6 +344,125 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
         Integer memberId = (Integer) memberInfo.get("memberId");
         
         // 查詢該會員的票券
-        return swapPostDao.getUserTickets(memberId);
+        List<BuyerTicketVO> tickets = swapPostDao.getUserTickets(memberId);
+        
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (BuyerTicketVO ticket : tickets) {
+            Map<String, Object> ticketInfo = new HashMap<>();
+            ticketInfo.put("ticketId", ticket.getTicketId());
+            ticketInfo.put("participantName", ticket.getParticipantName());
+            ticketInfo.put("eventName", ticket.getEventName());
+            ticketInfo.put("price", ticket.getPrice());
+            
+            // 查詢票種資訊
+            if (ticket.getTypeId() != null) {
+                EventTicketTypeVO ticketType = swapPostDao.getEventTicketTypeById(ticket.getTypeId());
+                if (ticketType != null) {
+                    ticketInfo.put("categoryName", ticketType.getCategoryName());
+                }
+            }
+            
+            result.add(ticketInfo);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 將SwapPostVO物件轉換為Map - 業務邏輯（從 DAO 層移過來）
+     */
+    private Map<String, Object> convertSwapPostToMap(SwapPostVO post) {
+        Map<String, Object> postInfo = new HashMap<>();
+        
+        postInfo.put("postId", post.getPostId());
+        postInfo.put("postDescription", post.getPostDescription());
+        postInfo.put("createTime", post.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        
+        // 查詢會員資訊
+        MemberVO member = swapPostDao.getMemberById(post.getPostMemberId());
+        if (member != null) {
+            Map<String, Object> memberInfo = new HashMap<>();
+            memberInfo.put("memberId", member.getMemberId());
+            memberInfo.put("nickName", member.getNickName());
+            postInfo.put("member", memberInfo);
+        }
+        
+        // 查詢活動資訊
+        EventInfoVO eventInfo = swapPostDao.getEventInfoById(post.getEventId());
+        if (eventInfo != null) {
+            Map<String, Object> eventData = new HashMap<>();
+            eventData.put("eventId", eventInfo.getEventId());
+            eventData.put("eventName", eventInfo.getEventName());
+            postInfo.put("event", eventData);
+        }
+        
+        // 查詢票券資訊
+        BuyerTicketVO ticket = swapPostDao.getBuyerTicketById(post.getPostTicketId());
+        if (ticket != null) {
+            Map<String, Object> ticketInfo = new HashMap<>();
+            ticketInfo.put("ticketId", ticket.getTicketId());
+            ticketInfo.put("participantName", ticket.getParticipantName());
+            ticketInfo.put("eventName", ticket.getEventName());
+            
+            // 查詢票種資訊
+            if (ticket.getTypeId() != null) {
+                EventTicketTypeVO ticketType = swapPostDao.getEventTicketTypeById(ticket.getTypeId());
+                if (ticketType != null) {
+                    ticketInfo.put("categoryName", ticketType.getCategoryName());
+                    ticketInfo.put("price", ticketType.getPrice());
+                }
+            }
+            
+            postInfo.put("ticket", ticketInfo);
+        }
+        
+        return postInfo;
+    }
+
+    /**
+     * 將SwapCommentVO物件轉換為Map - 業務邏輯（從 DAO 層移過來）
+     */
+    private Map<String, Object> convertSwapCommentToMap(SwapCommentVO comment) {
+        Map<String, Object> commentInfo = new HashMap<>();
+        
+        commentInfo.put("commentId", comment.getCommentId());
+        commentInfo.put("commentDescription", comment.getCommentDescription());
+        commentInfo.put("swappedStatus", comment.getSwappedStatus());
+        commentInfo.put("createTime", comment.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        
+        if (comment.getSwappedTime() != null) {
+            commentInfo.put("swappedTime", comment.getSwappedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        
+        // 查詢會員資訊
+        MemberVO member = swapCommentDao.getMemberById(comment.getCommentMemberId());
+        if (member != null) {
+            Map<String, Object> memberInfo = new HashMap<>();
+            memberInfo.put("memberId", member.getMemberId());
+            memberInfo.put("nickName", member.getNickName());
+            commentInfo.put("member", memberInfo);
+        }
+        
+        // 查詢票券資訊
+        BuyerTicketVO ticket = swapCommentDao.getBuyerTicketById(comment.getCommentTicketId());
+        if (ticket != null) {
+            Map<String, Object> ticketInfo = new HashMap<>();
+            ticketInfo.put("ticketId", ticket.getTicketId());
+            ticketInfo.put("participantName", ticket.getParticipantName());
+            ticketInfo.put("eventName", ticket.getEventName());
+            
+            // 查詢票種資訊
+            if (ticket.getTypeId() != null) {
+                EventTicketTypeVO ticketType = swapCommentDao.getEventTicketTypeById(ticket.getTypeId());
+                if (ticketType != null) {
+                    ticketInfo.put("categoryName", ticketType.getCategoryName());
+                    ticketInfo.put("price", ticketType.getPrice());
+                }
+            }
+            
+            commentInfo.put("ticket", ticketInfo);
+        }
+        
+        return commentInfo;
     }
 }
