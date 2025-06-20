@@ -1,6 +1,6 @@
 // ==================== 載入模組 (All Imports At Top) ====================
-import { getUrlParam } from "../../common/utils.js";
-import { getContextPath } from "../../common/utils.js";
+import { getUrlParam, getContextPath } from "../../common/utils.js";
+import { BOOKING_PROGRESS, ERROR_MESSAGES } from "../../common/constant.js";
 import {
   fetchNavTemplate,
   renderNav,
@@ -18,6 +18,7 @@ import {
 import {
   fetchAttendeeBoxTemplate,
   renderAttendeeBox,
+  initAttendeeBoxJSEvents,
 } from "../ui/book-info/attendee-box.js";
 import {
   fetchFooterTemplate,
@@ -62,7 +63,7 @@ const fetchBook = async () => {
  * @param {string} userName - 購票人使用者名稱。
  * @return {Object} member 購票人資訊。
  */
-const fetchMember = async (userName) => {
+export const fetchMember = async (userName) => {
   const resp = await fetch(`${getContextPath()}/book-info/member/${userName}`);
   return await resp.json();
 };
@@ -129,12 +130,12 @@ const initBookInfoJSEvents = () => {
     eventId: "1",
     eventName: "2025 春季搖滾音樂節",
     userName: "buyer1",
-    progress: 2,
+    progress: BOOKING_PROGRESS.INFO_FILLING,
     selected: [
       {
         typeId: 1,
         categoryName: "VIP區",
-        quantity: 1,
+        quantity: 0,
       },
       {
         typeId: 2,
@@ -144,7 +145,7 @@ const initBookInfoJSEvents = () => {
       {
         typeId: 3,
         categoryName: "一般區",
-        quantity: 2,
+        quantity: 1,
       },
     ],
     contact: null,
@@ -172,17 +173,18 @@ const initBookInfoJSEvents = () => {
   }
 
   // ====== book-info 部分 ======
-  initBookInfoJSEvents(); // 載入 JS 事件監聽
+  initBookInfoJSEvents(); // 載入事件
 
   // ====== contact-box 部分 ======
   const buyer = await fetchMember(book.userName); // 查操作人自己
   const contactBoxTemplate = await fetchContactBoxTemplate();
-  renderContactBox(contactBoxTemplate, buyer);
+  renderContactBox(contactBoxTemplate, buyer); // 渲染模板
 
   // ====== attendee-box 部分 ======
   const attendeeBoxTemplate = await fetchAttendeeBoxTemplate();
   const { selected } = book;
-  renderAttendeeBox(attendeeBoxTemplate, selected);
+  renderAttendeeBox(attendeeBoxTemplate, selected); // 渲染模板
+  initAttendeeBoxJSEvents(book); // 載入事件
 
   // ====== footer 部分 ======
   const footerTemplate = await fetchFooterTemplate();

@@ -1,6 +1,6 @@
 // ==================== 載入模組 (All Imports At Top) ====================
-import { getUrlParam } from "../../common/utils.js";
-import { getContextPath } from "../../common/utils.js";
+import { getUrlParam, getContextPath } from "../../common/utils.js";
+import { BOOKING_PROGRESS, ERROR_MESSAGES } from "../../common/constant.js";
 import {
   fetchNavTemplate,
   renderNav,
@@ -58,11 +58,12 @@ const saveBook = async (eventId, book) => {
  */
 const addTicketTypeToSelected = ({ selected }) => {
   const quantityElArr = document.querySelectorAll(".type-quantity");
-  // 判斷輸入框值總和為0，停止事件執行
   let sum = 0;
+
   quantityElArr.forEach((quan, i) => {
     sum += Number(quan.value) || 0;
   });
+  // 判斷輸入框值總和為0，停止事件執行
   if (sum === 0) {
     alert("請至少選擇1種票券!!");
     return false;
@@ -105,15 +106,11 @@ const initBookTypeJSEvents = (book) => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", async () => {
-    if (!eventId) {
-      alert("缺少活動id，無法繼續!!");
-      return;
-    }
     const success = addTicketTypeToSelected(book); // 添加購票人選擇的數量
     if (!success) {
       return;
     } else {
-      book.progress = 2; // 表示選票完成，送到後端後下一步
+      book.progress = BOOKING_PROGRESS.INFO_FILLING; // 選票完成，進入下一步
       saveBook(eventId, book); // post 使用者選的票種至 Redis，並跳轉至下一步
     }
   });
@@ -125,10 +122,20 @@ const initBookTypeJSEvents = (book) => {
 (async () => {
   // ====== 資料儲存變數區 ======
   const book = {
-    eventId: -1, // 活動 id
-    eventName: null, // 活動名稱
-    selected: [], // [{票種1}, {票種2}, ...]
-    progress: 1, // 1: 選票中; 2: 填寫資料中; 3: 確認訂單中
+    // 活動 id
+    eventId: -1,
+    // 活動名
+    eventName: null,
+    // 購票人帳號
+    userName: null,
+    // 流程進度
+    progress: BOOKING_PROGRESS.TYPE_SELECTION,
+    // 選擇票種結果 [type1, type2, ...]
+    selected: [],
+    // 聯絡人資訊 {...}
+    contact: null,
+    // 入場者資訊 [attendee1, attendee2, ...]
+    attendee: [],
   };
 
   // ====== nav 部分 ======
@@ -153,22 +160,18 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== type-box 部分 ======
   const ticketType = await fetchTicketType(eventId);
-  const TypeBoxTemplate = await fetchTypeBoxTemplate();
-  if (ticketType.length > 0) {
-    for (const typeInfo of ticketType) {
-      // 存入 book 變數中，並儲存 typeId 編號
-      book.eventId = eventId;
-      book.selected.push({
-        typeId: typeInfo.typeId,
-        categoryName: typeInfo.categoryName,
-      });
-      // 輸出 typeBox.html 模板
-      renderTypeBox(typeInfo, TypeBoxTemplate);
-    }
-  } else {
-    alert("載入票種失敗!!");
-    return;
-  }
+  const typeBoxTemplate = await fetchTypeBoxTemplate();
+  // 將票種資訊，暫存入 book 變數中
+  ticketType.forEach(({ typeId, categoryName }) => {
+    book.eventId = eventId;
+    book.selected.push({
+      typeId,
+      categoryName,
+    });
+  });
+  // 輸出 type-box.html 模板
+  renderTypeBox(ticketType, typeBoxTemplate);
+  // 監聽事件
   initTypeBoxJSEvents();
 
   // ====== book-type 部分 ======

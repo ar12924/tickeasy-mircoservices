@@ -18,7 +18,7 @@ export const fetchContactBoxTemplate = async () => {
 /**
  * 動態生成並插入導覽列的 HTML。
  * @param {string} templateHTML - HTML模板。
- * @param {string} userName - 購票人 userName。
+ * @param {string} buyer - 購票人資料。
  */
 export const renderContactBox = (
   templateHTML,

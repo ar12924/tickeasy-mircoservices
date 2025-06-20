@@ -7,7 +7,7 @@ import { getContextPath } from "../../../common/utils.js";
 /**
  * 從後端 api 獲取特定 event 的 type 數據。
  * @param {number} eventId - 活動 id。
- * @returns {Promise<Array<Object>>} type + event 數據的數組。
+ * @returns {Promise<Array<Object>>} 活動 id 之下的 type 數據的陣列。
  */
 export const fetchTicketType = async (eventId) => {
   const resp = await fetch(
@@ -32,16 +32,21 @@ export const fetchTypeBoxTemplate = async () => {
 
 /**
  * 根據提供的票種數據，動態生成並插入單個票種區塊的 HTML。
- * @param {Object} typeInfo - 單個票種的數據，包含 categoryName 和 price。
+ * @param {Array<Object>} ticketType - 票種資訊，包含票種名和單價。
  * @param {string} templateHTML - HTML 模板。
  */
-export const renderTypeBox = ({ categoryName, price }, templateHTML) => {
-  const templateJQeury = $(templateHTML);
+export const renderTypeBox = (ticketType, templateHTML) => {
+  $(".type-container").empty(); // 清空子元素
 
-  templateJQeury.find(".type-name").text(categoryName); // 顯示票種
-  templateJQeury.find(".type-price").text(`NT$ ${price}`); // 顯示價格
+  ticketType.forEach(({ categoryName, price }) => {
+    const templateJQuery = $(templateHTML);
 
-  $(".type-container").append(templateJQeury); // 插入整塊元素到父容器
+    templateJQuery.find(".type-name").text(categoryName); // 顯示票種名
+    templateJQuery
+      .find(".type-price")
+      .text(`NT$ ${price.toLocaleString("en-US")}`); // 顯示單價(含千分位)
+    $(".type-container").append(templateJQuery); // 插入票種區塊
+  });
 };
 
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
