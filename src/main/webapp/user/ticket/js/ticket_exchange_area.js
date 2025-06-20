@@ -463,7 +463,20 @@ function initTicketExchangeVueApp() {
                                 }
                             }
 
-                            alert('狀態更新成功！');
+                            // 根據狀態顯示不同訊息
+                            if (status === 2) {
+                                alert('轉票完成！票券已成功交換。');
+                                // 🆕 重新載入用戶票券列表
+                                if (isLoggedIn.value) {
+                                    await fetchUserTickets();
+                                }
+                            } else if (status === 1) {
+                                alert('已接受換票請求，等待確認完成。');
+                            } else if (status === 3) {
+                                alert('已取消換票。');
+                            } else {
+                                alert('狀態更新成功！');
+                            }
                         } else {
                             throw new Error(data.userMessage || '狀態更新失敗');
                         }
