@@ -261,7 +261,20 @@ public class TicketExchangeController {
      * 從錯誤訊息獲取用戶友好訊息
      */
     private String getUserMessageByError(String errorMessage) {
-        if (errorMessage.contains("已發布換票貼文")) {
+    	// 新增票券驗證相關錯誤
+        if (errorMessage.contains("票券不屬於該會員")) {
+            return "您選擇的票券不屬於您，請重新選擇";
+        } else if (errorMessage.contains("票券已被使用或不可用")) {
+            return "您的票券已被使用，無法進行轉票";
+        } else if (errorMessage.contains("票券已用於其他轉票")) {
+            return "此票券已用於其他轉票，請選擇其他票券";
+        } else if (errorMessage.contains("票券擁有者已變更")) {
+            return "票券擁有者已變更，無法完成轉票";
+        } else if (errorMessage.contains("票券轉移失敗")) {
+            return "票券轉移失敗，請稍後再試";
+        } else if (errorMessage.contains("找不到相關的貼文或留言資訊")) {
+            return "系統資料異常，請稍後再試";
+        } else if (errorMessage.contains("已發布換票貼文")) {
             return "此票券已經發布過換票貼文，請選擇其他票券";
         } else if (errorMessage.contains("已用於換票留言")) {
             return "此票券已經用於換票留言，請選擇其他票券";
