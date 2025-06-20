@@ -108,4 +108,9 @@ public interface SwapCommentDao {
     BuyerTicketVO getBuyerTicketById(Integer ticketId);
     
     EventTicketTypeVO getEventTicketTypeById(Integer typeId);
+    
+    /**
+     * 獲取使用該票券的所有留言
+     */
+    List<SwapCommentVO> findCommentsByTicketId(Integer ticketId);
 }

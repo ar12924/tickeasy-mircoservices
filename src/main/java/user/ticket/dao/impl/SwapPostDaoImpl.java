@@ -191,4 +191,21 @@ public class SwapPostDaoImpl implements SwapPostDao {
                 .setParameter("memberId", memberId)
                 .getResultList();
     }
+    
+    @Override
+    public Long countPostsByTicketId(Integer ticketId) {
+        String hql = "SELECT COUNT(sp) FROM SwapPostVO sp WHERE sp.postTicketId = :ticketId";
+        return session.createQuery(hql, Long.class)
+                .setParameter("ticketId", ticketId)
+                .getSingleResult();
+    }
+
+    @Override
+    public SwapPostVO getPostByCommentId(Integer commentId) {
+        String hql = "SELECT sp FROM SwapPostVO sp, SwapCommentVO sc WHERE sc.commentId = :commentId AND sc.postId = sp.postId";
+        List<SwapPostVO> results = session.createQuery(hql, SwapPostVO.class)
+                .setParameter("commentId", commentId)
+                .getResultList();
+        return results.isEmpty() ? null : results.get(0);
+    }
 }

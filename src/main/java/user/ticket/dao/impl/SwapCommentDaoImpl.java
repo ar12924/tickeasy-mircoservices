@@ -175,4 +175,12 @@ public class SwapCommentDaoImpl implements SwapCommentDao {
                 .getResultList();
         return results.isEmpty() ? null : results.get(0);
     }
+    
+    @Override
+    public List<SwapCommentVO> findCommentsByTicketId(Integer ticketId) {
+        String hql = "FROM SwapCommentVO sc WHERE sc.commentTicketId = :ticketId";
+        return session.createQuery(hql, SwapCommentVO.class)
+                .setParameter("ticketId", ticketId)
+                .getResultList();
+    }
 }

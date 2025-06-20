@@ -113,4 +113,14 @@ public interface SwapPostDao {
     BuyerTicketVO getBuyerTicketById(Integer ticketId);
     
     EventTicketTypeVO getEventTicketTypeById(Integer typeId);
+    
+    /**
+     * 獲取使用該票券的貼文數量
+     */
+    Long countPostsByTicketId(Integer ticketId);
+
+    /**
+     * 根據留言ID獲取貼文資訊
+     */
+    SwapPostVO getPostByCommentId(Integer commentId);
 }
