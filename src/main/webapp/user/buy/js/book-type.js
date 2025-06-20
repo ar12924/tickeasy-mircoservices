@@ -27,16 +27,19 @@ import {
 
 /**
  * 將選定的票種和數量 POST 到後端 Redis 進行保存。
- * @param {number} eventId - 活動 id。
  * @param {Object} book - 包含票種選擇訊息的物件。
  */
-const saveBook = async (eventId, book) => {
+const saveBook = async (book) => {
+  const eventId = getUrlParam("eventId");
+
+  // 將 book 傳遞至後端
   const resp = await fetch(`${getContextPath()}/book-type`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(book),
   });
   const { message, successful } = await resp.json();
+
   // 要求使用者，請先登入
   if (!successful) {
     alert(message);
@@ -57,27 +60,33 @@ const saveBook = async (eventId, book) => {
  * @returns {boolean} 如果成功更新 selected 屬性則返回 true，否則返回 false。
  */
 const addTicketTypeToSelected = ({ selected }) => {
-  const quantityElArr = document.querySelectorAll(".type-quantity");
+  const quantityElementArr = document.querySelectorAll(".type-quantity");
   let sum = 0;
 
-  quantityElArr.forEach((quan, i) => {
+  quantityElementArr.forEach((quan, i) => {
     sum += Number(quan.value) || 0;
   });
   // 判斷輸入框值總和為0，停止事件執行
   if (sum === 0) {
-    alert("請至少選擇1種票券!!");
-    return false;
+    return {
+      success: false,
+      message: ERROR_MESSAGES.NO_TICKETS_SELECTED,
+    };
   }
   // selected 中加上 quantity 屬性值
-  if (quantityElArr.length === selected.length) {
-    quantityElArr.forEach((quan, i) => {
-      selected[i]["quantity"] = Number(quan.value) || 0;
+  if (quantityElementArr.length === selected.length) {
+    quantityElementArr.forEach((quantityElement, i) => {
+      selected[i]["quantity"] = Number(quantityElement.value) || 0;
     });
-  } else {
-    alert("選擇的票種和頁面的票種不一致，請聯絡管理人員!!");
-    return false;
+    return {
+      success: true,
+      message: "成功",
+    };
   }
-  return true;
+  return {
+    success: false,
+    message: ERROR_MESSAGES.ACCESSED_FAILED,
+  };
 };
 
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
@@ -106,12 +115,13 @@ const initBookTypeJSEvents = (book) => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", async () => {
-    const success = addTicketTypeToSelected(book); // 添加購票人選擇的數量
-    if (!success) {
+    const result = addTicketTypeToSelected(book); // 添加購票人選擇的數量
+    if (!result.success) {
+      alert(result.message);
       return;
     } else {
       book.progress = BOOKING_PROGRESS.INFO_FILLING; // 選票完成，進入下一步
-      saveBook(eventId, book); // post 使用者選的票種至 Redis，並跳轉至下一步
+      saveBook(book); // post 使用者選的票種至 Redis，並跳轉至下一步
     }
   });
 };
@@ -152,9 +162,7 @@ const initBookTypeJSEvents = (book) => {
   } else {
     // 存入 book 變數中，儲存 eventName
     book.eventName = eventInfo.eventName;
-    // 存取 progress 以顯示對應進度條
-    // 存取 eventName 以顯示當前活動名稱
-    // 輸出 header.html 模板
+    // 輸出 header.html 模板(顯示對應進度條、活動名稱)
     renderHeader(eventInfo, book, headerTemplate);
   }
 

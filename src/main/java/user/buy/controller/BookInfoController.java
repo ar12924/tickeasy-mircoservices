@@ -23,7 +23,7 @@ public class BookInfoController {
 	private BookService service;
 
 	/**
-	 * 從 Redis 中，取得購票頁資訊(book)。
+	 * 從 Redis 中，取得票種選擇結果(book)。
 	 * 
 	 * @param {Member} member - Session 的會員物件。
 	 * @return {Core<BookDto>} book 查詢結果。
@@ -44,7 +44,7 @@ public class BookInfoController {
 		List<BookDto> dataList = new ArrayList<>();
 		dataList.add(service.getBook(member.getUserName()));
 		core.setData(dataList);
-		core.setMessage("成功查詢購票頁資訊");
+		core.setMessage("成功查詢票種資訊");
 		core.setSuccessful(true);
 		return core;
 	}
@@ -59,5 +59,29 @@ public class BookInfoController {
 	@GetMapping("member/{userName}")
 	public Member getMember(@PathVariable String userName) {
 		return service.getMember(userName);
+	}
+	
+	/**
+	 * 透過 userName 驗證購票人是否存在。
+	 * 
+	 * @param {String} userName - 購票人 userName。
+	 * @return {Core<Member>} 存在驗證成功，反之則失敗。
+	 */
+	@CrossOrigin(origins = "*")
+	@GetMapping("member/username/{userName}/verify")
+	public Core<Member> verifyMemberByUserName(@PathVariable String userName) {
+		return service.verifyMemberByUserName(userName);
+	}
+	
+	/**
+	 * 透過 idCard 驗證購票人是否存在。
+	 * 
+	 * @param {String} idCard - 購票人 idCard。
+	 * @return {Core<Member>} 存在驗證成功，反之則失敗。
+	 */
+	@CrossOrigin(origins = "*")
+	@GetMapping("member/idcard/{IdCard}/verify")
+	public Core<Member> verifyMemberByIdCard(@PathVariable String IdCard) {
+		return service.verifyMemberByIdCard(IdCard);
 	}
 }

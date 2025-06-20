@@ -12,15 +12,6 @@ import {
   renderHeader,
 } from "../ui/header.js";
 import {
-  fetchContactBoxTemplate,
-  renderContactBox,
-} from "../ui/book-info/contact-box.js";
-import {
-  fetchAttendeeBoxTemplate,
-  renderAttendeeBox,
-  initAttendeeBoxJSEvents,
-} from "../ui/book-info/attendee-box.js";
-import {
   fetchFooterTemplate,
   renderFooter,
 } from "../../layout/footer/footer.js";
@@ -98,21 +89,20 @@ export const fetchMember = async (userName) => {
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
-const initBookInfoJSEvents = () => {
+const initBookConfirmJSEvents = () => {
   // 共同變數，url 後方的活動 id
   const eventId = getUrlParam("eventId");
 
   // ====== "上一步" 按鈕點擊事件 ======
   $(".back").on("click", () => {
-    location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
+    location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
   });
   // ====== "下一步" 按鈕點擊事件 ======
   $(".next").on("mouseenter mouseleave", (e) => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", () => {
-    return;
-    location.href = `${getContextPath()}/user/buy/book-confirm.html?eventId=${eventId}`;
+    location.href = "#";
   });
 };
 
@@ -126,7 +116,7 @@ const initBookInfoJSEvents = () => {
     eventId: "1",
     eventName: "2025 春季搖滾音樂節",
     userName: "buyer1",
-    progress: BOOKING_PROGRESS.INFO_FILLING,
+    progress: BOOKING_PROGRESS.ORDER_CONFIRM,
     selected: [
       {
         typeId: 1,
@@ -162,19 +152,8 @@ const initBookInfoJSEvents = () => {
   // 輸出 header.html 模板(顯示對應進度條、活動名稱)
   renderHeader(eventInfo, book, headerTemplate);
 
-  // ====== book-info 部分 ======
-  initBookInfoJSEvents(); // 載入事件
-
-  // ====== contact-box 部分 ======
-  const buyer = await fetchMember(book.userName); // 查操作人自己
-  const contactBoxTemplate = await fetchContactBoxTemplate();
-  renderContactBox(contactBoxTemplate, buyer); // 渲染模板
-
-  // ====== attendee-box 部分 ======
-  const attendeeBoxTemplate = await fetchAttendeeBoxTemplate();
-  const { selected } = book;
-  renderAttendeeBox(attendeeBoxTemplate, selected); // 渲染模板
-  initAttendeeBoxJSEvents(book); // 載入事件
+  // ====== book-confirm 部分 ======
+  initBookConfirmJSEvents();
 
   // ====== footer 部分 ======
   const footerTemplate = await fetchFooterTemplate();

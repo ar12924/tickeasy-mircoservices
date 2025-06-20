@@ -2,7 +2,36 @@
 import { getContextPath } from "../../../common/utils.js";
 import { fetchMember } from "../../js/book-info.js";
 
-// ==================== 1. UI 渲染層 (UI Rendering Layer) ====================
+// ==================== 1. API 服務層 (API Service Layer) ====================
+// 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
+
+/**
+ * 透過 userName 驗證購票人資訊。
+ *
+ * @param {string} userName - 購票人使用者名稱。
+ * @return {Object} member 購票人資訊。
+ */
+export const verifyMemberByUserName = async (userName) => {
+  const resp = await fetch(
+    `${getContextPath()}/book-info/member/username/${userName}/verify`
+  );
+  return await resp.json();
+};
+
+/**
+ * 透過 idCard 驗證購票人資訊。
+ *
+ * @param {string} idCard - 購票人身份證字號。
+ * @return {Object} member 購票人資訊。
+ */
+export const verifyMemberByIdCard = async (idCard) => {
+  const resp = await fetch(
+    `${getContextPath()}/book-info/member/idcard/${idCard}/verify`
+  );
+  return await resp.json();
+};
+
+// ==================== 2. UI 渲染層 (UI Rendering Layer) ====================
 // 這些函數負責動態生成或更新 HTML 內容。
 
 /**
@@ -25,25 +54,26 @@ export const renderAttendeeBox = (templateHTML, selected) => {
   $(".attendee-container").empty(); // 清空子元素
 
   let num = 0;
+  const numMax = selected.length;
   selected.forEach(({ quantity, categoryName }) => {
     for (let i = 0; i < quantity; i++) {
       const templateJQuery = $(templateHTML);
       num++; // 票券標題附加編號(以區別不同張)
-      templateJQuery.find(".info-title").text(`${categoryName}(${num})`);
+      templateJQuery
+        .find(".info-title")
+        .text(`${categoryName}(${num}/${numMax})`);
       $(".attendee-container").append(templateJQuery);
     }
   }); // 直接解構 selected 中的物件
 };
 
-// ==================== 2. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
+// ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
 export const initAttendeeBoxJSEvents = async (book) => {
-  // 取得購票人資料
-  const buyer = await fetchMember(book.userName);
-
-  // ”同購票人資料“ 按鈕
-  $(".same-buyer-checkbox").on("click", (e) => {
+  // "同購票人資料" 按鈕點擊
+  $(".same-buyer-checkbox").on("click", async (e) => {
+    const buyer = await fetchMember(book.userName);
     const parentElement = $(e.target).closest(".custom-box");
     const isChecked = e.target.checked;
 
@@ -61,5 +91,71 @@ export const initAttendeeBoxJSEvents = async (book) => {
       const value = isChecked ? buyer[buyerField] : "";
       parentElement.find(selector).val(value);
     });
+
+    // 移除輸入框下方訊息
+    $(".verify-account")
+      .text("")
+      .removeClass("has-text-success has-text-danger");
+    $(".verify-id-card")
+      .text("")
+      .removeClass("has-text-success has-text-danger");
+  });
+
+  // "帳號" 輸入框驗證
+  $(".account").on("blur", async (e) => {
+    const parentElement = $(e.target).closest(".custom-box");
+    const accountValue = $(e.target).val().trim();
+    const accountVerifyElement = parentElement.find(".verify-account");
+
+    // 輸入框為空的情形
+    if (!accountValue) {
+      accountVerifyElement
+        .text("")
+        .removeClass("has-text-success has-text-danger");
+      return;
+    }
+
+    // 驗證 member 中有無對應
+    const { successful, message } = await verifyMemberByUserName(accountValue);
+    if (!successful) {
+      accountVerifyElement
+        .text(message)
+        .removeClass("has-text-success")
+        .addClass("has-text-danger");
+    } else {
+      accountVerifyElement
+        .text(message)
+        .removeClass("has-text-danger")
+        .addClass("has-text-success");
+    }
+  });
+
+  // "身分證字號" 輸入框驗證
+  $(".id-card").on("blur", async (e) => {
+    const parentElement = $(e.target).closest(".custom-box");
+    const idCardValue = $(e.target).val().trim();
+    const idCardVerifyElement = parentElement.find(".verify-id-card");
+
+    // 輸入框為空的情形
+    if (!idCardValue) {
+      idCardVerifyElement
+        .text("")
+        .removeClass("has-text-success has-text-danger");
+      return;
+    }
+
+    // 驗證 member 中有無對應
+    const { successful, message } = await verifyMemberByIdCard(idCardValue);
+    if (!successful) {
+      idCardVerifyElement
+        .text(message)
+        .removeClass("has-text-success")
+        .addClass("has-text-danger");
+    } else {
+      idCardVerifyElement
+        .text(message)
+        .removeClass("has-text-danger")
+        .addClass("has-text-success");
+    }
   });
 };

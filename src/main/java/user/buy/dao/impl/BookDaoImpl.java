@@ -82,5 +82,25 @@ public class BookDaoImpl implements BookDao {
 		query.setParameter("userName", userName);
 		return query.uniqueResult();
 	}
+	
+	/**
+	 * 透過 idCard 查詢購票人(Member)。
+	 * 
+	 * @param {String} idCard - 購票人 idCard。
+	 * @return {Member} 購票人。
+	 */
+	@Override
+	public Member selectMemberByIdCard(String idCard) {
+		
+		// 1. HQL 語句
+		var hqlTemp = new StringBuilder("From Member m ");
+		hqlTemp.append("WHERE m.idCard = :idCard");
+		var hql = hqlTemp.toString();
+		
+		// 2. 透過 eventId 查詢 type
+		Query<Member> query = session.createQuery(hql, Member.class);
+		query.setParameter("idCard", idCard);
+		return query.uniqueResult();
+	}
 
 }

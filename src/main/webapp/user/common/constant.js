@@ -27,4 +27,6 @@ export const ERROR_MESSAGES = Object.freeze({
   NO_TICKETS_SELECTED: "請至少選擇1種票券!!",
   // 需要登入錯誤
   LOGIN_REQUIRED: "請先登入",
+  // 未正常存取資料
+  ACCESSED_FAILED: "存取資料失敗",
 });
