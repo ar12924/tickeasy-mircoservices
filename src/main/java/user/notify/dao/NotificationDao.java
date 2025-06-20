@@ -1,6 +1,8 @@
 package user.notify.dao;
 
+
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,8 +16,8 @@ public interface NotificationDao {
 	List<Notification> selectAllByMemberId(int memberId);
 	Integer updateIsRead(int memberId, int memberNotificationId);
 	Integer updateUnvisible(int memberNotificationId);
-	void sendReminderNotificationForTomorrow();
-	void sendReminderNotification(int memberId, int eventId, String eventName, Date eventDate);
+	List<Object[]> sendReminderNotificationForTomorrowList();
+	int sendReminderNotification(int memberId, int eventId, String eventName, Timestamp eventDate);
 	void sendFavoriteSellReminderNotificationForTomorrow();
 	void sendFavoriteSellReminderNotification(int memberId, int eventId, String eventName, Date eventSellFromTime,Date eventSellToTime,String categoryName);
 	default Session getSession() {

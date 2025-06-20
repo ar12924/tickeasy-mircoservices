@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import user.notify.dao.NotificationDao;
 import user.notify.vo.Notification;
+import user.ticket.vo.TicketView;
 
 @Repository
 public class NotificationDaoImpl implements NotificationDao {
@@ -162,8 +163,10 @@ public class NotificationDaoImpl implements NotificationDao {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void sendReminderNotificationForTomorrow() {
+	public List<Object[]> sendReminderNotificationForTomorrowList() {
+		
 		String sql = "SELECT\r\n" + "bt.current_holder_member_id,\r\n" + "bo.event_id,\r\n" + "ei.event_name,\r\n"
 				+ "ei.event_from_date\r\n" + "FROM buyer_order bo\r\n"
 				+ "JOIN buyer_ticket bt ON bo.order_id = bt.order_id\r\n"
@@ -174,6 +177,33 @@ public class NotificationDaoImpl implements NotificationDao {
 		 * "WHERE DATEDIFF(event_from_date,NOW())=1";
 		 */
 
+		
+		return session.createNativeQuery(sql).getResultList();
+		/*@SuppressWarnings("unchecked")
+		List<Object[]> resultList = session.createNativeQuery(sql).getResultList();
+
+		if (resultList.isEmpty()) {
+	        System.out.println("⚠️ 查無符合條件的活動資料（明天沒有活動）");
+	        return;
+	    }
+		  System.out.println("✅ 查到資料筆數：" + resultList.size());
+
+		    for (Object[] row : resultList) {
+		        Integer memberId = ((Number) row[0]).intValue();
+		        Integer eventId = ((Number) row[1]).intValue();
+		        String eventName = (String) row[2];
+		        Date eventDate = (Date) row[3];
+
+		        sendReminderNotification(memberId, eventId, eventName, eventDate);
+		    }*/
+	}
+		
+		
+		
+		
+		/*
+		
+		
 		try (Connection conn = ds.getConnection();
 				PreparedStatement ps = conn.prepareStatement(sql);
 				ResultSet rs = ps.executeQuery()) {
@@ -187,11 +217,11 @@ public class NotificationDaoImpl implements NotificationDao {
 				int eventId = rs.getInt("event_id");
 				String eventName = rs.getString("event_name");
 				Date eventDate = rs.getDate("event_from_date");
-				/*
-				 * int memberId = rs.getInt("current_holder_member_id"); int eventId =
-				 * rs.getInt("event_id");
-				 */
-				/* Date eventDate = rs.getDate("event_from_date"); */
+				
+				 // int memberId = rs.getInt("current_holder_member_id"); int eventId =
+				// rs.getInt("event_id");
+				 
+				// Date eventDate = rs.getDate("event_from_date"); //
 
 				// 呼叫發送通知的函式
 				sendReminderNotification(memberId, eventId, eventName, eventDate);
@@ -201,8 +231,39 @@ public class NotificationDaoImpl implements NotificationDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
+	@Override
+	public int sendReminderNotification(int memberId, int eventId, String eventName, Timestamp eventDate) {
+		 System.out.println("📬 正在寫入通知給 memberId=" + memberId);
+	    String sql = "INSERT INTO member_notification " +
+	            "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) " +
+	            "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";
+
+	
+
+	    String message = String.format("親愛的會員 %d，您訂購的活動「%s」將於 %s 演出，請記得準時參加！", memberId, eventName, eventDate.toString());
+
+	    int result = session.createNativeQuery(sql)
+	            .setParameter("notificationId", 5) // 或自動遞增可以省略
+	            .setParameter("memberId", memberId)
+	            .setParameter("isRead", 0)
+	            .setParameter("isVisible", 1)
+	            .setParameter("status", 1)
+	            .setParameter("title", "活動提醒")
+	            .setParameter("message", message)
+	            .setParameter("linkUrl", "/event/" + eventId)
+	            .executeUpdate();
+	    return result;
+/*
+	    if (result > 0) {
+	        System.out.println("✅ 活動提醒通知已成功透過 Hibernate SQL 插入！");
+	    } else {
+	        System.out.println("⚠️ 活動提醒通知插入失敗！");
+	    }*/
+	}
+	
+	/*
 	@Override
 	public void sendReminderNotification(int memberId, int eventId, String eventName, Date eventDate) {
 		String sql = "INSERT INTO member_notification (notification_id,member_id,is_read,is_visible,notification_status,title,message,link_url,send_time,create_time,update_time) "
@@ -232,7 +293,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	@Override
 	public void sendFavoriteSellReminderNotificationForTomorrow() {

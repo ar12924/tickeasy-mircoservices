@@ -4,15 +4,80 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.naming.NamingException;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebListener;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
-import common.util.CommonUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
 import user.notify.service.NotificationService;
-import user.notify.service.impl.NotificationServiceImpl;
+
+
+@Component
+public class EventReminderListener {
+
+	@Autowired
+	private NotificationService notificationService;
+	
+	/* private ScheduledExecutorService scheduler; */
+
+	
+	
+	@Scheduled(initialDelay = 60000, fixedRate = 86400000)
+    public void sendReminder() {
+        System.out.println("🔔 EventReminderTask：開始執行schduled排程任務");
+        notificationService.sendReminderNotificationForTomorrow();
+    }
+	
+	
+	/*
+	 * @PostConstruct public void startScheduler(){
+	 * System.out.println("✅ EventReminderListener：啟動排程中...");
+	 * 
+	 * }
+	 */
+		
+		/*
+		
+		
+		
+		scheduler = Executors.newSingleThreadScheduledExecutor();
+
+		// 每 24 小時執行一次（你可用 getInitialDelay() 精確指定起始時間）
+		
+		 // scheduler.scheduleAtFixedRate(notificationService::
+		// sendReminderNotificationForTomorrow, getInitialDelay(), 24, TimeUnit.HOURS);
+		 
+		scheduler.scheduleAtFixedRate(()->{
+			notificationService.sendReminderNotificationForTomorrow();
+		}, 1, 24 * 60,
+				TimeUnit.MINUTES);*/
+
+	
+/*
+	@PreDestroy
+	public void stopScheduler() {
+		System.out.println("🛑 EventReminderListener：關閉排程");
+		if (scheduler != null && !scheduler.isShutdown()) {
+			scheduler.shutdown();
+		}
+	}
+
+*/
+
+
+
+
+
+
+
+
+
+
+/*
+
+
 
 @WebListener
 public class EventReminderListener implements ServletContextListener {
@@ -27,10 +92,10 @@ public class EventReminderListener implements ServletContextListener {
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 
 		// 每 24 小時執行一次（你可用 getInitialDelay() 精確指定起始時間）
-		/*
-		 * scheduler.scheduleAtFixedRate(notificationService::
-		 * sendReminderNotificationForTomorrow, getInitialDelay(), 24, TimeUnit.HOURS);
-		 */
+		
+		 //scheduler.scheduleAtFixedRate(notificationService::
+		 //sendReminderNotificationForTomorrow, getInitialDelay(), 24, TimeUnit.HOURS);
+		 
 		scheduler.scheduleAtFixedRate(()->{
 			new NotificationServiceImpl().sendReminderNotificationForTomorrow();
 		}, 1, 24 * 60,
@@ -45,7 +110,7 @@ public class EventReminderListener implements ServletContextListener {
 			scheduler.shutdown();
 		}
 	}
-
+*/
 	private long getInitialDelay() {
 		// 設定每天 00:00 AM 這個時間
 
