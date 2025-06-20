@@ -1,6 +1,13 @@
 
 .page-change{
-    margin-left:50px;
+    margin-left:10px;
+   
+}
+.change_bar{
+	display:inline-block;
+}
+.event_change{
+	margin-left:800px;
 }
 .list_button{
     display:inline-block;
@@ -72,7 +79,14 @@
 
 
 
+.title_link{
+	 text-decoration: none;
+	 color:black;
+}
 
+.title_bar{
+	background: #D9D9D9;
+}
 
 .table-footer {
     margin-top:60px;

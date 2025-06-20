@@ -260,8 +260,8 @@
       <div class="app-content-header">
         <div class="container">
           <div class="row">
-            <div class="col-sm-6">
-              <h2 class="mb-0">分票列表</h2>
+            <div class="col-sm-6 title_bar">
+              <h2 class="mb-0">檢視 Aespa演唱會</h2>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-end">
@@ -274,15 +274,28 @@
         </div>
       </div>
       <div class="page-change">
-        <div>
-          <diV class="list_button change_list">
-            換票列表
-          </diV>
-          <div class="list_button dist_list on">
-            分票列表
-          </div>
+        <div class="change_bar">
+        <a class="title_link" href="./ticket_exchange.html">
+	          <diV class="list_button change_list">
+	            換票列表
+	          </diV>
+          </a>
+          <a class="title_link" href="./distTicketList.html">
+	          <div class="list_button dist_list on">
+	            分票列表
+	          </div>
+          </a>
         </div>
+        <div class="change_bar event_change">
+      	<label class="me-2 mb-0">目前檢視活動</label> <select
+													class="form-select" style="width: auto;">
+													<option selected>Aespa 2025演唱會</option>
+													<option>其他活動1</option>
+													<option>其他活動2</option>
+												</select>
       </div>
+      </div>
+      
       <div class="search-bar">
         <div>
           <div class="search_bar">搜尋</div>
@@ -417,6 +430,7 @@
   <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
   <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
   <script src="../common/js/adminlte.js"></script>
+  <script src="./js/distTicketList.js"></script>
   <script>
     new DataTable('#example', {
       dom: 't<"table-footer"lip><"clear">',
