@@ -12,4 +12,5 @@ public interface NotificationService {
 	Integer notificationVisibleUpdate(int memberNotificationId);
 	void sendReminderNotificationForTomorrow();
 	void sendFavoriteSellReminderNotificationForTomorrow();
+	void sendFavoriteSoldOutReminderNotification();
 }

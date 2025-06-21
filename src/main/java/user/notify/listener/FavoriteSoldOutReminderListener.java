@@ -8,7 +8,7 @@ import user.notify.service.NotificationService;
 
 
 @Component
-public class EventReminderListener {
+public class FavoriteSoldOutReminderListener {
 
 	@Autowired
 	private NotificationService notificationService;
@@ -19,8 +19,8 @@ public class EventReminderListener {
 	
 	@Scheduled(initialDelay = 60000, fixedRate = 86400000)
     public void sendReminder() {
-        System.out.println("🔔 EventReminderTask：開始執行schduled排程任務");
-        notificationService.sendReminderNotificationForTomorrow();
+        System.out.println("🔔 FavoriteSoldOutReminderTask：開始執行schduled排程任務");
+        notificationService.sendFavoriteSoldOutReminderNotification();
     }
 	
 	

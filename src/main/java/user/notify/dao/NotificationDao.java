@@ -20,6 +20,9 @@ public interface NotificationDao {
 	int sendReminderNotification(int memberId, int eventId, String eventName, Timestamp eventDate);
 	void sendFavoriteSellReminderNotificationForTomorrow();
 	void sendFavoriteSellReminderNotification(int memberId, int eventId, String eventName, Date eventSellFromTime,Date eventSellToTime,String categoryName);
+	List<Object[]> sendFavoriteSoldOutReminderList();
+	int sendFavoriteSoldOutReminderNotification(int memberId,String userName,int eventId,String eventName,Timestamp eventToDate);
+	
 	default Session getSession() {
 		return HibernateUtil5
 				.getSessionFactory()
