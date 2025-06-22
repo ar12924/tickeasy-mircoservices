@@ -315,10 +315,21 @@ function initTicketExchangeVueApp() {
                     return;
                 }
 
+                // 過濾只顯示同活動的票券
+                const postEventName = post.event?.eventName;
+                const filteredTickets = userTickets.value.filter(ticket =>
+                    ticket.eventName === postEventName
+                );
+
+                if (filteredTickets.length === 0) {
+                    alert(`您沒有「${postEventName}」的可用票券進行交換`);
+                    return;
+                }
                 // 重置表單
                 post.commentForm = {
                     ticketId: '',
-                    description: ''
+                    description: '',
+                    availableTickets: filteredTickets
                 };
                 post.showCommentForm = true;
             };

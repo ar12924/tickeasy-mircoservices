@@ -49,7 +49,7 @@
 
                 <!-- 錯誤訊息 -->
                 <div v-if="errorMessage  && !isLoading" class="error-message">
-                    <p>{{ errorMessage  }}</p>
+                    <p>{{ errorMessage }}</p>
                     <button @click="initPage" class="retry-button">重試</button>
                 </div>
 
@@ -156,12 +156,16 @@
                                         <label>選擇您要交換的票券</label>
                                         <select v-model="post.commentForm.ticketId" class="form-control" required>
                                             <option value="">請選擇票券</option>
-                                            <option v-for="ticket in userTickets" :key="ticket.ticketId"
-                                                :value="ticket.ticketId">
+                                            <option v-for="ticket in post.commentForm.availableTickets || userTickets"
+                                                :key="ticket.ticketId" :value="ticket.ticketId">
                                                 {{ ticket.categoryName }} - {{ ticket.participantName }} (NT$ {{
                                                 formatPrice(ticket.price) }})
                                             </option>
                                         </select>
+                                        <p v-if="post.commentForm.availableTickets && post.commentForm.availableTickets.length === 0"
+                                            class="help-text">
+                                            您沒有此活動的可用票券進行交換
+                                        </p>
                                     </div>
                                     <div class="form-group">
                                         <label>留言內容</label>
@@ -246,7 +250,7 @@
         <!-- footer.html 內容將由 footer.js 動態載入 -->
     </footer>
 
-    
+
     <!-- jQuery -->
     <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
     <!-- is.js 函式庫 -->
