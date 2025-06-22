@@ -98,6 +98,13 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 
 		// 業務規則檢查
 		validateTicketOwnershipAndAvailability(ticketId, memberId);
+		
+		// 同活動驗證
+	    SwapPostVO post = swapPostDao.getSwapPostById(postId);
+	    if (post == null) {
+	        throw new RuntimeException("找不到換票貼文");
+	    }
+	    validateSameEvent(post.getPostTicketId(), ticketId);
 
 		SwapCommentVO savedComment = swapCommentDao.saveSwapComment(postId, memberId, ticketId, description);
 		Map<String, Object> commentInfo = convertSwapCommentToMap(savedComment);
@@ -568,5 +575,32 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 		if (!post2Comment || !comment2Post) {
 			throw new RuntimeException("票券轉移失敗，請稍後再試");
 		}
+	}
+	
+	/**
+	 * 驗證兩張票券是否屬於同一活動
+	 */
+	private void validateSameEvent(Integer postTicketId, Integer commentTicketId) {
+	    Integer postEventId = buyerTicketDao.getTicketEventId(postTicketId);
+	    Integer commentEventId = buyerTicketDao.getTicketEventId(commentTicketId);
+	    
+	    if (postEventId == null || commentEventId == null) {
+	        throw new RuntimeException("無法確認票券對應的活動");
+	    }
+	    
+	    if (!postEventId.equals(commentEventId)) {
+	        throw new RuntimeException("只能交換同一活動的票券");
+	    }
+	}
+
+	/**
+	 * 根據貼文ID獲取貼文票券的活動ID
+	 */
+	private Integer getPostTicketEventId(Integer postId) {
+	    SwapPostVO post = swapPostDao.getSwapPostById(postId);
+	    if (post == null) {
+	        throw new RuntimeException("找不到換票貼文");
+	    }
+	    return buyerTicketDao.getTicketEventId(post.getPostTicketId());
 	}
 }

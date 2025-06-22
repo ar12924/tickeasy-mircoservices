@@ -34,4 +34,9 @@ public interface BuyerTicketDao {
      * 獲取會員的所有票券
      */
     List<BuyerTicketVO> getTicketsByMemberId(Integer memberId);
+    
+    /**
+     * 獲取票券對應的活動ID
+     */
+    Integer getTicketEventId(Integer ticketId);
 }

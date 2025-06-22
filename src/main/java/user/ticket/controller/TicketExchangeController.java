@@ -261,6 +261,12 @@ public class TicketExchangeController {
      * 從錯誤訊息獲取用戶友好訊息
      */
     private String getUserMessageByError(String errorMessage) {
+    	
+    	if (errorMessage.contains("只能交換同一活動的票券")) {
+            return "只能交換同一活動的票券，請選擇正確的票券";
+        } else if (errorMessage.contains("無法確認票券對應的活動")) {
+            return "票券資料異常，請聯繫客服";
+        }
     	// 新增票券驗證相關錯誤
         if (errorMessage.contains("票券不屬於該會員")) {
             return "您選擇的票券不屬於您，請重新選擇";

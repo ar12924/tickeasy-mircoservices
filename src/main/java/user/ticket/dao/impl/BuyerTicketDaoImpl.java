@@ -78,4 +78,15 @@ public class BuyerTicketDaoImpl implements BuyerTicketDao {
                 .setParameter("memberId", memberId)
                 .getResultList();
     }
+    
+    @Override
+    public Integer getTicketEventId(Integer ticketId) {
+        // 通過票券查詢對應的訂單，再找到活動ID
+        String hql = "SELECT ei.eventId FROM EventInfoVO ei, BuyerOrderVO bo, BuyerTicketVO bt " +
+                     "WHERE bt.ticketId = :ticketId AND bt.orderId = bo.orderId AND bo.eventId = ei.eventId";
+        List<Integer> results = session.createQuery(hql, Integer.class)
+                .setParameter("ticketId", ticketId)
+                .getResultList();
+        return results.isEmpty() ? null : results.get(0);
+    }
 }
