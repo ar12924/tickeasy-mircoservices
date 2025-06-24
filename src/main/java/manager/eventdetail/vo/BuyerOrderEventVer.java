@@ -17,7 +17,7 @@ public class BuyerOrderEventVer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ORDER_ID")
-    private Long orderId;
+    private Integer orderId;
 
     @Column(name = "ORDER_TIME")
     private Timestamp orderTime;
@@ -32,5 +32,5 @@ public class BuyerOrderEventVer {
     private Integer memberId;
 
     @OneToMany(mappedBy = "buyerOrder")
-    private List<BuyerTicketEventVer> buyerTicketEventVer; // 關聯回 buyer_ticket
+    private transient List<BuyerTicketEventVer> buyerTicketEventVer; // 關聯回 buyer_ticket
 }

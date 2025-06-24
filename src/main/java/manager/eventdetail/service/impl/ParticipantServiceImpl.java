@@ -1,5 +1,6 @@
 package manager.eventdetail.service.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,17 +40,15 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     @Transactional
-    public Map<String, Object> getParticipantDetail(Long ticketId) {
-        Map<String, Object> map = new HashMap<>();
+    public Map<String, Object> getParticipantDetail(Integer ticketId) {
         BuyerTicketEventVer ticket = participantDao.getParticipantDetail(ticketId);
-        if (ticket == null)  {
-            map.put("success", false);
-            map.put("msg", "查無資料");
-            return map;
+        if (ticket == null) {
+            return Collections.singletonMap("error", "找不到指定的票券");
         }
         
         // 設定 QR code 內容
         ticket.setQrCodeContent("QR:" + (ticket.getTicketId() != null ? ticket.getTicketId() : ""));
+        Map<String, Object> map = new HashMap<>();
         map.put("ticket", ticket);
         map.put("success", true);
     
@@ -111,7 +110,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     @Transactional
-    public boolean updateTicketStatus(Long ticketId, Integer status, Integer isUsed) {
+    public boolean updateTicketStatus(Integer ticketId, Integer status, Integer isUsed) {
         return participantDao.updateTicketStatus(ticketId, status, isUsed);
     }
 
@@ -128,5 +127,17 @@ public class ParticipantServiceImpl implements ParticipantService {
         String eventName = participantDao.getEventNameById(eventId);
         dashboardData.put("eventName", eventName);
         return dashboardData;
+    }
+
+    @Override
+    @Transactional
+    public Map<String, Object> getParticipants(Integer eventId, int page, int pageSize) {
+        return participantDao.getParticipants(eventId, page, pageSize);
+    }
+
+    @Override
+    @Transactional
+    public List<EventTicketType> getTicketTypesByEventId(Integer eventId) {
+        return participantDao.getTicketTypesByEventId(eventId);
     }
 }

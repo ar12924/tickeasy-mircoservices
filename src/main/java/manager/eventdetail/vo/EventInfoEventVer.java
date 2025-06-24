@@ -33,4 +33,7 @@ public class EventInfoEventVer {
 
     @Column(name = "EVENT_TO_DATE")
     private Timestamp eventToDate;
+    
+    @Column(name = "IS_POSTED")
+    private Boolean isPosted;
 } 

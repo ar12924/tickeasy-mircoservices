@@ -142,44 +142,28 @@
             >
               <li class="nav-header">活動方</li>
               <li class="nav-item">
-                <a href="./event_new.html" class="nav-link">
-                  <i class="nav-icon bi bi-patch-plus-fill"></i>
-                  <p>建立活動</p>
+                <a href="dashboard.html" class="nav-link">
+                  <i class="nav-icon bi bi-speedometer2"></i>
+                  <p>儀表板</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-gear-wide-connected"></i>
-                  <p>活動管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
+                <a href="participant-list.html" class="nav-link active">
+                  <i class="nav-icon bi bi-calendar3-range-fill"></i>
+                  <p>活動列表</p>
                 </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-list-task"></i>
-                      <p>活動列表</p>
-                    </a>
-                  </li>
-                </ul>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi bi-people-fill"></i>
-                  <p>會員管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
+                <a href="participant-list.html" class="nav-link">
+                  <i class="nav-icon bi bi-people-fill"></i>
+                  <p>參與者列表</p>
                 </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-person-fill-gear"></i>
-                      <p>會員設定</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-shield-lock-fill"></i>
-                      <p>會員密碼</p>
-                    </a>
-                  </li>
-                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="ticket_exchange.html" class="nav-link">
+                  <i class="nav-icon bi bi-arrow-left-right"></i>
+                  <p>票券交換</p>
+                </a>
               </li>
               <li class="nav-header">平台方</li>
               <li class="nav-item">
@@ -204,7 +188,7 @@
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi bi-people-fill"></i>
+                  <i class="nav-icon bi bi-people-fill"></i>
                   <p>會員管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
                 </a>
                 <ul class="nav nav-treeview">
@@ -250,7 +234,7 @@
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi bi-person-hearts"></i>
+                  <i class="nav-icon bi bi-person-hearts"></i>
                   <p>
                     粉絲交流管理 <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
@@ -293,74 +277,72 @@
         </div>
         <div class="app-content">
           <div class="container-fluid">
-            <!-- 搜尋表單 -->
-            <div class="card mb-4">
-              <div class="card-header">查詢條件</div>
-              <div class="card-body">
-                <form id="search-form" class="row g-3">
-                  <div class="col-md-4">
-                    <label for="participantName" class="form-label"
-                      >報名人姓名</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="participantName"
-                      placeholder="模糊查詢"
-                    />
-                  </div>
-                  <div class="col-md-4">
-                    <label for="email" class="form-label">電子郵件</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      name="email"
-                      placeholder="模糊查詢"
-                    />
-                  </div>
-                  <div class="col-md-4">
-                    <label for="phone" class="form-label">電話</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="phone"
-                      placeholder="模糊查詢"
-                    />
-                  </div>
-                  <div class="col-12 mt-3">
-                    <button type="submit" class="btn btn-primary">查詢</button>
-                  </div>
-                </form>
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title" id="event-name-title">請選擇一個活動</h3>
               </div>
-            </div>
-
-            <!-- 結果顯示區域 -->
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span id="result-summary"></span>
-              <nav>
-                <ul class="pagination" id="pagination" style="margin-bottom: 0">
-                  <!-- Pagination links will be populated by JS -->
-                </ul>
-              </nav>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table table-bordered table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>票券ID</th>
-                    <th>姓名</th>
-                    <th>Email</th>
-                    <th>電話</th>
-                    <th>票種</th>
-                    <th>狀態</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody id="participant-table-body">
-                  <!-- Data will be populated by JS -->
-                </tbody>
-              </table>
+              <div class="card-body">
+                <div class="row mb-3">
+                  <div class="col-md-4">
+                    <label for="event-select" class="form-label"
+                      >選擇活動</label
+                    >
+                    <select id="event-select" class="form-select"></select>
+                  </div>
+                  <!-- 新增篩選條件區塊 -->
+                  <div class="col-md-8">
+                    <label class="form-label">篩選條件</label>
+                    <div class="input-group">
+                      <select
+                        id="ticket-type-select"
+                        class="form-select"
+                        style="flex: 1"
+                      >
+                        <option value="">所有票種</option>
+                      </select>
+                      <input
+                        type="text"
+                        id="name-filter"
+                        class="form-control"
+                        placeholder="依姓名搜尋..."
+                        style="flex: 1"
+                      />
+                      <input
+                        type="text"
+                        id="email-filter"
+                        class="form-control"
+                        placeholder="依Email搜尋..."
+                        style="flex: 1"
+                      />
+                      <button
+                        id="filter-btn"
+                        class="btn btn-primary"
+                        style="flex: 0 0 auto"
+                      >
+                        搜尋
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div id="loading" style="display: none">載入中...</div>
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="participant-table">
+                    <!-- 表格內容將由 JS 動態生成 -->
+                  </table>
+                </div>
+                <div id="no-data" class="text-center p-3" style="display: none">
+                  該活動暫無參與者
+                </div>
+                <!-- 新增分頁容器 -->
+                <nav>
+                  <ul
+                    class="pagination justify-content-center"
+                    id="pagination-container"
+                  >
+                    <!-- 分頁按鈕將由 JS 動態生成 -->
+                  </ul>
+                </nav>
+              </div>
             </div>
           </div>
         </div>

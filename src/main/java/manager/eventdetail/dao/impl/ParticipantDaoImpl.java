@@ -32,22 +32,19 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public BuyerTicketEventVer getParticipantDetail(Long ticketId) {
+    public BuyerTicketEventVer getParticipantDetail(Integer ticketId) {
         String hql = "FROM BuyerTicketEventVer bt " +
-                "LEFT JOIN FETCH bt.buyerOrder " +
-                "LEFT JOIN FETCH bt.eventTicketType " +
-                "WHERE bt.ticketId = :ticketId";
-        return session
-                .createQuery(hql, BuyerTicketEventVer.class)
+                     "LEFT JOIN FETCH bt.buyerOrder " +
+                     "LEFT JOIN FETCH bt.eventTicketType " +
+                     "WHERE bt.ticketId = :ticketId";
+        return session.createQuery(hql, BuyerTicketEventVer.class)
                 .setParameter("ticketId", ticketId)
                 .uniqueResult();
     }
 
     @Override
     public BuyerOrderEventVer getOrderInfo(Integer orderId) {
-        String hql = "FROM BuyerOrderEventVer bo " +
-                "LEFT JOIN FETCH bo.buyerTicketEventVer " +
-                "WHERE bo.orderId = :orderId";
+        String hql = "FROM BuyerOrderEventVer bo WHERE bo.orderId = :orderId";
         return session
                 .createQuery(hql, BuyerOrderEventVer.class)
                 .setParameter("orderId", orderId)
@@ -67,42 +64,56 @@ public class ParticipantDaoImpl implements ParticipantDao {
     public Map<String, Object> searchParticipants(Integer eventId, Map<String, Object> searchParams) {
         Map<String, Object> result = new HashMap<>();
 
-        // --- 資料查詢 (Data Query) ---
-        StringBuilder dataHqlBuilder = new StringBuilder(
-            "FROM BuyerTicketEventVer bt " +
-            "LEFT JOIN FETCH bt.buyerOrder bo " +
-            "LEFT JOIN FETCH bt.eventTicketType ett " +
-            "WHERE ett.eventId = :eventId ");
-        Map<String, Object> dataParams = new HashMap<>();
-        dataParams.put("eventId", eventId);
+        // 步驟 1: 根據 eventId 獲取 eventName
+        String eventName = getEventNameById(eventId);
+        if (eventName == null) {
+            System.out.println("DAO: 找不到 eventId " + eventId + " 對應的 eventName。");
+            result.put("total", 0L);
+            result.put("participants", new java.util.ArrayList<>());
+            return result;
+        }
 
-        if (searchParams.containsKey("participantName")) {
-            dataHqlBuilder.append("AND bt.participantName LIKE :participantName ");
-            dataParams.put("participantName", "%" + searchParams.get("participantName") + "%");
+        // --- 統一的 HQL WHERE 條件和參數 ---
+        StringBuilder whereClause = new StringBuilder("WHERE bt.eventName = :eventName ");
+        Map<String, Object> params = new HashMap<>();
+        params.put("eventName", eventName);
+
+        if (searchParams.containsKey("participantName") && searchParams.get("participantName") != null && !searchParams.get("participantName").toString().isEmpty()) {
+            whereClause.append("AND bt.participantName LIKE :participantName ");
+            params.put("participantName", "%" + searchParams.get("participantName") + "%");
         }
-        if (searchParams.containsKey("email")) {
-            dataHqlBuilder.append("AND bt.email LIKE :email ");
-            dataParams.put("email", "%" + searchParams.get("email") + "%");
+        if (searchParams.containsKey("email") && searchParams.get("email") != null && !searchParams.get("email").toString().isEmpty()) {
+            whereClause.append("AND bt.email LIKE :email ");
+            params.put("email", "%" + searchParams.get("email") + "%");
         }
-        if (searchParams.containsKey("phone")) {
-            dataHqlBuilder.append("AND bt.phone LIKE :phone ");
-            dataParams.put("phone", "%" + searchParams.get("phone") + "%");
+        if (searchParams.containsKey("phone") && searchParams.get("phone") != null && !searchParams.get("phone").toString().isEmpty()) {
+            whereClause.append("AND bt.phone LIKE :phone ");
+            params.put("phone", "%" + searchParams.get("phone") + "%");
         }
-        if (searchParams.containsKey("status")) {
-            dataHqlBuilder.append("AND bt.status = :status ");
-            dataParams.put("status", searchParams.get("status"));
+        if (searchParams.containsKey("status") && searchParams.get("status") != null) {
+            whereClause.append("AND bt.status = :status ");
+            params.put("status", searchParams.get("status"));
         }
-        if (searchParams.containsKey("ticketTypeId")) {
-            dataHqlBuilder.append("AND bt.typeId = :typeId ");
-            dataParams.put("typeId", searchParams.get("ticketTypeId"));
+        if (searchParams.containsKey("ticketTypeId") && searchParams.get("ticketTypeId") != null) {
+            whereClause.append("AND ett.typeId = :typeId ");
+            params.put("typeId", searchParams.get("ticketTypeId"));
         }
-        if (searchParams.containsKey("isUsed")) {
-            dataHqlBuilder.append("AND bt.isUsed = :isUsed ");
-            dataParams.put("isUsed", searchParams.get("isUsed"));
+        if (searchParams.containsKey("isUsed") && searchParams.get("isUsed") != null) {
+            whereClause.append("AND bt.isUsed = :isUsed ");
+            params.put("isUsed", searchParams.get("isUsed"));
         }
+
+        // --- 資料查詢 (Data Query) ---
+        String dataHql = "SELECT bt FROM BuyerTicketEventVer bt " +
+                         "LEFT JOIN FETCH bt.buyerOrder bo " +
+                         "LEFT JOIN FETCH bt.eventTicketType ett " +
+                         whereClause.toString();
+
+        System.out.println("DAO: 執行資料查詢 HQL: " + dataHql);
+        System.out.println("DAO: 參數: " + params);
         
-        Query<BuyerTicketEventVer> dataQuery = session.createQuery(dataHqlBuilder.toString(), BuyerTicketEventVer.class);
-        dataParams.forEach(dataQuery::setParameter);
+        Query<BuyerTicketEventVer> dataQuery = session.createQuery(dataHql, BuyerTicketEventVer.class);
+        params.forEach(dataQuery::setParameter);
         
         int pageNumber = (int) searchParams.getOrDefault("pageNumber", 1);
         int pageSize = (int) searchParams.getOrDefault("pageSize", 10);
@@ -111,46 +122,26 @@ public class ParticipantDaoImpl implements ParticipantDao {
         dataQuery.setMaxResults(pageSize);
         List<BuyerTicketEventVer> list = dataQuery.list();
 
+        if (list.isEmpty()) {
+            System.out.println("DAO: 對於 eventName '" + eventName + "' (eventId: " + eventId + ") 找不到任何參與者資料。");
+        }
+
         // --- 總數查詢 (Count Query) ---
-        StringBuilder countHqlBuilder = new StringBuilder(
-            "SELECT COUNT(bt.ticketId) " +
-            "FROM BuyerTicketEventVer bt " +
-            "JOIN bt.eventTicketType ett " +
-            "WHERE ett.eventId = :eventId ");
-        Map<String, Object> countParams = new HashMap<>();
-        countParams.put("eventId", eventId);
+        String countHql = "SELECT COUNT(bt.ticketId) FROM BuyerTicketEventVer bt " +
+                          "LEFT JOIN bt.eventTicketType ett " +
+                          whereClause.toString();
 
-        if (searchParams.containsKey("participantName")) {
-            countHqlBuilder.append("AND bt.participantName LIKE :participantName ");
-            countParams.put("participantName", "%" + searchParams.get("participantName") + "%");
-        }
-        if (searchParams.containsKey("email")) {
-            countHqlBuilder.append("AND bt.email LIKE :email ");
-            countParams.put("email", "%" + searchParams.get("email") + "%");
-        }
-        if (searchParams.containsKey("phone")) {
-            countHqlBuilder.append("AND bt.phone LIKE :phone ");
-            countParams.put("phone", "%" + searchParams.get("phone") + "%");
-        }
-        if (searchParams.containsKey("status")) {
-            countHqlBuilder.append("AND bt.status = :status ");
-            countParams.put("status", searchParams.get("status"));
-        }
-        if (searchParams.containsKey("ticketTypeId")) {
-            countHqlBuilder.append("AND bt.typeId = :typeId ");
-            countParams.put("typeId", searchParams.get("ticketTypeId"));
-        }
-        if (searchParams.containsKey("isUsed")) {
-            countHqlBuilder.append("AND bt.isUsed = :isUsed ");
-            countParams.put("isUsed", searchParams.get("isUsed"));
-        }
+        System.out.println("DAO: 執行總數查詢 HQL: " + countHql);
+        System.out.println("DAO: 參數: " + params);
 
-        Query<Long> countQuery = session.createQuery(countHqlBuilder.toString(), Long.class);
-        countParams.forEach(countQuery::setParameter);
+        Query<Long> countQuery = session.createQuery(countHql, Long.class);
+        params.forEach(countQuery::setParameter);
         Long total = countQuery.uniqueResult();
 
+        System.out.println("DAO: 總數查詢結果: " + total);
+
         result.put("total", total);
-        result.put("data", list);
+        result.put("participants", list);
         return result;
     }
 
@@ -163,7 +154,7 @@ public class ParticipantDaoImpl implements ParticipantDao {
     }
 
     @Override
-    public boolean updateTicketStatus(Long ticketId, Integer status, Integer isUsed) {
+    public boolean updateTicketStatus(Integer ticketId, Integer status, Integer isUsed) {
         String hql = "UPDATE BuyerTicketEventVer SET status = :status, isUsed = :isUsed WHERE ticketId = :ticketId";
         int updated = session.createQuery(hql)
                 .setParameter("status", status)
@@ -175,9 +166,22 @@ public class ParticipantDaoImpl implements ParticipantDao {
 
     @Override
     public String getEventNameById(Integer eventId) {
-        String hql = "SELECT e.eventName FROM EventVO e WHERE e.eventId = :eventId";
+        String hql = "SELECT e.eventName FROM EventInfoEventVer e WHERE e.eventId = :eventId";
         return session.createQuery(hql, String.class)
                 .setParameter("eventId", eventId)
                 .uniqueResult();
+    }
+
+    @Override
+    public Map<String, Object> getParticipants(Integer eventId, int page, int pageSize) {
+        Map<String, Object> searchParams = new HashMap<>();
+        searchParams.put("pageNumber", page);
+        searchParams.put("pageSize", pageSize);
+        return searchParticipants(eventId, searchParams);
+    }
+
+    @Override
+    public List<EventTicketType> getTicketTypesByEventId(Integer eventId) {
+        return getEventTicketTypes(eventId);
     }
 }

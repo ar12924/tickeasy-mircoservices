@@ -11,7 +11,7 @@ public interface ParticipantDao extends CommonDao {
 
     List<BuyerTicketEventVer> getParticipantList(Integer eventId);
 
-    BuyerTicketEventVer getParticipantDetail(Long ticketId);
+    BuyerTicketEventVer getParticipantDetail(Integer ticketId);
 
     BuyerOrderEventVer getOrderInfo(Integer orderId);
 
@@ -21,7 +21,11 @@ public interface ParticipantDao extends CommonDao {
 
     List<EventTicketType> getEventTicketTypes(Integer eventId);
 
-    boolean updateTicketStatus(Long ticketId, Integer status, Integer isUsed);
+    boolean updateTicketStatus(Integer ticketId, Integer status, Integer isUsed);
 
     String getEventNameById(Integer eventId);
+
+    Map<String, Object> getParticipants(Integer eventId, int page, int pageSize);
+
+    List<EventTicketType> getTicketTypesByEventId(Integer eventId);
 }
