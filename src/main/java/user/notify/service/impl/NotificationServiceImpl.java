@@ -1,12 +1,16 @@
 package user.notify.service.impl;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +18,15 @@ import user.notify.dao.NotificationDao;
 import user.notify.service.NotificationService;
 import user.notify.vo.Notification;
 
+
 @Service
 public class NotificationServiceImpl implements NotificationService {
 	private final static Logger logger = LogManager.getLogger(NotificationServiceImpl.class);
 	@Autowired
 	private NotificationDao notificationDao;
+	
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
 
 	@Transactional
 	@Override
@@ -131,11 +139,11 @@ public class NotificationServiceImpl implements NotificationService {
 			Integer eventCount= ((Number) row[1]).intValue();
 			Integer eventCapcity = ((Number) row[2]).intValue();
 			Double eventPercent= (double)eventCount/eventCapcity;
-			
+			Double percentLeft=1-eventPercent;
 
 			System.out.println("設定一下多少%要寄通知");
-			if(1-(eventPercent) <0.6) {
-				System.out.println("有");
+			if(0.2< percentLeft && percentLeft <0.6) {
+				System.out.println("有60%");
 				List<Object[]> resultMem=notificationDao.sendFavoriteLeftPercentReminderMemList(eventId);
 			
 			for (Object[] row1 : resultMem) {
@@ -144,16 +152,71 @@ public class NotificationServiceImpl implements NotificationService {
 				Integer eventId1 = ((Number) row1[2]).intValue();
 				String eventName = (String) row1[3];
 				
-			int result = notificationDao.sendFavoriteLeftPercentReminderNotification(memberId,userName, eventId1, eventName);
+				String notifyType="SOLD_40";
+				 if (isAlreadyNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType)) {
+	                    System.out.printf("🚫 已通知過SOLD_40 memberId=%d, eventId=%d，略過\n", memberId, eventId1);
+	                    continue;
+	                }
+			System.out.println("跑到這裡了");
+			int result = notificationDao.sendFavoriteLeftPercentReminderNotification(memberId,userName, eventId1, eventName,40);
 			
 			if (result > 0) {
-				System.out.println("✅ 剩餘票券提醒通知已成功透過 Hibernate SQL 插入！");
+				System.out.println("✅ 剩餘票券60%提醒通知已成功透過 Hibernate SQL 插入！");
+				markAsNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType); // ➤ 寫入 Redis
 			} else {
-				System.out.println("⚠️ 剩餘票券提醒通知插入失敗！");
+				System.out.println("⚠️ 剩餘票券60%提醒通知插入失敗！");
 			}
 			}
 			}
+			if(percentLeft <0.2) {
+				System.out.println("有80%");
+				List<Object[]> resultMem=notificationDao.sendFavoriteLeftPercentReminderMemList(eventId);
+			
+			for (Object[] row1 : resultMem) {
+				Integer memberId = ((Number) row1[0]).intValue();
+				String userName= (String)row1[1];
+				Integer eventId1 = ((Number) row1[2]).intValue();
+				String eventName = (String) row1[3];
+				
+				String notifyType="SOLD_80";
+				 if (isAlreadyNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType)) {
+	                    System.out.printf("🚫 已通知SOLD_80 memberId=%d, eventId=%d，略過\n", memberId, eventId1);
+	                    continue;
+	                }
+				
+			System.out.println("跑到這裡了");
+			int result = notificationDao.sendFavoriteLeftPercentReminderNotification(memberId,userName, eventId1, eventName,80);
+			
+			if (result > 0) {
+				System.out.println("✅ 剩餘票券20%提醒通知已成功透過 Hibernate SQL 插入！");
+				markAsNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType); // ➤ 寫入 Redis
+			} else {
+				System.out.println("⚠️ 剩餘票券20%提醒通知插入失敗！");
+			}
+			}
+			}
+			
+			
 		}
 		
 	}
+
+	@Override
+	public boolean isAlreadyNotifiedFavoriteLeftPercent(Integer eventId, Integer memberId, String type) {
+		String redisKey=String.format("notified:%d:%d:%s",eventId,memberId,type);
+		return Boolean.TRUE.equals(redisTemplate.hasKey(redisKey));
+	}
+
+	@Override
+	public void markAsNotifiedFavoriteLeftPercent(Integer eventId, Integer memberId, String type) {
+		String redisKey = String.format("notified:%d:%d:%s", eventId, memberId,type);
+        redisTemplate.opsForValue().set(redisKey, "1", Duration.ofDays(30)); // 存 30 天
+		
+	}
+	/*
+	 * @PostConstruct public void testRedisConnection() {
+	 * redisTemplate.opsForValue().set("hello", "world"); String result = (String)
+	 * redisTemplate.opsForValue().get("hello"); System.out.println("Redis 測試結果：" +
+	 * result); }
+	 */
 }

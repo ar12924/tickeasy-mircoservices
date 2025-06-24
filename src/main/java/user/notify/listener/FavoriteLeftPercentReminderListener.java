@@ -17,7 +17,7 @@ public class FavoriteLeftPercentReminderListener {
 
 	
 	
-	@Scheduled(initialDelay = 60000, fixedRate = 5 * 60 * 1000)
+	@Scheduled(initialDelay = 60000, fixedRate = 1 * 60 * 1000)
     public void sendReminder() {
         System.out.println("🔔 FavoriteLeftPercentReminderTask：開始執行schduled排程任務");
         notificationService.sendFavoriteLeftPercentReminderNotification();

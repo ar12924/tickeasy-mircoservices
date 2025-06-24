@@ -23,7 +23,7 @@ public interface NotificationDao {
 	List<Object[]> sendFavoriteSoldOutReminderList();
 	int sendFavoriteSoldOutReminderNotification(int memberId,String userName,int eventId,String eventName,Timestamp eventToDate);
 	List<Object[]> sendFavoriteLeftPercentReminderList();
-	int sendFavoriteLeftPercentReminderNotification(int memberId,String userName,int eventId,String eventName);
+	int sendFavoriteLeftPercentReminderNotification(int memberId,String userName,int eventId,String eventName,int percent);
 	List<Object[]> sendFavoriteLeftPercentReminderMemList(int eventId);
 	
 	

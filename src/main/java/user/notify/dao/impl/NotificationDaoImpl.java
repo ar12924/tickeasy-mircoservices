@@ -268,13 +268,13 @@ public class NotificationDaoImpl implements NotificationDao {
 
 	@Override
 	public int sendFavoriteLeftPercentReminderNotification(int memberId, String userName, int eventId,
-			String eventName) {
+			String eventName,int percent) {
 		String sql = "INSERT INTO member_notification "
 				+ "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) "
 				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";
 
-		String message = "您關注的活動「" + eventName + "」票券已售出40%，剩餘數量有限，請盡快購買！";
-		String message2 = eventName + "票券售出已達80%";
+		String message = "您關注的活動「" + eventName + "」票券已售出"+percent+"%，剩餘數量有限，請盡快購買！";
+		String message2 = eventName + "票券售出已達"+ percent+"%";
 	
 		
 		int result = session.createNativeQuery(sql)// 或自動遞增可以省略

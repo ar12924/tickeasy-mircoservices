@@ -14,4 +14,7 @@ public interface NotificationService {
 	void sendFavoriteSellReminderNotificationForTomorrow();
 	void sendFavoriteSoldOutReminderNotification();
 	void sendFavoriteLeftPercentReminderNotification();
+	//Redis
+	boolean isAlreadyNotifiedFavoriteLeftPercent(Integer eventId,Integer memberId,String type);
+	void markAsNotifiedFavoriteLeftPercent(Integer eventId,Integer memberId,String type);
 }
