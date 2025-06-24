@@ -11,17 +11,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const detailContentEl = document.querySelector("#detail-content");
 
-  const API_URL = `/maven-tickeasy-v1/manager/eventdetail/participant/detail?ticketId=${ticketId}`;
+  const API_URL = `/maven-tickeasy-v1/manager/eventdetail/participants/detail?ticketId=${ticketId}`;
 
-  fetch(API_URL)
-    .then((response) => response.json())
-    .then((result) => {
-      if (!result.successful) {
-        alert(result.message || "無法獲取詳細資料");
+  fetch(API_URL, {
+    credentials: "include", // 發送 cookie 以進行 session 驗證
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // 後端直接返回數據對象，不再有 successful 和 data 封裝層
+      // if (!result.successful) {
+      //   alert(result.message || "無法獲取詳細資料");
+      //   return;
+      // }
+      // const data = result.data;
+
+      if (data.error) {
+        alert(data.error);
         return;
       }
 
-      const data = result.data;
       const ticket = data.ticket;
 
       // 填充資料
