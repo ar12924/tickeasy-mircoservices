@@ -36,14 +36,16 @@ public class ManagerSwapCommentDAOImpl implements ManagerSwapCommentDAO {
      * 安全地將 Object 轉換為 Integer - 特別處理 TINYINT(1) 轉 Boolean 的問題
      */
     private Integer safeToInteger(Object obj) {
-        if (obj == null) {
+    	if (obj == null) {
             return null;
         }
         if (obj instanceof Integer) {
             return (Integer) obj;
         }
+        if (obj instanceof Byte) {  
+            return ((Byte) obj).intValue();
+        }
         if (obj instanceof Boolean) {
-            // TINYINT(1) 被 MySQL 轉為 Boolean，需要轉回數字
             return ((Boolean) obj) ? 1 : 0;
         }
         if (obj instanceof Number) {
@@ -74,10 +76,12 @@ public class ManagerSwapCommentDAOImpl implements ManagerSwapCommentDAO {
     
     @Override
     public List<ManagerSwapCommentVO> findSwapsWithPaging(Map<String, Object> params, Integer offset, Integer limit, String orderBy) {
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("SELECT ");
+    	StringBuilder sqlBuilder = new StringBuilder();
+    	sqlBuilder.append("SELECT ");
         sqlBuilder.append("sc.comment_id, sc.comment_member_id, sc.comment_ticket_id, ");
-        sqlBuilder.append("sc.comment_description, sc.swapped_status, sc.swapped_time, ");
+        sqlBuilder.append("sc.comment_description, ");
+        sqlBuilder.append("CAST(sc.swapped_status AS SIGNED) as swapped_status, ");
+        sqlBuilder.append("sc.swapped_time, ");
         sqlBuilder.append("sc.post_id, sc.create_time, sc.update_time, ");
         sqlBuilder.append("sp.post_member_id, sp.post_ticket_id, sp.post_description, sp.event_id ");
         sqlBuilder.append("FROM swap_comment sc ");
