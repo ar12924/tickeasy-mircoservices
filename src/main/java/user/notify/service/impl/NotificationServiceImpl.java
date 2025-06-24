@@ -110,4 +110,50 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		
 	}
+	
+	@Transactional
+	@Override
+	public void sendFavoriteLeftPercentReminderNotification() {
+		List<Object[]> resultList = notificationDao.sendFavoriteLeftPercentReminderList();
+		
+
+		// TODO ????
+		logger.info("Reminder排程動");
+
+		if (resultList.isEmpty()) {
+			System.out.println("⚠️ 查無符合條件的我的關注資料");
+			return;
+		}
+		
+
+		for (Object[] row : resultList) {
+			Integer eventId = ((Number) row[0]).intValue();
+			Integer eventCount= ((Number) row[1]).intValue();
+			Integer eventCapcity = ((Number) row[2]).intValue();
+			Double eventPercent= (double)eventCount/eventCapcity;
+			
+
+			System.out.println("設定一下多少%要寄通知");
+			if(1-(eventPercent) <0.6) {
+				System.out.println("有");
+				List<Object[]> resultMem=notificationDao.sendFavoriteLeftPercentReminderMemList(eventId);
+			
+			for (Object[] row1 : resultMem) {
+				Integer memberId = ((Number) row1[0]).intValue();
+				String userName= (String)row1[1];
+				Integer eventId1 = ((Number) row1[2]).intValue();
+				String eventName = (String) row1[3];
+				
+			int result = notificationDao.sendFavoriteLeftPercentReminderNotification(memberId,userName, eventId1, eventName);
+			
+			if (result > 0) {
+				System.out.println("✅ 剩餘票券提醒通知已成功透過 Hibernate SQL 插入！");
+			} else {
+				System.out.println("⚠️ 剩餘票券提醒通知插入失敗！");
+			}
+			}
+			}
+		}
+		
+	}
 }

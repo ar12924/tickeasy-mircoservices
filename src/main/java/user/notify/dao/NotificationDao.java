@@ -22,6 +22,10 @@ public interface NotificationDao {
 	void sendFavoriteSellReminderNotification(int memberId, int eventId, String eventName, Date eventSellFromTime,Date eventSellToTime,String categoryName);
 	List<Object[]> sendFavoriteSoldOutReminderList();
 	int sendFavoriteSoldOutReminderNotification(int memberId,String userName,int eventId,String eventName,Timestamp eventToDate);
+	List<Object[]> sendFavoriteLeftPercentReminderList();
+	int sendFavoriteLeftPercentReminderNotification(int memberId,String userName,int eventId,String eventName);
+	List<Object[]> sendFavoriteLeftPercentReminderMemList(int eventId);
+	
 	
 	default Session getSession() {
 		return HibernateUtil5

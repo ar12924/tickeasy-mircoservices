@@ -13,4 +13,5 @@ public interface NotificationService {
 	void sendReminderNotificationForTomorrow();
 	void sendFavoriteSellReminderNotificationForTomorrow();
 	void sendFavoriteSoldOutReminderNotification();
+	void sendFavoriteLeftPercentReminderNotification();
 }

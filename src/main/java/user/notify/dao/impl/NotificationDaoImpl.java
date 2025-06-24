@@ -245,4 +245,63 @@ public class NotificationDaoImpl implements NotificationDao {
 		return result;
 	}
 
+
+	@Override
+	public List<Object[]> sendFavoriteLeftPercentReminderList() {
+		String sql = "SELECT e1.event_id,e1.cou,e2.cap\r\n"
+				+ "FROM(SELECT cc.event_id,COUNT(cc.ticket_id) AS cou\r\n"
+				+ "FROM(\r\n"
+				+ "SELECT bt.ticket_id,bt.type_id,ett.event_id\r\n"
+				+ "FROM buyer_ticket bt\r\n"
+				+ "JOIN event_ticket_type ett\r\n"
+				+ "ON bt.type_id=ett.type_id \r\n"
+				+ "\r\n"
+				+ ")AS cc\r\n"
+				+ "GROUP BY cc.event_id)AS e1\r\n"
+				+ "JOIN(SELECT ett.event_id,SUM(ett.capacity) AS cap\r\n"
+				+ "FROM event_ticket_type ett\r\n"
+				+ "GROUP BY event_id)AS e2\r\n"
+				+ "ON e1.event_id=e2.event_id";
+		return session.createNativeQuery(sql).getResultList();
+	}
+
+
+	@Override
+	public int sendFavoriteLeftPercentReminderNotification(int memberId, String userName, int eventId,
+			String eventName) {
+		String sql = "INSERT INTO member_notification "
+				+ "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) "
+				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";
+
+		String message = "您關注的活動「" + eventName + "」票券已售出40%，剩餘數量有限，請盡快購買！";
+		String message2 = eventName + "票券售出已達80%";
+	
+		
+		int result = session.createNativeQuery(sql)// 或自動遞增可以省略
+				.setParameter("notificationId", 3) // 或自動遞增可以省略
+				.setParameter("memberId", memberId)
+				.setParameter("isRead", 0)
+				.setParameter("isVisible", 1)
+				.setParameter("status", 1)
+				.setParameter("title", message2)
+				.setParameter("message", message)
+				.setParameter("linkUrl", "/event/" + eventId)
+				.executeUpdate();
+		return result;
+	}
+
+
+	@Override
+	public List<Object[]> sendFavoriteLeftPercentReminderMemList(int eventId) {
+		String sql = "SELECT fi.member_id,mb.user_name, fi.event_id, ei.event_name\r\n"
+				+ "FROM favorite fi\r\n"
+				+ "JOIN event_info ei ON fi.event_id = ei.event_id\r\n"
+				+ "JOIN MEMBER mb ON fi.member_id =mb.member_id\r\n"
+				+ "WHERE fi.is_followed=1 AND fi.event_id=:eventId";
+		return session
+				.createNativeQuery(sql)
+				.setParameter("eventId", eventId)
+				.getResultList();
+	}
+
 }
