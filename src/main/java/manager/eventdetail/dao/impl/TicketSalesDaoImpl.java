@@ -30,17 +30,19 @@ public class TicketSalesDaoImpl implements TicketSalesDao {
     @Override
     public Integer getSoldTicketCount(Integer typeId) {
         String hql = "SELECT COUNT(*) FROM BuyerTicketEventVer WHERE typeId = :typeId";
-        return ((Long) session.createQuery(hql)
+        Object result = session.createQuery(hql)
                 .setParameter("typeId", typeId)
-                .uniqueResult()).intValue();
+                .uniqueResult();
+        return result != null ? ((Long) result).intValue() : 0;
     }
 
     @Override
     public Integer getUsedTicketCount(Integer typeId) {
         String hql = "SELECT COUNT(*) FROM BuyerTicketEventVer WHERE typeId = :typeId AND isUsed = 1";
-        return ((Long) session.createQuery(hql)
+        Object result = session.createQuery(hql)
                 .setParameter("typeId", typeId)
-                .uniqueResult()).intValue();
+                .uniqueResult();
+        return result != null ? ((Long) result).intValue() : 0;
     }
 
     @Override

@@ -1,7 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
+  console.log("Dashboard.js 開始載入...");
+
+  // 檢查 ApexCharts 是否可用
+  if (typeof ApexCharts === "undefined") {
+    console.error("ApexCharts 未載入！");
+    return;
+  } else {
+    console.log("ApexCharts 已載入:", typeof ApexCharts);
+  }
+
   // 檢查用戶權限
   const roleLevel = sessionStorage.getItem("roleLevel");
   const memberId = sessionStorage.getItem("memberId");
+
+  console.log("權限檢查:", { roleLevel, memberId });
 
   if (!roleLevel || roleLevel !== "2") {
     alert("您沒有權限訪問此頁面");
@@ -9,164 +21,179 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const eventId = urlParams.get("eventId");
-
-  // DOM Elements
-  const containerEl = document.querySelector(".container-fluid");
-
-  if (!eventId) {
-    // 如果沒有eventId，顯示活動列表
-    fetch(
-      `/maven-tickeasy-v1/manager/eventdetail/events?memberId=${memberId}`,
-      {
-        headers: {
-          "X-Member-Id": memberId,
-          "X-Role-Level": roleLevel,
-        },
-      }
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((result) => {
-        if (!result.successful) {
-          containerEl.innerHTML = `<div class="alert alert-danger">${
-            result.message || "無法載入活動列表"
-          }</div>`;
-          return;
-        }
-
-        const events = result.data;
-        if (!events || events.length === 0) {
-          containerEl.innerHTML = `
-            <div class="alert alert-info">
-              您還沒有任何活動。
-              <a href="event_new.html" class="alert-link">立即建立新活動</a>
-            </div>`;
-          return;
-        }
-
-        // 顯示活動列表
-        containerEl.innerHTML = `
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">我的活動</h3>
-                  <div class="card-tools">
-                    <a href="event_new.html" class="btn btn-primary btn-sm">
-                      <i class="bi bi-plus"></i> 建立新活動
-                    </a>
-                  </div>
-                </div>
-                <div class="card-body p-0">
-                  <div class="table-responsive">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>活動名稱</th>
-                          <th>開始日期</th>
-                          <th>結束日期</th>
-                          <th>狀態</th>
-                          <th>操作</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        ${events
-                          .map(
-                            (event) => `
-                          <tr>
-                            <td>${event.eventName}</td>
-                            <td>${new Date(
-                              event.startDate
-                            ).toLocaleDateString()}</td>
-                            <td>${new Date(
-                              event.endDate
-                            ).toLocaleDateString()}</td>
-                            <td>
-                              <span class="badge ${
-                                event.status === 1 ? "bg-success" : "bg-danger"
-                              }">
-                                ${event.status === 1 ? "進行中" : "已結束"}
-                              </span>
-                            </td>
-                            <td>
-                              <a href="dashboard.html?eventId=${
-                                event.eventId
-                              }" class="btn btn-info btn-sm">
-                                <i class="bi bi-graph-up"></i> 查看儀表板
-                              </a>
-                              <a href="participant-list.html?eventId=${
-                                event.eventId
-                              }" class="btn btn-primary btn-sm">
-                                <i class="bi bi-people"></i> 報名人列表
-                              </a>
-                            </td>
-                          </tr>
-                        `
-                          )
-                          .join("")}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>`;
-      })
-      .catch((error) => {
-        console.error("獲取活動列表時發生錯誤:", error);
-        if (containerEl) {
-          containerEl.innerHTML = `<div class="alert alert-danger">無法載入活動列表: ${error.message}</div>`;
-        }
-      });
+  if (!memberId) {
+    alert("請先登入");
+    window.location.href = "/maven-tickeasy-v1/user/member/login.html";
     return;
   }
 
-  // 如果有eventId，顯示儀表板
+  // DOM Elements
+  const eventSelectEl = document.querySelector("#event-select");
   const eventNameEl = document.querySelector("#event-name");
   const totalTicketsEl = document.querySelector("#total-tickets");
   const totalRevenueEl = document.querySelector("#total-revenue");
   const salesDataTableEl = document.querySelector("#sales-data-table");
   const salesChartEl = document.querySelector("#sales-chart");
+  const dashboardContainerEl = document.querySelector("#dashboard-container");
 
-  const API_URL = `/maven-tickeasy-v1/manager/eventdetail/dashboard/data?eventId=${eventId}`;
+  console.log("DOM 元素檢查:", {
+    eventSelectEl: !!eventSelectEl,
+    eventNameEl: !!eventNameEl,
+    totalTicketsEl: !!totalTicketsEl,
+    totalRevenueEl: !!totalRevenueEl,
+    salesDataTableEl: !!salesDataTableEl,
+    salesChartEl: !!salesChartEl,
+    dashboardContainerEl: !!dashboardContainerEl,
+  });
 
-  fetch(API_URL, {
-    headers: {
-      "X-Member-Id": memberId,
-      "X-Role-Level": roleLevel,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((result) => {
-      if (!result.successful) {
-        alert(result.message || "無法載入儀表板資料");
-        return;
-      }
+  // 全域變數
+  let events = [];
+  let currentChart = null;
 
-      const data = result.data;
+  // 載入活動列表
+  loadEvents();
 
-      // 更新儀表板標題和總計數據
-      if (eventNameEl)
-        eventNameEl.textContent = data.eventName || "活動銷售儀表板";
-      if (totalTicketsEl)
-        totalTicketsEl.textContent = data.totalTickets.toLocaleString();
-      if (totalRevenueEl)
-        totalRevenueEl.textContent = `$ ${data.totalRevenue.toLocaleString()}`;
+  // 獲取會員ID的輔助函數
+  function getMemberIdFromSession() {
+    return sessionStorage.getItem("memberId");
+  }
 
-      // 填充銷售數據表格
-      if (salesDataTableEl) {
-        salesDataTableEl.innerHTML = ""; // 清空舊數據
+  // 選擇活動的輔助函數
+  function selectEvent(eventId) {
+    if (eventSelectEl) {
+      eventSelectEl.value = eventId;
+    }
+    loadDashboardData(eventId);
+  }
+
+  function loadEvents() {
+    console.log("開始載入活動列表");
+
+    // 從 sessionStorage 獲取 memberId 用於顯示
+    const memberId = sessionStorage.getItem("memberId");
+    if (!memberId) {
+      console.error("無法獲取 memberId");
+      showMessage("無法獲取用戶信息，請重新登入", "error");
+      return;
+    }
+
+    console.log("顯示用 memberId:", memberId);
+
+    // 獲取應用程序的上下文路徑
+    // 當前頁面路徑: /maven-tickeasy-v1/manager/eventdetail/dashboard.html
+    // 我們需要: /maven-tickeasy-v1
+    const currentPath = window.location.pathname;
+    const pathParts = currentPath.split("/");
+    const contextPath = pathParts.slice(0, 2).join("/"); // 取前2段: /maven-tickeasy-v1
+    // 不傳遞 memberId 參數，讓後端使用 session 中的用戶ID
+    const apiUrl = `${contextPath}/manager/eventdetail/dashboard`;
+
+    console.log("當前路徑:", currentPath);
+    console.log("路徑分段:", pathParts);
+    console.log("上下文路徑:", contextPath);
+    console.log("API URL:", apiUrl);
+
+    fetch(apiUrl)
+      .then((response) => {
+        console.log("活動列表響應狀態:", response.status);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("活動列表響應數據:", data);
+
+        if (data.successful) {
+          const events = data.data || [];
+          console.log("解析到的活動列表:", events);
+
+          // 清空下拉選單
+          const eventSelect = document.getElementById("event-select");
+          eventSelect.innerHTML = '<option value="">請選擇活動</option>';
+
+          // 添加活動選項
+          events.forEach((event) => {
+            const option = document.createElement("option");
+            option.value = event.eventId;
+            option.textContent = event.eventName;
+            eventSelect.appendChild(option);
+          });
+
+          console.log("活動下拉選單已更新，共", events.length, "個活動");
+        } else {
+          console.error("載入活動列表失敗:", data.message);
+          showMessage("載入活動列表失敗: " + data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.error("載入活動列表時發生錯誤:", error);
+        showMessage("載入活動列表時發生錯誤", "error");
+      });
+  }
+
+  function loadDashboardData(eventId) {
+    console.log("開始載入儀表板數據，eventId:", eventId);
+
+    if (!eventId) {
+      console.log("eventId 為空，清空儀表板");
+      clearDashboard();
+      return;
+    }
+
+    // 獲取應用程序的上下文路徑
+    const currentPath = window.location.pathname;
+    const pathParts = currentPath.split("/");
+    const contextPath = pathParts.slice(0, 2).join("/"); // 取前2段: /maven-tickeasy-v1
+    const apiUrl = `${contextPath}/manager/eventdetail/dashboard?eventId=${eventId}`;
+
+    console.log("當前路徑:", currentPath);
+    console.log("路徑分段:", pathParts);
+    console.log("上下文路徑:", contextPath);
+    console.log("API URL:", apiUrl);
+
+    fetch(apiUrl)
+      .then((response) => {
+        console.log("儀表板數據響應狀態:", response.status);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("儀表板數據響應:", data);
+
+        if (data.successful) {
+          const result = data.data;
+          if (result) {
+            updateDashboard(result);
+          } else {
+            console.log("沒有儀表板數據");
+            clearDashboard();
+            showMessage("該活動目前沒有銷售數據", "info");
+          }
+        } else {
+          console.error("載入儀表板數據失敗:", data.message);
+          showMessage("載入儀表板數據失敗: " + data.message, "error");
+          clearDashboard();
+        }
+      })
+      .catch((error) => {
+        console.error("載入儀表板數據時發生錯誤:", error);
+        showMessage("載入儀表板數據時發生錯誤", "error");
+        clearDashboard();
+      });
+  }
+
+  function updateDashboard(data) {
+    console.log("更新儀表板數據:", data);
+
+    // 更新儀表板標題和總計數據
+    if (eventNameEl)
+      eventNameEl.textContent = data.eventName || "活動銷售儀表板";
+    if (totalTicketsEl)
+      totalTicketsEl.textContent = data.totalTickets.toLocaleString();
+    if (totalRevenueEl)
+      totalRevenueEl.textContent = `$ ${data.totalRevenue.toLocaleString()}`;
+
+    // 填充銷售數據表格
+    if (salesDataTableEl) {
+      salesDataTableEl.innerHTML = ""; // 清空舊數據
+      if (data.salesData && data.salesData.length > 0) {
         data.salesData.forEach((item) => {
           const row = `<tr>
                       <td>${item.categoryName}</td>
@@ -175,28 +202,85 @@ document.addEventListener("DOMContentLoaded", function () {
                   </tr>`;
           salesDataTableEl.innerHTML += row;
         });
+      } else {
+        salesDataTableEl.innerHTML =
+          "<tr><td colspan='3' class='text-center'>暫無銷售數據</td></tr>";
       }
+    }
 
-      // 渲染圓餅圖
-      if (salesChartEl) {
-        renderChart(data.salesData);
-      }
-    })
-    .catch((error) => {
-      console.error("獲取儀表板資料時發生錯誤:", error);
-      if (containerEl) {
-        containerEl.innerHTML = `<div class="alert alert-danger">無法載入資料: ${error.message}</div>`;
-      }
+    // 渲染圓餅圖
+    if (salesChartEl && data.salesData) {
+      console.log("準備渲染圖表，銷售數據:", data.salesData);
+      renderChart(data.salesData);
+    } else {
+      console.warn("無法渲染圖表:", {
+        salesChartEl: !!salesChartEl,
+        salesData: !!data.salesData,
+      });
+    }
+  }
+
+  function clearDashboard() {
+    if (eventNameEl) eventNameEl.textContent = "活動銷售儀表板";
+    if (totalTicketsEl) totalTicketsEl.textContent = "0";
+    if (totalRevenueEl) totalRevenueEl.textContent = "$0";
+    if (salesDataTableEl) salesDataTableEl.innerHTML = "";
+
+    // 清理圖表
+    if (currentChart) {
+      currentChart.destroy();
+      currentChart = null;
+    }
+    if (salesChartEl) salesChartEl.innerHTML = "";
+  }
+
+  // 頁面卸載時清理圖表資源
+  window.addEventListener("beforeunload", function () {
+    if (currentChart) {
+      currentChart.destroy();
+      currentChart = null;
+    }
+  });
+
+  // 監聽下拉選單變化
+  if (eventSelectEl) {
+    eventSelectEl.addEventListener("change", function () {
+      const selectedEventId = this.value;
+      loadDashboardData(selectedEventId);
     });
+  }
 
   function renderChart(salesData) {
-    if (!salesChartEl) return;
+    console.log("開始渲染圖表，數據:", salesData);
+
+    if (!salesChartEl) {
+      console.error("salesChartEl 不存在");
+      return;
+    }
+
+    if (!salesData || salesData.length === 0) {
+      console.warn("沒有銷售數據可顯示");
+      return;
+    }
 
     const chartOptions = {
       series: salesData.map((item) => item.ticketsSold),
       chart: {
         type: "donut",
         height: 400,
+        animations: {
+          enabled: true,
+          easing: "easeinout",
+          speed: 800,
+          animateGradually: {
+            enabled: true,
+            delay: 150,
+          },
+          dynamicAnimation: {
+            enabled: true,
+            speed: 350,
+          },
+        },
       },
       labels: salesData.map((item) => item.categoryName),
       responsive: [
@@ -221,7 +305,58 @@ document.addEventListener("DOMContentLoaded", function () {
       },
     };
 
-    const chart = new ApexCharts(salesChartEl, chartOptions);
-    chart.render();
+    console.log("圖表配置:", chartOptions);
+
+    // 如果圖表已存在，使用 updateOptions 更新數據
+    if (currentChart) {
+      console.log("更新現有圖表");
+      currentChart.updateOptions(
+        {
+          series: chartOptions.series,
+          labels: chartOptions.labels,
+        },
+        false,
+        true
+      ); // false: 不重新渲染, true: 重新繪製
+    } else {
+      // 第一次創建圖表
+      console.log("創建新圖表");
+      try {
+        currentChart = new ApexCharts(salesChartEl, chartOptions);
+        currentChart.render();
+        console.log("圖表創建成功");
+      } catch (error) {
+        console.error("創建圖表時發生錯誤:", error);
+      }
+    }
+  }
+
+  // 顯示消息函數
+  function showMessage(message, type = "info") {
+    console.log(`${type.toUpperCase()}: ${message}`);
+
+    // 創建消息元素
+    const messageEl = document.createElement("div");
+    messageEl.className = `alert alert-${
+      type === "error" ? "danger" : type === "success" ? "success" : "info"
+    } alert-dismissible fade show`;
+    messageEl.innerHTML = `
+      ${message}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    `;
+
+    // 插入到頁面頂部
+    const container =
+      document.querySelector(".content-wrapper") || document.body;
+    container.insertBefore(messageEl, container.firstChild);
+
+    // 3秒後自動移除
+    setTimeout(() => {
+      if (messageEl.parentNode) {
+        messageEl.remove();
+      }
+    }, 3000);
   }
 });
