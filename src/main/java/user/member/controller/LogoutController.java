@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import common.util.CommonUtil;
 import user.member.service.MemberService;
 
-import static user.member.util.CommonUtil.*;
+import static common.util.CommonUtilNora.*;
+import static common.util.CommonUtil.getBean;
 
 @WebServlet("/user/member/logout")
 public class LogoutController extends HttpServlet {
@@ -21,7 +21,7 @@ public class LogoutController extends HttpServlet {
 	
 	@Override
 	public void init() throws ServletException {
-		service = CommonUtil.getBean(getServletContext(), MemberService.class);
+		service = getBean(getServletContext(), MemberService.class);
 	}
 	
 	@Override

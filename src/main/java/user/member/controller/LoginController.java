@@ -13,7 +13,7 @@ import common.util.CommonUtil;
 import user.member.service.MailService;
 import user.member.service.MemberService;
 import user.member.vo.Member;
-import static user.member.util.CommonUtil.*;
+import static common.util.CommonUtilNora.*;
 
 @WebServlet("/user/member/login")
 public class LoginController extends HttpServlet {

@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import common.util.CommonUtil;
 import user.member.service.MailService;
 import user.member.service.MemberService;
 
-import static user.member.util.CommonUtil.*;
+import static common.util.CommonUtilNora.*;
+import static common.util.CommonUtil.getBean;
 
 @WebServlet("/user/member/verify")
 public class VerifyController extends HttpServlet {
@@ -22,8 +22,8 @@ public class VerifyController extends HttpServlet {
 	
 	@Override
 	public void init() throws ServletException {
-		service = CommonUtil.getBean(getServletContext(), MemberService.class);
-		mailService = CommonUtil.getBean(getServletContext(), MailService.class);
+		service = getBean(getServletContext(), MemberService.class);
+		mailService = getBean(getServletContext(), MailService.class);
 	}
 	
 	@Override

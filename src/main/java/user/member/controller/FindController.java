@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import common.util.CommonUtil;
 import user.member.service.MailService;
 import user.member.service.MemberService;
 import user.member.vo.Member;
 
-import static user.member.util.CommonUtil.*;
+import static common.util.CommonUtilNora.*;
+import static common.util.CommonUtil.getBean;
 
 @WebServlet("/user/member/find")
 public class FindController extends HttpServlet {
@@ -27,8 +27,8 @@ public class FindController extends HttpServlet {
 	
 	@Override
 	public void init() throws ServletException {
-		service = CommonUtil.getBean(getServletContext(), MemberService.class);
-		mailService = CommonUtil.getBean(getServletContext(), MailService.class);
+		service = getBean(getServletContext(), MemberService.class);
+		mailService = getBean(getServletContext(), MailService.class);
 	}
 	
 	@Override
