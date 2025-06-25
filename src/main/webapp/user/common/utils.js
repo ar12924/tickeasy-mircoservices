@@ -22,3 +22,12 @@ export const getContextPath = () => {
     window.location.pathname.indexOf("/", 2)
   );
 };
+
+/**
+ * 身分證格式驗證用。
+ * @param {string} idCard - 身分證字號。
+ * @returns {boolean} 驗證成功/失敗。
+ */
+export const validateIdCard = (idCard) => {
+  return /^[A-Z][0-9]{9}$/.test(idCard);
+};

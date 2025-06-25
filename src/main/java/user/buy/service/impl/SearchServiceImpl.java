@@ -20,8 +20,8 @@ public class SearchServiceImpl implements SearchService {
 
 	@Transactional
 	@Override
-	public Core<EventInfo> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize) {
-		Core<EventInfo> eventCore = new Core<>();
+	public Core<List<EventInfo>> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize) {
+		Core<List<EventInfo>> eventCore = new Core<>();
 		Long count = null;
 		// 1. 過濾 keywords
 		keyword = keyword == null ? "" : keyword;

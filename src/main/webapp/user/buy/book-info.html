@@ -34,6 +34,12 @@
           <button class="button back">返回</button>
           <button class="button next">下一步</button>
         </div>
+        <div
+          class="has-text-danger has-text-centered is-hidden"
+          id="error-message"
+        >
+          <p class="book-info-message help"></p>
+        </div>
       </div>
     </section>
 
@@ -42,5 +48,6 @@
   </body>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/validator@latest/validator.min.js"></script>
   <script type="module" src="./js/book-info.js"></script>
 </html>

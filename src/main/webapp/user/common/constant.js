@@ -22,11 +22,9 @@ export const BOOKING_PROGRESS = Object.freeze({
  */
 export const ERROR_MESSAGES = Object.freeze({
   // 缺少活動 id 錯誤
-  MISSING_EVENT_ID: "缺少活動id，無法繼續!!",
+  MISSING_EVENT_ID: "缺少活動識別碼，請重新選擇活動！",
+  // 資料活動 id 與當前活動 id 不一致
+  EVENT_ID_INCONSISTENT: "資料與活動識別碼不符，請重新選擇活動！",
   // 未選擇票券錯誤
-  NO_TICKETS_SELECTED: "請至少選擇1種票券!!",
-  // 需要登入錯誤
-  LOGIN_REQUIRED: "請先登入",
-  // 未正常存取資料
-  ACCESSED_FAILED: "存取資料失敗",
+  NO_TICKETS_SELECTED: "請至少選擇1種票券！",
 });

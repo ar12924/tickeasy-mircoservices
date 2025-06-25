@@ -29,33 +29,39 @@ import {
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
 
 /**
- * 從 Redis 中，取得購票頁資訊。
+ * 從 Redis 中，取得票種選擇結果相關資訊。
+ * (包含驗證 session、活動 id 等)
  *
  * @return {Object} book 購票頁資訊。
  */
-const fetchBook = async () => {
+const findBook = async () => {
+  // 從 Redis 抓資料
   const resp = await fetch(`${getContextPath()}/book-info`);
-  const core = await resp.json();
+  const { authStatus, dataStatus, message, successful, data } =
+    await resp.json();
+
   // 要求使用者，請先登入
-  if (!core.successful) {
-    alert(core.message);
-    sessionStorage.setItem("core-message", core.message);
+  if (authStatus === "NOT_LOGGED_IN") {
+    alert(message);
+    sessionStorage.setItem("core-message", message);
+    sessionStorage.setItem("core-sucessful", successful);
     location.href = `${getContextPath()}/user/member/login.html`;
-  }
-  // 已經登入
-  const eventId = getUrlParam("eventId");
-  const {
-    message,
-    successful,
-    data: [book],
-  } = core;
-  if (!eventId || eventId != book.eventId) {
-    alert("活動選擇錯誤");
-    // 跳回首頁...
     return;
   }
+
+  // 判斷 Redis 資料的活動 id 與當前活動 id 不同時...
+  const eventId = getUrlParam("eventId");
+  const dataEventId = data?.eventId;
+  if (eventId != dataEventId) {
+    alert(ERROR_MESSAGES.EVENT_ID_INCONSISTENT);
+    location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
+    return;
+  }
+
+  // 通過所有檢查回傳資料
   sessionStorage.setItem("core-message", message);
-  return book;
+  sessionStorage.setItem("core-sucessful", successful);
+  return data;
 };
 
 /**
@@ -69,36 +75,109 @@ export const fetchMember = async (userName) => {
   return await resp.json();
 };
 
+/**
+ * 將一筆入場者資料(userName, idCard)送至後端，比對會員身分證資料正確性
+ *
+ * @param {Array<Object>} attendeeOne - 一位入場者資料。
+ * 格式:
+ * {
+ *   userName: "buyer2",
+ *   idCard: "F123456789",
+ * }
+ * @return {Object} 身分證驗證結果訊息。
+ */
+export const verifyMemberIdCard = async (attendeeOne) => {
+  const resp = await fetch(`${getContextPath()}/book-info/member/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(attendeeOne),
+  });
+  return await resp.json();
+};
+
+/**
+ * 將聯絡人和入場者資訊儲存到後端 Redis，並跳轉至下一頁(book-confirm.html)
+ * (不設定 TTL(分鐘))
+ *
+ * @param {Object} book - 包含票種選擇訊息的物件。
+ */
+const saveBook = async (book) => {
+  const eventId = getUrlParam("eventId");
+
+  // 如果 eventId 缺少
+  if (book.eventId <= 0) {
+    $(".book-info-message").text(ERROR_MESSAGES.MISSING_EVENT_ID);
+    $(".book-info-message").closest("#error-message").removeClass("is-hidden");
+    return;
+  }
+
+  // 檢查每個 attendee 的身分證是否存在?
+  for (const attendeeOne of book.attendee) {
+    const verifiedObject = await verifyMemberIdCard(attendeeOne);
+    if (!verifiedObject.successful) {
+      alert(verifiedObject.message);
+      return;
+    }
+  }
+
+  // 將 book 傳遞至後端
+  const resp = await fetch(`${getContextPath()}/book-info`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(book),
+  });
+  const { authStatus, dataStatus, message, successful } = await resp.json();
+
+  // 要求使用者，請先登入
+  if (authStatus === "NOT_LOGGED_IN") {
+    alert(message);
+    sessionStorage.setItem("core-message", message);
+    sessionStorage.setItem("core-successful", successful);
+    location.href = `${getContextPath()}/user/member/login.html`;
+    return;
+  }
+
+  // 儲存至 Redis 並跳轉到下一頁(book-confirm.html)
+  sessionStorage.setItem("core-message", message);
+  sessionStorage.setItem("core-successful", successful);
+  location.href = `${getContextPath()}/user/buy/book-confirm.html?eventId=${eventId}`;
+};
+
 // ==================== 2. 數據處理層 (Data Processing) ====================
 // 這些函數負責從 DOM 中提取數據，並對數據進行格式化或轉換。
 
 /**
- * 從頁面中抓取所有票種輸入框的數值和相關信息。
- * @returns {Array<Object>} 包含 quantity, categoryName, price 的數組。
+ * 抓取所有個人資料輸入框的數值，並放入 book 物件當中。
+ * @param {Object} book - book 物件，包含儲存聯絡人資訊的 contact 及儲存入場者資訊的 attendee 陣列。
  */
-// const getTicketInputsValues = () => {
-//   const inputsValues = $(".type-quantity")
-//     .map((i, input) => {
-//       const parentNode = $(input).closest(".level");
-//       const categoryName = parentNode.find(".type-name").text();
-//       const price = parentNode
-//         .find(".type-price")
-//         .text()
-//         .replace(/[^0-9.]/g, ""); // 過濾非數字符號
-//       return {
-//         quantity: $(input).val(),
-//         categoryName,
-//         price,
-//       };
-//     })
-//     .get(); // .get() 將 jQuery 物件轉換為原生 JavaScript 數組
-//   return inputsValues;
-// };
+const addTicketInfoToContactAndAttendee = (book) => {
+  // 聯絡人、入場者區塊父元素抓取
+  const contactParentElement = $(".contact-container");
+  const attendeeParentElement = $(".attendee-container");
+
+  // 聯絡人輸入框抓取並儲存
+  const $contactBox = contactParentElement.find(".box");
+  book.contact = {
+    userName: $contactBox.find(".account").val().trim(),
+    email: $contactBox.find(".email").val().trim(),
+    nickName: $contactBox.find(".nick-name").val().trim(),
+    phone: $contactBox.find(".phone").val().trim(),
+  };
+
+  // 入場者輸入框抓取並儲存
+  attendeeParentElement.find(".box").each((i, boxElement) => {
+    const $attendeeBox = $(boxElement);
+    book.attendee[i] = {
+      userName: $attendeeBox.find(".account").val().trim(),
+      idCard: $attendeeBox.find(".id-card").val().trim(),
+    };
+  });
+};
 
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
-const initBookInfoJSEvents = () => {
+const initBookInfoJSEvents = async (book) => {
   // 共同變數，url 後方的活動 id
   const eventId = getUrlParam("eventId");
 
@@ -111,8 +190,8 @@ const initBookInfoJSEvents = () => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", () => {
-    return;
-    location.href = `${getContextPath()}/user/buy/book-confirm.html?eventId=${eventId}`;
+    addTicketInfoToContactAndAttendee(book);
+    saveBook(book);
   });
 };
 
@@ -121,32 +200,7 @@ const initBookInfoJSEvents = () => {
 
 (async () => {
   // ====== 資料儲存變數區 ======
-  // const book = await fetchBook();
-  const book = {
-    eventId: "1",
-    eventName: "2025 春季搖滾音樂節",
-    userName: "buyer1",
-    progress: BOOKING_PROGRESS.INFO_FILLING,
-    selected: [
-      {
-        typeId: 1,
-        categoryName: "VIP區",
-        quantity: 0,
-      },
-      {
-        typeId: 2,
-        categoryName: "搖滾區",
-        quantity: 0,
-      },
-      {
-        typeId: 3,
-        categoryName: "一般區",
-        quantity: 1,
-      },
-    ],
-    contact: null,
-    attendee: null,
-  };
+  const book = await findBook();
 
   // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
@@ -163,7 +217,7 @@ const initBookInfoJSEvents = () => {
   renderHeader(eventInfo, book, headerTemplate);
 
   // ====== book-info 部分 ======
-  initBookInfoJSEvents(); // 載入事件
+  initBookInfoJSEvents(book); // 載入事件
 
   // ====== contact-box 部分 ======
   const buyer = await fetchMember(book.userName); // 查操作人自己

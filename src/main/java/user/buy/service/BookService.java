@@ -9,18 +9,18 @@ import user.member.vo.Member;
 import user.buy.vo.BookDto;
 
 public interface BookService {
-	
+
 	public List<BookTypeDto> getTypeById(Integer eventId);
-	
+
 	public BookEventDto getEventById(Integer eventId);
-    
-	public void saveBook(BookDto book, long timeoutMinutes);
-    
-    public BookDto getBook(String userName);
-    
-    public Member getMember(String userName);
-    
-    public Core<Member> verifyMemberByUserName(String userName);
-    
-    public Core<Member> verifyMemberByIdCard(String idCard);
+
+	public Core<String> saveBookType(BookDto book, long timeoutMinutes);
+
+	public Core<String> saveBookInfo(BookDto book);
+
+	public Core<BookDto> getBook(String userName);
+
+	public Member getMember(String userName);
+
+	public Core<String> verifyMemberIdCard(Member reqMember);
 }

@@ -13,6 +13,4 @@ public interface BookDao {
 	BookEventDto selectEventById(Integer eventId);
 	
 	public Member selectMemberByUserName(String userName);
-	
-	public Member selectMemberByIdCard(String idCard);
 }

@@ -58,6 +58,8 @@ export const initTypeBoxJSEvents = () => {
     const control = $(e.target).parent();
     const input = control.next().find("input");
     let count = parseInt(input.val() || "0");
+
+    // 減少1
     if (count > 0) {
       count--;
       input.val(count);
@@ -68,6 +70,8 @@ export const initTypeBoxJSEvents = () => {
     const control = $(e.target).parent();
     const input = control.prev().find("input");
     let count = parseInt(input.val() || "0");
+
+    // 增加1
     count++;
     input.val(count);
   });

@@ -26,11 +26,29 @@ import {
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
 
 /**
- * 將選定的票種和數量 POST 到後端 Redis 進行保存。
+ * 將選定的票種和數量，儲存到後端 Redis，並跳轉至下一頁。
  * @param {Object} book - 包含票種選擇訊息的物件。
  */
 const saveBook = async (book) => {
   const eventId = getUrlParam("eventId");
+
+  // 如果 eventId 缺少
+  if (book.eventId <= 0) {
+    $(".book-type-message").text(ERROR_MESSAGES.MISSING_EVENT_ID);
+    $(".book-type-message").closest("#error-message").removeClass("is-hidden");
+    return;
+  }
+
+  // 如果 book 的 quantity 總和小於 0，請再次選擇票券數
+  let totalNum = 0;
+  book["selected"].forEach((ticketType) => {
+    totalNum += ticketType.quantity;
+  });
+  if (totalNum <= 0) {
+    $(".book-type-message").text(ERROR_MESSAGES.NO_TICKETS_SELECTED);
+    $(".book-type-message").closest("#error-message").removeClass("is-hidden");
+    return;
+  }
 
   // 將 book 傳遞至後端
   const resp = await fetch(`${getContextPath()}/book-type`, {
@@ -38,17 +56,21 @@ const saveBook = async (book) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(book),
   });
-  const { message, successful } = await resp.json();
+  const { authStatus, dataStatus, message, successful } = await resp.json();
 
   // 要求使用者，請先登入
-  if (!successful) {
+  if (authStatus === "NOT_LOGGED_IN") {
     alert(message);
     sessionStorage.setItem("core-message", message);
+    sessionStorage.setItem("core-successful", successful);
     location.href = `${getContextPath()}/user/member/login.html`;
-  } else {
-    sessionStorage.setItem("core-message", message);
-    location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
+    return;
   }
+
+  // 儲存至 Redis 並跳轉下一頁(book-info.html)
+  sessionStorage.setItem("core-message", message);
+  sessionStorage.setItem("core-successful", successful);
+  location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
 };
 
 // ==================== 2. 數據處理層 (Data Processing) ====================
@@ -56,37 +78,22 @@ const saveBook = async (book) => {
 
 /**
  * 從頁面中抓取所有票種輸入框的 quantity 並加入 book 物件中
- * @param {Array<Object>} selected - book 物件中的 selected 屬性陣列。
- * @returns {boolean} 如果成功更新 selected 屬性則返回 true，否則返回 false。
+ * @param {Object} book - book 物件。
  */
-const addTicketTypeToSelected = ({ selected }) => {
-  const quantityElementArr = document.querySelectorAll(".type-quantity");
-  let sum = 0;
+const addTicketTypeToSelected = (book) => {
+  const $typeBoxList = $(".type-box");
 
-  quantityElementArr.forEach((quan, i) => {
-    sum += Number(quan.value) || 0;
-  });
-  // 判斷輸入框值總和為0，停止事件執行
-  if (sum === 0) {
-    return {
-      success: false,
-      message: ERROR_MESSAGES.NO_TICKETS_SELECTED,
-    };
-  }
   // selected 中加上 quantity 屬性值
-  if (quantityElementArr.length === selected.length) {
-    quantityElementArr.forEach((quantityElement, i) => {
-      selected[i]["quantity"] = Number(quantityElement.value) || 0;
+  $typeBoxList.each((i, typeBox) => {
+    const $typeBox = $(typeBox);
+    const $typeName = $typeBox.find(".type-name");
+    const $typeQuantity = $typeBox.find(".type-quantity");
+    book.selected.forEach((selectedItem) => {
+      if (selectedItem.categoryName === $typeName.text()) {
+        selectedItem["quantity"] = $typeQuantity.val();
+      }
     });
-    return {
-      success: true,
-      message: "成功",
-    };
-  }
-  return {
-    success: false,
-    message: ERROR_MESSAGES.ACCESSED_FAILED,
-  };
+  });
 };
 
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
@@ -107,6 +114,7 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== "上一步" 按鈕點擊事件 ======
   $(".back").on("click", () => {
+    // 回到活動頁面
     location.href = "https://www.google.com";
   });
 
@@ -115,14 +123,15 @@ const initBookTypeJSEvents = (book) => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", async () => {
-    const result = addTicketTypeToSelected(book); // 添加購票人選擇的數量
-    if (!result.success) {
-      alert(result.message);
-      return;
-    } else {
-      book.progress = BOOKING_PROGRESS.INFO_FILLING; // 選票完成，進入下一步
-      saveBook(book); // post 使用者選的票種至 Redis，並跳轉至下一步
-    }
+    addTicketTypeToSelected(book);
+    book.progress = BOOKING_PROGRESS.INFO_FILLING; // 選票完成，進入下一步
+    saveBook(book);
+  });
+
+  // ====== "下一步" 按鈕 blur 事件 ======
+  $(".next").on("blur", () => {
+    $(".book-type-message").text("");
+    $(".book-type-message").closest("#error-message").addClass("is-hidden");
   });
 };
 
