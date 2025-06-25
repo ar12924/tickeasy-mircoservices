@@ -181,7 +181,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="./index.html" class="nav-link">
+                                    <a href="./member_list.html" class="nav-link active">
                                         <i class="nav-icon bi bi-person-lines-fill"></i>
                                         <p>會員列表</p>
                                     </a>
@@ -272,7 +272,7 @@
                                             <h3 class="card-title mb-0">會員列表</h3>
                                         </div>
                                         <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                                            <button type="button" class="btn btn-primary">
+                                            <button type="button" class="btn btn-primary" id="addMemberBtn">
                                                 <i class="bi bi-plus-circle"></i> 新增會員
                                             </button>
                                         </div>
@@ -283,20 +283,21 @@
                                     <div class="row g-3 mb-4">
                                         <div class="col-md-3">
                                             <label class="form-label">會員名稱</label>
-                                            <input type="text" class="form-control" placeholder="請輸入關鍵字">
+                                            <input type="text" class="form-control" id="searchUserName"
+                                                placeholder="請輸入關鍵字">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label">開始日期</label>
-                                            <input type="date" class="form-control">
+                                            <input type="date" class="form-control" id="searchStartDate">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label">結束日期</label>
-                                            <input type="date" class="form-control">
+                                            <input type="date" class="form-control" id="searchEndDate">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label">會員等級</label>
-                                            <select class="form-select">
-                                                <option selected>全部</option>
+                                            <select class="form-select" id="searchRoleLevel">
+                                                <option value="">全部</option>
                                                 <option value="0">未開通</option>
                                                 <option value="1">購票方</option>
                                                 <option value="2">活動方</option>
@@ -305,8 +306,8 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label">用戶狀態</label>
-                                            <select class="form-select">
-                                                <option selected>全部</option>
+                                            <select class="form-select" id="searchIsActive">
+                                                <option value="">全部</option>
                                                 <option value="1">啟用</option>
                                                 <option value="0">停用</option>
                                             </select>
@@ -315,13 +316,21 @@
 
                                     <div class="row g-3 mb-4">
                                         <div class="col-12 d-flex justify-content-end gap-2">
-                                            <button type="button" class="btn btn-primary">
+                                            <button type="button" class="btn btn-primary" id="searchBtn">
                                                 <i class="bi bi-search"></i> 搜索
                                             </button>
-                                            <button type="button" class="btn btn-secondary">
+                                            <button type="button" class="btn btn-secondary" id="resetBtn">
                                                 <i class="bi bi-arrow-clockwise"></i> 重置
                                             </button>
                                         </div>
+                                    </div>
+
+                                    <!-- 載入指示器 -->
+                                    <div class="text-center d-none" id="loadingIndicator">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">載入中...</span>
+                                        </div>
+                                        <p class="mt-2">載入中...</p>
                                     </div>
 
                                     <!-- 表格區域 -->
@@ -338,99 +347,32 @@
                                                     <th>操作</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr class="text-center">
-                                                    <td>admin</td>
-                                                    <td>System Admin</td>
-                                                    <td>admin@tickeasy.com</td>
-                                                    <td>2025/01/01</td>
-                                                    <td><span class="badge bg-success">平台方</span></td>
-                                                    <td><span class="badge bg-primary">啟用</span></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-warning me-1"
-                                                            title="編輯">
-                                                            <i class="bi bi-pencil"></i> 編輯
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="刪除">
-                                                            <i class="bi bi-trash"></i> 刪除
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-center">
-                                                    <td>event_host1</td>
-                                                    <td>Event Master</td>
-                                                    <td>host1@tickeasy.com</td>
-                                                    <td>2025/01/15</td>
-                                                    <td><span class="badge bg-warning">活動方</span></td>
-                                                    <td><span class="badge bg-primary">啟用</span></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-warning me-1"
-                                                            title="編輯">
-                                                            <i class="bi bi-pencil"></i> 編輯
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="刪除">
-                                                            <i class="bi bi-trash"></i> 刪除
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-center">
-                                                    <td>buyer1</td>
-                                                    <td>Concert Lover</td>
-                                                    <td>buyer1@example.com</td>
-                                                    <td>2025/02/01</td>
-                                                    <td><span class="badge bg-info">購票方</span></td>
-                                                    <td><span class="badge bg-primary">啟用</span></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-warning me-1"
-                                                            title="編輯">
-                                                            <i class="bi bi-pencil"></i> 編輯
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="刪除">
-                                                            <i class="bi bi-trash"></i> 刪除
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-center">
-                                                    <td>inactive_user</td>
-                                                    <td>Pending User</td>
-                                                    <td>inactive@example.com</td>
-                                                    <td>2025/03/01</td>
-                                                    <td><span class="badge bg-secondary">未開通</span></td>
-                                                    <td><span class="badge bg-secondary">停用</span></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-warning me-1"
-                                                            title="編輯">
-                                                            <i class="bi bi-pencil"></i> 編輯
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="刪除">
-                                                            <i class="bi bi-trash"></i> 刪除
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                            <tbody id="memberTableBody">
+                                                <!-- 動態內容將在這裡填入 -->
                                             </tbody>
                                         </table>
                                     </div>
 
+                                    <!-- 空資料提示 -->
+                                    <div class="text-center d-none" id="noDataMessage">
+                                        <div class="py-5">
+                                            <i class="bi bi-inbox display-1 text-muted"></i>
+                                            <h5 class="text-muted">暫無資料</h5>
+                                            <p class="text-muted">請調整搜尋條件或新增會員</p>
+                                        </div>
+                                    </div>
+
                                     <!-- 分頁 -->
-                                    <div class="row mt-3">
+                                    <div class="row mt-3" id="paginationContainer">
                                         <div class="col-sm-12 col-md-5">
-                                            <div class="dataTables_info">
-                                                顯示第 1 到 4 筆，共 10 筆資料
+                                            <div class="dataTables_info" id="pageInfo">
+                                                <!-- 分頁資訊將在這裡顯示 -->
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-7">
                                             <nav aria-label="Page navigation">
-                                                <ul class="pagination justify-content-end mb-0">
-                                                    <li class="page-item disabled">
-                                                        <a class="page-link" href="#" tabindex="-1">上一頁</a>
-                                                    </li>
-                                                    <li class="page-item active"><a class="page-link" href="#">1</a>
-                                                    </li>
-                                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="#">下一頁</a>
-                                                    </li>
+                                                <ul class="pagination justify-content-end mb-0" id="paginationList">
+                                                    <!-- 分頁按鈕將在這裡動態生成 -->
                                                 </ul>
                                             </nav>
                                         </div>
@@ -452,6 +394,8 @@
             All rights reserved.
         </footer>
     </div>
+
+    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
@@ -467,15 +411,30 @@
         crossorigin="anonymous"></script>
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
     <script src="../common/js/adminlte.js"></script>
-    <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+    <!--Summernote-->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+    <!-- apexcharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+
+    <!-- 合併的主要 JavaScript 程式 -->
     <script>
+        // ===== OverlayScrollbars 設定 =====
         const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
         const Default = {
             scrollbarTheme: 'os-theme-light',
             scrollbarAutoHide: 'leave',
             scrollbarClickScroll: true,
         };
+
+        // ===== 會員管理相關變數 =====
+        let currentPage = 1;
+        let pageSize = 10;
+        let isLoading = false;
+
+        // ===== DOM 載入完成後執行 =====
         document.addEventListener('DOMContentLoaded', function () {
+            // 初始化 OverlayScrollbars
             const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
             if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
                 OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
@@ -486,15 +445,305 @@
                     },
                 });
             }
+
+            // 初始化會員管理功能
+            initMemberManagement();
         });
+
+        // ===== 會員管理初始化 =====
+        function initMemberManagement() {
+            loadMemberList();
+            bindEvents();
+        }
+
+        // ===== 事件綁定 =====
+        function bindEvents() {
+            // 搜索按鈕
+            $('#searchBtn').on('click', function () {
+                currentPage = 1;
+                loadMemberList();
+            });
+
+            // 重置按鈕
+            $('#resetBtn').on('click', function () {
+                resetSearchForm();
+                currentPage = 1;
+                loadMemberList();
+            });
+
+            // 新增會員按鈕（先不實作後端）
+            $('#addMemberBtn').on('click', function () {
+                alert('新增會員功能開發中...');
+            });
+
+            // Enter鍵搜索
+            $('#searchUserName').on('keypress', function (e) {
+                if (e.which === 13) {
+                    $('#searchBtn').click();
+                }
+            });
+        }
+
+        // ===== 重置搜索表單 =====
+        function resetSearchForm() {
+            $('#searchUserName').val('');
+            $('#searchStartDate').val('');
+            $('#searchEndDate').val('');
+            $('#searchRoleLevel').val('');
+            $('#searchIsActive').val('');
+        }
+
+        // ===== 載入會員列表 =====
+        function loadMemberList() {
+            if (isLoading) return;
+
+            isLoading = true;
+            showLoading();
+
+            const searchParams = {
+                userName: $('#searchUserName').val().trim(),
+                startDate: $('#searchStartDate').val(),
+                endDate: $('#searchEndDate').val(),
+                roleLevel: $('#searchRoleLevel').val(),
+                isActive: $('#searchIsActive').val(),
+                page: currentPage,
+                size: pageSize
+            };
+
+            // 移除空值參數
+            Object.keys(searchParams).forEach(key => {
+                if (searchParams[key] === '' || searchParams[key] === null) {
+                    delete searchParams[key];
+                }
+            });
+
+            const queryString = new URLSearchParams(searchParams).toString();
+            const url = `/maven-tickeasy-v1/api/manager/member/page?${queryString}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        displayMemberList(data.data);
+                    } else {
+                        showError(data.message || '載入失敗');
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('載入會員列表失敗:', error);
+                    showError('載入會員列表失敗，請檢查網路連線或稍後再試');
+                })
+                .finally(() => {
+                    isLoading = false;
+                });
+        }
+
+        // ===== 顯示會員列表 =====
+        function displayMemberList(data) {
+            const tbody = $('#memberTableBody');
+            const noDataDiv = $('#noDataMessage');
+            const paginationContainer = $('#paginationContainer');
+
+            if (!data.members || data.members.length === 0) {
+                tbody.empty();
+                noDataDiv.removeClass('d-none');
+                paginationContainer.addClass('d-none');
+                return;
+            }
+
+            noDataDiv.addClass('d-none');
+            paginationContainer.removeClass('d-none');
+
+            let html = '';
+            data.members.forEach(member => {
+                html += `
+                    <tr class="text-center">
+                        <td>${escapeHtml(member.userName || '')}</td>
+                        <td>${escapeHtml(member.nickName || '')}</td>
+                        <td>${escapeHtml(member.email || '')}</td>
+                        <td>${formatDate(member.createTime)}</td>
+                        <td>${getRoleLevelBadge(member.roleLevel)}</td>
+                        <td>${getActiveBadge(member.isActive)}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-warning me-1" 
+                                    onclick="editMember(${member.memberId})" title="編輯">
+                                <i class="bi bi-pencil"></i> 編輯
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" 
+                                    onclick="deleteMember(${member.memberId})" title="刪除">
+                                <i class="bi bi-trash"></i> 刪除
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.html(html);
+            updatePagination(data);
+        }
+
+        // ===== 更新分頁 =====
+        function updatePagination(data) {
+            const pageInfo = $('#pageInfo');
+            const paginationList = $('#paginationList');
+
+            // 更新分頁資訊
+            const startItem = data.totalCount > 0 ? (data.currentPage - 1) * data.pageSize + 1 : 0;
+            const endItem = Math.min(data.currentPage * data.pageSize, data.totalCount);
+            pageInfo.text(`顯示第 ${startItem} 到 ${endItem} 筆，共 ${data.totalCount} 筆資料`);
+
+            // 生成分頁按鈕
+            let paginationHtml = '';
+
+            // 上一頁按鈕
+            const prevDisabled = !data.hasPrevious ? 'disabled' : '';
+            paginationHtml += `
+                <li class="page-item ${prevDisabled}">
+                    <a class="page-link" href="#" onclick="changePage(${data.currentPage - 1})" tabindex="-1">上一頁</a>
+                </li>
+            `;
+
+            // 頁碼按鈕
+            const startPage = Math.max(1, data.currentPage - 2);
+            const endPage = Math.min(data.totalPages, data.currentPage + 2);
+
+            if (startPage > 1) {
+                paginationHtml += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(1)">1</a></li>`;
+                if (startPage > 2) {
+                    paginationHtml += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const activeClass = i === data.currentPage ? 'active' : '';
+                paginationHtml += `
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            if (endPage < data.totalPages) {
+                if (endPage < data.totalPages - 1) {
+                    paginationHtml += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+                paginationHtml += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="changePage(${data.totalPages})">${data.totalPages}</a>
+                    </li>
+                `;
+            }
+
+            // 下一頁按鈕
+            const nextDisabled = !data.hasNext ? 'disabled' : '';
+            paginationHtml += `
+                <li class="page-item ${nextDisabled}">
+                    <a class="page-link" href="#" onclick="changePage(${data.currentPage + 1})">下一頁</a>
+                </li>
+            `;
+
+            paginationList.html(paginationHtml);
+        }
+
+        // ===== 變更頁面 =====
+        function changePage(page) {
+            if (page < 1 || isLoading) return;
+            currentPage = page;
+            loadMemberList();
+        }
+
+        // ===== 顯示載入中 =====
+        function showLoading() {
+            $('#loadingIndicator').removeClass('d-none');
+            $('#memberTableBody').empty();
+            $('#noDataMessage').addClass('d-none');
+            $('#paginationContainer').addClass('d-none');
+        }
+
+        // ===== 隱藏載入中 =====
+        function hideLoading() {
+            $('#loadingIndicator').addClass('d-none');
+        }
+
+        // ===== 顯示錯誤訊息 =====
+        function showError(message) {
+            const tbody = $('#memberTableBody');
+            tbody.html(`
+                <tr>
+                    <td colspan="7" class="text-center text-danger py-4">
+                        <i class="bi bi-exclamation-circle display-4"></i>
+                        <h5 class="mt-2">載入失敗</h5>
+                        <p>${escapeHtml(message)}</p>
+                        <button class="btn btn-primary" onclick="loadMemberList()">重新載入</button>
+                    </td>
+                </tr>
+            `);
+            $('#noDataMessage').addClass('d-none');
+            $('#paginationContainer').addClass('d-none');
+        }
+
+        // ===== 工具函數 =====
+        function escapeHtml(text) {
+            if (text == null) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, function (m) { return map[m]; });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-TW', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+
+        function getRoleLevelBadge(roleLevel) {
+            const roleMap = {
+                0: '<span class="badge bg-secondary">未開通</span>',
+                1: '<span class="badge bg-info">購票方</span>',
+                2: '<span class="badge bg-warning">活動方</span>',
+                3: '<span class="badge bg-success">平台方</span>'
+            };
+            return roleMap[roleLevel] || '<span class="badge bg-secondary">未知</span>';
+        }
+
+        function getActiveBadge(isActive) {
+            return isActive === 1
+                ? '<span class="badge bg-primary">啟用</span>'
+                : '<span class="badge bg-secondary">停用</span>';
+        }
+
+        // ===== 會員操作函數（先不實作後端） =====
+        function editMember(memberId) {
+            alert(`編輯會員功能開發中... (會員ID: ${memberId})`);
+        }
+
+        function deleteMember(memberId) {
+            if (confirm('確定要刪除此會員嗎？此操作無法復原。')) {
+                alert(`刪除會員功能開發中... (會員ID: ${memberId})`);
+            }
+        }
     </script>
-    <!--end::OverlayScrollbars Configure-->
-    <!-- OPTIONAL SCRIPTS -->
-    <!--Summernote-->
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
-    <!-- apexcharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
-        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
 </body>
 
 </html>
