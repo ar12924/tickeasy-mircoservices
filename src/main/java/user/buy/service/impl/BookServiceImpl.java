@@ -62,10 +62,11 @@ public class BookServiceImpl implements BookService {
 		var core = new Core<String>();
 
 		// 如果 eventId 或 userName 缺少其中1個
-		if (book.getEventId() <= 0 || book.getUserName() == null) {
+		if (book.getEventId() <= 0 || !StringUtils.hasText(book.getUserName())) {
 			core.setDataStatus(DataStatus.NOT_FOUND);
 			core.setMessage("資料有缺漏，請重新選擇票種");
 			core.setSuccessful(false);
+			return core;
 		}
 
 		// 如果 book 的 quantity 總和小於 0
@@ -88,7 +89,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	/**
-	 * 將個人訊息填寫結果儲存至 Redis。
+	 * 將訂單資訊(個人資料填寫)儲存至 Redis。
 	 * 
 	 * @param {BookDto} book - 個人資料。 (不設定 TTL (分鐘))
 	 */
@@ -96,8 +97,17 @@ public class BookServiceImpl implements BookService {
 	public Core<String> saveBookInfo(BookDto book) {
 		var core = new Core<String>();
 
+		// 如果 eventId 或 userName 缺少其中1個
+		if (book.getEventId() <= 0 || !StringUtils.hasText(book.getUserName())) {
+			core.setDataStatus(DataStatus.NOT_FOUND);
+			core.setMessage("資料有缺漏，請重新選擇票種");
+			core.setSuccessful(false);
+			return core;
+		}
+
 		// 以 key = userName 將 book 存入 Redis 當中
 		template.opsForValue().set(book.getUserName(), book);
+		core.setDataStatus(DataStatus.FOUND);
 		core.setMessage("填寫資料儲存成功");
 		core.setSuccessful(true);
 		return core;
@@ -164,7 +174,7 @@ public class BookServiceImpl implements BookService {
 
 		// 身分證字號不得為空
 		var reqIdCard = reqMember.getIdCard();
-		if (StringUtils.hasText(reqIdCard)) {
+		if (!StringUtils.hasText(reqIdCard)) {
 			memberCore.setDataStatus(DataStatus.NOT_FOUND);
 			memberCore.setMessage("身分證號為空");
 			memberCore.setSuccessful(false);

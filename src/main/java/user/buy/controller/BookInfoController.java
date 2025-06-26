@@ -58,7 +58,7 @@ public class BookInfoController {
 	}
 
 	/**
-	 * 將個人訊息填寫結果儲存至 Redis。
+	 * 將訂單資訊(個人資料填寫)儲存至 Redis。
 	 * 
 	 * @param {BookDto} book - 個人資料填寫結果(含先前的)。
 	 * @param {Member}  member - Session 的會員物件。

@@ -51,7 +51,7 @@ public class BookTypeController {
 	}
 
 	/**
-	 * 將票種選擇結果儲存至 Redis。
+	 * 將訂單資訊(票種選擇)儲存至 Redis。
 	 * 
 	 * @param {BookDto} book - 票種選擇結果資料。
 	 * @param {Member}  member - Session 的會員物件。
