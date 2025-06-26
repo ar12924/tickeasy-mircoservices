@@ -2,7 +2,7 @@ package manager.member.dao.impl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import manager.member.dao.ManagerMemberDao;
@@ -23,99 +23,132 @@ public class ManagerMemberDaoImpl implements ManagerMemberDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    private Session getSession() {
+    private Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
 
     @Override
     public List<Member> findAll() {
-        return getSession().createQuery("FROM Member ORDER BY createTime DESC", Member.class).getResultList();
+        String sql = "SELECT * FROM member ORDER BY create_time DESC";
+        NativeQuery<Member> query = getCurrentSession().createNativeQuery(sql, Member.class);
+        return query.getResultList();
     }
 
     @Override
     public Member findById(Integer memberId) {
-        return getSession().get(Member.class, memberId);
+        return getCurrentSession().get(Member.class, memberId);
     }
 
     @Override
-    public List<Member> findByUserName(String userName) {
-        return getSession().createQuery(
-                "FROM Member WHERE userName LIKE :userName OR nickName LIKE :userName ORDER BY createTime DESC",
-                Member.class)
-                .setParameter("userName", "%" + userName + "%")
-                .getResultList();
-    }
+    public List<Member> findMembersWithConditions(String userName, String startDate, String endDate,
+                                                 Integer roleLevel, Integer isActive, int offset, int limit) {
 
-    @Override
-    public List<Member> findByRoleLevel(Integer roleLevel) {
-        return getSession()
-                .createQuery("FROM Member WHERE roleLevel = :roleLevel ORDER BY createTime DESC", Member.class)
-                .setParameter("roleLevel", roleLevel)
-                .getResultList();
-    }
-
-    @Override
-    public List<Member> findByIsActive(Integer isActive) {
-        return getSession()
-                .createQuery("FROM Member WHERE isActive = :isActive ORDER BY createTime DESC", Member.class)
-                .setParameter("isActive", isActive)
-                .getResultList();
-    }
-
-    @Override
-    public List<Member> findByDateRange(String startDate, String endDate) {
-        return getSession()
-                .createQuery("FROM Member WHERE DATE(createTime) BETWEEN :startDate AND :endDate ORDER BY createTime DESC",
-                        Member.class)
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
-                .getResultList();
-    }
-
-    @Override
-    public List<Member> findAllWithPaging(int offset, int limit) {
-        return getSession()
-                .createQuery("FROM Member ORDER BY createTime DESC", Member.class)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .getResultList();
-    }
-
-    @Override
-    public long count() {
-        return getSession().createQuery("SELECT COUNT(*) FROM Member", Long.class).uniqueResult();
-    }
-
-    @Override
-    public List<Member> findByDynamicQuery(String hql, Map<String, Object> parameters, int offset, int limit) {
-        Query<Member> query = getSession().createQuery(hql, Member.class);
+        StringBuilder sql = new StringBuilder("SELECT * FROM member WHERE 1=1");
         
-        if (parameters != null) {
-            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                query.setParameter(entry.getKey(), entry.getValue());
+        buildWhereConditions(sql, userName, startDate, endDate, roleLevel, isActive);
+        
+        sql.append(" ORDER BY create_time DESC");
+        
+        if (limit > 0) {
+            sql.append(" LIMIT ").append(limit);
+            if (offset > 0) {
+                sql.append(" OFFSET ").append(offset);
             }
         }
         
-        if (offset >= 0) {
-            query.setFirstResult(offset);
-        }
-        if (limit > 0) {
-            query.setMaxResults(limit);
-        }
+        NativeQuery<Member> query = getCurrentSession().createNativeQuery(sql.toString(), Member.class);
+        
+        setQueryParameters(query, userName, startDate, endDate, roleLevel, isActive);
         
         return query.getResultList();
     }
 
     @Override
-    public long countByDynamicQuery(String hql, Map<String, Object> parameters) {
-        Query<Long> query = getSession().createQuery(hql, Long.class);
+    public long countMembersWithConditions(String userName, String startDate, String endDate,
+                                          Integer roleLevel, Integer isActive) {
+    
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM member WHERE 1=1");
         
-        if (parameters != null) {
-            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                query.setParameter(entry.getKey(), entry.getValue());
-            }
+        
+        buildWhereConditions(sql, userName, startDate, endDate, roleLevel, isActive);
+        
+        
+        NativeQuery<Number> query = getCurrentSession().createNativeQuery(sql.toString());
+        
+        
+        setQueryParameters(query, userName, startDate, endDate, roleLevel, isActive);
+        
+        Number result = query.uniqueResult();
+        return result != null ? result.longValue() : 0L;
+    }
+
+    @Override
+    public long count() {
+        String sql = "SELECT COUNT(*) FROM member";
+        NativeQuery<Number> query = getCurrentSession().createNativeQuery(sql);
+        Number result = query.uniqueResult();
+        return result != null ? result.longValue() : 0L;
+    }
+
+    /**
+     * DAO層責任：構建 WHERE 條件子句（Native SQL）
+     * 使用實際的資料庫欄位名稱，根據條件動態構建 SQL
+     */
+    private void buildWhereConditions(StringBuilder sql, String userName, String startDate, 
+                                     String endDate, Integer roleLevel, Integer isActive) {
+        
+        
+        if (userName != null && !userName.trim().isEmpty()) {
+            sql.append(" AND (user_name LIKE :userName OR nick_name LIKE :userName)");
         }
         
-        return query.uniqueResult();
+        
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            sql.append(" AND DATE(create_time) >= :startDate");
+        }
+        
+        
+        if (endDate != null && !endDate.trim().isEmpty()) {
+            sql.append(" AND DATE(create_time) <= :endDate");
+        }
+        
+        
+        if (roleLevel != null) {
+            sql.append(" AND role_level = :roleLevel");
+        }
+        
+        
+        if (isActive != null) {
+            sql.append(" AND is_active = :isActive");
+        }
+    }
+
+    /**
+     * DAO層責任：設定 Native Query 參數
+     * 處理參數值的設定和格式化
+     */
+    private void setQueryParameters(NativeQuery<?> query, String userName, String startDate, 
+                                   String endDate, Integer roleLevel, Integer isActive) {
+        
+        
+        if (userName != null && !userName.trim().isEmpty()) {
+            query.setParameter("userName", "%" + userName.trim() + "%");
+        }
+        
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            query.setParameter("startDate", startDate);
+        }
+        
+        if (endDate != null && !endDate.trim().isEmpty()) {
+            query.setParameter("endDate", endDate);
+        }
+        
+        if (roleLevel != null) {
+            query.setParameter("roleLevel", roleLevel);
+        }
+
+        if (isActive != null) {
+            query.setParameter("isActive", isActive);
+        }
     }
 }

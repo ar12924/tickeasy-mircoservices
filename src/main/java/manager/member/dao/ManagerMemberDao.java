@@ -1,8 +1,8 @@
 package manager.member.dao;
 
-import user.member.vo.Member;
 import java.util.List;
-import java.util.Map;
+
+import user.member.vo.Member;
 
 /**
  * 會員資料存取介面
@@ -27,46 +27,34 @@ public interface ManagerMemberDao {
 	Member findById(Integer memberId);
 
 	/**
-	 * 根據使用者名稱查詢會員
-	 * 
-	 * @param userName 使用者名稱
-	 * @return 會員列表
-	 */
-	List<Member> findByUserName(String userName);
+     * 分頁查詢會員（支援複合條件）
+     * DAO層負責 Native SQL 查詢邏輯構建
+     * 
+     * @param userName  使用者名稱（模糊搜尋）
+     * @param startDate 開始日期
+     * @param endDate   結束日期
+     * @param roleLevel 會員等級
+     * @param isActive  啟用狀態
+     * @param offset    偏移量
+     * @param limit     限制筆數
+     * @return 會員列表
+     */
+    List<Member> findMembersWithConditions(String userName, String startDate, String endDate, 
+                                          Integer roleLevel, Integer isActive, int offset, int limit);
 
-	/**
-	 * 根據會員等級查詢會員
-	 * 
-	 * @param roleLevel 會員等級
-	 * @return 會員列表
-	 */
-	List<Member> findByRoleLevel(Integer roleLevel);
-
-	/**
-	 * 根據啟用狀態查詢會員
-	 * 
-	 * @param isActive 啟用狀態
-	 * @return 會員列表
-	 */
-	List<Member> findByIsActive(Integer isActive);
-
-	/**
-	 * 根據日期範圍查詢會員
-	 * 
-	 * @param startDate 開始日期
-	 * @param endDate   結束日期
-	 * @return 會員列表
-	 */
-	List<Member> findByDateRange(String startDate, String endDate);
-
-	/**
-	 * 分頁查詢所有會員
-	 * 
-	 * @param offset 偏移量
-	 * @param limit  限制筆數
-	 * @return 會員列表
-	 */
-	List<Member> findAllWithPaging(int offset, int limit);
+    /**
+     * 計算符合條件的會員總數
+     * DAO層負責 Native SQL 計數查詢邏輯構建
+     * 
+     * @param userName  使用者名稱（模糊搜尋）
+     * @param startDate 開始日期
+     * @param endDate   結束日期
+     * @param roleLevel 會員等級
+     * @param isActive  啟用狀態
+     * @return 總數
+     */
+    long countMembersWithConditions(String userName, String startDate, String endDate, 
+                                   Integer roleLevel, Integer isActive);
 
 	/**
 	 * 計算會員總數
@@ -74,8 +62,5 @@ public interface ManagerMemberDao {
 	 * @return 總數
 	 */
 	long count();
-	
-	List<Member> findByDynamicQuery(String hql, Map<String, Object> parameters, int offset, int limit);
-    
-	long countByDynamicQuery(String hql, Map<String, Object> parameters);
+
 }
