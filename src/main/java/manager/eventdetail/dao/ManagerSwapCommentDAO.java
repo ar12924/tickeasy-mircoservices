@@ -1,6 +1,7 @@
 package manager.eventdetail.dao;
 
 import manager.eventdetail.vo.ManagerSwapCommentVO;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,29 +12,28 @@ import java.util.Map;
  */
 public interface ManagerSwapCommentDAO {
     
-    /**
-     * 根據條件查詢換票記錄（含分頁）
-     * 
-     * @param params 查詢參數
-     * @param offset 起始位置
-     * @param limit 每頁數量
-     * @param orderBy 排序條件
-     * @return 換票記錄列表
+	/**
+     * 按建立時間查詢換票記錄
      */
-    List<ManagerSwapCommentVO> findSwapsWithPaging(Map<String, Object> params, Integer offset, Integer limit, String orderBy);
+    List<ManagerSwapCommentVO> findByCreateTime(Integer eventId, String keyword, Date startDate, Date endDate, Integer swappedStatus, Integer offset, Integer limit);
     
     /**
-     * 根據條件查詢換票記錄總數
-     * 
-     * @param params 查詢參數
-     * @return 總數
+     * 按換票時間查詢換票記錄
      */
-    Long countSwaps(Map<String, Object> params);
+    List<ManagerSwapCommentVO> findBySwappedTime(Integer eventId, String keyword, Date startDate, Date endDate, Integer swappedStatus, Integer offset, Integer limit);
+    
+    /**
+     * 按建立時間統計記錄數
+     */
+    Long countByCreateTime(Integer eventId, String keyword, Date startDate, Date endDate, Integer swappedStatus);
+    
+    /**
+     * 按換票時間統計記錄數
+     */
+    Long countBySwappedTime(Integer eventId, String keyword, Date startDate, Date endDate, Integer swappedStatus);
     
     /**
      * 查詢有換票記錄的活動列表
-     * 
-     * @return 活動列表
      */
     List<Map<String, Object>> findEventList();
 }
