@@ -30,36 +30,55 @@ public class NotificationServiceImpl implements NotificationService {
 	@Transactional
 	@Override
 	public List<Notification> notificationList(int memberId) {
-		return notificationDao.selectAllByMemberId(memberId); 
+		return notificationDao.selectAllByMemberId(memberId);
 		/*
 		 * List<Notification> result = null;
 		 * 
 		 * result = notificationDao.selectAllByMemberId(memberId);
 		 */
 		/* Transaction tx = null; Session session = null; */
-		 
-		/* try { */
-			/* session = HibernateUtil5.getSessionFactory().getCurrentSession(); */
-			/* tx = session.beginTransaction(); */
-			/* result = notificationDao.selectAllByMemberId(memberId); */
-			/* tx.commit(); */
-			/* } catch (Exception e) { */
-			/*
-			 * session.getTransaction().rollback();
-			 */
-			/* } */
-			/* return result; */
-	}
 
+		/* try { */
+		/* session = HibernateUtil5.getSessionFactory().getCurrentSession(); */
+		/* tx = session.beginTransaction(); */
+		/* result = notificationDao.selectAllByMemberId(memberId); */
+		/* tx.commit(); */
+		/* } catch (Exception e) { */
+		/*
+		 * session.getTransaction().rollback();
+		 */
+		/* } */
+		/* return result; */
+	}
+	
+	@Transactional
 	@Override
 	public Integer notificationRead(int memberId, int memberNotificationId) {
 
 		return notificationDao.updateIsRead(memberId, memberNotificationId);
 	}
 
+	@Transactional
 	@Override
 	public Integer notificationVisibleUpdate(int memberNotificationId) {
 		return notificationDao.updateUnvisible(memberNotificationId);
+	}
+
+	@Transactional
+	@Override
+	public void sendReminderNotificationForTomorrow() {
+
+		notificationDao.sendReminderNotificationForTomorrow();
+		System.out.println("Reminder排程動了");
+
+	}
+
+	@Transactional
+	@Override
+	public void sendFavoriteSellReminderNotificationForTomorrow() {
+		notificationDao.sendFavoriteSellReminderNotificationForTomorrow();
+		System.out.println("Favorite排程動了");
+		
 	}
 
 }

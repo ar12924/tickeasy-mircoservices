@@ -1,14 +1,4 @@
 package user.ticket.dao;
-/**
- * 換票留言資料存取介面
- * 創建者: archchang
- * 創建日期: 2025-05-26
- */
-import user.ticket.vo.SwapCommentVO;
-import user.ticket.vo.MemberVO;
-import user.ticket.vo.BuyerTicketVO;
-import user.ticket.vo.EventTicketTypeVO;
-
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;

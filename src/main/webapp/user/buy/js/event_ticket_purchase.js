@@ -1,13 +1,41 @@
 /**
  * 活動詳情頁面 Vue 應用
  */
+// 使用本地檔案
+import { createApp } from '../../../common/vendors/vue.esm-browser-3.5.16.js';
+// 從共用組件匯入需要的函數
+import { renderNav, initNavJSEvents } from '../../layout/nav/nav.js';
+import { renderFooter } from '../../layout/footer/footer.js';
 
 // 基礎 API URL (實際使用時需要設定正確的路徑)
 const API_BASE_URL = '/maven-tickeasy-v1/api';
 
-document.addEventListener('DOMContentLoaded', function () {
+// 初始化應用程序
+async function initializeApp() {
+    try {
+        // 先載入共用組件
+        console.log('開始載入共用組件...');
+        await renderNav();
+        console.log('導覽列載入完成');
+        
+        await renderFooter();
+        console.log('頁腳載入完成');
+        
+        initNavJSEvents();
+        console.log('導覽列事件綁定完成');
+        
+    } catch (error) {
+        console.error('載入共用組件時發生錯誤:', error);
+        // 即使共用組件載入失敗，也要繼續載入主要功能
+    }
+
+    // 初始化 Vue 應用
+    initVueApp();
+}
+
+function initVueApp() {
     // 創建 Vue 應用
-    window.app = Vue.createApp({
+    const eventTicketApp = createApp({
         // 資料
         data() {
             return {
@@ -371,5 +399,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 掛載應用
-    window.app.mount('#app');
-});
+    eventTicketApp.mount('#app');
+}
+
+// 當 DOM 載入完成後初始化應用
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+// 導出函數供其他模組使用
+export { initializeApp, initVueApp };

@@ -42,19 +42,19 @@
                 <h1 class="exchange-title">轉票專區</h1>
 
                 <!-- 載入中狀態 -->
-                <div v-if="loading" class="loading-container">
+                <div v-if="isLoading" class="loading-container">
                     <div class="loading-spinner"></div>
                     <p>載入中，請稍候...</p>
                 </div>
 
                 <!-- 錯誤訊息 -->
-                <div v-if="error && !loading" class="error-message">
-                    <p>{{ error }}</p>
+                <div v-if="errorMessage  && !isLoading" class="error-message">
+                    <p>{{ errorMessage  }}</p>
                     <button @click="initPage" class="retry-button">重試</button>
                 </div>
 
                 <!-- 發表轉票表單 -->
-                <div v-if="!loading && !error && isLoggedIn" class="ticket-form">
+                <div v-if="!isLoading && !errorMessage && isLoggedIn" class="ticket-form">
                     <h2 class="form-title">發表轉票</h2>
                     <form @submit.prevent="submitSwapPost">
                         <div class="form-row">
@@ -81,21 +81,21 @@
                                 rows="3" placeholder="補充說明（選填）" required></textarea>
                         </div>
                         <div class="form-buttons">
-                            <button type="submit" class="submit-button" :disabled="submitting">
-                                {{ submitting ? '發佈中...' : '發起轉票' }}
+                            <button type="submit" class="submit-button" :disabled="isSubmitting">
+                                {{ isSubmitting ? '發佈中...' : '發起轉票' }}
                             </button>
                         </div>
                     </form>
                 </div>
 
                 <!-- 未登入提示 -->
-                <div v-if="!loading && !error && !isLoggedIn" class="login-prompt">
+                <div v-if="!isLoading  && !errorMessage && !isLoggedIn" class="login-prompt">
                     <p>請先登入才能發表轉票貼文</p>
                     <button @click="goToLogin" class="submit-button">前往登入</button>
                 </div>
 
                 <!-- 轉票列表 -->
-                <div v-if="!loading && !error">
+                <div v-if="!isLoading && !errorMessage">
                     <div v-if="swapPosts.length === 0" class="no-posts">
                         <p>目前沒有轉票貼文</p>
                     </div>
@@ -246,17 +246,13 @@
         <!-- footer.html 內容將由 footer.js 動態載入 -->
     </footer>
 
-    <!-- Vue 3 CDN -->
-    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
+    
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
     <!-- is.js 函式庫 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script>
-    <!-- 引入共用組件JavaScript -->
-    <script src="../layout/nav/nav.js"></script>
-    <script src="../layout/footer/footer.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script> -->
     <!-- 引入自定義JavaScript -->
-    <script src="./js/ticket_exchange_area.js"></script>
+    <script type="module" src="./js/ticket_exchange_area.js"></script>
 </body>
 
 </html>
