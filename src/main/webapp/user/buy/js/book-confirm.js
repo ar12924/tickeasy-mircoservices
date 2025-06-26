@@ -115,7 +115,7 @@ const initBookConfirmJSEvents = () => {
   const book = {
     eventId: "1",
     eventName: "2025 春季搖滾音樂節",
-    userName: "buyer1",
+    userName: "buyer2",
     progress: BOOKING_PROGRESS.ORDER_CONFIRM,
     selected: [
       {
@@ -134,8 +134,16 @@ const initBookConfirmJSEvents = () => {
         quantity: 1,
       },
     ],
-    contact: null,
-    attendee: null,
+    contact: {
+      userName: "buyer2",
+      email: "buyer2@example.com",
+      nickName: "Music Fan",
+      phone: "0967890123",
+    },
+    attendee: [
+      { userName: "buyer2", idCard: "F123456789" },
+      { userName: "buyer2", idCard: "F123456789" },
+    ],
   };
 
   // ====== nav 部分 ======

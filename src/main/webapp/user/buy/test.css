@@ -1,0 +1,50 @@
+/* 自定義樣式 - 只保留 Bulma 無法替代的 */
+.warning-box {
+  background-color: #fff3cd;
+  border: 3px solid #ffeaa7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.warning-icon {
+  background-color: #f39c12;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.event-image {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.dropdown-arrow {
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.dropdown-arrow.is-active {
+  transform: rotate(180deg);
+}
+
+.ticket-details {
+  display: none;
+}
+
+.ticket-details.is-active {
+  display: block;
+}
+
+.ticket-item-box {
+  box-shadow: none;
+  border: 1px solid #dbdbdb;
+}

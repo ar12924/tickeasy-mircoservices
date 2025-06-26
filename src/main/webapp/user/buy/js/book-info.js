@@ -191,6 +191,7 @@ const initBookInfoJSEvents = async (book) => {
   });
   $(".next").on("click", () => {
     addTicketInfoToContactAndAttendee(book);
+    book.progress = BOOKING_PROGRESS.ORDER_CONFIRM; // 個人資料填寫完成，進入下一步
     saveBook(book);
   });
 };

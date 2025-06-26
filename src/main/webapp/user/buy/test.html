@@ -1,0 +1,321 @@
+<!-- 引入 jQuery 和 jQuery Transit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js"></script>
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TickEasy - 訂單確認</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* 自定義樣式 - 只保留 Bulma 無法替代的 */
+      .warning-box {
+        background-color: #fff3cd;
+        border: 3px solid #ffeaa7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .warning-icon {
+        background-color: #f39c12;
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .event-image {
+        width: 150px;
+        height: 100px;
+        object-fit: cover;
+      }
+
+      .dropdown-arrow {
+        cursor: pointer;
+        transition: transform 0.3s;
+      }
+
+      .dropdown-arrow.is-active {
+        transform: rotate(180deg);
+      }
+
+      .ticket-details {
+        display: none;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      .ticket-details.is-active {
+        display: table-row;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .ticket-item-box {
+        box-shadow: none;
+        border: 1px solid #dbdbdb;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 主要內容 -->
+    <main class="section">
+      <div class="container">
+        <!-- 警告訊息 -->
+        <div class="notification is-warning is-light warning-box">
+          <span class="warning-icon">!</span>
+          <span class="has-text-weight-semibold is-size-4"
+            >您的訂單尚未付款</span
+          >
+        </div>
+
+        <!-- 活動資訊 -->
+        <div class="box">
+          <div class="columns is-vcentered">
+            <div class="column is-narrow">
+              <figure class="image">
+                <img
+                  src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=200&fit=crop"
+                  alt="2024春季音樂節"
+                  class="event-image is-rounded"
+                />
+              </figure>
+            </div>
+            <div class="column">
+              <h2 class="title is-4">2024 春季音樂節</h2>
+              <div class="content">
+                <p><strong>時間：</strong>2024/03/15 19:30</p>
+                <p><strong>地點：</strong>台北市信義區信義路五段7號</p>
+                <p><strong>主辦單位：</strong>春季音樂營運策劃有限公司</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 購票明細 -->
+        <div class="box has-background-warning-light p-0">
+          <h3 class="title is-5 has-text-centered pt-5">購票明細</h3>
+
+          <!-- 票券表格 -->
+          <div class="table-container mb-0">
+            <table class="table is-fullwidth is-hoverable">
+              <thead>
+                <tr>
+                  <th>票種</th>
+                  <th class="has-text-centered">數量</th>
+                  <th class="has-text-centered">單價</th>
+                  <th class="has-text-centered">金額</th>
+                  <th class="has-text-centered">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- VIP區 -->
+                <tr>
+                  <td class="has-text-weight-semibold">VIP區</td>
+                  <td class="has-text-centered">2</td>
+                  <td class="has-text-centered">NT$ 2,800</td>
+                  <td class="has-text-centered has-text-weight-semibold">
+                    NT$ 5,600
+                  </td>
+                  <td class="has-text-centered">
+                    <span
+                      class="dropdown-arrow has-text-grey"
+                      data-ticket-type="vip"
+                    >
+                      <i class="fas fa-chevron-down"></i>
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- VIP區明細行 -->
+                <tr class="ticket-details" id="ticketDetails-vip">
+                  <td colspan="5" class="p-0" style="border: none">
+                    <div
+                      class="ticket-details-content has-background-light p-6"
+                      style="width: 100%"
+                    >
+                      <div class="columns is-centered">
+                        <div class="column is-8">
+                          <div class="box is-small ticket-item-box mb-4">
+                            <div class="columns is-vcentered">
+                              <div class="column">
+                                <strong>票券 #VIP區 (1/2)</strong>
+                              </div>
+                              <div class="column is-narrow">
+                                <span class="has-text-grey">NT$ 2,800</span>
+                              </div>
+                            </div>
+                            <div class="notification is-light is-small">
+                              <div class="is-size-7 has-text-grey">持有人</div>
+                              <div class="has-text-weight-semibold">buyer2</div>
+                              <div class="is-size-7 has-text-grey">
+                                F123456789
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="box is-small ticket-item-box">
+                            <div class="columns is-vcentered">
+                              <div class="column">
+                                <strong>票券 #VIP區 (2/2)</strong>
+                              </div>
+                              <div class="column is-narrow">
+                                <span class="has-text-grey">NT$ 2,800</span>
+                              </div>
+                            </div>
+                            <div class="notification is-light is-small">
+                              <div class="is-size-7 has-text-grey">持有人</div>
+                              <div class="has-text-weight-semibold">buyer2</div>
+                              <div class="is-size-7 has-text-grey">
+                                F123456789
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 一般票 -->
+                <tr>
+                  <td class="has-text-weight-semibold">一般票</td>
+                  <td class="has-text-centered">1</td>
+                  <td class="has-text-centered">NT$ 1,000</td>
+                  <td class="has-text-centered has-text-weight-semibold">
+                    NT$ 1,000
+                  </td>
+                  <td class="has-text-centered">
+                    <span
+                      class="dropdown-arrow has-text-grey"
+                      data-ticket-type="general"
+                    >
+                      <i class="fas fa-chevron-down"></i>
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- 一般票明細行 -->
+                <tr class="ticket-details" id="ticketDetails-general">
+                  <td colspan="5" class="p-0" style="border: none">
+                    <div
+                      class="ticket-details-content has-background-light p-6"
+                      style="width: 100%"
+                    >
+                      <div class="columns is-centered">
+                        <div class="column is-8">
+                          <div class="box is-small ticket-item-box">
+                            <div class="columns is-vcentered">
+                              <div class="column">
+                                <strong>票券 #一般票 (1/1)</strong>
+                              </div>
+                              <div class="column is-narrow">
+                                <span class="has-text-grey">NT$ 1,000</span>
+                              </div>
+                            </div>
+                            <div class="notification is-light is-small">
+                              <div class="is-size-7 has-text-grey">持有人</div>
+                              <div class="has-text-weight-semibold">buyer1</div>
+                              <div class="is-size-7 has-text-grey">
+                                E123456789
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 總計 -->
+        <div class="notification is-light">
+          <div class="columns is-vcentered">
+            <div class="column">
+              <span class="title is-5">合計</span>
+            </div>
+            <div class="column is-narrow">
+              <span class="title is-4 has-text-primary">NT$ 6,600</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 按鈕區域 -->
+        <div class="field is-grouped is-grouped-centered mt-5">
+          <div class="control">
+            <button class="button is-large is-light">返回</button>
+          </div>
+          <div class="control">
+            <button class="button is-large is-primary">付款去</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      $(document).ready(function () {
+        // 綁定點擊事件到所有的 dropdown-arrow 元素
+        $(".dropdown-arrow").on("click", function (e) {
+          const $clickElement = $(e.target).closest(".dropdown-arrow");
+          const ticketType = $clickElement.data("ticket-type");
+          const $details = $("#ticketDetails-" + ticketType);
+          const $arrow = $clickElement.find("i");
+
+          if ($details.hasClass("is-active")) {
+            // 隱藏詳細資訊 - 先動畫再隱藏
+            $details.transition(
+              {
+                opacity: 0,
+                y: "-10px",
+              },
+              300,
+              function () {
+                $details.removeClass("is-active").css("display", "none");
+              }
+            );
+
+            // 箭頭旋轉動畫
+            $arrow.transition({ rotate: "0deg" }, 200);
+          } else {
+            // 顯示詳細資訊 - 先顯示再動畫
+            $details.css("display", "table-row").addClass("is-active");
+
+            // 強制重繪，確保 display 變更生效
+            $details[0].offsetHeight;
+
+            // 執行動畫
+            $details.transition(
+              {
+                opacity: 1,
+                y: "0px",
+              },
+              300
+            );
+
+            // 箭頭旋轉動畫
+            $arrow.transition({ rotate: "180deg" }, 200);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
