@@ -40,4 +40,27 @@ public interface ManagerMemberService {
 	 * @return 會員物件
 	 */
 	Member getMemberById(Integer memberId);
+	
+	/**
+     * 新增會員
+     * 
+     * @param member 會員物件
+     * @return 新增的會員物件
+     */
+    Member createMember(Member member);
+
+    /**
+     * 更新會員
+     * 
+     * @param member 會員物件
+     * @return 更新後的會員物件
+     */
+    Member updateMember(Member member);
+
+    /**
+     * 刪除會員
+     * 
+     * @param memberId 會員ID
+     */
+    void deleteMember(Integer memberId);
 }

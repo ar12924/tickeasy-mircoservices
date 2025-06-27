@@ -151,4 +151,39 @@ public class ManagerMemberDaoImpl implements ManagerMemberDao {
             query.setParameter("isActive", isActive);
         }
     }
+    
+    @Override
+    public Member save(Member member) {
+        getCurrentSession().persist(member);
+        return member;
+    }
+
+    @Override
+    public Member update(Member member) {
+        return (Member) getCurrentSession().merge(member);
+    }
+
+    @Override
+    public void deleteById(Integer memberId) {
+        Member member = findById(memberId);
+        if (member != null) {
+            getCurrentSession().delete(member);
+        }
+    }
+
+    @Override
+    public Member findByUserName(String userName) {
+        String sql = "SELECT * FROM member WHERE user_name = :userName";
+        NativeQuery<Member> query = getCurrentSession().createNativeQuery(sql, Member.class);
+        query.setParameter("userName", userName);
+        return query.uniqueResult();
+    }
+
+    @Override
+    public Member findByEmail(String email) {
+        String sql = "SELECT * FROM member WHERE email = :email";
+        NativeQuery<Member> query = getCurrentSession().createNativeQuery(sql, Member.class);
+        query.setParameter("email", email);
+        return query.uniqueResult();
+    }
 }

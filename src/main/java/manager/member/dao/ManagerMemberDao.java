@@ -62,5 +62,43 @@ public interface ManagerMemberDao {
 	 * @return 總數
 	 */
 	long count();
+	
+	/**
+     * 新增會員
+     * 
+     * @param member 會員物件
+     * @return 新增的會員物件
+     */
+    Member save(Member member);
 
+    /**
+     * 更新會員
+     * 
+     * @param member 會員物件
+     * @return 更新後的會員物件
+     */
+    Member update(Member member);
+
+    /**
+     * 刪除會員
+     * 
+     * @param memberId 會員ID
+     */
+    void deleteById(Integer memberId);
+
+    /**
+     * 根據使用者名稱查詢會員
+     * 
+     * @param userName 使用者名稱
+     * @return 會員物件
+     */
+    Member findByUserName(String userName);
+
+    /**
+     * 根據電子郵件查詢會員
+     * 
+     * @param email 電子郵件
+     * @return 會員物件
+     */
+    Member findByEmail(String email);
 }
