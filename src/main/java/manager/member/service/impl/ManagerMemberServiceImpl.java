@@ -147,6 +147,8 @@ public class ManagerMemberServiceImpl implements ManagerMemberService {
 
         // 保持原有照片
         member.setPhoto(existingMember.getPhoto());
+        
+        member.setCreateTime(existingMember.getCreateTime());
 
         return memberDao.update(member);
     }

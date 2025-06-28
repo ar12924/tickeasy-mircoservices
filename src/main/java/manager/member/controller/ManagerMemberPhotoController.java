@@ -76,11 +76,12 @@ public class ManagerMemberPhotoController {
             InputStreamResource resource = new InputStreamResource(inputStream);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG);
             headers.setContentLength(photoData.length);
+            headers.setCacheControl("max-age=3600");
 
             return ResponseEntity.ok()
                     .headers(headers)
+                    .contentType(MediaType.IMAGE_JPEG)
                     .body(resource);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
