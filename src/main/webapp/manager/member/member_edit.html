@@ -4,7 +4,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>TickEasy | 編輯會員</title>
-
     <!--Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="TickEasy | 編輯會員" />
@@ -24,11 +23,6 @@
         integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
     <!--Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="../common/css/adminlte.css" />
-    <!-- apexcharts -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
-        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
-    <!--Summernote-->
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
 </head>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -57,7 +51,6 @@
                             <span class="d-none d-md-inline">Alexander Pierce</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                            <!--begin::User Image-->
                             <li class="user-header text-bg-primary">
                                 <img src="../common/assets/img/user2-128x128.png" class="rounded-circle shadow"
                                     alt="User Image" />
@@ -249,7 +242,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">編輯會員資料</h3>
+                            <h3 class="mb-0">平台管理 - 編輯會員</h3>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
@@ -264,198 +257,240 @@
             </div>
             <div class="app-content">
                 <div class="container-fluid">
-                    <form id="memberEditForm">
-                        <div class="row">
-                            <!-- 基本資料卡片 -->
-                            <div class="col-md-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="card-title">基本資料</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label for="userName" class="form-label">帳號名稱 <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="userName" name="userName"
-                                                    value="event_host1" readonly>
-                                                <div class="form-text">帳號名稱不可修改</div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="nickName" class="form-label">會員暱稱 <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="nickName" name="nickName"
-                                                    value="Event Master" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="email" class="form-label">電子郵件 <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="email" class="form-control" id="email" name="email"
-                                                    value="host1@tickeasy.com" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="phone" class="form-label">手機號碼</label>
-                                                <input type="tel" class="form-control" id="phone" name="phone"
-                                                    value="0923456789" placeholder="09XXXXXXXX">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="birthDate" class="form-label">出生日期</label>
-                                                <input type="date" class="form-control" id="birthDate" name="birthDate"
-                                                    value="1985-05-15">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="gender" class="form-label">性別</label>
-                                                <select class="form-select" id="gender" name="gender">
-                                                    <option value="">請選擇</option>
-                                                    <option value="M">男性</option>
-                                                    <option value="F" selected>女性</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="idCard" class="form-label">身份證號碼</label>
-                                                <input type="text" class="form-control" id="idCard" name="idCard"
-                                                    value="B123456789" maxlength="10">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="unicode" class="form-label">統一編號</label>
-                                                <input type="text" class="form-control" id="unicode" name="unicode"
-                                                    value="23456789" maxlength="10">
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- 載入指示器 -->
+                            <div class="text-center" id="loadingIndicator">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">載入中...</span>
                                 </div>
-
-                                <!-- 權限設定卡片 -->
-                                <div class="card mt-3">
-                                    <div class="card-header">
-                                        <h3 class="card-title">權限設定</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label for="roleLevel" class="form-label">會員等級 <span
-                                                        class="text-danger">*</span></label>
-                                                <select class="form-select" id="roleLevel" name="roleLevel" required>
-                                                    <option value="0">未開通</option>
-                                                    <option value="1">購票方</option>
-                                                    <option value="2" selected>活動方</option>
-                                                    <option value="3">平台方</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="isActive" class="form-label">帳號狀態 <span
-                                                        class="text-danger">*</span></label>
-                                                <select class="form-select" id="isActive" name="isActive" required>
-                                                    <option value="1" selected>啟用</option>
-                                                    <option value="0">停用</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="alert alert-info mb-0" role="alert">
-                                                    <i class="bi bi-info-circle"></i>
-                                                    變更會員等級將影響其系統權限，請謹慎操作。
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- 密碼重設卡片 -->
-                                <div class="card mt-3">
-                                    <div class="card-header">
-                                        <h3 class="card-title">密碼管理</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-12">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="resetPassword"
-                                                        name="resetPassword">
-                                                    <label class="form-check-label" for="resetPassword">
-                                                        重設密碼
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6" id="newPasswordGroup" style="display: none;">
-                                                <label for="newPassword" class="form-label">新密碼</label>
-                                                <input type="password" class="form-control" id="newPassword"
-                                                    name="newPassword">
-                                                <div class="form-text">密碼長度至少6個字元</div>
-                                            </div>
-                                            <div class="col-md-6" id="confirmPasswordGroup" style="display: none;">
-                                                <label for="confirmPassword" class="form-label">確認密碼</label>
-                                                <input type="password" class="form-control" id="confirmPassword"
-                                                    name="confirmPassword">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <p class="mt-2">載入會員資料中...</p>
                             </div>
-
-                            <!-- 右側資訊卡片 -->
-                            <div class="col-md-4">
-                                <!-- 會員頭像卡片 -->
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="card-title">會員頭像</h3>
-                                    </div>
-                                    <div class="card-body text-center">
-                                        <img src="../common/assets/img/user2-128x128.png"
-                                            class="img-fluid rounded-circle mb-3" alt="Member Photo"
-                                            style="width: 150px; height: 150px; object-fit: cover;">
-                                        <div class="mb-3">
-                                            <input type="file" class="form-control" id="photo" name="photo"
-                                                accept="image/*">
-                                            <div class="form-text">支援 JPG、PNG 格式，建議尺寸 300x300</div>
+                            <!-- 錯誤訊息 -->
+                            <div class="alert alert-danger d-none" id="errorAlert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <span id="errorMessage"></span>
+                            </div>
+                            <!-- 表單內容 -->
+                            <div class="card" id="editForm" style="display: none;">
+                                <div class="card-header">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <h3 class="card-title mb-0">
+                                                <i class="bi bi-person-gear me-2"></i>編輯會員
+                                            </h3>
+                                        </div>
+                                        <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                                            <a href="member_list.html" class="btn btn-secondary">
+                                                <i class="bi bi-arrow-left"></i> 返回列表
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- 帳號資訊卡片 -->
-                                <div class="card mt-3">
-                                    <div class="card-header">
-                                        <h3 class="card-title">系統資訊</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <dl class="row mb-0">
-                                            <dt class="col-sm-5">會員ID:</dt>
-                                            <dd class="col-sm-7">2</dd>
-
-                                            <dt class="col-sm-5">註冊時間:</dt>
-                                            <dd class="col-sm-7">2025/01/15 10:30:00</dd>
-
-                                            <dt class="col-sm-5">最後更新:</dt>
-                                            <dd class="col-sm-7">2025/05/18 15:08:43</dd>
-                                        </dl>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 操作按鈕 -->
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
+                                <div class="card-body">
+                                    <form id="memberEditForm" novalidate>
                                         <div class="row">
-                                            <div class="col-12 d-flex justify-content-between">
-                                                <button type="button" class="btn btn-secondary"
-                                                    onclick="window.location.href='member_list.html'">
-                                                    <i class="bi bi-arrow-left"></i> 返回列表
-                                                </button>
-                                                <div>
-                                                    <button type="reset" class="btn btn-warning me-2">
-                                                        <i class="bi bi-arrow-clockwise"></i> 重置
-                                                    </button>
-                                                    <button type="submit" class="btn btn-primary">
-                                                        <i class="bi bi-check-lg"></i> 儲存變更
-                                                    </button>
+                                            <!-- 左側：基本資訊 -->
+                                            <div class="col-lg-6">
+                                                <div class="card border-0 shadow-sm mb-4">
+                                                    <div class="card-header bg-light">
+                                                        <h5 class="card-title mb-0">
+                                                            <i class="bi bi-person-circle me-2"></i>基本資訊
+                                                        </h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <label for="userName" class="form-label">
+                                                                使用者名稱 <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="text" class="form-control" id="userName"
+                                                                name="userName" required maxlength="50"
+                                                                placeholder="請輸入使用者名稱">
+                                                            <div class="invalid-feedback">請輸入使用者名稱</div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="nickName" class="form-label">
+                                                                會員暱稱 <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="text" class="form-control" id="nickName"
+                                                                name="nickName" required maxlength="50"
+                                                                placeholder="請輸入會員暱稱">
+                                                            <div class="invalid-feedback">請輸入會員暱稱</div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="email" class="form-label">
+                                                                電子郵件 <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="email" class="form-control" id="email"
+                                                                name="email" required maxlength="100"
+                                                                placeholder="請輸入電子郵件">
+                                                            <div class="invalid-feedback">請輸入有效的電子郵件</div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="phone" class="form-label">手機號碼</label>
+                                                            <input type="tel" class="form-control" id="phone"
+                                                                name="phone" maxlength="20" placeholder="請輸入手機號碼">
+                                                        </div>
+                                                        <!-- 密碼重設區域 -->
+                                                        <div class="mb-3">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    id="resetPassword">
+                                                                <label class="form-check-label" for="resetPassword">
+                                                                    重設密碼
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div id="newPasswordGroup" style="display: none;">
+                                                            <div class="mb-3">
+                                                                <label for="newPassword" class="form-label">新密碼</label>
+                                                                <input type="password" class="form-control"
+                                                                    id="newPassword" placeholder="請輸入新密碼">
+                                                                <div class="form-text">密碼長度至少6個字元</div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="confirmPasswordGroup" style="display: none;">
+                                                            <div class="mb-3">
+                                                                <label for="confirmPassword"
+                                                                    class="form-label">確認密碼</label>
+                                                                <input type="password" class="form-control"
+                                                                    id="confirmPassword" placeholder="請再次輸入密碼">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- 右側：個人資訊與設定 -->
+                                            <div class="col-lg-6">
+                                                <div class="card border-0 shadow-sm mb-4">
+                                                    <div class="card-header bg-light">
+                                                        <h5 class="card-title mb-0">
+                                                            <i class="bi bi-gear-fill me-2"></i>個人資訊與設定
+                                                        </h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <label for="birthDate" class="form-label">出生日期</label>
+                                                            <input type="date" class="form-control" id="birthDate"
+                                                                name="birthDate">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="gender" class="form-label">性別</label>
+                                                            <select class="form-select" id="gender" name="gender">
+                                                                <option value="">請選擇性別</option>
+                                                                <option value="M">男性</option>
+                                                                <option value="F">女性</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="idCard" class="form-label">身份證號</label>
+                                                            <input type="text" class="form-control" id="idCard"
+                                                                name="idCard" maxlength="10" placeholder="請輸入身份證號">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="unicode" class="form-label">統一編號</label>
+                                                            <input type="text" class="form-control" id="unicode"
+                                                                name="unicode" maxlength="10" placeholder="請輸入統一編號">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="roleLevel" class="form-label">
+                                                                會員等級 <span class="text-danger">*</span>
+                                                            </label>
+                                                            <select class="form-select" id="roleLevel" name="roleLevel"
+                                                                required>
+                                                                <option value="">請選擇會員等級</option>
+                                                                <option value="0">未開通</option>
+                                                                <option value="1">購票方</option>
+                                                                <option value="2">活動方</option>
+                                                                <option value="3">平台方</option>
+                                                            </select>
+                                                            <div class="invalid-feedback">請選擇會員等級</div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="isActive" class="form-label">帳號狀態</label>
+                                                            <select class="form-select" id="isActive" name="isActive">
+                                                                <option value="1">啟用</option>
+                                                                <option value="0">停用</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <!-- 會員照片區域 -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="card border-0 shadow-sm mb-4">
+                                                    <div class="card-header bg-light">
+                                                        <h5 class="card-title mb-0">
+                                                            <i class="bi bi-image me-2"></i>會員照片
+                                                        </h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-3 text-center">
+                                                                <img src="../common/assets/img/user2-128x128.png"
+                                                                    class="img-thumbnail rounded-circle"
+                                                                    style="width: 120px; height: 120px; object-fit: cover;"
+                                                                    alt="會員照片">
+                                                            </div>
+                                                            <div class="col-md-9">
+                                                                <div class="mb-3">
+                                                                    <label for="photo" class="form-label">更換照片</label>
+                                                                    <input type="file" class="form-control" id="photo"
+                                                                        name="photo" accept="image/*">
+                                                                    <div class="form-text">
+                                                                        支援 JPG、PNG、GIF 格式，檔案大小不超過 2MB
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- 系統資訊 -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="card border-0 shadow-sm mb-4">
+                                                    <div class="card-header bg-light">
+                                                        <h5 class="card-title mb-0">
+                                                            <i class="bi bi-info-circle me-2"></i>系統資訊
+                                                        </h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <dl class="row">
+                                                            <dt class="col-sm-2">會員ID</dt>
+                                                            <dd class="col-sm-4"></dd>
+                                                            <dt class="col-sm-2">創建時間</dt>
+                                                            <dd class="col-sm-4"></dd>
+                                                            <dt class="col-sm-2">最後更新</dt>
+                                                            <dd class="col-sm-4"></dd>
+                                                        </dl>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- 操作按鈕 -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="card border-0">
+                                                    <div class="card-body text-center">
+                                                        <button type="submit" class="btn btn-primary me-3">
+                                                            <i class="bi bi-check-circle"></i> 更新會員
+                                                        </button>
+                                                        <a href="member_list.html" class="btn btn-outline-secondary">
+                                                            <i class="bi bi-x-circle"></i> 取消
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </main>
@@ -486,13 +521,17 @@
     <script src="../common/js/adminlte.js"></script>
     <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
     <script>
+        // 全域變數
+        let currentMemberId = null;
         const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
         const Default = {
             scrollbarTheme: 'os-theme-light',
             scrollbarAutoHide: 'leave',
             scrollbarClickScroll: true,
         };
+        // 頁面載入完成後執行
         document.addEventListener('DOMContentLoaded', function () {
+            // 初始化 OverlayScrollbars
             const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
             if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
                 OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
@@ -503,49 +542,178 @@
                     },
                 });
             }
+            // 初始化編輯頁面
+            initEditPage();
         });
-    </script>
-    <!--end::OverlayScrollbars Configure-->
-    <!-- OPTIONAL SCRIPTS -->
-    <!--Summernote-->
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
-    <!-- apexcharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
-        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
 
-    <!-- 頁面自定義腳本 -->
-    <script>
-        // 密碼重設功能
-        document.getElementById('resetPassword').addEventListener('change', function () {
-            const passwordGroups = ['newPasswordGroup', 'confirmPasswordGroup'];
-            passwordGroups.forEach(id => {
-                document.getElementById(id).style.display = this.checked ? 'block' : 'none';
+        // 初始化編輯頁面
+        function initEditPage() {
+            // 從URL獲取會員ID
+            const urlParams = new URLSearchParams(window.location.search);
+            currentMemberId = urlParams.get('id');
+
+            if (!currentMemberId) {
+                showError('缺少會員ID參數');
+                setTimeout(() => {
+                    window.location.href = 'member_list.html';
+                }, 2000);
+                return;
+            }
+
+            // 載入會員資料
+            loadMemberData(currentMemberId);
+        }
+
+        // 載入會員資料
+        function loadMemberData(memberId) {
+            showLoading();
+
+            fetch(`/maven-tickeasy-v1/api/manager/member/${memberId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        populateForm(data.data);
+                        loadMemberPhoto(memberId);
+                        bindEditEvents();
+                        showForm();
+                    } else {
+                        throw new Error(data.message || '載入會員資料失敗');
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('載入會員資料失敗:', error);
+                    showError('載入會員資料失敗：' + error.message);
+                });
+        }
+
+        // 填充表單資料
+        function populateForm(member) {
+            document.getElementById('userName').value = member.userName || '';
+            document.getElementById('nickName').value = member.nickName || '';
+            document.getElementById('email').value = member.email || '';
+            document.getElementById('phone').value = member.phone || '';
+
+            // 處理日期格式
+            if (member.birthDate) {
+                const date = new Date(member.birthDate);
+                const formattedDate = date.toISOString().split('T')[0];
+                document.getElementById('birthDate').value = formattedDate;
+            }
+
+            document.getElementById('gender').value = member.gender || '';
+            document.getElementById('idCard').value = member.idCard || '';
+            document.getElementById('unicode').value = member.unicode || '';
+            document.getElementById('roleLevel').value = member.roleLevel || '';
+            document.getElementById('isActive').value = member.isActive || '';
+
+            // 更新系統資訊顯示
+            updateSystemInfo(member);
+        }
+
+        // 更新系統資訊顯示
+        function updateSystemInfo(member) {
+            const systemInfoDd = document.querySelectorAll('.card-body dl dd');
+            if (systemInfoDd.length >= 3) {
+                systemInfoDd[0].textContent = member.memberId || '';
+                systemInfoDd[1].textContent = formatDateTime(member.createTime);
+                systemInfoDd[2].textContent = formatDateTime(member.updateTime);
+            }
+        }
+
+        // 載入會員照片
+        function loadMemberPhoto(memberId) {
+            const photoUrl = `/maven-tickeasy-v1/api/manager/member/photo/${memberId}`;
+            const photoImg = document.querySelector('.card-body img');
+
+            // 嘗試載入照片
+            const img = new Image();
+            img.onload = function () {
+                photoImg.src = photoUrl + '?t=' + new Date().getTime(); // 加時間戳避免快取
+            };
+            img.onerror = function () {
+                // 照片載入失敗，使用預設圖片
+                photoImg.src = '../common/assets/img/user2-128x128.png';
+            };
+            img.src = photoUrl;
+        }
+
+        // 綁定事件
+        function bindEditEvents() {
+            // 表單提交事件
+            document.getElementById('memberEditForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                updateMember();
             });
 
-            if (!this.checked) {
-                document.getElementById('newPassword').value = '';
-                document.getElementById('confirmPassword').value = '';
-            }
-        });
+            // 照片預覽事件
+            document.getElementById('photo').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // 檔案大小檢查 (2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('檔案大小不能超過 2MB');
+                        this.value = '';
+                        return;
+                    }
 
-        // 圖片預覽功能
-        document.getElementById('photo').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.querySelector('.card-body img').src = e.target.result;
+                    // 檔案類型檢查
+                    if (!file.type.startsWith('image/')) {
+                        alert('請選擇圖片檔案');
+                        this.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.querySelector('.card-body img').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
-        });
+            });
 
-        // 表單提交處理
-        document.getElementById('memberEditForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+            // 密碼重設事件
+            document.getElementById('resetPassword').addEventListener('change', function () {
+                const passwordGroups = ['newPasswordGroup', 'confirmPasswordGroup'];
+                passwordGroups.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.style.display = this.checked ? 'block' : 'none';
+                    }
+                });
+
+                if (!this.checked) {
+                    const newPasswordInput = document.getElementById('newPassword');
+                    const confirmPasswordInput = document.getElementById('confirmPassword');
+                    if (newPasswordInput) newPasswordInput.value = '';
+                    if (confirmPasswordInput) confirmPasswordInput.value = '';
+                }
+            });
+        }
+
+        // 更新會員資料
+        function updateMember() {
+            // 表單驗證
+            const form = document.getElementById('memberEditForm');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
 
             // 密碼驗證
-            if (document.getElementById('resetPassword').checked) {
+            const resetPasswordCheckbox = document.getElementById('resetPassword');
+            if (resetPasswordCheckbox.checked) {
                 const newPassword = document.getElementById('newPassword').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
 
@@ -560,82 +728,130 @@
                 }
             }
 
-            // 模擬提交成功
-            if (confirm('確定要儲存變更嗎？')) {
-                alert('會員資料已更新成功！');
-                // 實際應用中這裡會發送 AJAX 請求到後端
-                // window.location.href = 'member_list.html';
-            }
-        });
+            // 顯示載入狀態
+            const submitBtn = document.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 更新中...';
+            submitBtn.disabled = true;
 
-        // 手機號碼格式驗證
-        document.getElementById('phone').addEventListener('input', function (e) {
-            // 只允許數字
-            this.value = this.value.replace(/[^0-9]/g, '');
+            const formData = new FormData();
 
-            // 檢查是否為09開頭
-            if (this.value.length >= 2 && !this.value.startsWith('09')) {
-                this.setCustomValidity('手機號碼必須以09開頭');
-            } else if (this.value.length > 10) {
-                this.value = this.value.slice(0, 10);
+            // 基本欄位
+            formData.append('userName', form.userName.value);
+            formData.append('nickName', form.nickName.value);
+            formData.append('email', form.email.value);
+            formData.append('phone', form.phone.value || '');
+            formData.append('birthDate', form.birthDate.value || '');
+            formData.append('gender', form.gender.value || '');
+            formData.append('idCard', form.idCard.value || '');
+            formData.append('unicode', form.unicode.value || '');
+            formData.append('roleLevel', form.roleLevel.value);
+            formData.append('isActive', form.isActive.value);
+
+            // 密碼處理
+            if (resetPasswordCheckbox.checked) {
+                formData.append('password', document.getElementById('newPassword').value);
             } else {
-                this.setCustomValidity('');
+                formData.append('password', ''); // 空密碼表示不修改
             }
-        });
 
-        // 身份證號碼格式驗證
-        document.getElementById('idCard').addEventListener('input', function (e) {
-            this.value = this.value.toUpperCase();
+            // 提交更新
+            fetch(`/maven-tickeasy-v1/api/manager/member/${currentMemberId}`, {
+                method: 'PUT',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // 如果有照片，進行上傳
+                        if (form.photo.files[0]) {
+                            uploadPhoto(currentMemberId, form.photo.files[0])
+                                .then(() => {
+                                    alert('會員資料已更新成功！');
+                                    window.location.href = 'member_list.html';
+                                })
+                                .catch(() => {
+                                    alert('會員資料已更新成功，但照片上傳失敗！');
+                                    window.location.href = 'member_list.html';
+                                });
+                        } else {
+                            alert('會員資料已更新成功！');
+                            window.location.href = 'member_list.html';
+                        }
+                    } else {
+                        throw new Error(data.message || '更新失敗');
+                    }
+                })
+                .catch(error => {
+                    console.error('更新會員失敗:', error);
+                    alert('更新會員失敗：' + error.message);
+                })
+                .finally(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+        }
 
-            // 簡單的身份證格式驗證
-            const pattern = /^[A-Z][12]\d{8}$/;
-            if (this.value.length === 10 && !pattern.test(this.value)) {
-                this.setCustomValidity('請輸入有效的身份證號碼');
-            } else {
-                this.setCustomValidity('');
-            }
-        });
+        // 上傳照片函數
+        function uploadPhoto(memberId, photoFile) {
+            const photoFormData = new FormData();
+            photoFormData.append('photo', photoFile);
 
-        // 統一編號格式驗證
-        document.getElementById('unicode').addEventListener('input', function (e) {
-            // 只允許數字
-            this.value = this.value.replace(/[^0-9]/g, '');
+            return fetch(`/maven-tickeasy-v1/api/manager/member/photo/${memberId}`, {
+                method: 'POST',
+                body: photoFormData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('照片上傳失敗');
+                    }
+                    return response.json();
+                });
+        }
 
-            if (this.value.length > 8) {
-                this.value = this.value.slice(0, 8);
-            }
-        });
+        // 顯示載入中
+        function showLoading() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('editForm').style.display = 'none';
+            document.getElementById('errorAlert').classList.add('d-none');
+        }
 
-        // 會員等級變更提醒
-        document.getElementById('roleLevel').addEventListener('change', function (e) {
-            const roleName = {
-                '0': '未開通',
-                '1': '購票方',
-                '2': '活動方',
-                '3': '平台方'
-            };
+        // 隱藏載入中
+        function hideLoading() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+        }
 
-            const currentRole = this.options[this.selectedIndex].text;
-            const originalRole = '活動方'; // 假設原始角色
+        // 顯示表單
+        function showForm() {
+            document.getElementById('editForm').style.display = 'block';
+        }
 
-            if (currentRole !== originalRole) {
-                const confirmMsg = `確定要將會員等級從「${originalRole}」變更為「${currentRole}」嗎？\n此操作將影響該會員的系統權限。`;
-                if (!confirm(confirmMsg)) {
-                    // 還原選項
-                    this.value = '2'; // 還原為原始值
-                }
-            }
-        });
+        // 顯示錯誤訊息
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorAlert').classList.remove('d-none');
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('editForm').style.display = 'none';
+        }
 
-        // 帳號狀態變更提醒
-        document.getElementById('isActive').addEventListener('change', function (e) {
-            if (this.value === '0') {
-                const confirmMsg = '確定要停用此帳號嗎？\n停用後該會員將無法登入系統。';
-                if (!confirm(confirmMsg)) {
-                    this.value = '1'; // 還原為啟用狀態
-                }
-            }
-        });
+        // 格式化日期時間
+        function formatDateTime(dateTimeString) {
+            if (!dateTimeString) return '';
+            const date = new Date(dateTimeString);
+            return date.toLocaleString('zh-TW', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
     </script>
 </body>
 

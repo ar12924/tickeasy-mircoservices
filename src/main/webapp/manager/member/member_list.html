@@ -473,7 +473,7 @@
 
             // 新增會員按鈕（先不實作後端）
             $('#addMemberBtn').on('click', function () {
-                alert('新增會員功能開發中...');
+                window.location.href = 'member_add.html';
             });
 
             // Enter鍵搜索
@@ -735,12 +735,32 @@
 
         // ===== 會員操作函數（先不實作後端） =====
         function editMember(memberId) {
-            alert(`編輯會員功能開發中... (會員ID: ${memberId})`);
+            window.location.href = `member_edit.html?id=${memberId}`;
         }
 
         function deleteMember(memberId) {
             if (confirm('確定要刪除此會員嗎？此操作無法復原。')) {
-                alert(`刪除會員功能開發中... (會員ID: ${memberId})`);
+                const url = `/maven-tickeasy-v1/api/manager/member/${memberId}`;
+
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('會員刪除成功！');
+                            loadMemberList(); // 重新載入列表
+                        } else {
+                            alert('刪除失敗：' + (data.message || '未知錯誤'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('刪除會員失敗:', error);
+                        alert('刪除會員失敗，請稍後再試');
+                    });
             }
         }
     </script>
