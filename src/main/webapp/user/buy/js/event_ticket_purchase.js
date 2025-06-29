@@ -165,7 +165,7 @@ function initVueApp() {
                 if (!this.isLoggedIn) {
                     if (confirm('請先登入才能關注活動。是否前往登入頁面？')) {
                         // 導向登入頁面，並設置回調頁面
-                        window.location.href = `/maven-tickeasy-v1/login?redirect=${encodeURIComponent(window.location.href)}`;
+                        window.location.href = `/maven-tickeasy-v1/user/member/login.html?redirect=${encodeURIComponent(window.location.href)}`;
                     }
                     return;
                 }
@@ -216,13 +216,13 @@ function initVueApp() {
                 if (!this.isLoggedIn) {
                     if (confirm('請先登入才能購票。是否前往登入頁面？')) {
                         // 導向登入頁面，並設置回調頁面
-                        window.location.href = `/maven-tickeasy-v1/login?redirect=${encodeURIComponent(window.location.href)}`;
+                        window.location.href = `/maven-tickeasy-v1/user/member/login.html?redirect=${encodeURIComponent(window.location.href)}`;
                     }
                     return;
                 }
 
                 // 導向購票頁面
-                window.location.href = `/maven-tickeasy-v1/buy/booking.html?eventId=${this.eventId}`;
+                window.location.href = `/maven-tickeasy-v1/user/buy/book-type.html?eventId=${this.eventId}`;
             },
 
             // 格式化日期 (不含時間)
@@ -291,19 +291,17 @@ function initVueApp() {
             checkLoginStatus() {
                 // 從 sessionStorage 或 cookie 中獲取用戶資訊
                 try {
-                    // 檢查 localStorage、sessionStorage 或 cookie 中是否有 memberId
-                    const memberId = localStorage.getItem('memberId') ||
-                        sessionStorage.getItem('memberId') ||
-                        this.getCookie('memberId');
+                    // 檢查是否有登入的使用者暱稱
+                    const loggedInNickname = sessionStorage.getItem('loggedInNickname');
 
-                    if (memberId && !isNaN(parseInt(memberId))) {
+                    if (loggedInNickname) {
                         this.isLoggedIn = true;
-                        this.memberId = parseInt(memberId, 10);
-                        console.log('登錄狀態檢查成功，memberId:', this.memberId);
+                        this.memberId = null;
+                        console.log('登錄狀態檢查成功，使用者:', loggedInNickname);
                     } else {
                         this.isLoggedIn = false;
                         this.memberId = null;
-                        console.log('未找到有效的 memberId');
+                        console.log('使用者未登入，但可以瀏覽活動詳情');
                     }
                 } catch (err) {
                     console.error('檢查登錄狀態時發生錯誤:', err);
