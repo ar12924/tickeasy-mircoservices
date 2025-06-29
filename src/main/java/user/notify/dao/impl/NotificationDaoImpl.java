@@ -24,12 +24,12 @@ import user.notify.vo.Notification;
 public class NotificationDaoImpl implements NotificationDao {
 	@PersistenceContext
 	private Session session;
-	
-	private DataSource ds;
-
-	public NotificationDaoImpl() throws NamingException {
-		ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/tickeasy");
-	}
+	/*
+	 * private DataSource ds;
+	 * 
+	 * public NotificationDaoImpl() throws NamingException { ds = (DataSource) new
+	 * InitialContext().lookup("java:comp/env/jdbc/tickeasy"); }
+	 */
 
 
 	@Override
@@ -96,8 +96,11 @@ public class NotificationDaoImpl implements NotificationDao {
 				+ "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) "
 				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";
 
-		String message = String.format("親愛的會員 %d，您訂購的活動「%s」將於 %s 演出，請記得準時參加！", memberId, eventName,
-				eventDate.toString());
+		String title_template= titleTemplateNotification(5).replace("{event_name}", eventName);
+		String message_template= messageTemplateNotification(5).replace("{event_name}", eventName);
+		String link_template=linkTemplateNotification(5).replace("{event_id}", eventId+"");
+		
+		 
 
 		int result = session.createNativeQuery(sql)
 				.setParameter("notificationId", 5) // 或自動遞增可以省略
@@ -105,119 +108,65 @@ public class NotificationDaoImpl implements NotificationDao {
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
 				.setParameter("status", 1)
-				.setParameter("title", "活動提醒")
-				.setParameter("message", message)
-				.setParameter("linkUrl", "/event/" + eventId)
+				.setParameter("title", title_template)
+				.setParameter("message", message_template)
+				.setParameter("linkUrl", link_template)
 				.executeUpdate();
 		return result;
-		/*
-		 * if (result > 0) { System.out.println("✅ 活動提醒通知已成功透過 Hibernate SQL 插入！"); }
-		 * else { System.out.println("⚠️ 活動提醒通知插入失敗！"); }
-		 */
+		
 	}
 
-	/*
-	 * @Override public void sendReminderNotification(int memberId, int eventId,
-	 * String eventName, Date eventDate) { String sql =
-	 * "INSERT INTO member_notification (notification_id,member_id,is_read,is_visible,notification_status,title,message,link_url,send_time,create_time,update_time) "
-	 * + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())";
-	 * 
-	 * try (Connection conn = ds.getConnection(); PreparedStatement ps =
-	 * conn.prepareStatement(sql)) {
-	 * 
-	 * // 設置通知的資料 ps.setInt(1, 5); ps.setInt(2, memberId); ps.setInt(3, 0);
-	 * ps.setInt(4, 1); ps.setInt(5, 1); ps.setString(6, "活動提醒"); ps.setString(7,
-	 * String.format("親愛的會員 %d，您訂購的活動「%s」將於 %s 演出，請記得準時參加！", memberId, eventName,
-	 * eventDate.toString())); ps.setString(8, "/event/" + eventId);
-	 * 
-	 * // 執行插入操作 int rowsInserted = ps.executeUpdate(); if (rowsInserted > 0) {
-	 * System.out.println("活動提醒通知已成功加入到 member_notification 表"); } else {
-	 * System.out.println("活動提醒插入通知失敗"); }
-	 * 
-	 * } catch (SQLException e) { e.printStackTrace(); } }
-	 */
-
+	
 	@Override
-	public void sendFavoriteSellReminderNotificationForTomorrow() {
+	public List<Object[]> sendFavoriteSellReminderNotificationForTomorrowList() {
 		String sql = "SELECT f.member_id,f.event_id ,eiett.event_name,eiett.sell_from_time ,eiett.sell_to_time ,eiett.category_name \r\n"
 				+ "FROM favorite f\r\n"
 				+ "JOIN (SELECT ei.event_id,ei.event_name,ett.sell_from_time ,ett.sell_to_time ,ett.category_name FROM event_info ei \r\n"
 				+ "JOIN event_ticket_type ett ON ett.event_id=ei.event_id ) AS eiett ON f.event_id=eiett.event_id \r\n"
 				+ "WHERE DATEDIFF(eiett.sell_from_time, CURDATE()) = 1 AND f.is_followed = 1\r\n";
 
-		try (Connection conn = ds.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sql);
-				ResultSet rs = ps.executeQuery()) {
-			if (!rs.isBeforeFirst()) {
-				System.out.println("⚠️ 查無符合條件的關注會員資料（明天沒有活動開賣提醒）");
-				return;
-			}
-			while (rs.next()) {
-
-				int memberId = rs.getInt("member_id");
-				int eventId = rs.getInt("event_id");
-				String eventName = rs.getString("event_name");
-				Date eventSellFromTime = rs.getDate("sell_from_time");
-				Date eventSellToTime = rs.getDate("sell_from_time");
-				String categoryName = rs.getString("category_name");
-				/*
-				 * int memberId = rs.getInt("current_holder_member_id"); int eventId =
-				 * rs.getInt("event_id");
-				 */
-				/* Date eventDate = rs.getDate("event_from_date"); */
-
-				// 呼叫發送通知的函式
-				sendFavoriteSellReminderNotification(memberId, eventId, eventName, eventSellFromTime, eventSellToTime,
-						categoryName);
-
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		return session.createNativeQuery(sql/* , Object[].class */).getResultList();
 
 	}
 
 	@Override
-	public void sendFavoriteSellReminderNotification(int memberId, int eventId, String eventName,
-			Date eventSellFromTime, Date eventSellToTime, String categoryName) {
-		String sql = "INSERT INTO member_notification (notification_id,member_id,is_read,is_visible,notification_status,title,message,link_url,send_time,create_time,update_time) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())";
+	public int sendFavoriteSellReminderNotification(int memberId, int eventId, String eventName,
+			Timestamp eventSellFromTime, Timestamp eventSellToTime, String categoryName) {
+		
+		String sql = "INSERT INTO member_notification "
+				+ "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) "
+				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";	
+		
+		
+		
+		String message = String.format("親愛的會員，您關注的活動「%s」%s票種 將於 %s 開賣至 %s，請記得準備購買！", eventName,
+				categoryName, eventSellFromTime.toString(), eventSellToTime.toString());
 
-		try (Connection conn = ds.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-			// 設置通知的資料
-			ps.setInt(1, 5);
-			ps.setInt(2, memberId);
-			ps.setInt(3, 0);
-			ps.setInt(4, 1);
-			ps.setInt(5, 1);
-			ps.setString(6, "關注活動開賣提醒");
-			ps.setString(7, String.format("親愛的會員 %d，您訂購的活動「%s」%s票種 將於 %s 開賣至 %s，請記得準備購買！", memberId, eventName,
-					categoryName, eventSellFromTime.toString(), eventSellToTime.toString()));
-			ps.setString(8, "/event/" + eventId);
-
-			// 執行插入操作
-			int rowsInserted = ps.executeUpdate();
-			if (rowsInserted > 0) {
-				System.out.println("關注活動開賣提醒通知已成功加入到 member_notification 表");
-			} else {
-				System.out.println("關注活動開賣提醒插入通知失敗");
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		int result = session.createNativeQuery(sql)
+				.setParameter("notificationId", 2) // 或自動遞增可以省略
+				.setParameter("memberId", memberId)
+				.setParameter("isRead", 0)
+				.setParameter("isVisible", 1)
+				.setParameter("status", 1)
+				.setParameter("title", "關注開賣提醒")
+				.setParameter("message", message)
+				.setParameter("linkUrl", "/event/" + eventId)
+				.executeUpdate();
+		return result;
+		
+		
+	
 
 	}
 
 	@Override
 	public List<Object[]> sendFavoriteSoldOutReminderList() {
-		String sql = "SELECT fi.member_id,mb.user_name, fi.event_id, ei.event_name,ei.event_to_date\r\n"
+		String sql = "SELECT DISTINCT fi.member_id,mb.user_name, fi.event_id, ei.event_name,ett.sell_to_time\r\n"
 				+ "FROM favorite fi\r\n"
 				+ "JOIN event_info ei ON fi.event_id = ei.event_id\r\n"
 				+ "JOIN MEMBER mb ON fi.member_id =mb.member_id\r\n"
-				+ "WHERE fi.is_followed=1 AND DATEDIFF(ei.event_to_date, CURDATE()) = -1";
+				+ "JOIN event_ticket_type ett ON ett.event_id=fi.event_id\r\n"
+				+ "WHERE fi.is_followed=1 AND DATEDIFF(ett.sell_to_time, CURDATE()) = 1";
 		return session.createNativeQuery(sql).getResultList();
 	}
 
@@ -227,7 +176,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		String sql = "INSERT INTO member_notification "
 				+ "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) "
 				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";
-
+		
 		String message = String.format("您關注的活動「%s」售票將於24小時內結束，請把握最後機會！", eventName);
 		String message2= String.format("%s 售票即將結束",eventName);
 	
@@ -303,5 +252,42 @@ public class NotificationDaoImpl implements NotificationDao {
 				.setParameter("eventId", eventId)
 				.getResultList();
 	}
+	
+
+
+	@Override
+	public String titleTemplateNotification(int notificationId) {
+		String sql = "SELECT nt.title_template\r\n"
+				+ "FROM notification_template nt\r\n"
+				+ "WHERE nt.notification_id=:notificationId";
+		return (String)session
+				.createNativeQuery(sql)
+				.setParameter("notificationId", notificationId)
+				.getSingleResult();
+	}
+
+	@Override
+	public String messageTemplateNotification(int notificationId) {
+		String sql = "SELECT nt.message_template\r\n"
+				+ "FROM notification_template nt\r\n"
+				+ "WHERE nt.notification_id=:notificationId";
+		return (String)session
+				.createNativeQuery(sql)
+				.setParameter("notificationId", notificationId)
+				.getSingleResult();
+	}
+
+	@Override
+	public String linkTemplateNotification(int notificationId) {
+		String sql = "SELECT nt.link_url\r\n"
+				+ "FROM notification_template nt\r\n"
+				+ "WHERE nt.notification_id=:notificationId";
+		return (String)session
+				.createNativeQuery(sql)
+				.setParameter("notificationId", notificationId)
+				.getSingleResult();
+	}
+
+	
 
 }

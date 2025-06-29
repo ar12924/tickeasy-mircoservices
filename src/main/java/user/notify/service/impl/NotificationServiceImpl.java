@@ -1,11 +1,11 @@
 package user.notify.service.impl;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,8 +81,40 @@ public class NotificationServiceImpl implements NotificationService {
 	@Transactional
 	@Override
 	public void sendFavoriteSellReminderNotificationForTomorrow() {
-		notificationDao.sendFavoriteSellReminderNotificationForTomorrow();
-		System.out.println("Favorite排程動了");
+		
+		
+		
+		
+		List<Object[]> resultList = notificationDao.sendFavoriteSellReminderNotificationForTomorrowList();
+
+		// TODO ????
+		logger.info("Reminder排程動");
+
+		if (resultList.isEmpty()) {
+			System.out.println("⚠️ 查無符合條件的活動資料（明天沒有活動）");
+			return;
+		}
+		System.out.println("✅ 查到資料筆數：" + resultList.size());
+
+		for (Object[] row : resultList) {
+			System.out.println("🔁 處理 row: " + Arrays.toString(row));
+			Integer memberId = ((Number) row[0]).intValue();
+			Integer eventId = ((Number) row[1]).intValue();
+			String eventName = (String) row[2];
+			Timestamp eventSellFromTime = (Timestamp) row[3];
+			Timestamp eventSellToTime = (Timestamp) row[4];
+			String categoryName=(String) row[5];
+			
+
+			System.out.println("有查到資料,要跑方法了");
+			int result = notificationDao.sendFavoriteSellReminderNotification(memberId, eventId, eventName, eventSellFromTime, eventSellToTime, categoryName);
+
+			if (result > 0) {
+				System.out.println("✅ 關注開賣通知已成功透過 Hibernate SQL 插入！");
+			} else {
+				System.out.println("⚠️ 關注開賣通知插入失敗！");
+			}
+		}
 	}
 
 	@Transactional

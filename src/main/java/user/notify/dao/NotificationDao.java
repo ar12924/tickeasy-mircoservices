@@ -16,15 +16,25 @@ public interface NotificationDao {
 	List<Notification> selectAllByMemberId(int memberId);
 	Integer updateIsRead(int memberId, int memberNotificationId);
 	Integer updateUnvisible(int memberNotificationId);
+	//活動提醒
 	List<Object[]> sendReminderNotificationForTomorrowList();
 	int sendReminderNotification(int memberId, int eventId, String eventName, Timestamp eventDate);
-	void sendFavoriteSellReminderNotificationForTomorrow();
-	void sendFavoriteSellReminderNotification(int memberId, int eventId, String eventName, Date eventSellFromTime,Date eventSellToTime,String categoryName);
+	//關注開賣提醒
+	List<Object[]> sendFavoriteSellReminderNotificationForTomorrowList();
+	int sendFavoriteSellReminderNotification(int memberId, int eventId, String eventName, Timestamp eventSellFromTime,Timestamp eventSellToTime,String categoryName);
+	//關注售完提醒
 	List<Object[]> sendFavoriteSoldOutReminderList();
 	int sendFavoriteSoldOutReminderNotification(int memberId,String userName,int eventId,String eventName,Timestamp eventToDate);
+	//關注剩餘提醒
 	List<Object[]> sendFavoriteLeftPercentReminderList();
 	int sendFavoriteLeftPercentReminderNotification(int memberId,String userName,int eventId,String eventName,int percent);
 	List<Object[]> sendFavoriteLeftPercentReminderMemList(int eventId);
+	
+
+	//通知模版所需
+	String titleTemplateNotification(int notificationId);
+	String messageTemplateNotification(int notificationId);
+	String linkTemplateNotification(int notificationId);
 	
 	
 	default Session getSession() {
