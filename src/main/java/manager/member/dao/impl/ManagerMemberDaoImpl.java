@@ -186,4 +186,13 @@ public class ManagerMemberDaoImpl implements ManagerMemberDao {
         query.setParameter("email", email);
         return query.uniqueResult();
     }
+    
+    @Override
+    public Member findByPhone(String phone) {
+        String sql = "SELECT * FROM member WHERE phone = :phone";
+        NativeQuery<Member> query = getCurrentSession().createNativeQuery(sql, Member.class);
+        query.setParameter("phone", phone);
+        List<Member> results = query.getResultList();
+        return results.isEmpty() ? null : results.get(0);
+    }
 }

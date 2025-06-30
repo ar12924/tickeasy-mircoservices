@@ -119,14 +119,17 @@ public class ManagerMemberController {
             @RequestParam String userName,
             @RequestParam String nickName,
             @RequestParam String email,
-            @RequestParam(required = false) String phone,
-            @RequestParam(required = false) String birthDate,
-            @RequestParam(required = false) String gender,
+            @RequestParam String phone,
+            @RequestParam String birthDate,
+            @RequestParam String gender,
             @RequestParam(required = false) String idCard,
             @RequestParam(required = false) String unicode,
             @RequestParam String password,
+            @RequestParam String rePassword,
             @RequestParam Integer roleLevel,
-            @RequestParam(defaultValue = "1") Integer isActive) {
+            @RequestParam(defaultValue = "1") Integer isActive,
+    		@RequestParam(defaultValue = "false") Boolean hostApply,  
+    		@RequestParam(defaultValue = "false") Boolean agree){
         try {
             Member member = new Member();
             member.setUserName(userName);
@@ -144,7 +147,7 @@ public class ManagerMemberController {
                 member.setBirthDate(Date.valueOf(birthDate));
             }
 
-            Member createdMember = memberService.createMember(member);
+            Member createdMember = memberService.createMember(member, rePassword, hostApply, agree);
             createdMember.setPhoto(null);
 
             Map<String, Object> response = new HashMap<>();
@@ -174,12 +177,13 @@ public class ManagerMemberController {
             @RequestParam String userName,
             @RequestParam String nickName,
             @RequestParam String email,
-            @RequestParam(required = false) String phone,
-            @RequestParam(required = false) String birthDate,
-            @RequestParam(required = false) String gender,
+            @RequestParam String phone,
+            @RequestParam String birthDate,
+            @RequestParam String gender,
             @RequestParam(required = false) String idCard,
             @RequestParam(required = false) String unicode,
             @RequestParam(required = false) String password,
+            @RequestParam(required = false) String rePassword,
             @RequestParam Integer roleLevel,
             @RequestParam Integer isActive) {
         try {
@@ -200,7 +204,7 @@ public class ManagerMemberController {
                 member.setBirthDate(Date.valueOf(birthDate));
             }
 
-            Member updatedMember = memberService.updateMember(member);
+            Member updatedMember = memberService.updateMember(member, rePassword);
             updatedMember.setPhoto(null);
 
             Map<String, Object> response = new HashMap<>();

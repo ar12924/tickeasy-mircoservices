@@ -47,7 +47,7 @@ public interface ManagerMemberService {
      * @param member 會員物件
      * @return 新增的會員物件
      */
-    Member createMember(Member member);
+    Member createMember(Member member, String rePassword, Boolean hostApply, Boolean agree);
 
     /**
      * 更新會員
@@ -55,7 +55,7 @@ public interface ManagerMemberService {
      * @param member 會員物件
      * @return 更新後的會員物件
      */
-    Member updateMember(Member member);
+    Member updateMember(Member member, String rePassword);
 
     /**
      * 刪除會員

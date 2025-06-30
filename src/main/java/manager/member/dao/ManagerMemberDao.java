@@ -101,4 +101,12 @@ public interface ManagerMemberDao {
      * @return 會員物件
      */
     Member findByEmail(String email);
+    
+    /**
+     * 根據手機號碼查詢會員
+     * 
+     * @param phone 手機號碼
+     * @return 會員物件
+     */
+    Member findByPhone(String phone);
 }
