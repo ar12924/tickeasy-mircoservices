@@ -67,28 +67,24 @@ public class EventInfoDAOImpl implements EventInfoDAO {
 
 	@Override
 	public boolean insertFavorite(FavoriteVO favorite) {
-		try {
-			session.persist(favorite);
-			return true;
-		} catch (Exception e) {
-			throw e;
-		}
+		
+		session.persist(favorite);
+		return true;
+
 	}
 
 	@Override
 	public boolean updateFavorite(FavoriteVO favorite) {
-		try {
-			String hql = "UPDATE FavoriteVO SET followed = :followed "
-					+ "WHERE memberId = :memberId AND eventId = :eventId";
+		
+		String hql = "UPDATE FavoriteVO SET followed = :followed "
+				+ "WHERE memberId = :memberId AND eventId = :eventId";
 
-			int rowsAffected = session.createQuery(hql).setParameter("followed", favorite.getFollowed())
-					.setParameter("memberId", favorite.getMemberId()).setParameter("eventId", favorite.getEventId())
-					.executeUpdate();
+		int rowsAffected = session.createQuery(hql).setParameter("followed", favorite.getFollowed())
+				.setParameter("memberId", favorite.getMemberId()).setParameter("eventId", favorite.getEventId())
+				.executeUpdate();
 
-			return rowsAffected > 0;
-		} catch (Exception e) {
-			throw e;
-		}
+		return rowsAffected > 0;
+
 	}
 
 	@Override
@@ -119,17 +115,15 @@ public class EventInfoDAOImpl implements EventInfoDAO {
 	// 新增：Stream 方式獲取圖片
 	@Override
 	public InputStream getEventImageStream(Integer eventId) {
-		try {
-			String hql = "SELECT e.image FROM EventBuyVO e WHERE e.eventId = :eventId";
-			byte[] imageData = session.createQuery(hql, byte[].class).setParameter("eventId", eventId)
-					.uniqueResult();
+		
+		String hql = "SELECT e.image FROM EventBuyVO e WHERE e.eventId = :eventId";
+		byte[] imageData = session.createQuery(hql, byte[].class).setParameter("eventId", eventId)
+				.uniqueResult();
 
-			if (imageData != null && imageData.length > 0) {
-				return new ByteArrayInputStream(imageData);
-			}
-			return null;
-		} catch (Exception e) {
-			throw e;
+		if (imageData != null && imageData.length > 0) {
+			return new ByteArrayInputStream(imageData);
 		}
+		return null;
+
 	}
 }
