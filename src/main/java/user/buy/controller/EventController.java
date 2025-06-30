@@ -144,8 +144,13 @@ public class EventController {
 	}
 
 	private Integer getMemberIdFromSession(HttpSession session) {
-		Object memberId = session.getAttribute("memberId");
-		return memberId instanceof Integer ? (Integer) memberId : null;
+		Object memberObj = session.getAttribute("member");
+        if (memberObj instanceof user.member.vo.Member) {
+            user.member.vo.Member member = (user.member.vo.Member) memberObj;
+            return member.getMemberId();
+        }
+        
+        return null;
 	}
 
 }
