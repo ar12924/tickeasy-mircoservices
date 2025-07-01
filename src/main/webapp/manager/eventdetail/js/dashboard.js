@@ -32,6 +32,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const eventNameEl = document.querySelector("#event-name");
   const totalTicketsEl = document.querySelector("#total-tickets");
   const totalRevenueEl = document.querySelector("#total-revenue");
+  const unsoldTicketsEl = document.querySelector("#unsold-tickets");
+  const salesRateEl = document.querySelector("#sales-rate");
   const salesDataTableEl = document.querySelector("#sales-data-table");
   const salesChartEl = document.querySelector("#sales-chart");
   const dashboardContainerEl = document.querySelector("#dashboard-container");
@@ -41,6 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
     eventNameEl: !!eventNameEl,
     totalTicketsEl: !!totalTicketsEl,
     totalRevenueEl: !!totalRevenueEl,
+    unsoldTicketsEl: !!unsoldTicketsEl,
+    salesRateEl: !!salesRateEl,
     salesDataTableEl: !!salesDataTableEl,
     salesChartEl: !!salesChartEl,
     dashboardContainerEl: !!dashboardContainerEl,
@@ -79,9 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("顯示用 memberId:", memberId);
 
-    // 獲取應用程序的上下文路徑
-    // 當前頁面路徑: /maven-tickeasy-v1/manager/eventdetail/dashboard.html
-    // 我們需要: /maven-tickeasy-v1
+    // 獲取路徑
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split("/");
     const contextPath = pathParts.slice(0, 2).join("/"); // 取前2段: /maven-tickeasy-v1
@@ -95,11 +97,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fetch(apiUrl)
       .then((response) => {
-        console.log("活動列表響應狀態:", response.status);
+        console.log("活動列表狀態:", response.status);
         return response.json();
       })
       .then((data) => {
-        console.log("活動列表響應數據:", data);
+        console.log("活動列表數據:", data);
 
         if (data.successful) {
           const events = data.data || [];
@@ -138,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // 獲取應用程序的上下文路徑
     const currentPath = window.location.pathname;
     const pathParts = currentPath.split("/");
     const contextPath = pathParts.slice(0, 2).join("/"); // 取前2段: /maven-tickeasy-v1
@@ -182,13 +183,19 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateDashboard(data) {
     console.log("更新儀表板數據:", data);
 
-    // 更新儀表板標題和總計數據
+    // 直接使用後端回傳的數據
     if (eventNameEl)
       eventNameEl.textContent = data.eventName || "活動銷售儀表板";
     if (totalTicketsEl)
-      totalTicketsEl.textContent = data.totalTickets.toLocaleString();
+      totalTicketsEl.textContent = (data.soldCount || 0).toLocaleString();
     if (totalRevenueEl)
-      totalRevenueEl.textContent = `$ ${data.totalRevenue.toLocaleString()}`;
+      totalRevenueEl.textContent = `$ ${(
+        data.totalRevenue || 0
+      ).toLocaleString()}`;
+    if (unsoldTicketsEl)
+      unsoldTicketsEl.textContent = (data.unsold || 0).toLocaleString();
+    if (salesRateEl)
+      salesRateEl.textContent = `${(data.salesRate || 0).toFixed(1)}%`;
 
     // 填充銷售數據表格
     if (salesDataTableEl) {
@@ -197,14 +204,25 @@ document.addEventListener("DOMContentLoaded", function () {
         data.salesData.forEach((item) => {
           const row = `<tr>
                       <td>${item.categoryName}</td>
-                      <td>${item.ticketsSold.toLocaleString()}</td>
-                      <td>$ ${item.totalRevenue.toLocaleString()}</td>
+                      <td>${
+                        item.ticketsSold != null
+                          ? item.ticketsSold.toLocaleString()
+                          : "0"
+                      }</td>
+                      <td>$ ${
+                        item.totalRevenue != null
+                          ? item.totalRevenue.toLocaleString()
+                          : "0"
+                      }</td>
+                      <td>${
+                        item.unsold != null ? item.unsold.toLocaleString() : "0"
+                      }</td>
                   </tr>`;
           salesDataTableEl.innerHTML += row;
         });
       } else {
         salesDataTableEl.innerHTML =
-          "<tr><td colspan='3' class='text-center'>暫無銷售數據</td></tr>";
+          "<tr><td colspan='4' class='text-center'>暫無銷售數據</td></tr>";
       }
     }
 
@@ -224,6 +242,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (eventNameEl) eventNameEl.textContent = "活動銷售儀表板";
     if (totalTicketsEl) totalTicketsEl.textContent = "0";
     if (totalRevenueEl) totalRevenueEl.textContent = "$0";
+    if (unsoldTicketsEl) unsoldTicketsEl.textContent = "0";
+    if (salesRateEl) salesRateEl.textContent = "0%";
     if (salesDataTableEl) salesDataTableEl.innerHTML = "";
 
     // 清理圖表
@@ -263,8 +283,33 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    // 準備圖表數據：包含已售出和未銷售
+    const chartSeries = [];
+    const chartLabels = [];
+    const chartColors = [];
+
+    salesData.forEach((item) => {
+      const totalForCategory = item.totalTickets || 0;
+      const soldForCategory = item.ticketsSold || 0;
+      const unsoldForCategory = totalForCategory - soldForCategory;
+
+      // 添加已售出數據
+      if (soldForCategory > 0) {
+        chartSeries.push(soldForCategory);
+        chartLabels.push(`${item.categoryName} (已售出)`);
+        chartColors.push("#28a745"); // 綠色表示已售出
+      }
+
+      // 添加未銷售數據
+      if (unsoldForCategory > 0) {
+        chartSeries.push(unsoldForCategory);
+        chartLabels.push(`${item.categoryName} (未銷售)`);
+        chartColors.push("#ffc107"); // 黃色表示未銷售
+      }
+    });
+
     const chartOptions = {
-      series: salesData.map((item) => item.ticketsSold),
+      series: chartSeries,
       chart: {
         type: "donut",
         height: 400,
@@ -282,7 +327,12 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         },
       },
-      labels: salesData.map((item) => item.categoryName),
+      labels: chartLabels,
+      colors: chartColors,
+      legend: {
+        position: "bottom",
+        fontSize: "12px",
+      },
       responsive: [
         {
           breakpoint: 480,
@@ -314,6 +364,7 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           series: chartOptions.series,
           labels: chartOptions.labels,
+          colors: chartOptions.colors,
         },
         false,
         true
