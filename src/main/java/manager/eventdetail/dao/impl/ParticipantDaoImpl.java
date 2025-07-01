@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.criteria.*;
 
 @Repository
 public class ParticipantDaoImpl implements ParticipantDao {
@@ -73,72 +74,73 @@ public class ParticipantDaoImpl implements ParticipantDao {
             return result;
         }
 
-        // --- 統一的 HQL WHERE 條件和參數 ---
-        StringBuilder whereClause = new StringBuilder("WHERE bt.eventName = :eventName ");
-        Map<String, Object> params = new HashMap<>();
-        params.put("eventName", eventName);
+        // --- Criteria API 查詢 ---
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<BuyerTicketEventVer> cq = cb.createQuery(BuyerTicketEventVer.class);
+        Root<BuyerTicketEventVer> root = cq.from(BuyerTicketEventVer.class);
+        Join<Object, Object> ticketTypeJoin = root.join("eventTicketType", JoinType.LEFT);
+        root.fetch("buyerOrder", JoinType.LEFT);
+        root.fetch("eventTicketType", JoinType.LEFT);
+
+        List<Predicate> predicates = new java.util.ArrayList<>();
+        predicates.add(cb.equal(root.get("eventName"), eventName));
 
         if (searchParams.containsKey("participantName") && searchParams.get("participantName") != null && !searchParams.get("participantName").toString().isEmpty()) {
-            whereClause.append("AND bt.participantName LIKE :participantName ");
-            params.put("participantName", "%" + searchParams.get("participantName") + "%");
+            predicates.add(cb.like(root.get("participantName"), "%" + searchParams.get("participantName") + "%"));
         }
         if (searchParams.containsKey("email") && searchParams.get("email") != null && !searchParams.get("email").toString().isEmpty()) {
-            whereClause.append("AND bt.email LIKE :email ");
-            params.put("email", "%" + searchParams.get("email") + "%");
+            predicates.add(cb.like(root.get("email"), "%" + searchParams.get("email") + "%"));
         }
         if (searchParams.containsKey("phone") && searchParams.get("phone") != null && !searchParams.get("phone").toString().isEmpty()) {
-            whereClause.append("AND bt.phone LIKE :phone ");
-            params.put("phone", "%" + searchParams.get("phone") + "%");
+            predicates.add(cb.like(root.get("phone"), "%" + searchParams.get("phone") + "%"));
         }
         if (searchParams.containsKey("status") && searchParams.get("status") != null) {
-            whereClause.append("AND bt.status = :status ");
-            params.put("status", searchParams.get("status"));
+            predicates.add(cb.equal(root.get("status"), searchParams.get("status")));
         }
         if (searchParams.containsKey("ticketTypeId") && searchParams.get("ticketTypeId") != null) {
-            whereClause.append("AND ett.typeId = :typeId ");
-            params.put("typeId", searchParams.get("ticketTypeId"));
+            predicates.add(cb.equal(ticketTypeJoin.get("typeId"), searchParams.get("ticketTypeId")));
         }
         if (searchParams.containsKey("isUsed") && searchParams.get("isUsed") != null) {
-            whereClause.append("AND bt.isUsed = :isUsed ");
-            params.put("isUsed", searchParams.get("isUsed"));
+            predicates.add(cb.equal(root.get("isUsed"), searchParams.get("isUsed")));
         }
 
-        // --- 資料查詢 (Data Query) ---
-        String dataHql = "SELECT bt FROM BuyerTicketEventVer bt " +
-                         "LEFT JOIN FETCH bt.buyerOrder bo " +
-                         "LEFT JOIN FETCH bt.eventTicketType ett " +
-                         whereClause.toString();
+        cq.select(root).where(predicates.toArray(new Predicate[0]));
 
-        System.out.println("DAO: 執行資料查詢 HQL: " + dataHql);
-        System.out.println("DAO: 參數: " + params);
-        
-        Query<BuyerTicketEventVer> dataQuery = session.createQuery(dataHql, BuyerTicketEventVer.class);
-        params.forEach(dataQuery::setParameter);
-        
+        // 分頁查詢
         int pageNumber = (int) searchParams.getOrDefault("pageNumber", 1);
         int pageSize = (int) searchParams.getOrDefault("pageSize", 10);
         int firstResult = (pageNumber - 1) * pageSize;
-        dataQuery.setFirstResult(firstResult);
-        dataQuery.setMaxResults(pageSize);
-        List<BuyerTicketEventVer> list = dataQuery.list();
+        List<BuyerTicketEventVer> list = session.createQuery(cq)
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize)
+                .getResultList();
 
-        if (list.isEmpty()) {
-            System.out.println("DAO: 對於 eventName '" + eventName + "' (eventId: " + eventId + ") 找不到任何參與者資料。");
+        // --- 總數查詢 ---
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        Root<BuyerTicketEventVer> countRoot = countQuery.from(BuyerTicketEventVer.class);
+        Join<Object, Object> countTicketTypeJoin = countRoot.join("eventTicketType", JoinType.LEFT);
+        List<Predicate> countPredicates = new java.util.ArrayList<>();
+        countPredicates.add(cb.equal(countRoot.get("eventName"), eventName));
+        if (searchParams.containsKey("participantName") && searchParams.get("participantName") != null && !searchParams.get("participantName").toString().isEmpty()) {
+            countPredicates.add(cb.like(countRoot.get("participantName"), "%" + searchParams.get("participantName") + "%"));
         }
-
-        // --- 總數查詢 (Count Query) ---
-        String countHql = "SELECT COUNT(bt.ticketId) FROM BuyerTicketEventVer bt " +
-                          "LEFT JOIN bt.eventTicketType ett " +
-                          whereClause.toString();
-
-        System.out.println("DAO: 執行總數查詢 HQL: " + countHql);
-        System.out.println("DAO: 參數: " + params);
-
-        Query<Long> countQuery = session.createQuery(countHql, Long.class);
-        params.forEach(countQuery::setParameter);
-        Long total = countQuery.uniqueResult();
-
-        System.out.println("DAO: 總數查詢結果: " + total);
+        if (searchParams.containsKey("email") && searchParams.get("email") != null && !searchParams.get("email").toString().isEmpty()) {
+            countPredicates.add(cb.like(countRoot.get("email"), "%" + searchParams.get("email") + "%"));
+        }
+        if (searchParams.containsKey("phone") && searchParams.get("phone") != null && !searchParams.get("phone").toString().isEmpty()) {
+            countPredicates.add(cb.like(countRoot.get("phone"), "%" + searchParams.get("phone") + "%"));
+        }
+        if (searchParams.containsKey("status") && searchParams.get("status") != null) {
+            countPredicates.add(cb.equal(countRoot.get("status"), searchParams.get("status")));
+        }
+        if (searchParams.containsKey("ticketTypeId") && searchParams.get("ticketTypeId") != null) {
+            countPredicates.add(cb.equal(countTicketTypeJoin.get("typeId"), searchParams.get("ticketTypeId")));
+        }
+        if (searchParams.containsKey("isUsed") && searchParams.get("isUsed") != null) {
+            countPredicates.add(cb.equal(countRoot.get("isUsed"), searchParams.get("isUsed")));
+        }
+        countQuery.select(cb.count(countRoot.get("ticketId"))).where(countPredicates.toArray(new Predicate[0]));
+        Long total = session.createQuery(countQuery).getSingleResult();
 
         result.put("total", total);
         result.put("participants", list);
