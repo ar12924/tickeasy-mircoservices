@@ -2,6 +2,8 @@ var change_list_button_el=document.querySelector(".change_list");
 var dist_list_button_el=document.querySelector(".dist_list");
 const tbody_el = document.querySelector("tbody");
 
+const start_el = document.getElementById("start");
+const end_el = document.getElementById("end");
 
 document.addEventListener("click",function(e){
     if(e.target.classList.contains("change_list")){
@@ -23,16 +25,78 @@ document.getElementById('datatable_search').addEventListener('input', function (
     $('#example').DataTable().search(this.value).draw();
   });
 
-  
-  function distTicketList_loaded() {
+
+
+
+
+
+
+  //設定一開始load一個月內的資料
+
+  window.addEventListener("DOMContentLoaded", function () {
   	
+    const startInput = document.getElementById("start");
+    const endInput = document.getElementById("end");
+
+    const today = new Date();
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(today.getMonth() - 1); // 減一個月
+
+    // 補0轉成 yyyy-MM-dd 格式
+    const formatDate = (date) => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+
+    startInput.value = formatDate(oneMonthAgo);
+    endInput.value = formatDate(today);
+    
+    const sIV=startInput.value;
+	const eIV=endInput.value;
+    
+    distTicketList_loaded(sIV,eIV);
+	changeList();
+  });
+  
+  
+  //Search Time interval
+
+function changeList(){
+
+  [start_el, end_el].forEach(input => {
+    input.addEventListener("change", () => {
+	const start_el = document.getElementById("start");
+	const end_el = document.getElementById("end");
+  	const start = start_el.value;
+  	const end= end_el.value;
+
+	console.log(start);
+	console.log(end);
+      // 如果兩者都有值再發送請求
+      if (start && end) {
+  		
+  		distTicketList_loaded(start,end)
+  		}
+  		})
+  		});
+  		}
+		
+		
+  let dataTableInstance = null;
+  function distTicketList_loaded(startTime,endTime) {
+	
+	/*if (dataTableInstance) {
+     	   dataTableInstance.clear().destroy();
+											        }*/
   	tbody_el.innerHTML = "";
 
   	fetch('/maven-tickeasy-v1/eventdetail/dist-ticket-list', {
   		method: `POST`,
   		headers: { 'Content-Type': 'application/json' },
   		body: JSON.stringify({
-  		
+			startTime: startTime, endTime: endTime
   		})
   	})
   		.then(resp => resp.json())
@@ -40,7 +104,7 @@ document.getElementById('datatable_search').addEventListener('input', function (
   			if(!Array.isArray(distTicketLists)){
   									distTicketLists = [];
   						}
-				for (let distTicketList of distTicketLists) {
+				/*for (let distTicketList of distTicketLists) {
 
 				
 
@@ -50,14 +114,26 @@ document.getElementById('datatable_search').addEventListener('input', function (
 																 <td>${distTicketList.ticketId}</td>
 												                 <td>${distTicketList.buyerOrder.memberId}</td>
 												                 <td>${distTicketList.receivedMemberId}</td>
-												                 <td>${distTicketList.updateTime}</td>
+												                 <td>${distTicketList.distedTime}</td>
 												                 <td>已分票</td>
 												               </tr>
 								                `)
 											
-										}
+										}*/
 										
-										new DataTable('#example', {
+										if (dataTableInstance) {
+											dataTableInstance.clear();        
+											dataTableInstance.rows.add(distTicketLists.map(item => [
+											                item.distId,  // 第一列
+											                item.ticketId, // 第二列
+											                item.buyerOrder.memberId, // 第三列
+											                item.receivedMemberId, // 第四列
+											                item.distedTime,  // 第五列
+											                '已分票'  // 第六列
+											            ]));  
+										           dataTableInstance.draw();  // 重新繪製表格
+										       } else {
+										dataTableInstance=new DataTable('#example', {
 										      dom: 't<"table-footer"lip><"clear">',
 										      language: {
 										        zeroRecords: "查無資料，請重新搜尋~~",
@@ -75,6 +151,44 @@ document.getElementById('datatable_search').addEventListener('input', function (
 										        }
 										      }
 										    });
+											dataTableInstance.rows.add(distTicketLists.map(item => [
+											                item.distId,
+											                item.ticketId,
+											                item.buyerOrder.memberId,
+											                item.receivedMemberId,
+											                item.distedTime,
+											                '已分票'
+											            ])).draw();
+											}
 											})
-										}
-distTicketList_loaded();
+											
+				}
+
+
+	
+    /*fetch("/maven-tickeasy-v1/eventdetail/dist-ticket-list", {
+        method: `POST`,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ startTime: start, endTime: end })
+      })
+        .then(resp => resp.json())
+        .then(data => {
+         
+          tbody_el.innerHTML = ""; // 清空表格
+          
+          data.forEach(row => {
+            tbody_el.insertAdjacentHTML("beforeend", `
+				<tr>
+	                 <td>${row.distId}</td>
+					 <td>${row.ticketId}</td>
+	                 <td>${row.buyerOrder.memberId}</td>
+	                 <td>${row.receivedMemberId}</td>
+	                 <td>${row.updateTime}</td>
+	                 <td>已分票</td>
+	               </tr>
+            `);
+          });
+        });
+    }
+  });
+});*/

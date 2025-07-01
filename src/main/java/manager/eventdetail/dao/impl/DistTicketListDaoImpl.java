@@ -1,5 +1,6 @@
 package manager.eventdetail.dao.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +21,17 @@ public class DistTicketListDaoImpl implements DistTicketListDao {
 	private Session session;
 	
 	@Override
-	public List<DistTicket> selectAllDistTicketList() {
+	public List<DistTicket> selectAllDistTicketList(Timestamp startTime,Timestamp endTime ) {
 		List<DistTicket> distTicketList = new ArrayList<>();
-		String hql = "SELECT dt FROM DistTicket dt JOIN FETCH dt.buyerOrder";
+		String hql = "SELECT dt FROM DistTicket dt JOIN FETCH dt.buyerOrder "
+				+ "WHERE dt.distedTime BETWEEN :startTime AND :endTime";
 				
 		
 	
 		distTicketList = session
 				.createQuery(hql, DistTicket.class)
+				.setParameter("startTime", startTime)
+				.setParameter("endTime", endTime)
 				.getResultList();
 		return distTicketList;
 	}

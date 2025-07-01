@@ -1,5 +1,6 @@
 package manager.eventdetail.service.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class DistTickertListServiceImpl implements DistTicketListService{
 	 */
 	@Transactional
 	@Override
-	public List<DistTicket> distTicketListService() {
-		System.out.println("查到資料筆數：" + distTicketListDao.selectAllDistTicketList().size());
-		return distTicketListDao.selectAllDistTicketList();
+	public List<DistTicket> distTicketListService(Timestamp startTime,Timestamp endTime) {
+		System.out.println("查到資料筆數：" + distTicketListDao.selectAllDistTicketList(startTime,endTime).size());
+		return distTicketListDao.selectAllDistTicketList(startTime,endTime);
 	}
 
 }

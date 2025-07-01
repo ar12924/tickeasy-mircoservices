@@ -1,12 +1,15 @@
 package manager.eventdetail.controller;
 
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import manager.eventdetail.service.DistTicketListService;
@@ -25,7 +28,13 @@ public class DistTicketListController {
 	
 	@PostMapping("dist-ticket-list")
 	@ResponseBody
-	public List<DistTicket> distTicketList(@RequestBody DistTicket distTicket) {
+	public List<DistTicket> distTicketList(@RequestBody Map<String, Object> json) {
+		String startStr = json.get("startTime") + " 00:00:00";
+		String endStr = json.get("endTime") + " 23:59:59";
+
+		System.out.println("前端送來 startStr：" + startStr);
+	    Timestamp startTime = Timestamp.valueOf(startStr);
+	    Timestamp endTime = Timestamp.valueOf(endStr);
 		
 		
 		/* Integer distId=distTicket.getDistId(); */
@@ -33,7 +42,7 @@ public class DistTicketListController {
 
 
 		
-		List<DistTicket> distTicketLists = distTicketListService.distTicketListService();
+		List<DistTicket> distTicketLists = distTicketListService.distTicketListService(startTime,endTime);
 		
 		
 		return distTicketLists;
