@@ -36,4 +36,7 @@ public class EventInfoEventVer {
     
     @Column(name = "IS_POSTED")
     private Boolean isPosted;
+
+    @Column(name = "TOTAL_CAPACITY")
+    private Integer capacity;
 } 
