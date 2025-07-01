@@ -91,15 +91,6 @@ public interface TicketExchangeService {
      */
     void updateSwapCommentStatus(Integer commentId, Integer status, Integer memberId);
     
-    /**
-     * 根據暱稱獲取會員基本資訊
-     * 
-     * @param nickname 會員暱稱
-     * @return 會員資訊
-     * @throws IllegalArgumentException 當nickname無效時
-     */
-    Map<String, Object> getMemberByNickname(String nickname);
+    List<Map<String, Object>> getUserTickets(Integer memberId);
     
-    // 在 TicketExchangeService 介面中新增
-    List<Map<String, Object>> getUserTicketsByNickname(String nickname);
 }

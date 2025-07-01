@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import user.ticket.dao.SwapCommentDao;
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventTicketTypeVO;
-import user.ticket.vo.MemberVO;
+import user.member.vo.Member;
 import user.ticket.vo.SwapCommentVO;
 /**
  * 換票留言資料存取實作類
@@ -101,7 +101,7 @@ public class SwapCommentDaoImpl implements SwapCommentDao {
     @Override
     public InputStream getMemberPhotoStream(Integer memberId) {
      
-    	MemberVO member = session.get(MemberVO.class, memberId);
+    	Member member = session.get(Member.class, memberId);
        	if (member != null && member.getPhoto() != null && member.getPhoto().length > 0) {
        		return new ByteArrayInputStream(member.getPhoto());
         }
@@ -110,7 +110,7 @@ public class SwapCommentDaoImpl implements SwapCommentDao {
 
     @Override
     public byte[] getMemberPhoto(Integer memberId) {
-        MemberVO member = session.get(MemberVO.class, memberId);
+    	Member member = session.get(Member.class, memberId);
         return (member != null) ? member.getPhoto() : null;
     }
 
@@ -147,10 +147,10 @@ public class SwapCommentDaoImpl implements SwapCommentDao {
     }
 
     @Override
-    public MemberVO getMemberById(Integer memberId) {
+    public Member getMemberById(Integer memberId) {
         String hql = "FROM MemberVO m WHERE m.memberId = :memberId";
-        List<MemberVO> results = session
-                .createQuery(hql, MemberVO.class)
+        List<Member> results = session
+                .createQuery(hql, Member.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
         return results.isEmpty() ? null : results.get(0);

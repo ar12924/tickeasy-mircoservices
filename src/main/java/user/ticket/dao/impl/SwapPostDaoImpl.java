@@ -17,7 +17,7 @@ import user.ticket.dao.SwapPostDao;
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventInfoVO;
 import user.ticket.vo.EventTicketTypeVO;
-import user.ticket.vo.MemberVO;
+import user.member.vo.Member;
 import user.ticket.vo.SwapPostVO;
 /**
  * 換票貼文資料存取實作類
@@ -98,7 +98,7 @@ public class SwapPostDaoImpl implements SwapPostDao {
     
     @Override
     public InputStream getMemberPhotoStream(Integer memberId) {
-    	MemberVO member = session.get(MemberVO.class, memberId);
+    	Member member = session.get(Member.class, memberId);
     	if (member != null && member.getPhoto() != null && member.getPhoto().length > 0) {
     		return new ByteArrayInputStream(member.getPhoto());
         }
@@ -107,7 +107,7 @@ public class SwapPostDaoImpl implements SwapPostDao {
 
     @Override
     public byte[] getMemberPhoto(Integer memberId) {
-        MemberVO member = session.get(MemberVO.class, memberId);
+    	Member member = session.get(Member.class, memberId);
         return (member != null) ? member.getPhoto() : null;
     }
 
@@ -132,13 +132,8 @@ public class SwapPostDaoImpl implements SwapPostDao {
     }
 
     @Override
-    public MemberVO getMemberById(Integer memberId) {
-        String hql = "FROM MemberVO m WHERE m.memberId = :memberId";
-        List<MemberVO> results = session
-                .createQuery(hql, MemberVO.class)
-                .setParameter("memberId", memberId)
-                .getResultList();
-        return results.isEmpty() ? null : results.get(0);
+    public Member getMemberById(Integer memberId) {
+    	return session.get(Member.class, memberId);
     }
     
     @Override
@@ -172,10 +167,10 @@ public class SwapPostDaoImpl implements SwapPostDao {
     }
     
     @Override
-    public MemberVO getMemberByNickname(String nickname) {
-        String hql = "FROM MemberVO m WHERE m.nickName = :nickname AND m.active = 1";
-        List<MemberVO> results = session
-        		.createQuery(hql, MemberVO.class)
+    public Member getMemberByNickname(String nickname) {
+        String hql = "FROM Member m WHERE m.nickName = :nickname AND m.isActive = 1";
+        List<Member> results = session
+        		.createQuery(hql, Member.class)
                 .setParameter("nickname", nickname)
                 .setMaxResults(1)
                 .getResultList();

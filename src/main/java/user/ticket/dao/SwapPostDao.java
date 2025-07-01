@@ -6,7 +6,7 @@ import java.util.Map;
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventInfoVO;
 import user.ticket.vo.EventTicketTypeVO;
-import user.ticket.vo.MemberVO;
+import user.member.vo.Member;
 import user.ticket.vo.SwapPostVO;
 public interface SwapPostDao {
 	/**
@@ -101,12 +101,12 @@ public interface SwapPostDao {
      * @param nickname 會員暱稱
      * @return 會員資訊
      */
-    MemberVO getMemberByNickname(String nickname);
+    Member getMemberByNickname(String nickname);
     
     // 查會員票券
     List<BuyerTicketVO> getUserTickets(Integer memberId);
     
-    MemberVO getMemberById(Integer memberId);
+    Member getMemberById(Integer memberId);
     
     EventInfoVO getEventInfoById(Integer eventId);
     

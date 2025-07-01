@@ -10,7 +10,7 @@ import user.ticket.service.TicketExchangeService;
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventInfoVO;
 import user.ticket.vo.EventTicketTypeVO;
-import user.ticket.vo.MemberVO;
+import user.member.vo.Member;
 import user.ticket.vo.SwapCommentVO;
 import user.ticket.vo.SwapPostVO;
 
@@ -335,66 +335,9 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 		}
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public Map<String, Object> getMemberByNickname(String nickname) {
-		if (nickname == null || nickname.trim().isEmpty()) {
-			throw new IllegalArgumentException("會員暱稱不能為空");
-		}
+	
 
-		MemberVO member = swapPostDao.getMemberByNickname(nickname.trim());
-		if (member == null) {
-			return null;
-		}
-
-		Map<String, Object> memberInfo = new HashMap<>();
-		memberInfo.put("memberId", member.getMemberId());
-		memberInfo.put("nickname", member.getNickName());
-		memberInfo.put("email", member.getEmail());
-		memberInfo.put("roleLevel", member.getRoleLevel());
-
-		return memberInfo;
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<Map<String, Object>> getUserTicketsByNickname(String nickname) {
-		if (nickname == null || nickname.trim().isEmpty()) {
-			throw new IllegalArgumentException("會員暱稱不能為空");
-		}
-
-		// 先獲取會員資訊
-		Map<String, Object> memberInfo = getMemberByNickname(nickname);
-		if (memberInfo == null) {
-			return new ArrayList<>();
-		}
-
-		Integer memberId = (Integer) memberInfo.get("memberId");
-
-		// 查詢該會員的票券
-		List<BuyerTicketVO> tickets = buyerTicketDao.getTicketsByMemberId(memberId);
-
-		List<Map<String, Object>> result = new ArrayList<>();
-		for (BuyerTicketVO ticket : tickets) {
-			Map<String, Object> ticketInfo = new HashMap<>();
-			ticketInfo.put("ticketId", ticket.getTicketId());
-			ticketInfo.put("participantName", ticket.getParticipantName());
-			ticketInfo.put("eventName", ticket.getEventName());
-			ticketInfo.put("price", ticket.getPrice());
-
-			// 查詢票種資訊
-			if (ticket.getTypeId() != null) {
-				EventTicketTypeVO ticketType = swapPostDao.getEventTicketTypeById(ticket.getTypeId());
-				if (ticketType != null) {
-					ticketInfo.put("categoryName", ticketType.getCategoryName());
-				}
-			}
-
-			result.add(ticketInfo);
-		}
-
-		return result;
-	}
+	
 
 	/**
 	 * 將SwapPostVO物件轉換為Map
@@ -407,7 +350,7 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 		postInfo.put("createTime", post.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
 		// 查詢會員資訊
-		MemberVO member = swapPostDao.getMemberById(post.getPostMemberId());
+		Member member = swapPostDao.getMemberById(post.getPostMemberId());
 		if (member != null) {
 			Map<String, Object> memberInfo = new HashMap<>();
 			memberInfo.put("memberId", member.getMemberId());
@@ -465,7 +408,7 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 		}
 
 		// 查詢會員資訊
-		MemberVO member = swapCommentDao.getMemberById(comment.getCommentMemberId());
+		Member member = swapCommentDao.getMemberById(comment.getCommentMemberId());
 		if (member != null) {
 			Map<String, Object> memberInfo = new HashMap<>();
 			memberInfo.put("memberId", member.getMemberId());
@@ -602,5 +545,39 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 	        throw new RuntimeException("找不到換票貼文");
 	    }
 	    return buyerTicketDao.getTicketEventId(post.getPostTicketId());
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> getUserTickets(Integer memberId) {
+	    if (memberId == null || memberId <= 0) {
+	        throw new IllegalArgumentException("會員ID不能為空或小於等於0");
+	    }
+
+	    List<BuyerTicketVO> tickets = buyerTicketDao.getTicketsByMemberId(memberId);
+	    List<Map<String, Object>> result = new ArrayList<>();
+	    
+	    for (BuyerTicketVO ticket : tickets) {
+	        Map<String, Object> ticketInfo = new HashMap<>();
+	        ticketInfo.put("ticketId", ticket.getTicketId());
+	        ticketInfo.put("participantName", ticket.getParticipantName());
+	        ticketInfo.put("eventName", ticket.getEventName());
+	        ticketInfo.put("price", ticket.getPrice());
+	        
+	        if (ticket.getTypeId() != null) {
+	            try {
+	                EventTicketTypeVO ticketType = swapPostDao.getEventTicketTypeById(ticket.getTypeId());
+	                if (ticketType != null) {
+	                    ticketInfo.put("categoryName", ticketType.getCategoryName());
+	                }
+	            } catch (Exception e) {
+	                ticketInfo.put("categoryName", "未知票種");
+	            }
+	        }
+	        
+	        result.add(ticketInfo);
+	    }
+
+	    return result;
 	}
 }

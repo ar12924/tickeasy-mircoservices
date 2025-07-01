@@ -5,7 +5,7 @@ import java.util.Map;
 
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventTicketTypeVO;
-import user.ticket.vo.MemberVO;
+import user.member.vo.Member;
 import user.ticket.vo.SwapCommentVO;
 public interface SwapCommentDao {
 	/**
@@ -103,7 +103,7 @@ public interface SwapCommentDao {
      */
     boolean isPostOwnerByCommentId(Integer commentId, Integer memberId);
     
-    MemberVO getMemberById(Integer memberId);
+    Member getMemberById(Integer memberId);
     
     BuyerTicketVO getBuyerTicketById(Integer ticketId);
     
