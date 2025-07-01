@@ -2,15 +2,10 @@ package user.buy.dao.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.sql.Blob;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.PersistenceContext;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

@@ -2,6 +2,7 @@ package user.buy.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,7 +45,7 @@ public class SearchEventController extends HttpServlet {
 		Integer pageNumber = Integer.parseInt(req.getParameter("pageNumber"));
 		Integer pageSize = 6; // 固定一頁6筆
 		// 3. 將 (keyword, pageNumber, pageSize) 交給 Service 處理，回傳查詢結果
-		Core<EventInfo> eventCore = service.searchEventByKeyword(keyword, pageNumber, pageSize);
+		Core<List<EventInfo>> eventCore = service.searchEventByKeyword(keyword, pageNumber, pageSize);
 		// 4. 轉成 json 格式，並回應 json 字串
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(eventCore);

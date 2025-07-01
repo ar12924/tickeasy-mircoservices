@@ -4,7 +4,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>TickEasy | 角色管理</title>
-
     <!--Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="TickEasy | 角色管理" />
@@ -87,7 +86,6 @@
                 </ul>
             </div>
         </nav>
-
         <!-- Sidebar (保持不變) -->
         <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
             <div class="sidebar-brand">
@@ -246,7 +244,6 @@
                 </nav>
             </div>
         </aside>
-
         <!-- Main Content -->
         <main class="app-main">
             <div class="app-content-header">
@@ -269,31 +266,11 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <!-- 搜尋區域 -->
-                            <div class="card mb-4">
-                                <div class="card-body">
-                                    <form id="searchForm">
-                                        <div class="row align-items-end">
-                                            <div class="col-md-4">
-                                                <label for="searchInput" class="form-label">輸入搜索：</label>
-                                                <input type="text" class="form-control" id="searchInput" placeholder="角色名稱">
-                                            </div>
-                                            <div class="col-md-2">
-                                                <button type="button" class="btn btn-secondary w-100" id="resetBtn">重置</button>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <button type="submit" class="btn btn-primary w-100">查詢搜索</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-
                             <!-- 數據列表 -->
                             <div class="card">
                                 <div class="card-header">
                                     <h3 class="card-title mb-0">
-                                        <i class="bi bi-list-ul"></i> 數據列表
+                                        <i class="bi bi-list-ul"></i> 角色列表
                                     </h3>
                                 </div>
                                 <div class="card-body p-0">
@@ -301,12 +278,11 @@
                                         <table class="table table-striped table-hover mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th width="10%" class="text-center">角色等級</th>
+                                                    <th width="15%" class="text-center">角色等級</th>
                                                     <th width="20%">角色名稱</th>
-                                                    <th width="30%">權限說明</th>
+                                                    <th width="35%">權限說明</th>
                                                     <th width="15%" class="text-center">會員數量</th>
-                                                    <th width="15%" class="text-center">狀態</th>
-                                                    <th width="10%" class="text-center">操作</th>
+                                                    <th width="15%" class="text-center">操作</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="roleTableBody">
@@ -314,7 +290,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    
+
                                     <!-- 分頁 -->
                                     <div class="card-footer">
                                         <div class="row align-items-center">
@@ -332,7 +308,6 @@
                 </div>
             </div>
         </main>
-
         <!-- Footer -->
         <footer class="app-footer">
             <div class="float-end d-none d-sm-inline">TIA203-G2</div>
@@ -344,9 +319,9 @@
             All rights reserved.
         </footer>
     </div>
-
     <!-- 權限設定 Modal -->
-    <div class="modal fade" id="permissionModal" tabindex="-1" aria-labelledby="permissionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="permissionModal" tabindex="-1" aria-labelledby="permissionModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -358,7 +333,7 @@
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle"></i> 此功能僅供展示，實際權限控制需要建立完整的權限資料表
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <h6 class="border-bottom pb-2">活動管理權限</h6>
@@ -417,7 +392,6 @@
             </div>
         </div>
     </div>
-
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
@@ -433,7 +407,6 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
         integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
-
     <script>
         // OverlayScrollbars 設定
         const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
@@ -455,30 +428,13 @@
             }
         });
 
-        // 系統預設角色（對應資料庫 role_level）
+        // 系統預設角色（僅保留活動方和平台方）
         const systemRoles = [
-            {
-                roleLevel: 0,
-                roleName: '未開通',
-                description: '註冊但尚未啟用的會員，無任何系統權限',
-                memberCount: 1,
-                isActive: true,
-                permissions: []
-            },
-            {
-                roleLevel: 1,
-                roleName: '購票方',
-                description: '一般會員，可瀏覽活動、購買票券、管理個人訂單',
-                memberCount: 5,
-                isActive: true,
-                permissions: ['查看活動', '購買票券', '管理訂單']
-            },
             {
                 roleLevel: 2,
                 roleName: '活動方',
                 description: '活動主辦方，可建立活動、管理票券、查看銷售報表',
                 memberCount: 3,
-                isActive: true,
                 permissions: ['查看活動', '建立活動', '編輯活動', '管理票券', '查看報表']
             },
             {
@@ -486,36 +442,17 @@
                 roleName: '平台方',
                 description: '系統管理員，擁有所有系統權限',
                 memberCount: 1,
-                isActive: true,
                 permissions: ['所有權限']
             }
         ];
 
-        let filteredRoles = [...systemRoles];
         let currentRoleLevel = null;
 
         // 初始化
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             renderTable();
-            setupEventListeners();
             updateMemberCounts();
         });
-
-        // 設定事件監聽器
-        function setupEventListeners() {
-            // 搜尋表單
-            document.getElementById('searchForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                searchRoles();
-            });
-
-            // 重置按鈕
-            document.getElementById('resetBtn').addEventListener('click', function() {
-                document.getElementById('searchInput').value = '';
-                filteredRoles = [...systemRoles];
-                renderTable();
-            });
-        }
 
         // 更新會員數量（模擬從資料庫統計）
         function updateMemberCounts() {
@@ -523,39 +460,22 @@
             // SELECT role_level, COUNT(*) as count FROM member GROUP BY role_level
         }
 
-        // 搜尋角色
-        function searchRoles() {
-            const keyword = document.getElementById('searchInput').value.toLowerCase();
-            
-            filteredRoles = systemRoles.filter(role => {
-                return role.roleName.toLowerCase().includes(keyword) ||
-                       role.description.toLowerCase().includes(keyword);
-            });
-
-            renderTable();
-        }
-
         // 渲染表格
         function renderTable() {
             const tbody = document.getElementById('roleTableBody');
             tbody.innerHTML = '';
-            
-            filteredRoles.forEach(role => {
+
+            systemRoles.forEach(role => {
                 const row = createTableRow(role);
                 tbody.appendChild(row);
             });
 
-            document.getElementById('totalRecords').textContent = filteredRoles.length;
+            document.getElementById('totalRecords').textContent = systemRoles.length;
         }
 
         // 建立表格行
         function createTableRow(role) {
             const tr = document.createElement('tr');
-            
-            const statusBadge = role.isActive ? 
-                '<span class="badge bg-success">啟用</span>' : 
-                '<span class="badge bg-secondary">停用</span>';
-
             const roleBadge = getRoleLevelBadge(role.roleLevel);
 
             tr.innerHTML = `
@@ -563,22 +483,19 @@
                 <td>${roleBadge} ${role.roleName}</td>
                 <td>${role.description}</td>
                 <td class="text-center">${role.memberCount}</td>
-                <td class="text-center">${statusBadge}</td>
                 <td class="text-center">
                     <button type="button" class="btn btn-sm btn-outline-primary" onclick="showPermissions(${role.roleLevel})" title="權限設定">
                         <i class="bi bi-shield-check"></i> 權限
                     </button>
                 </td>
             `;
-            
+
             return tr;
         }
 
         // 取得角色等級標籤
         function getRoleLevelBadge(level) {
             const badges = {
-                0: '<span class="badge bg-secondary">Lv.0</span>',
-                1: '<span class="badge bg-info">Lv.1</span>',
                 2: '<span class="badge bg-warning">Lv.2</span>',
                 3: '<span class="badge bg-danger">Lv.3</span>'
             };
@@ -599,10 +516,7 @@
             });
 
             // 根據角色等級設定預設權限
-            switch(roleLevel) {
-                case 1: // 購票方
-                    document.getElementById('perm_event_view').checked = true;
-                    break;
+            switch (roleLevel) {
                 case 2: // 活動方
                     document.getElementById('perm_event_view').checked = true;
                     document.getElementById('perm_event_create').checked = true;

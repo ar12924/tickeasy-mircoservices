@@ -14,7 +14,7 @@ public interface SearchService {
 	 * @param 關鍵字, 頁數, 每頁筆數
 	 * @return 符合條件的數筆活動資料
 	 */
-	Core<EventInfo> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize);
+	Core<List<EventInfo>> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize);
 
 	/**
 	 * ...

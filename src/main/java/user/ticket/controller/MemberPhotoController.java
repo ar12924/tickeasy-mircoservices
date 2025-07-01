@@ -1,12 +1,9 @@
 package user.ticket.controller;
 
-import common.util.CommonUtil;
-import user.ticket.dao.SwapPostDao;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import user.ticket.dao.SwapPostDao;
 
 /**
  * 會員照片控制器

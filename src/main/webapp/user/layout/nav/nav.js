@@ -3,6 +3,7 @@
 
 /**
  * 預先載入 nav.html 模板。
+ * @return {Promise<string>} HTML 模板。
  */
 export const fetchNavTemplate = async () => {
   const resp = await fetch("../layout/nav/nav.html");
@@ -11,10 +12,11 @@ export const fetchNavTemplate = async () => {
 
 /**
  * 動態生成並插入導覽列的 HTML。
+ * @param {string} templateHTML - HTML模板。
  */
-export const renderNav = async (templateHTML) => {
-  templateHTML = $(await fetchNavTemplate());
-  $(".navbar").append(templateHTML);
+export const renderNav = (templateHTML) => {
+  const templateJQuery = $(templateHTML);
+  $(".navbar").html(templateJQuery);
 };
 
 // ==================== 2. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================

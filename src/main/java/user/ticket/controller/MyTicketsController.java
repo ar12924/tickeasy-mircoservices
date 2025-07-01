@@ -1,14 +1,9 @@
 package user.ticket.controller;
 
-import com.google.gson.Gson;
-import common.util.CommonUtil;
-import user.ticket.service.TicketExchangeService;
-import user.member.vo.Member;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import user.member.vo.Member;
+import user.ticket.service.TicketExchangeService;
 /**
  * 獲取會員持有票券控制器 
  * 創建者: archchang 
