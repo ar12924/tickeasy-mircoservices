@@ -12,4 +12,5 @@ public interface TicketSalesDao extends CommonDao{
     Integer getUsedTicketCount(Integer typeId);
     Map<Integer, Map<String, Object>> getTicketSalesStatistics(Integer eventId);
     Map<String, Object> getSalesDashboardData(Integer eventId);
+    Integer getSoldTicketCountByEventId(Integer eventId);
 }
