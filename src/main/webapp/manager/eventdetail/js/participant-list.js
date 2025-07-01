@@ -206,7 +206,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.successful) {
           const result = data.data;
           if (result && result.participants) {
-            displayParticipants(result.participants);
+            // 傳遞篩選條件給 displayParticipants
+            displayParticipants(result.participants, {
+              nameFilter,
+              emailFilter,
+              ticketTypeFilter,
+            });
             // 呼叫 displayTicketTypes
             if (result.ticketTypes) {
               displayTicketTypes(result.ticketTypes);
@@ -231,11 +236,26 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function displayParticipants(participants) {
+  function displayParticipants(participants, filters = {}) {
     if (!participantTableEl) return;
 
     if (!participants || participants.length === 0) {
-      showNoData("該活動暫無參與者");
+      // 根據篩選條件顯示不同的訊息
+      let message = "該活動暫無參與者";
+
+      if (filters.ticketTypeFilter) {
+        // 如果有選擇特定票種，顯示該票種的訊息
+        const ticketTypeSelect = document.querySelector("#ticket-type-select");
+        const selectedOption =
+          ticketTypeSelect?.options[ticketTypeSelect.selectedIndex];
+        const ticketTypeName = selectedOption?.textContent || "該票種";
+        message = `${ticketTypeName}尚無購買者`;
+      } else if (filters.nameFilter || filters.emailFilter) {
+        // 如果有其他篩選條件
+        message = "沒有符合篩選條件的參與者";
+      }
+
+      showNoData(message);
       return;
     }
 
@@ -312,9 +332,22 @@ document.addEventListener("DOMContentLoaded", function () {
     // 清空分頁和票種
     const paginationContainer = document.querySelector("#pagination-container");
     if (paginationContainer) paginationContainer.innerHTML = "";
+
+    // 清空所有篩選條件
     const ticketTypeSelectEl = document.querySelector("#ticket-type-select");
-    if (ticketTypeSelectEl)
+    if (ticketTypeSelectEl) {
       ticketTypeSelectEl.innerHTML = '<option value="">所有票種</option>';
+    }
+
+    const nameFilterEl = document.querySelector("#name-filter");
+    if (nameFilterEl) {
+      nameFilterEl.value = "";
+    }
+
+    const emailFilterEl = document.querySelector("#email-filter");
+    if (emailFilterEl) {
+      emailFilterEl.value = "";
+    }
   }
 
   function showLoading(show) {
