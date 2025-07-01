@@ -36,43 +36,39 @@ public class TicketSalesServiceImpl implements TicketSalesService {
         }
         
         result.put("eventName", event.getEventName());
+        Integer capacity = event.getCapacity();
+        result.put("capacity", capacity);
         
         // 獲取所有票種
         List<EventTicketType> ticketTypes = ticketSalesDao.getEventTicketTypes(eventId);
         
         // 準備銷售數據
         List<Map<String, Object>> salesData = new ArrayList<>();
-        int totalTickets = 0;
         double totalRevenue = 0.0;
-        
         for (EventTicketType ticketType : ticketTypes) {
             Map<String, Object> salesItem = new HashMap<>();
             salesItem.put("categoryName", ticketType.getCategoryName());
-            
-            // 獲取該票種的銷售統計
+            salesItem.put("capacity", ticketType.getCapacity());
             Integer soldCount = ticketSalesDao.getSoldTicketCount(ticketType.getTypeId());
-            Integer usedCount = ticketSalesDao.getUsedTicketCount(ticketType.getTypeId());
-            
             soldCount = soldCount != null ? soldCount : 0;
-            usedCount = usedCount != null ? usedCount : 0;
-            
+            int unsold = ticketType.getCapacity() != null ? (ticketType.getCapacity() - soldCount) : 0;
             salesItem.put("ticketsSold", soldCount);
-            salesItem.put("ticketsUsed", usedCount);
-            
-            // 計算收入
+            salesItem.put("unsold", unsold);
             double revenue = soldCount * ticketType.getPrice().doubleValue();
             salesItem.put("totalRevenue", revenue);
-            
             salesData.add(salesItem);
-            
-            totalTickets += soldCount;
             totalRevenue += revenue;
         }
-        
         result.put("salesData", salesData);
-        result.put("totalTickets", totalTickets);
         result.put("totalRevenue", totalRevenue);
-        
+
+        // 正確計算已售出、未銷售、銷售率
+        Integer soldCount = ticketSalesDao.getSoldTicketCountByEventId(eventId);
+        int unsold = capacity != null && soldCount != null ? (capacity - soldCount) : 0;
+        double salesRate = (capacity != null && capacity > 0 && soldCount != null) ? (soldCount * 100.0 / capacity) : 0;
+        result.put("soldCount", soldCount);
+        result.put("unsold", unsold);
+        result.put("salesRate", salesRate);
         return result;
     }
     
