@@ -69,6 +69,9 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 			throw new IllegalArgumentException("活動ID不能為空或小於等於0");
 		}
 
+		// 檢查是否已對此活動發布過換票貼文
+	    validateNoDuplicatePost(memberId, eventId);
+	    
 		// 業務規則檢查
 		validateTicketOwnershipAndAvailability(ticketId, memberId);
 
@@ -475,6 +478,13 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 
 		return validCommentCount > 0;
 	}
+	
+	// 檢查重複發文的私有方法
+	private void validateNoDuplicatePost(Integer memberId, Integer eventId) {
+	    if (swapPostDao.hasEventPostByMember(memberId, eventId)) {
+	        throw new RuntimeException("您已對此活動發布過換票貼文，請編輯現有貼文或先刪除後重新發布");
+	    }
+	}
 
 	/**
 	 * 驗證票券擁有權和可用性
@@ -563,6 +573,9 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 	        ticketInfo.put("participantName", ticket.getParticipantName());
 	        ticketInfo.put("eventName", ticket.getEventName());
 	        ticketInfo.put("price", ticket.getPrice());
+	        
+	        ticketInfo.put("createTime", ticket.getCreateTime());
+	        ticketInfo.put("orderId", ticket.getOrderId());
 	        
 	        if (ticket.getTypeId() != null) {
 	            try {
