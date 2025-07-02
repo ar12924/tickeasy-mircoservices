@@ -123,4 +123,19 @@ public interface SwapPostDao {
      * 根據留言ID獲取貼文資訊
      */
     SwapPostVO getPostByCommentId(Integer commentId);
+    
+    /**
+     * 檢查會員是否已對特定活動發布過換票貼文
+     */
+    boolean hasEventPostByMember(Integer memberId, Integer eventId);
+    
+    /**
+     * 檢查票券是否已在留言中使用
+     */
+    boolean isTicketUsedInComment(Integer ticketId);
+    
+    /**
+     * 獲取會員在特定活動的所有貼文
+     */
+    List<SwapPostVO> getMemberPostsByEvent(Integer memberId, Integer eventId);
 }

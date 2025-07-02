@@ -203,4 +203,35 @@ public class SwapPostDaoImpl implements SwapPostDao {
                 .getResultList();
         return results.isEmpty() ? null : results.get(0);
     }
+    
+    // 新增檢查會員是否已對特定活動發文的方法
+    @Override
+    public boolean hasEventPostByMember(Integer memberId, Integer eventId) {
+        String hql = "SELECT COUNT(sp) FROM SwapPostVO sp WHERE sp.postMemberId = :memberId AND sp.eventId = :eventId";
+        Long count = session.createQuery(hql, Long.class)
+                .setParameter("memberId", memberId)
+                .setParameter("eventId", eventId)
+                .getSingleResult();
+        return count > 0;
+    }
+
+    // 檢查票券是否已在留言中使用
+    @Override
+    public boolean isTicketUsedInComment(Integer ticketId) {
+        String hql = "SELECT COUNT(sc) FROM SwapCommentVO sc WHERE sc.commentTicketId = :ticketId AND sc.swappedStatus != 3";
+        Long count = session.createQuery(hql, Long.class)
+                .setParameter("ticketId", ticketId)
+                .getSingleResult();
+        return count > 0;
+    }
+
+    // 獲取會員在特定活動的所有貼文
+    @Override
+    public List<SwapPostVO> getMemberPostsByEvent(Integer memberId, Integer eventId) {
+        String hql = "FROM SwapPostVO sp WHERE sp.postMemberId = :memberId AND sp.eventId = :eventId ORDER BY sp.createTime DESC";
+        return session.createQuery(hql, SwapPostVO.class)
+                .setParameter("memberId", memberId)
+                .setParameter("eventId", eventId)
+                .getResultList();
+    }
 }
