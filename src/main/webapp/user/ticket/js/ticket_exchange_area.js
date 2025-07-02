@@ -269,7 +269,7 @@ function initTicketExchangeVueApp() {
                         eventId: parseInt(eventId.value)
                     };
 
-                    console.log('提交轉票貼文:', requestData);
+
 
                     const response = await fetch(`${API_BASE_URL}/ticket-exchange/posts`, {
                         method: 'POST',
@@ -282,7 +282,7 @@ function initTicketExchangeVueApp() {
 
                     if (response.ok) {
                         const data = await response.json();
-                        console.log('提交轉票貼文回應:', data);
+
 
                         if (data.success) {
                             // 重新載入貼文列表
@@ -297,12 +297,20 @@ function initTicketExchangeVueApp() {
                         }
                     } else {
                         const errorData = await response.json().catch(() => ({}));
-                        console.error('提交轉票貼文HTTP錯誤:', response.status, errorData);
+
                         throw new Error(errorData.userMessage || `HTTP錯誤: ${response.status}`);
                     }
                 } catch (err) {
                     console.error('提交轉票貼文時發生錯誤:', err);
-                    alert(err.message || '發表失敗，請稍後再試');
+                    if (err.message.includes('已用於其他轉票')) {
+                        alert('您選擇的票券已用於其他換票貼文，請選擇其他票券或先刪除原有貼文');
+                    } else if (err.message.includes('已對此活動發布')) {
+                        alert('您已對此活動發布過換票貼文，請編輯現有貼文或先刪除後重新發布');
+                    } else if (err.message.includes('同一活動')) {
+                        alert('只能交換同一活動的票券，請確認您的選擇');
+                    } else {
+                        alert(`發布失敗：${err.message || '請稍後再試'}`);
+                    }
                 } finally {
                     isSubmitting.value = false;
                 }
@@ -315,21 +323,31 @@ function initTicketExchangeVueApp() {
                     return;
                 }
 
-                // 過濾只顯示同活動的票券
                 const postEventName = post.event?.eventName;
-                const filteredTickets = userTickets.value.filter(ticket =>
-                    ticket.eventName === postEventName
-                );
 
-                if (filteredTickets.length === 0) {
-                    alert(`您沒有「${postEventName}」的可用票券進行交換`);
+                // 同活動、可用、排除貼文本身的票券
+                const availableTickets = userTickets.value.filter(ticket => {
+                    return ticket.eventName === postEventName &&
+                        !isTicketUsedInExchange(ticket.ticketId) &&
+                        ticket.ticketId !== post.ticket?.ticketId;
+                });
+
+                if (availableTickets.length === 0) {
+                    alert(`您沒有「${postEventName}」的可用票券進行交換，或您的票券已用於其他換票中`);
                     return;
+                }
+
+                // 用戶友好提示
+                if (availableTickets.length === 1) {
+                    console.log('系統已為您篩選出唯一可交換的票券');
+                } else if (availableTickets.length > 3) {
+                    console.log(`您有 ${availableTickets.length} 張可交換票券，請仔細選擇`);
                 }
                 // 重置表單
                 post.commentForm = {
                     ticketId: '',
                     description: '',
-                    availableTickets: filteredTickets
+                    availableTickets: availableTickets
                 };
                 post.showCommentForm = true;
             };
@@ -349,6 +367,15 @@ function initTicketExchangeVueApp() {
                     return;
                 }
 
+                //  提交前確認
+                const selectedTicket = post.commentForm.availableTickets.find(
+                    t => t.ticketId == post.commentForm.ticketId
+                );
+
+                if (!confirm(`確定要用「${selectedTicket.categoryName} - 票券#${selectedTicket.ticketId}」進行交換嗎？`)) {
+                    return;
+                }
+
                 post.commentSubmitting = true;
 
                 try {
@@ -358,7 +385,7 @@ function initTicketExchangeVueApp() {
                         description: post.commentForm.description
                     };
 
-                    console.log('提交留言:', requestData);
+
 
                     const response = await fetch(`${API_BASE_URL}/ticket-exchange/comments`, {
                         method: 'POST',
@@ -371,7 +398,7 @@ function initTicketExchangeVueApp() {
 
                     if (response.ok) {
                         const data = await response.json();
-                        console.log('提交留言回應:', data);
+
 
                         if (data.success) {
                             // 重新載入該貼文的留言
@@ -389,12 +416,18 @@ function initTicketExchangeVueApp() {
                         }
                     } else {
                         const errorData = await response.json().catch(() => ({}));
-                        console.error('提交留言HTTP錯誤:', response.status, errorData);
+
                         throw new Error(errorData.userMessage || `HTTP錯誤: ${response.status}`);
                     }
                 } catch (err) {
                     console.error('提交留言時發生錯誤:', err);
-                    alert(err.message || '發表失敗，請稍後再試');
+                    if (err.message.includes('已用於其他轉票')) {
+                        alert('您選擇的票券已用於其他換票貼文，請選擇其他票券');
+                    } else if (err.message.includes('同一活動')) {
+                        alert('只能交換同一活動的票券，請確認您的選擇');
+                    } else {
+                        alert(`發表失敗：${err.message || '請稍後再試'}`);
+                    }
                 } finally {
                     post.commentSubmitting = false;
                 }
@@ -795,6 +828,44 @@ function initTicketExchangeVueApp() {
                 }
             };
 
+            //  改良後的票券顯示格式
+            const formatTicketDisplay = (ticket) => {
+                const purchaseDate = ticket.createTime ?
+                    new Date(ticket.createTime).toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit' }) : '';
+                return `${ticket.categoryName} - ${ticket.participantName} (NT$ ${formatPrice(ticket.price)}) - 票券#${ticket.ticketId}${purchaseDate ? ` [${purchaseDate}購買]` : ''}`;
+            };
+
+            //  檢查票券是否已用於轉票
+            const isTicketUsedInExchange = (ticketId) => {
+                return swapPosts.value.some(post =>
+                    post.ticket && post.ticket.ticketId === ticketId
+                );
+            };
+
+            //  票券狀態檢查方法
+            const getTicketStatus = (ticketId) => {
+                if (isTicketUsedInPost(ticketId)) {
+                    return { status: '已發布換票', class: 'ticket-status-posted' };
+                }
+                if (isTicketUsedInComment(ticketId)) {
+                    return { status: '換票留言中', class: 'ticket-status-commenting' };
+                }
+                return { status: '可用於換票', class: 'ticket-status-available' };
+            };
+
+            const isTicketUsedInPost = (ticketId) => {
+                return swapPosts.value.some(post =>
+                    post.ticket && post.ticket.ticketId === ticketId
+                );
+            };
+
+            const isTicketUsedInComment = (ticketId) => {
+                return swapPosts.value.some(post =>
+                    post.comments && post.comments.some(comment =>
+                        comment.ticket && comment.ticket.ticketId === ticketId
+                    )
+                );
+            };
             // ==================== 生命週期鉤子 ====================
 
             // 組件掛載時執行
@@ -881,7 +952,12 @@ function initTicketExchangeVueApp() {
                 goToLogin,
                 goBackToEvent,
                 goToEventInfo,
-                goToTicketPrice
+                goToTicketPrice,
+                formatTicketDisplay,
+                isTicketUsedInExchange,
+                getTicketStatus,
+                isTicketUsedInPost,
+                isTicketUsedInComment
             };
         }
     });
