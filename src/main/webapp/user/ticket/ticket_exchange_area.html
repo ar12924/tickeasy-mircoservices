@@ -65,8 +65,7 @@
                                     <option value="">請選擇票券</option>
                                     <option v-for="ticket in userTickets" :key="ticket.ticketId"
                                         :value="ticket.ticketId">
-                                        {{ ticket.categoryName }} - {{ ticket.participantName }} (NT$ {{
-                                        formatPrice(ticket.price) }})
+                                        {{ formatTicketDisplay(ticket) }}
                                     </option>
                                 </select>
                             </div>
@@ -158,8 +157,7 @@
                                             <option value="">請選擇票券</option>
                                             <option v-for="ticket in post.commentForm.availableTickets || userTickets"
                                                 :key="ticket.ticketId" :value="ticket.ticketId">
-                                                {{ ticket.categoryName }} - {{ ticket.participantName }} (NT$ {{
-                                                formatPrice(ticket.price) }})
+                                                {{ formatTicketDisplay(ticket) }}
                                             </option>
                                         </select>
                                         <p v-if="post.commentForm.availableTickets && post.commentForm.availableTickets.length === 0"
