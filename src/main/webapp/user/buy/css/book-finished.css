@@ -6,15 +6,15 @@ section.columns {
       color: white;
     }
   }
-  /* 付款提示區塊 */
-  & .warning-box {
-    background-color: #fff3cd;
-    border: 3px solid #ffeaa7;
+  /* 付款成功區塊 */
+  & .success-box {
+    background-color: #d4edda;
+    border: 3px solid #c3e6cb;
     display: flex;
     align-items: center;
     justify-content: center;
-    & .warning-icon {
-      background-color: #f39c12;
+    & .success-icon {
+      background-color: #28a745;
       color: white;
       width: 36px;
       height: 36px;
@@ -23,7 +23,7 @@ section.columns {
       align-items: center;
       justify-content: center;
       margin-right: 1rem;
-      font-size: 20px;
+      font-size: 16px;
       font-weight: bold;
     }
   }

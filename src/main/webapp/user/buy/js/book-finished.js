@@ -19,13 +19,13 @@ import {
   fetchEventBoxTemplate,
   fetchEventInfo,
   renderEventBox,
-} from "../ui/book-confirm/event-box.js";
+} from "../ui/book-finished/event-box.js";
 import {
   fetchDetailBoxTemplate,
   fetchTicketDetailBoxTemplate,
   initDetailBoxJSEvents,
   renderDetailBox,
-} from "../ui/book-confirm/details-box.js";
+} from "../ui/book-finished/details-box.js";
 
 // ==================== 1. API 服務層 (API Service Layer) ====================
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
@@ -171,17 +171,17 @@ const initBookConfirmJSEvents = async (book) => {
 
   // ====== "上一步" 按鈕點擊事件 ======
   $(".back").on("click", () => {
-    location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
+    const result = confirm("您將回到首頁");
+    if (result) {
+      location.href = `${getContextPath()}/user/buy/index.html`;
+    }
   });
   // ====== "下一步" 按鈕點擊事件 ======
   $(".next").on("mouseenter mouseleave", (e) => {
     $(e.target).toggleClass("is-focused");
   });
-  $(".next").on("click", async () => {
-    book.progress = BOOKING_PROGRESS.FINISHED; // 確認訂單完成，寫入SQL資料庫
-    await saveBook(book); // 一筆存入 Redis(暫時，時間到會消失)
-    await saveOrderAndTicket(book); // 一筆存入資料庫(永久)
-    location.href = `${getContextPath()}/user/buy/book-finished.html?eventId=${eventId}`; // 跳轉到下一頁(book-finished.html)
+  $(".next").on("click", () => {
+    location.href = "#";
   });
 };
 
@@ -229,7 +229,7 @@ const showBookTotalPrice = (totalPrice) => {
   await renderDetailBox(detailTemplate, ticketDetailTemplate, book);
   initDetailBoxJSEvents();
 
-  // ====== book-confirm 部分 ======
+  // ====== book-finished 部分 ======
   const totalPrice = getBookTotalPrice();
   showBookTotalPrice(totalPrice);
   initBookConfirmJSEvents(book);

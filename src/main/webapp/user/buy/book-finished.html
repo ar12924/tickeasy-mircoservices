@@ -9,7 +9,7 @@
       rel="stylesheet"
       href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css"
     />
-    <link rel="stylesheet" href="./css/book-confirm.css" class="main-css" />
+    <link rel="stylesheet" href="./css/book-finished.css" class="main-css" />
     <link rel="stylesheet" href="./ui/header.css" />
     <link rel="stylesheet" href="../layout/nav/nav.css" />
     <link rel="stylesheet" href="../layout/footer/footer.css" />
@@ -24,18 +24,18 @@
     <!-- section 主內容 -->
     <section class="columns is-centered mt-5 mb-5">
       <div class="column is-8">
-        <!-- 付款提示區塊 -->
-        <div class="notification is-warning is-light warning-box">
-          <span class="warning-icon">!</span>
+        <!-- 付款成功區塊 -->
+        <div class="notification is-success is-light success-box">
+          <span class="success-icon">✓</span>
           <span class="has-text-weight-semibold is-size-4"
-            >您的訂單尚未付款</span
+            >您的訂單付款成功</span
           >
         </div>
 
         <!-- 活動資訊(元件化) -->
         <div class="event-container"></div>
         <!-- 購票明細區塊 -->
-        <div class="box has-background-warning-light p-0 mt-5">
+        <div class="box has-background-success-light p-0 mt-5">
           <h3 class="title is-5 has-text-centered pt-5">購票明細</h3>
           <div class="table-container mb-0">
             <table class="table is-fullwidth is-hoverable">
@@ -71,8 +71,8 @@
 
         <!-- 上/下一步按鈕區塊 -->
         <div class="buttons is-flex is-justify-content-space-between mt-5">
-          <button class="button back">返回</button>
-          <button class="button next">結帳去</button>
+          <button class="button back">回首頁</button>
+          <button class="button next">查看訂單</button>
         </div>
       </div>
     </section>
@@ -83,5 +83,5 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js"></script>
-  <script type="module" src="./js/book-confirm.js"></script>
+  <script type="module" src="./js/book-finished.js"></script>
 </html>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import common.vo.AuthStatus;
 import common.vo.Core;
 import user.buy.service.BookService;
+import user.buy.vo.Attendee;
 import user.buy.vo.BookDto;
 import user.member.vo.Member;
 
@@ -23,7 +24,7 @@ public class BookInfoController {
 	private BookService service;
 
 	/**
-	 * 從 Redis 取得票種選擇結果資料。 或 從 Redis 取得個人資料填寫結果資料。
+	 * 從 Redis 取得訂單選擇結果資料。 (票種 + 個人資料)
 	 * 
 	 * @param {Member} member - Session 的會員物件。
 	 * @return {Core<BookDto>} 回應儲存資料(共用)。
@@ -95,6 +96,7 @@ public class BookInfoController {
 	 *         {
 	 *             "userName": "buyer2",
 	 *             "idCard": "F123456789",
+	 *             "typeId": "1",
 	 *         },
 	 *         // ...
 	 *     ]
@@ -105,7 +107,7 @@ public class BookInfoController {
 	 */
 	@CrossOrigin(origins = "*")
 	@PostMapping("member/verify")
-	public Core<String> verifyMemberIdCard(@RequestBody Member reqMember) {
-		return service.verifyMemberIdCard(reqMember);
+	public Core<String> verifyMemberIdCard(@RequestBody Attendee reqAttendee) {
+		return service.verifyMemberIdCard(reqAttendee);
 	}
 }
