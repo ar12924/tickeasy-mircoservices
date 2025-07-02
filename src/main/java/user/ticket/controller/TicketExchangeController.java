@@ -75,7 +75,13 @@ public class TicketExchangeController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(buildErrorResponse(e.getMessage()));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(buildErrorResponse(e.getMessage()));
+        	if (e.getMessage().contains("已對此活動發布")) {
+                return ResponseEntity.badRequest().body(buildErrorResponse("已對此活動發布過換票貼文"));
+            } else if (e.getMessage().contains("已用於其他轉票")) {
+                return ResponseEntity.badRequest().body(buildErrorResponse("票券已用於其他轉票"));
+            } else {
+                return ResponseEntity.badRequest().body(buildErrorResponse(e.getMessage()));
+            }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(buildErrorResponse("系統錯誤"));
         }
