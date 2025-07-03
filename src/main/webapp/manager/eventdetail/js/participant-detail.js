@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
   const ticketId = urlParams.get("ticketId");
 
-  // 如果沒有 ticketId 參數，自動重定向到帶有 ticketId=1 的 URL
   if (!ticketId) {
     const currentUrl = window.location.href.split("?")[0];
     window.location.href = `${currentUrl}?ticketId=1`;
@@ -22,17 +21,16 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       return response.json();
     })
-    .then((data) => {
-      // 後端直接返回數據對象，不再有 successful 和 data 封裝層
-      // if (!result.successful) {
-      //   alert(result.message || "無法獲取詳細資料");
-      //   return;
-      // }
-      // const data = result.data;
+    .then((result) => {
+      // result 是完整的 JSON 物件, e.g., {successful: true, data: {...}}
+      if (!result.successful) {
+        throw new Error(result.message || "無法獲取詳細資料");
+      }
 
-      if (data.error) {
-        alert(data.error);
-        return;
+      const data = result.data; // 從 result 中提取出真正的資料物件
+
+      if (!data || !data.ticket) {
+        throw new Error("回傳的資料格式不正確或缺少票券資訊");
       }
 
       const ticket = data.ticket;
@@ -60,8 +58,9 @@ document.addEventListener("DOMContentLoaded", function () {
       // 訂單資訊
       if (data.order) {
         document.querySelector("#o-id").value = data.order.orderId;
+        // 從 data.order 中獲取 orderTime
         document.querySelector("#o-time").value = new Date(
-          data.orderTime
+          data.order.orderTime
         ).toLocaleString();
         document.querySelector("#o-quantity").value = data.ticketQuantity;
       }
