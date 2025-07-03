@@ -7,6 +7,6 @@ import manager.eventdetail.vo.DistTicket;
 
 public interface DistTicketListService {
 	
-	List<DistTicket> distTicketListService(Timestamp startTime,Timestamp endTime );
+	List<DistTicket> distTicketListService(Timestamp startTime,Timestamp endTime,Integer selectedEventId);
 
 }

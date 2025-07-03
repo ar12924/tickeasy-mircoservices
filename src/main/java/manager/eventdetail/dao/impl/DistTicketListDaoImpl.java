@@ -21,10 +21,10 @@ public class DistTicketListDaoImpl implements DistTicketListDao {
 	private Session session;
 	
 	@Override
-	public List<DistTicket> selectAllDistTicketList(Timestamp startTime,Timestamp endTime ) {
+	public List<DistTicket> selectAllDistTicketList(Timestamp startTime,Timestamp endTime,Integer selectedEventId) {
 		List<DistTicket> distTicketList = new ArrayList<>();
 		String hql = "SELECT dt FROM DistTicket dt JOIN FETCH dt.buyerOrder "
-				+ "WHERE dt.distedTime BETWEEN :startTime AND :endTime";
+				+ "WHERE dt.distedTime BETWEEN :startTime AND :endTime AND dt.buyerOrder.eventId=:eventId";
 				
 		
 	
@@ -32,6 +32,7 @@ public class DistTicketListDaoImpl implements DistTicketListDao {
 				.createQuery(hql, DistTicket.class)
 				.setParameter("startTime", startTime)
 				.setParameter("endTime", endTime)
+				.setParameter("eventId",selectedEventId)
 				.getResultList();
 		return distTicketList;
 	}

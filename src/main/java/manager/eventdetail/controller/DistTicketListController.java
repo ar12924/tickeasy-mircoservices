@@ -31,18 +31,19 @@ public class DistTicketListController {
 	public List<DistTicket> distTicketList(@RequestBody Map<String, Object> json) {
 		String startStr = json.get("startTime") + " 00:00:00";
 		String endStr = json.get("endTime") + " 23:59:59";
+		String selectValue = json.get("selectValue").toString();
 
 		System.out.println("前端送來 startStr：" + startStr);
 	    Timestamp startTime = Timestamp.valueOf(startStr);
 	    Timestamp endTime = Timestamp.valueOf(endStr);
+	    Integer selectedId = Integer.parseInt(selectValue); 
 		
 		
-		/* Integer distId=distTicket.getDistId(); */
 	
 
 
 		
-		List<DistTicket> distTicketLists = distTicketListService.distTicketListService(startTime,endTime);
+		List<DistTicket> distTicketLists = distTicketListService.distTicketListService(startTime,endTime,selectedId);
 		
 		
 		return distTicketLists;

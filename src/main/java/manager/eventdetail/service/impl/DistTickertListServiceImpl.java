@@ -30,9 +30,9 @@ public class DistTickertListServiceImpl implements DistTicketListService{
 	 */
 	@Transactional
 	@Override
-	public List<DistTicket> distTicketListService(Timestamp startTime,Timestamp endTime) {
-		System.out.println("查到資料筆數：" + distTicketListDao.selectAllDistTicketList(startTime,endTime).size());
-		return distTicketListDao.selectAllDistTicketList(startTime,endTime);
+	public List<DistTicket> distTicketListService(Timestamp startTime,Timestamp endTime,Integer selectedEventId) {
+		System.out.println("查到資料筆數：" + distTicketListDao.selectAllDistTicketList(startTime,endTime,selectedEventId).size());
+		return distTicketListDao.selectAllDistTicketList(startTime,endTime,selectedEventId);
 	}
 
 }

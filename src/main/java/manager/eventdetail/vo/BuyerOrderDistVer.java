@@ -27,6 +27,9 @@ public class BuyerOrderDistVer {
 		private Integer orderId; // 訂單ID
 		@Column(name="member_id")
 		private Integer memberId;// Member ID
+		@Column(name="event_id")
+		private Integer eventId;// Event ID
+	
 		
 	
 }

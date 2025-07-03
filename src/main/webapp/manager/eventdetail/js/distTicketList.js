@@ -46,21 +46,22 @@ document.getElementById('datatable_search').addEventListener('input', function (
    			if(!Array.isArray(eventListBars)){
    									distTicketLists = [];
    						}
+			let isFirst = true;
   			for (let eventListBar of eventListBars) {
-
+				/*if(isFirst){
+					const firstEventId=eventListBar.eventId}*/
   			
-
-  										select_el.insertAdjacentHTML("afterbegin", `
-											<option selected>${eventListBar.eventName}</option>
+						
+  										select_el.insertAdjacentHTML("beforeend", `
+											<option ${isFirst ? "selected" : ""} value="${eventListBar.eventId}">${eventListBar.eventName}</option>
   							                `)
-  										
+											isFirst = false;
 											
   									}
 									})
 									}
   
   
-
 
 
 
@@ -91,15 +92,20 @@ document.getElementById('datatable_search').addEventListener('input', function (
     
     const sIV=startInput.value;
 	const eIV=endInput.value;
-    
-    distTicketList_loaded(sIV,eIV);
-	changeList();
+    const selectValue=select_el.value;
+    distTicketList_loaded(sIV,eIV,1);
+	changeList(selectValue);
+	select_el.addEventListener("change", function () {
+				  const selectedId = this.value;
+				  distTicketList_loaded(sIV,eIV,selectedId);
+				  
+				});
   });
   
   
   //Search Time interval
 
-function changeList(){
+function changeList(selectValue){
 
   [start_el, end_el].forEach(input => {
     input.addEventListener("change", () => {
@@ -113,7 +119,7 @@ function changeList(){
       // 如果兩者都有值再發送請求
       if (start && end) {
   		
-  		distTicketList_loaded(start,end)
+  		distTicketList_loaded(start,end,selectValue)
   		}
   		})
   		});
@@ -121,7 +127,7 @@ function changeList(){
 		
 		
   let dataTableInstance = null;
-  function distTicketList_loaded(startTime,endTime) {
+  function distTicketList_loaded(startTime,endTime,selectValue) {
 	
 	/*if (dataTableInstance) {
      	   dataTableInstance.clear().destroy();
@@ -132,7 +138,7 @@ function changeList(){
   		method: `POST`,
   		headers: { 'Content-Type': 'application/json' },
   		body: JSON.stringify({
-			startTime: startTime, endTime: endTime
+			startTime: startTime, endTime: endTime, selectValue: selectValue
   		})
   	})
   		.then(resp => resp.json())

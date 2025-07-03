@@ -6,6 +6,6 @@ import java.util.List;
 import manager.eventdetail.vo.DistTicket;
 
 public interface DistTicketListDao {
-	List<DistTicket> selectAllDistTicketList(Timestamp startTime,Timestamp endTime);
+	List<DistTicket> selectAllDistTicketList(Timestamp startTime,Timestamp endTime,Integer selectedEventId);
 
 }
