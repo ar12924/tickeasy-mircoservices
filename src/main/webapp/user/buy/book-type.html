@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tickeasy!!!</title>
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
+    <link
+      rel="stylesheet"
+      href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/book-type.css" class="main-css" />
+    <link rel="stylesheet" href="./ui/header.css" />
+    <link rel="stylesheet" href="../layout/nav/nav.css" />
+    <link rel="stylesheet" href="./ui/book-type/type-box.css" />
+    <link rel="stylesheet" href="../layout/footer/footer.css" />
+  </head>
+  <body>
+    <!-- nav 導覽列(元件化) -->
+    <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
+
+    <!-- header 麵包屑 & 進度條(元件化) -->
+    <header></header>
+
+    <!-- section 主內容 -->
+    <section class="columns is-centered mt-5 mb-6">
+      <div class="column is-8">
+        <div class="card">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img src="./images/BerlinPride2022.jpg" alt="Placeholder image" />
+            </figure>
+          </div>
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content">
+                <p class="title is-4">票券一覽</p>
+              </div>
+            </div>
+            <!-- 票種區塊(元件化) -->
+            <div class="type-container"></div>
+          </div>
+          <div class="has-text-centered">
+            <button class="button is-small update">
+              <span class="icon"> <i class="fas fa-sync-alt"></i> </span>
+              <span>更新票數</span>
+            </button>
+          </div>
+          <div
+            class="has-text-danger has-text-centered is-hidden"
+            id="error-message"
+          >
+            <p class="book-type-message help"></p>
+          </div>
+        </div>
+        <!-- 上/下一步按鈕區塊 -->
+        <div class="buttons is-flex is-justify-content-space-between">
+          <button class="button back">返回</button>
+          <button class="button next">下一步</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- footer 頁底列(元件化) -->
+    <footer></footer>
+  </body>
+
+  <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
+  <script type="module" src="./js/book-type.js"></script>
+</html>
