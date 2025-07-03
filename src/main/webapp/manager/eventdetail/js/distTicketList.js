@@ -58,6 +58,15 @@ document.getElementById('datatable_search').addEventListener('input', function (
 											isFirst = false;
 											
   									}
+									
+								/*	
+									for (let event of eventListBars) {
+									  const isSelected = event.eventId.toString() === sessionEventId.toString();
+									  select_el.insertAdjacentHTML("beforeend", `
+									    <option value="${event.eventId}" ${isSelected ? "selected" : ""}>
+									      ${event.eventName}
+									    </option>
+									  `);*/
 									})
 									}
   
@@ -69,8 +78,8 @@ document.getElementById('datatable_search').addEventListener('input', function (
 
   //設定一開始load一個月內的資料
 
-  window.addEventListener("DOMContentLoaded", function () {
-	EventListBar_loaded();
+  window.addEventListener("DOMContentLoaded",async function () {
+	await EventListBar_loaded();
   	
     const startInput = document.getElementById("start");
     const endInput = document.getElementById("end");
@@ -90,41 +99,49 @@ document.getElementById('datatable_search').addEventListener('input', function (
     startInput.value = formatDate(oneMonthAgo);
     endInput.value = formatDate(today);
     
+	
+	//初始化
     const sIV=startInput.value;
 	const eIV=endInput.value;
     const selectValue=select_el.value;
     distTicketList_loaded(sIV,eIV,1);
-	changeList(selectValue);
+	
+	
+	
+	//selectChange
 	select_el.addEventListener("change", function () {
-				  const selectedId = this.value;
-				  distTicketList_loaded(sIV,eIV,selectedId);
-				  
-				});
+	  const sIV=startInput.value;
+	  const eIV=endInput.value;
+	  const selectedId = this.value;
+	  
+	  distTicketList_loaded(sIV,eIV,selectedId);
+	  
+	});
+	
+	
+	//監聽時間變化
+	[start_el, end_el].forEach(input => {
+	    input.addEventListener("change", () => {
+		const start_el = document.getElementById("start");
+		const end_el = document.getElementById("end");
+	  	const start = start_el.value;
+	  	const end= end_el.value;
+		const selectValue=select_el.value;
+
+		
+	      // 如果兩者都有值再發送請求
+	      if (start && end) {
+	  		
+	  		distTicketList_loaded(start,end,selectValue)
+	  		}
+	  		})
+	  		});
   });
   
   
   //Search Time interval
 
-function changeList(selectValue){
 
-  [start_el, end_el].forEach(input => {
-    input.addEventListener("change", () => {
-	const start_el = document.getElementById("start");
-	const end_el = document.getElementById("end");
-  	const start = start_el.value;
-  	const end= end_el.value;
-
-	console.log(start);
-	console.log(end);
-      // 如果兩者都有值再發送請求
-      if (start && end) {
-  		
-  		distTicketList_loaded(start,end,selectValue)
-  		}
-  		})
-  		});
-  		}
-		
 		
   let dataTableInstance = null;
   function distTicketList_loaded(startTime,endTime,selectValue) {
