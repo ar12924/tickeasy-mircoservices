@@ -181,7 +181,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="./index.html" class="nav-link">
+                                    <a href="./member_list.html" class="nav-link active">
                                         <i class="nav-icon bi bi-person-lines-fill"></i>
                                         <p>會員列表</p>
                                     </a>
@@ -272,7 +272,7 @@
                                             <h3 class="card-title mb-0">會員列表</h3>
                                         </div>
                                         <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                                            <button type="button" class="btn btn-primary">
+                                            <button type="button" class="btn btn-primary" id="addMemberBtn">
                                                 <i class="bi bi-plus-circle"></i> 新增會員
                                             </button>
                                         </div>
@@ -283,20 +283,21 @@
                                     <div class="row g-3 mb-4">
                                         <div class="col-md-3">
                                             <label class="form-label">會員名稱</label>
-                                            <input type="text" class="form-control" placeholder="請輸入關鍵字">
+                                            <input type="text" class="form-control" id="searchUserName"
+                                                placeholder="請輸入關鍵字">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label">開始日期</label>
-                                            <input type="date" class="form-control">
+                                            <input type="date" class="form-control" id="searchStartDate">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label">結束日期</label>
-                                            <input type="date" class="form-control">
+                                            <input type="date" class="form-control" id="searchEndDate">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label">會員等級</label>
-                                            <select class="form-select">
-                                                <option selected>全部</option>
+                                            <select class="form-select" id="searchRoleLevel">
+                                                <option value="">全部</option>
                                                 <option value="0">未開通</option>
                                                 <option value="1">購票方</option>
                                                 <option value="2">活動方</option>
@@ -305,8 +306,8 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label">用戶狀態</label>
-                                            <select class="form-select">
-                                                <option selected>全部</option>
+                                            <select class="form-select" id="searchIsActive">
+                                                <option value="">全部</option>
                                                 <option value="1">啟用</option>
                                                 <option value="0">停用</option>
                                             </select>
@@ -315,13 +316,21 @@
 
                                     <div class="row g-3 mb-4">
                                         <div class="col-12 d-flex justify-content-end gap-2">
-                                            <button type="button" class="btn btn-primary">
+                                            <button type="button" class="btn btn-primary" id="searchBtn">
                                                 <i class="bi bi-search"></i> 搜索
                                             </button>
-                                            <button type="button" class="btn btn-secondary">
+                                            <button type="button" class="btn btn-secondary" id="resetBtn">
                                                 <i class="bi bi-arrow-clockwise"></i> 重置
                                             </button>
                                         </div>
+                                    </div>
+
+                                    <!-- 載入指示器 -->
+                                    <div class="text-center d-none" id="loadingIndicator">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">載入中...</span>
+                                        </div>
+                                        <p class="mt-2">載入中...</p>
                                     </div>
 
                                     <!-- 表格區域 -->
@@ -338,99 +347,32 @@
                                                     <th>操作</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr class="text-center">
-                                                    <td>admin</td>
-                                                    <td>System Admin</td>
-                                                    <td>admin@tickeasy.com</td>
-                                                    <td>2025/01/01</td>
-                                                    <td><span class="badge bg-success">平台方</span></td>
-                                                    <td><span class="badge bg-primary">啟用</span></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-warning me-1"
-                                                            title="編輯">
-                                                            <i class="bi bi-pencil"></i> 編輯
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="刪除">
-                                                            <i class="bi bi-trash"></i> 刪除
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-center">
-                                                    <td>event_host1</td>
-                                                    <td>Event Master</td>
-                                                    <td>host1@tickeasy.com</td>
-                                                    <td>2025/01/15</td>
-                                                    <td><span class="badge bg-warning">活動方</span></td>
-                                                    <td><span class="badge bg-primary">啟用</span></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-warning me-1"
-                                                            title="編輯">
-                                                            <i class="bi bi-pencil"></i> 編輯
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="刪除">
-                                                            <i class="bi bi-trash"></i> 刪除
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-center">
-                                                    <td>buyer1</td>
-                                                    <td>Concert Lover</td>
-                                                    <td>buyer1@example.com</td>
-                                                    <td>2025/02/01</td>
-                                                    <td><span class="badge bg-info">購票方</span></td>
-                                                    <td><span class="badge bg-primary">啟用</span></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-warning me-1"
-                                                            title="編輯">
-                                                            <i class="bi bi-pencil"></i> 編輯
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="刪除">
-                                                            <i class="bi bi-trash"></i> 刪除
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-center">
-                                                    <td>inactive_user</td>
-                                                    <td>Pending User</td>
-                                                    <td>inactive@example.com</td>
-                                                    <td>2025/03/01</td>
-                                                    <td><span class="badge bg-secondary">未開通</span></td>
-                                                    <td><span class="badge bg-secondary">停用</span></td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-warning me-1"
-                                                            title="編輯">
-                                                            <i class="bi bi-pencil"></i> 編輯
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" title="刪除">
-                                                            <i class="bi bi-trash"></i> 刪除
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                            <tbody id="memberTableBody">
+                                                <!-- 動態內容將在這裡填入 -->
                                             </tbody>
                                         </table>
                                     </div>
 
+                                    <!-- 空資料提示 -->
+                                    <div class="text-center d-none" id="noDataMessage">
+                                        <div class="py-5">
+                                            <i class="bi bi-inbox display-1 text-muted"></i>
+                                            <h5 class="text-muted">暫無資料</h5>
+                                            <p class="text-muted">請調整搜尋條件或新增會員</p>
+                                        </div>
+                                    </div>
+
                                     <!-- 分頁 -->
-                                    <div class="row mt-3">
+                                    <div class="row mt-3" id="paginationContainer">
                                         <div class="col-sm-12 col-md-5">
-                                            <div class="dataTables_info">
-                                                顯示第 1 到 4 筆，共 10 筆資料
+                                            <div class="dataTables_info" id="pageInfo">
+                                                <!-- 分頁資訊將在這裡顯示 -->
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-7">
                                             <nav aria-label="Page navigation">
-                                                <ul class="pagination justify-content-end mb-0">
-                                                    <li class="page-item disabled">
-                                                        <a class="page-link" href="#" tabindex="-1">上一頁</a>
-                                                    </li>
-                                                    <li class="page-item active"><a class="page-link" href="#">1</a>
-                                                    </li>
-                                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="#">下一頁</a>
-                                                    </li>
+                                                <ul class="pagination justify-content-end mb-0" id="paginationList">
+                                                    <!-- 分頁按鈕將在這裡動態生成 -->
                                                 </ul>
                                             </nav>
                                         </div>
@@ -452,6 +394,8 @@
             All rights reserved.
         </footer>
     </div>
+
+    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
@@ -467,14 +411,22 @@
         crossorigin="anonymous"></script>
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
     <script src="../common/js/adminlte.js"></script>
-    <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+    <!--Summernote-->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+    <!-- apexcharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+
+    <!-- 合併的主要 JavaScript 程式 -->
     <script>
+        // OverlayScrollbars 設定
         const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
         const Default = {
             scrollbarTheme: 'os-theme-light',
             scrollbarAutoHide: 'leave',
             scrollbarClickScroll: true,
         };
+
         document.addEventListener('DOMContentLoaded', function () {
             const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
             if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
@@ -488,13 +440,7 @@
             }
         });
     </script>
-    <!--end::OverlayScrollbars Configure-->
-    <!-- OPTIONAL SCRIPTS -->
-    <!--Summernote-->
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
-    <!-- apexcharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
-        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+    <script src="./js/member_list.js"></script>
 </body>
 
 </html>

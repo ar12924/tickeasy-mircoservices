@@ -1,16 +1,23 @@
 package user.buy.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import user.buy.vo.BookEventDto;
 import user.buy.vo.BookTypeDto;
+import user.buy.vo.EventInfo;
 import user.member.vo.Member;
 
 public interface BookDao {
-	
-	List<BookTypeDto> selectTypeById(Integer eventId);
-	
-	BookEventDto selectEventById(Integer eventId);
-	
+
+	public List<BookTypeDto> selectAllTypeById(Integer eventId);
+
+	public BookTypeDto selectTypeById(Integer eventId, Integer typeId);
+
+	public EventInfo selectEventById(Integer eventId);
+
 	public Member selectMemberByUserName(String userName);
+
+	public Integer insertBuyerOrderAndGetId(Integer eventId, Integer memberId, Integer isPaid, BigDecimal totalAmount);
+
+	public Integer insertBuyerTicketAndGetId(Integer newOrderId, Member member, String eventName, BookTypeDto bookTypeDto);
 }

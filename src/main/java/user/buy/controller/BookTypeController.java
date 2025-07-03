@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import common.vo.AuthStatus;
 import common.vo.Core;
 import user.buy.service.BookService;
-import user.buy.vo.BookEventDto;
-import user.buy.vo.BookTypeDto;
-import user.member.vo.Member;
 import user.buy.vo.BookDto;
+import user.buy.vo.BookTypeDto;
+import user.buy.vo.EventInfo;
+import user.member.vo.Member;
 
 @RestController
 @RequestMapping("book-type")
@@ -46,7 +46,7 @@ public class BookTypeController {
 	 */
 	@CrossOrigin(origins = "*")
 	@GetMapping("event/{eventId}")
-	public BookEventDto getTicketEvent(@PathVariable Integer eventId) {
+	public EventInfo getTicketEvent(@PathVariable Integer eventId) {
 		return service.getEventById(eventId);
 	}
 

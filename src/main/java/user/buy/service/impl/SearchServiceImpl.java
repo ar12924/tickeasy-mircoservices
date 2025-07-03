@@ -9,15 +9,42 @@ import org.springframework.transaction.annotation.Transactional;
 import common.vo.Core;
 import user.buy.dao.SearchDao;
 import user.buy.service.SearchService;
-import user.buy.vo.BuyerTicket;
 import user.buy.vo.EventInfo;
-import user.buy.vo.MemberNotification;
+import user.buy.vo.KeywordCategory;
 
 @Service
 public class SearchServiceImpl implements SearchService {
 	@Autowired
-	private SearchDao buyDaoImpl;
+	private SearchDao dao;
 
+	/**
+	 * 查詢近期 n 筆活動資料。
+	 * 
+	 * @return {EventInfo} 回應近期活動資料。
+	 */
+	@Transactional
+	@Override
+	public List<EventInfo> getRecentEventInfo(Integer n) {
+		return dao.selectRecentEventInfo(n);
+	}
+
+	/**
+	 * 透過 keywordId 查詢 keyword 名稱。
+	 * 
+	 * @return {EventInfo} 回應近期活動資料。
+	 */
+	@Transactional
+	@Override
+	public KeywordCategory getKeyword(Integer keywordId) {
+		return dao.selectKeywordByKeywordId(keywordId);
+	}
+	
+	/**
+	 * 透過關鍵字，查詢活動資料
+	 * 
+	 * @param 關鍵字, 頁數
+	 * @return 符合條件的數筆活動資料
+	 */
 	@Transactional
 	@Override
 	public Core<List<EventInfo>> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize) {
@@ -26,9 +53,9 @@ public class SearchServiceImpl implements SearchService {
 		// 1. 過濾 keywords
 		keyword = keyword == null ? "" : keyword;
 		// 2. 查詢 event_info
-		eventCore.setData(buyDaoImpl.selectEventByKeywordWithPages(keyword, pageNumber, pageSize));
+		eventCore.setData(dao.selectEventByKeywordWithPages(keyword, pageNumber, pageSize));
 		// 3. 判斷 event_info 資料總筆數
-		count = buyDaoImpl.selectEventCountByKeyword(keyword);
+		count = dao.selectEventCountByKeyword(keyword);
 		eventCore.setCount(count);
 		if (count <= 0) {
 			eventCore.setSuccessful(false);
@@ -40,17 +67,4 @@ public class SearchServiceImpl implements SearchService {
 		return eventCore;
 	}
 
-	@Transactional
-	@Override
-	public List<BuyerTicket> searchTicket() {
-		// 1. 查詢 buyer_ticket
-		return buyDaoImpl.selectTicket();
-	}
-
-	@Transactional
-	@Override
-	public List<MemberNotification> searchNotification() {
-		// 1. 查詢 member_notification
-		return buyDaoImpl.selectNotification();
-	}
 }

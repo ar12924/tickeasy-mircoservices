@@ -29,10 +29,10 @@ import {
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
 
 /**
- * 從 Redis 中，取得票種選擇結果相關資訊。
+ * 從 Redis 取得訂單選擇結果資料。 (票種 + 個人資料)
  * (包含驗證 session、活動 id 等)
  *
- * @return {Object} book 購票頁資訊。
+ * @return {Object} book 訂單填寫資訊。
  */
 const findBook = async () => {
   // 從 Redis 抓資料
@@ -54,6 +54,7 @@ const findBook = async () => {
   const dataEventId = data?.eventId;
   if (eventId != dataEventId) {
     alert(ERROR_MESSAGES.EVENT_ID_INCONSISTENT);
+    // 回到票種選擇頁...
     location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
     return;
   }
@@ -113,6 +114,7 @@ const saveBook = async (book) => {
 
   // 檢查每個 attendee 的身分證是否存在?
   for (const attendeeOne of book.attendee) {
+    console.log(attendeeOne);
     const verifiedObject = await verifyMemberIdCard(attendeeOne);
     if (!verifiedObject.successful) {
       alert(verifiedObject.message);
@@ -120,7 +122,7 @@ const saveBook = async (book) => {
     }
   }
 
-  // 將 book 傳遞至後端
+  // 將 book 儲存至 Redis
   const resp = await fetch(`${getContextPath()}/book-info`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -137,7 +139,7 @@ const saveBook = async (book) => {
     return;
   }
 
-  // 儲存至 Redis 並跳轉到下一頁(book-confirm.html)
+  // 並跳轉到下一頁(book-confirm.html)
   sessionStorage.setItem("core-message", message);
   sessionStorage.setItem("core-successful", successful);
   location.href = `${getContextPath()}/user/buy/book-confirm.html?eventId=${eventId}`;
@@ -164,12 +166,18 @@ const addTicketInfoToContactAndAttendee = (book) => {
     phone: $contactBox.find(".phone").val().trim(),
   };
 
+  // 抓取 typeId 形成一個順序陣列
+  const typeIdArray = book.selected.flatMap((selectOne) =>
+    Array(selectOne.quantity).fill(selectOne.typeId)
+  );
+
   // 入場者輸入框抓取並儲存
   attendeeParentElement.find(".box").each((i, boxElement) => {
     const $attendeeBox = $(boxElement);
     book.attendee[i] = {
       userName: $attendeeBox.find(".account").val().trim(),
       idCard: $attendeeBox.find(".id-card").val().trim(),
+      typeId: typeIdArray[i],
     };
   });
 };
@@ -189,10 +197,10 @@ const initBookInfoJSEvents = async (book) => {
   $(".next").on("mouseenter mouseleave", (e) => {
     $(e.target).toggleClass("is-focused");
   });
-  $(".next").on("click", () => {
+  $(".next").on("click", async () => {
     addTicketInfoToContactAndAttendee(book);
     book.progress = BOOKING_PROGRESS.ORDER_CONFIRM; // 個人資料填寫完成，進入下一步
-    saveBook(book);
+    await saveBook(book);
   });
 };
 

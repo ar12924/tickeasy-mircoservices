@@ -1,95 +1,106 @@
-const app = Vue.createApp({
-  data() {
-    return {
-      // 1. 活動清單
-      eventPayload: {
-        successful: false,
-        message: "",
-        count: -1,
-        data: [],
-      },
-      // 2. 票券清單
-      ticketList: [],
-      // 3. 通知清單
-      notificationList: [],
-      // 4. 搜尋關鍵字
-      searchKeyword: "",
-      // 5. 每個分頁顯示筆數
-      pageSize: 3,
-      // 6. 當前頁數
-      currentPage: 1,
-    };
-  },
-  methods: {
-    // 1. 從後端 api 抓 event_info 資料
-    async fetchEventInfo() {
-      const url = `http://localhost:8080/maven-tickeasy-v1/search-event?keyword=${this.searchKeyword}&pageNumber=${this.currentPage}`;
-      const resp = await fetch(url);
-      const body = await resp.json();
-      this.eventPayload = body;
-    },
-    // 2. 從後端 api 抓 buyer_ticket 資料
-    async fetchBuyerTicket() {
-      const url = `http://localhost:8080/maven-tickeasy-v1/search-ticket`;
-      const resp = await fetch(url);
-      const body = await resp.json();
-      this.ticketList = body;
-    },
-    // 3. 從後端 api 抓 member_notification 資料
-    async fetchMemberNotification() {
-      const url = `http://localhost:8080/maven-tickeasy-v1/search-notification`;
-      const resp = await fetch(url);
-      const body = await resp.json();
-      this.notificationList = body;
-    },
-    // 4. 計算與現在時點的時間差
-    timeAgo(dateTimeString) {
-      const past = new Date(dateTimeString).getTime();
-      const now = Date.now();
-      const seconds = Math.floor((now - past) / 1000);
-      let interval = Math.floor(seconds / 31536000);
+// ==================== 載入模組 (All Imports At Top) ====================
+import { getUrlParam, getContextPath } from "../../common/utils.js";
+import { BOOKING_PROGRESS, ERROR_MESSAGES } from "../../common/constant.js";
+import {
+  fetchNavTemplate,
+  renderNav,
+  initNavJSEvents,
+} from "../../layout/nav/nav.js";
+import {
+  fetchFooterTemplate,
+  renderFooter,
+} from "../../layout/footer/footer.js";
+import {
+  fetchEventInfoTemplate,
+  renderRecentEventBox,
+} from "../ui/index/event-box.js";
 
-      if (interval >= 1) {
-        return interval + " 年前";
-      }
-      interval = Math.floor(seconds / 2592000);
-      if (interval >= 1) {
-        return interval + " 個月前";
-      }
-      interval = Math.floor(seconds / 86400);
-      if (interval >= 1) {
-        return interval + " 天前";
-      }
-      interval = Math.floor(seconds / 3600);
-      if (interval >= 1) {
-        return interval + " 小時前";
-      }
-      interval = Math.floor(seconds / 60);
-      if (interval >= 1) {
-        return interval + " 分鐘前";
-      }
-      return "剛剛";
-    },
-    // 5. 將時間轉換為日期格式
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      const options = { year: "numeric", month: "short", day: "numeric" };
-      return date.toLocaleDateString("en-US", options);
-    },
-    // 6. 點擊搜尋按鈕，跳轉 + 關鍵字存入URL?後方參數
-    searchClick() {
-      if (this.searchKeyword) {
-        window.location.href = `search.html?keyword=${this.searchKeyword}`;
+// ==================== 1. API 服務層 (API Service Layer) ====================
+// 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
+
+/**
+ * 查詢熱門活動資料。
+ *
+ * @return {Object} 近期9筆活動資料。
+ */
+export const fetchRecentEventInfo = async () => {
+  const resp = await fetch(`${getContextPath()}/search-event/recent`);
+  return await resp.json();
+};
+
+/** 透過活動資料的 keywordId 值，查詢所有keyword名稱。
+ *
+ * @param {number} keywordId - 關鍵字 id。
+ * @return {Object} 對應所有keyword名稱陣列。
+ */
+export const fetchKeyword = async (keywordId) => {
+  const resp = await fetch(
+    `${getContextPath()}/search-event/keyword/${keywordId}`
+  );
+  return await resp.json();
+};
+
+// ==================== 2. 數據處理層 (Data Processing) ====================
+// 這些函數負責從 DOM 中提取數據，並對數據進行格式化或轉換。
+
+/**
+ * 抓取所有個人資料輸入框的數值，並放入 book 物件當中。
+ * @param {Object} book - book 物件，包含儲存聯絡人資訊的 contact 及儲存入場者資訊的 attendee 陣列。
+ */
+// const addTicketInfoToContactAndAttendee = (book) => {...}
+
+// ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
+// 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
+
+const initIndexJSEvents = async () => {
+  // 愛心按鈕點擊效果
+  document.querySelectorAll(".favorite-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const icon = this.querySelector("i");
+      if (icon.classList.contains("far")) {
+        icon.classList.remove("far");
+        icon.classList.add("fas");
+        this.style.background = "#ff6b9d";
+        this.style.color = "white";
       } else {
-        window.location.href = `search.html`;
+        icon.classList.remove("fas");
+        icon.classList.add("far");
+        this.style.background = "white";
+        this.style.color = "#333";
       }
-    },
-  },
-  // 1. 載入頁面時調用抓 api 方法
-  created() {
-    this.fetchEventInfo();
-    this.fetchBuyerTicket();
-    this.fetchMemberNotification();
-  },
-});
-app.mount("#app");
+    });
+  });
+
+  // 搜尋功能
+  document.querySelector(".search-btn").addEventListener("click", function () {
+    const searchInput = document.querySelector(".search-input");
+    if (searchInput.value.trim()) {
+      alert("搜尋功能：" + searchInput.value);
+    }
+  });
+};
+
+// ==================== 4. 頁面初始化 (Initialization) ====================
+// 確保 DOM 加載完成後再執行初始化邏輯
+
+(async () => {
+  // ====== 資料儲存變數區 ======
+  const recentEvent = await fetchRecentEventInfo();
+  console.log(recentEvent); // ok!!!
+
+  // ====== nav 部分 ======
+  const navTemplate = await fetchNavTemplate();
+  renderNav(navTemplate);
+  initNavJSEvents();
+
+  // ====== hot-event 部分 ======
+  const eventTemplate = await fetchEventInfoTemplate();
+  renderRecentEventBox(eventTemplate, recentEvent);
+
+  // ====== index 部分 ======
+  await initIndexJSEvents(); // 載入 index 主要事件
+
+  // ====== footer 部分 ======
+  const footerTemplate = await fetchFooterTemplate();
+  renderFooter(footerTemplate);
+})();

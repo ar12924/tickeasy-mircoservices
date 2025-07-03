@@ -2,6 +2,11 @@ package user.ticket.dao;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+
+import user.ticket.vo.BuyerTicketVO;
+import user.ticket.vo.EventTicketTypeVO;
+import user.member.vo.Member;
+import user.ticket.vo.SwapCommentVO;
 public interface SwapCommentDao {
 	/**
      * 依貼文ID查詢換票留言列表
@@ -9,7 +14,7 @@ public interface SwapCommentDao {
      * @param postId 貼文ID
      * @return 換票留言資料列表
      */
-    List<Map<String, Object>> listSwapCommentsByPostId(Integer postId);
+    List<SwapCommentVO> listSwapCommentsByPostId(Integer postId);
 
     /**
      * 依ID查詢換票留言
@@ -17,7 +22,7 @@ public interface SwapCommentDao {
      * @param commentId 留言ID
      * @return 換票留言資料
      */
-    Map<String, Object> getSwapCommentById(Integer commentId);
+    SwapCommentVO getSwapCommentById(Integer commentId);
 
     /**
      * 新增換票留言
@@ -28,7 +33,7 @@ public interface SwapCommentDao {
      * @param description 留言描述
      * @return 新增的換票留言資料
      */
-    Map<String, Object> saveSwapComment(Integer postId, Integer memberId, Integer ticketId, String description);
+    SwapCommentVO saveSwapComment(Integer postId, Integer memberId, Integer ticketId, String description);
 
     /**
      * 更新換票留言狀態
@@ -52,7 +57,7 @@ public interface SwapCommentDao {
      * @param memberId 會員ID
      * @return 換票留言資料列表
      */
-    List<Map<String, Object>> listSwapCommentsByMemberId(Integer memberId);
+    List<SwapCommentVO> listSwapCommentsByMemberId(Integer memberId);
 
     /**
      * 依票券ID查詢換票留言
@@ -60,7 +65,7 @@ public interface SwapCommentDao {
      * @param ticketId 票券ID
      * @return 換票留言資料
      */
-    Map<String, Object> getSwapCommentByTicketId(Integer ticketId);
+    SwapCommentVO getSwapCommentByTicketId(Integer ticketId);
 
     /**
      * 依會員ID讀取會員照片
@@ -69,6 +74,7 @@ public interface SwapCommentDao {
      * @return 會員照片位元組陣列
      */
     byte[] getMemberPhoto(Integer memberId);
+    
     InputStream getMemberPhotoStream(Integer memberId);
 
     /**
@@ -96,4 +102,15 @@ public interface SwapCommentDao {
      * @return 是否為貼文擁有者
      */
     boolean isPostOwnerByCommentId(Integer commentId, Integer memberId);
+    
+    Member getMemberById(Integer memberId);
+    
+    BuyerTicketVO getBuyerTicketById(Integer ticketId);
+    
+    EventTicketTypeVO getEventTicketTypeById(Integer typeId);
+    
+    /**
+     * 獲取使用該票券的所有留言
+     */
+    List<SwapCommentVO> findCommentsByTicketId(Integer ticketId);
 }
