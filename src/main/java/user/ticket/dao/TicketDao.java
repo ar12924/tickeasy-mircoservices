@@ -7,5 +7,5 @@ import user.ticket.vo.TicketView;
 
 public interface TicketDao {
 
-	List<TicketView> selectAllByMemberId(int memberId);
+	List<Ticket> selectAllByMemberId(int memberId);
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import user.ticket.dao.TicketDao;
 import user.ticket.dto.TicketViewDto;
 import user.ticket.service.TicketService;
+import user.ticket.vo.Ticket;
 import user.ticket.vo.TicketView;
 
 
@@ -28,11 +29,11 @@ public class TicketServiceImpl implements TicketService{
 	@Override
 	public List<TicketViewDto> ticketList(int memberId) {
 		
-		List<TicketView> tickets = ticketDao.selectAllByMemberId(memberId);
+		List<Ticket> tickets = ticketDao.selectAllByMemberId(memberId);
 		List<TicketViewDto> result= new ArrayList<>();
 
 
-		for(TicketView ticket:tickets) {
+		for(Ticket ticket:tickets) {
 			TicketViewDto dto = new TicketViewDto();
 			
 			dto.setTicketId(ticket.getTicketId());
@@ -43,14 +44,14 @@ public class TicketServiceImpl implements TicketService{
 			dto.setStatus(ticket.getStatus());
 			dto.setIdCard(ticket.getIdCard());
 			dto.setCurrentHolderMemberId(ticket.getCurrentHolderMemberId());
-			dto.setMemberId(ticket.getMemberId());
+			dto.setMemberId(ticket.getBuyerOrderTicketVer().getMemberId());
 			dto.setIsUsed(ticket.getIsUsed());
 			dto.setParticipantName(ticket.getParticipantName());
 			dto.setEventName(ticket.getEventName());
-			dto.setCategoryName(ticket.getCategoryName());
+			dto.setCategoryName(ticket.getEventTicketTypeTicketVer().getCategoryName());
 			dto.setQueueId(ticket.getQueueId());
-			dto.setEventFromDate(ticket.getEventFromDate());
-			dto.setPlace(ticket.getPlace());
+			dto.setEventFromDate(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate());
+			dto.setPlace(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getPlace());
 			dto.setCreateTime(ticket.getCreateTime());
 			dto.setUpdateTime(ticket.getUpdateTime());
 			

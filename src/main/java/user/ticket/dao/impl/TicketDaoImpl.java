@@ -8,7 +8,9 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import manager.eventdetail.vo.DistTicket;
 import user.ticket.dao.TicketDao;
+import user.ticket.vo.Ticket;
 import user.ticket.vo.TicketView;
 
 
@@ -25,11 +27,20 @@ public class TicketDaoImpl implements TicketDao {
 	 */
 
 	@Override
-	public List<TicketView> selectAllByMemberId(int memberId){
-		List<TicketView> ticketViewList = new ArrayList<>();
+	public List<Ticket> selectAllByMemberId(int memberId){
+		
+		
+	
+		
+		List<Ticket> ticketList = new ArrayList<>();
 
 		
-		String sql = "SELECT bt.ticket_id,bt.order_id,bt.email,bt.phone,"
+		String hql = "SELECT tt FROM Ticket tt JOIN FETCH tt.buyerOrderTicketVer botv\r\n"
+				+ "JOIN FETCH botv.eventInfoTicketVer\r\n"
+				+ "JOIN FETCH tt.eventTicketTypeTicketVer\r\n"
+				+ "WHERE tt.currentHolderMemberId=:currentHolderMemberId";
+				
+				/*+ "SELECt bt.ticket_id,bt.order_id,bt.email,bt.phone,"
 				+ "bt.price,bt.status,bt.id_card,bt.current_holder_member_id,"
 				+ "bt.is_used,bt.participant_name,bt.event_name,ett.category_name,bt.queue_id,"
 				+ "be.event_from_date,be.place,be.member_id,bt.create_time,bt.update_time\r\n"
@@ -37,19 +48,22 @@ public class TicketDaoImpl implements TicketDao {
 				+ "JOIN (SELECT ei.event_from_date,ei.place,bo.order_id,bo.member_id\r\n "
 				+ "FROM event_info ei JOIN buyer_order bo ON ei.event_id=bo.event_id) AS be ON be.order_id=bt.order_id\r\n"
 				+ "JOIN event_ticket_type ett ON ett.type_id=bt.type_id\r\n"
-				+ "WHERE bt.current_holder_member_id=?\r\n";
+				+ "WHERE bt.current_holder_member_id=?\r\n";*/
 		
-		/*
-		String hql="";*/
+				ticketList = session
+				.createQuery(hql, Ticket.class)
+				.setParameter("currentHolderMemberId", memberId)
+				.getResultList();
+		return ticketList;
 		
 	
 
 		
-		ticketViewList = session.createNativeQuery(sql, TicketView.class).setParameter(1, memberId)
+		/*ticketViewList = session.createNativeQuery(sql, TicketView.class).setParameter(1, memberId)
 				.getResultList();
 
 		System.out.println("查到資料筆數：" + ticketViewList.size());
-		return ticketViewList;
+		return ticketViewList;*/
 		/*
 		try (Connection conn = session.getConnection(); 
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
