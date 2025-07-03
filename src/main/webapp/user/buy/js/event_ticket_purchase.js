@@ -4,8 +4,8 @@
 // 使用本地檔案
 import { createApp } from '../../../common/vendors/vue.esm-browser-3.5.16.js';
 // 從共用組件匯入需要的函數
-import { renderNav, initNavJSEvents } from '../../layout/nav/nav.js';
-import { renderFooter } from '../../layout/footer/footer.js';
+import { renderNav, initNavJSEvents, fetchNavTemplate } from '../../layout/nav/nav.js';
+import { renderFooter, fetchFooterTemplate } from '../../layout/footer/footer.js';
 
 // 基礎 API URL (實際使用時需要設定正確的路徑)
 const API_BASE_URL = '/maven-tickeasy-v1/api';
@@ -15,10 +15,12 @@ async function initializeApp() {
     try {
         // 先載入共用組件
         console.log('開始載入共用組件...');
-        await renderNav();
+        const navTemplate = await fetchNavTemplate();
+        renderNav(navTemplate); 
         console.log('導覽列載入完成');
         
-        await renderFooter();
+        const footerTemplate = await fetchFooterTemplate();
+        renderFooter(footerTemplate); 
         console.log('頁腳載入完成');
         
         initNavJSEvents();

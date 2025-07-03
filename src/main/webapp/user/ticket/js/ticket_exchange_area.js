@@ -7,8 +7,8 @@
 import { createApp, ref, reactive, onMounted, onUpdated, computed } from '../../../common/vendors/vue.esm-browser-3.5.16.js';
 
 // 從共用組件匯入需要的函數
-import { renderNav, initNavJSEvents } from '../../layout/nav/nav.js';
-import { renderFooter } from '../../layout/footer/footer.js';
+import { fetchNavTemplate, renderNav, initNavJSEvents } from '../../layout/nav/nav.js';
+import { fetchFooterTemplate, renderFooter } from '../../layout/footer/footer.js';
 
 // 基礎 API URL
 const API_BASE_URL = '/maven-tickeasy-v1/api';
@@ -28,10 +28,12 @@ async function initializeTicketExchangeApp() {
         console.log('開始載入共用組件...');
 
         // 同步載入 nav 和 footer
-        await renderNav();
+        const navTemplate = await fetchNavTemplate();
+        renderNav(navTemplate);
         console.log('導覽列載入完成');
 
-        await renderFooter();
+        const footerTemplate = await fetchFooterTemplate();
+        renderFooter(footerTemplate);
         console.log('頁腳載入完成');
 
         // 給 DOM 一點時間更新
