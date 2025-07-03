@@ -1,56 +1,42 @@
 package user.member.controller;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import common.util.CommonUtil;
-import user.member.service.MailService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import user.member.service.MemberService;
 import user.member.vo.Member;
-import static user.member.util.CommonUtil.*;
 
-@WebServlet("/user/member/login")
-public class LoginController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@RestController
+@RequestMapping("user/member/login")
+public class LoginController {
+	@Autowired
 	private MemberService service;
-	private MailService mailService;
-	
-	@Override
-	public void init() throws ServletException {
-		service = CommonUtil.getBean(getServletContext(), MemberService.class);
-		mailService = CommonUtil.getBean(getServletContext(), MailService.class);
-	}
-	
-	
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		Member member = json2Pojo(req, Member.class);
-		if (member == null) {
-			writeError(resp, "無會員資料");
-			return;
-		}
 
+	@GetMapping("{username}/{password}")
+	public Member loginByGet(HttpServletRequest request, @PathVariable String username, @PathVariable String password) {
+		Member member = new Member();
+		if (username == null || password == null) {
+			member.setMessage("無會員資訊");
+			member.setSuccessful(false);
+			return member;
+		}
+		member.setUserName(username);
+		member.setPassword(password);
 		member = service.login(member);
 		if (member.isSuccessful()) {
-			Member full = service.getByUsername(member.getUserName());
-
-			if (req.getSession(false) != null) {
-				req.changeSessionId();
+			if (request.getSession(false) != null) {
+				request.changeSessionId();
 			}
-			HttpSession session = req.getSession();
+			final HttpSession session = request.getSession();
 			session.setAttribute("loggedin", true);
-			session.setAttribute("member", full);
-			writeSuccess(resp, "登入成功", full);
-		} else {
-			writeError(resp, member.getMessage());
+			session.setAttribute("member", member);
 		}
+		return member;
 	}
-
 }
