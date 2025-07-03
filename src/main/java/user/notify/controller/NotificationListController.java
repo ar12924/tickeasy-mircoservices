@@ -2,12 +2,16 @@ package user.notify.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import user.member.vo.Member;
 import user.notify.service.NotificationService;
@@ -25,18 +29,34 @@ public class NotificationListController{
 	
 	@PostMapping("notification-list")
 	@ResponseBody
-	public List<Notification> notificationList(@RequestBody Member member) {
+	public List<Notification> notificationList(@RequestBody Member member /* @SessionAttribute Member member */) {
 		
 		
     	Integer memId=member.getMemberId();
 	
 
-
-		
+		/*
+		 * if(memId==null || memId.equals("")) { System.out.println("未登入"); }
+		 */
 		List<Notification> notifications = notificationService.notificationList(memId);
 		
 		
 		return notifications;
+		
+		
+		
+		
+		/*
+		 HttpSession session = req.getSession(false);
+	        Member member = (session != null) ? (Member) session.getAttribute("member") : null;
+
+	        if (member == null) {
+	            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	            return;
+	        }
+
+	        int memberId = member.getMemberId(); // ❗使用 session 中的 memberId，非前端傳來的
+	        */
 		
 	}
 }
