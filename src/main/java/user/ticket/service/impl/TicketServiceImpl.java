@@ -1,6 +1,7 @@
 package user.ticket.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ public class TicketServiceImpl implements TicketService{
 			dto.setCreateTime(ticket.getCreateTime());
 			dto.setUpdateTime(ticket.getUpdateTime());
 			
+			
 			//狀態轉換邏輯
 			if(ticket.getStatus()==1) {
 				dto.setStatusText("已付款");
@@ -67,6 +69,16 @@ public class TicketServiceImpl implements TicketService{
 				dto.setIsUsedText("未使用");
 			}
 			result.add(dto);
+			
+			Date now = new Date();
+			//前端頁面狀態分類
+			if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().before(now)) {
+				//歷史票
+				dto.setViewCategoryType(2);
+			}else {
+				//即將到來
+				dto.setViewCategoryType(1);
+			}
 			
 		}
 		

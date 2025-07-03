@@ -23,9 +23,16 @@ public class TicketViewDto {
 	private Timestamp updateTime;
 	private String isUsedText;
 	private String statusText;
+	private Integer viewCategoryType; // isUpcoming=1 isExpired=2 isTransferred=3;
 	
 	
 
+	public Integer getViewCategoryType() {
+		return viewCategoryType;
+	}
+	public void setViewCategoryType(Integer viewCategoryType) {
+		this.viewCategoryType = viewCategoryType;
+	}
 	public Integer getMemberId() {
 		return memberId;
 	}

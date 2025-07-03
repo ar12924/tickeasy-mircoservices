@@ -67,7 +67,7 @@ function smoothScrollTo(element, targetScrollTop, duration = 600) {
 
 //所有票券的load
 
-function ticket_loaded() {
+function ticket_loaded(category) {
 	
 	
 
@@ -84,7 +84,7 @@ function ticket_loaded() {
 		.then(ticketsView => {
 			for (let ticketView of ticketsView) {
 
-
+			if(ticketView.viewCategoryType==category){
 		
 									ticket_el.insertAdjacentHTML("afterbegin", `
 										<div class="tk">
@@ -164,9 +164,10 @@ function ticket_loaded() {
 										  
 						                `)
 }
+}
 })
 }
-ticket_loaded();
+
 
 
 //判斷通知中心的分類是否為空需要顯示為空的畫面
@@ -239,4 +240,9 @@ function category_count() {
 			tk_nav_span_change_el.innerHTML = allchange_count;
 		})
 }
-category_count();
+
+document.addEventListener("DOMContentLoaded", function() {
+	ticket_el.innerHTML = '';
+	category_count();
+	ticket_loaded(1);
+})
