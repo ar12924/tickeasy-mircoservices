@@ -58,7 +58,7 @@ export const renderDetailBox = async (
           $templateSelected
             .find(".total-price")
             .text(`NT$ ${totalPrice.toLocaleString("en-US")}`);
-          $(".details-container").append($templateSelected); // 插在中間
+          $(".details-container").append($templateSelected);
 
           // 開始填充模板(attendee 部分)
           attendee.forEach((attendeeOne) => {
@@ -76,8 +76,7 @@ export const renderDetailBox = async (
               $templateAttendee
                 .find(".ticket-id-card")
                 .text(attendeeOne.idCard);
-              //
-              $("tr:last-child").after($templateAttendee); // 接在後
+              $(".ticket-details-container").last().append($templateAttendee);
             }
           });
         }
