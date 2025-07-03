@@ -1,0 +1,6 @@
+/* 隱藏 type-quantity 輸入框上下按鈕 */
+.type-quantity::-webkit-outer-spin-button,
+.type-quantity::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

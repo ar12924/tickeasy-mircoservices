@@ -3,6 +3,7 @@
 
 /**
  * 預先載入 footer.html 模板。
+ * @return {Promise<string>} HTML 模板。
  */
 export const fetchFooterTemplate = async () => {
   const resp = await fetch("../layout/footer/footer.html");
@@ -10,9 +11,10 @@ export const fetchFooterTemplate = async () => {
 };
 
 /**
- * 動態生成並插入頁腳的 HTML。
+ * 動態生成並插入導覽列的 HTML。
+ * @param {string} templateHTML - HTML模板。
  */
-export const renderFooter = async (templateHTML) => {
-  templateHTML = $(await fetchFooterTemplate());
-  $("footer").append(templateHTML);
+export const renderFooter = (templateHTML) => {
+  const templateJQeury = $(templateHTML);
+  $("footer").html(templateJQeury);
 };

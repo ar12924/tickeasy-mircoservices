@@ -1,0 +1,5 @@
+package common.vo;
+
+public enum DataStatus {
+	VALID, INVALID, FOUND, NOT_FOUND, COMPARISON_PASSED, COMPARISON_FAILED, FORBIDDEN
+}

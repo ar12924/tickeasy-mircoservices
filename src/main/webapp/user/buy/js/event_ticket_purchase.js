@@ -1,13 +1,41 @@
 /**
  * 活動詳情頁面 Vue 應用
  */
+// 使用本地檔案
+import { createApp } from '../../../common/vendors/vue.esm-browser-3.5.16.js';
+// 從共用組件匯入需要的函數
+import { renderNav, initNavJSEvents } from '../../layout/nav/nav.js';
+import { renderFooter } from '../../layout/footer/footer.js';
 
 // 基礎 API URL (實際使用時需要設定正確的路徑)
 const API_BASE_URL = '/maven-tickeasy-v1/api';
 
-document.addEventListener('DOMContentLoaded', function () {
+// 初始化應用程序
+async function initializeApp() {
+    try {
+        // 先載入共用組件
+        console.log('開始載入共用組件...');
+        await renderNav();
+        console.log('導覽列載入完成');
+        
+        await renderFooter();
+        console.log('頁腳載入完成');
+        
+        initNavJSEvents();
+        console.log('導覽列事件綁定完成');
+        
+    } catch (error) {
+        console.error('載入共用組件時發生錯誤:', error);
+        // 即使共用組件載入失敗，也要繼續載入主要功能
+    }
+
+    // 初始化 Vue 應用
+    initVueApp();
+}
+
+function initVueApp() {
     // 創建 Vue 應用
-    window.app = Vue.createApp({
+    const eventTicketApp = createApp({
         // 資料
         data() {
             return {
@@ -137,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!this.isLoggedIn) {
                     if (confirm('請先登入才能關注活動。是否前往登入頁面？')) {
                         // 導向登入頁面，並設置回調頁面
-                        window.location.href = `/maven-tickeasy-v1/login?redirect=${encodeURIComponent(window.location.href)}`;
+                        window.location.href = `/maven-tickeasy-v1/user/member/login.html?redirect=${encodeURIComponent(window.location.href)}`;
                     }
                     return;
                 }
@@ -188,13 +216,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!this.isLoggedIn) {
                     if (confirm('請先登入才能購票。是否前往登入頁面？')) {
                         // 導向登入頁面，並設置回調頁面
-                        window.location.href = `/maven-tickeasy-v1/login?redirect=${encodeURIComponent(window.location.href)}`;
+                        window.location.href = `/maven-tickeasy-v1/user/member/login.html?redirect=${encodeURIComponent(window.location.href)}`;
                     }
                     return;
                 }
 
                 // 導向購票頁面
-                window.location.href = `/maven-tickeasy-v1/buy/booking.html?eventId=${this.eventId}`;
+                window.location.href = `/maven-tickeasy-v1/user/buy/book-type.html?eventId=${this.eventId}`;
             },
 
             // 格式化日期 (不含時間)
@@ -263,19 +291,17 @@ document.addEventListener('DOMContentLoaded', function () {
             checkLoginStatus() {
                 // 從 sessionStorage 或 cookie 中獲取用戶資訊
                 try {
-                    // 檢查 localStorage、sessionStorage 或 cookie 中是否有 memberId
-                    const memberId = localStorage.getItem('memberId') ||
-                        sessionStorage.getItem('memberId') ||
-                        this.getCookie('memberId');
+                    // 檢查是否有登入的使用者暱稱
+                    const loggedInNickname = sessionStorage.getItem('loggedInNickname');
 
-                    if (memberId && !isNaN(parseInt(memberId))) {
+                    if (loggedInNickname) {
                         this.isLoggedIn = true;
-                        this.memberId = parseInt(memberId, 10);
-                        console.log('登錄狀態檢查成功，memberId:', this.memberId);
+                        this.memberId = null;
+                        console.log('登錄狀態檢查成功，使用者:', loggedInNickname);
                     } else {
                         this.isLoggedIn = false;
                         this.memberId = null;
-                        console.log('未找到有效的 memberId');
+                        console.log('使用者未登入，但可以瀏覽活動詳情');
                     }
                 } catch (err) {
                     console.error('檢查登錄狀態時發生錯誤:', err);
@@ -371,5 +397,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 掛載應用
-    window.app.mount('#app');
-});
+    eventTicketApp.mount('#app');
+}
+
+// 當 DOM 載入完成後初始化應用
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+// 導出函數供其他模組使用
+export { initializeApp, initVueApp };

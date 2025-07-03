@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>TickEasy | 角色權限設定</title>
+
+    <!--Primary Meta Tags-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="TickEasy | 角色權限設定" />
+    <meta name="author" content="TIA203-G2" />
+    <meta name="description"
+        content="TickEasy is build by Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS." />
+    <meta name="keywords" content="TickEasy, ticket, concert, ticket admin dashboard" />
+    <link rel="icon" href="../common/assets/img/Member_icon.ico">
+    <!--Fonts-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+    <!--Third Party Plugin(OverlayScrollbars)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+        integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+    <!--Third Party Plugin(Bootstrap Icons)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+    <!--Required Plugin(AdminLTE)-->
+    <link rel="stylesheet" href="../common/css/adminlte.css" />
+    <!-- apexcharts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+    <!--Summernote-->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+</head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+        <!-- Header -->
+        <nav class="app-header navbar navbar-expand bg-body">
+            <div class="container-fluid">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                            <i class="bi bi-list"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item d-none d-md-block"><a href="index.html" class="nav-link">Home</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+                            <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                            <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown user-menu">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img src="../common/assets/img/user2-128x128.png" class="user-image rounded-circle shadow"
+                                alt="User Image" />
+                            <span class="d-none d-md-inline">Alexander Pierce</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                            <li class="user-header text-bg-primary">
+                                <img src="../common/assets/img/user2-128x128.png" class="rounded-circle shadow"
+                                    alt="User Image" />
+                                <p>
+                                    Alexander Pierce - Web Developer
+                                    <small>Member since Nov. 2023</small>
+                                </p>
+                            </li>
+                            <li class="user-body">
+                                <div class="row">
+                                    <div class="col-6 text-center">
+                                        <a href="#">活動場次</a><br>
+                                        <a href="#" class="fs-4">1000</a>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <a href="#">Friends</a><br>
+                                        <a href="#" class="fs-4">1000</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="user-footer">
+                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Sidebar (保持不變) -->
+        <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+            <div class="sidebar-brand">
+                <div class="brand-link">
+                    <a href="./index.html" class="brand-link">
+                        <span class="brand-text fs-1">TickEasy</span>
+                    </a>
+                    <span class="brand-text fs-7">活動方</span>
+                </div>
+            </div>
+            <div class="sidebar-wrapper">
+                <nav class="mt-2">
+                    <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu"
+                        data-accordion="false">
+                        <li class="nav-header">活動方</li>
+                        <li class="nav-item">
+                            <a href="./event_new.html" class="nav-link">
+                                <i class="nav-icon bi bi-patch-plus-fill"></i>
+                                <p>建立活動</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi-gear-wide-connected"></i>
+                                <p>
+                                    活動管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-list-task"></i>
+                                        <p>活動列表</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi bi-people-fill"></i>
+                                <p>
+                                    會員管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-person-fill-gear"></i>
+                                        <p>會員設定</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-shield-lock-fill"></i>
+                                        <p>會員密碼</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-header">平台方</li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi-gear-wide-connected"></i>
+                                <p>
+                                    活動管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-calendar3-range-fill"></i>
+                                        <p>活動列表</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-ticket-perforated-fill"></i>
+                                        <p>票券列表</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi bi-people-fill"></i>
+                                <p>
+                                    會員管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-person-lines-fill"></i>
+                                        <p>會員列表</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-person-heart"></i>
+                                        <p>購票者</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-bookmark-check-fill"></i>
+                                        <p>活動方</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi-cone-striped"></i>
+                                <p>
+                                    平台管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-check2-square"></i>
+                                        <p>活動單位審核</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-backspace-reverse-fill"></i>
+                                        <p>平台帳號管理</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi bi-person-hearts"></i>
+                                <p>
+                                    粉絲交流管理
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link">
+                                        <i class="nav-icon bi bi-list-task"></i>
+                                        <p>討論區列表</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">角色權限設定</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item"><a href="index.html">首頁</a></li>
+                                <li class="breadcrumb-item"><a href="role_management.html">角色列表</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">權限設定</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="app-content">
+                <div class="container-fluid">
+                    <!-- 角色資訊卡片 -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-primary card-outline mb-4">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="bi bi-shield-check me-2"></i>
+                                        <span id="roleTitle">載入中...</span>
+                                    </h3>
+                                    <div class="card-tools">
+                                        <a href="role_management.html" class="btn btn-sm btn-secondary">
+                                            <i class="bi bi-arrow-left"></i> 返回角色列表
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <dl class="row mb-0">
+                                                <dt class="col-sm-3">角色等級：</dt>
+                                                <dd class="col-sm-9"><span id="roleLevel"
+                                                        class="badge bg-info">載入中...</span></dd>
+                                                <dt class="col-sm-3">角色說明：</dt>
+                                                <dd class="col-sm-9" id="roleDescription">載入中...</dd>
+                                                <dt class="col-sm-3">會員數量：</dt>
+                                                <dd class="col-sm-9"><span id="memberCount"
+                                                        class="text-primary fw-bold">0</span> 位會員</dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="alert alert-info mb-0">
+                                                <h6 class="alert-heading"><i class="bi bi-info-circle"></i> 權限說明</h6>
+                                                <p class="mb-0 small">設定此角色對會員資料的存取權限</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 會員欄位權限設定 -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="bi bi-table me-2"></i>會員欄位權限設定
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 25%">欄位名稱</th>
+                                                    <th style="width: 25%">欄位說明</th>
+                                                    <th style="width: 15%" class="text-center">檢視</th>
+                                                    <th style="width: 15%" class="text-center">編輯</th>
+                                                    <th style="width: 20%">備註</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- 基本資料 -->
+                                                <tr class="table-secondary">
+                                                    <td colspan="5"><strong>基本資料</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>user_name</td>
+                                                    <td>使用者名稱（帳號）</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_user_name" checked disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_user_name" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">帳號不可修改</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>nick_name</td>
+                                                    <td>會員暱稱</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_nick_name">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_nick_name">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>email</td>
+                                                    <td>電子郵件</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_email">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_email">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>phone</td>
+                                                    <td>手機號碼</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_phone">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_phone">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>member_id</td>
+                                                    <td>會員編號</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_member_id" checked>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_member_id" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">系統自動產生</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>photo</td>
+                                                    <td>會員照片</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_photo">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_photo">
+                                                        </div>
+                                                    </td>
+                                                    <td>個人頭像</td>
+                                                </tr>
+                                                <!-- 個人資料 -->
+                                                <tr class="table-secondary">
+                                                    <td colspan="5"><strong>個人資料</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>birth_date</td>
+                                                    <td>出生日期</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_birth_date">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_birth_date">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>gender</td>
+                                                    <td>性別</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_gender">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_gender">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>id_card</td>
+                                                    <td>身份證號碼</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_id_card">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_id_card">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-danger">敏感資料</td>
+                                                </tr>
+
+                                                <!-- 企業資料 -->
+                                                <tr class="table-secondary">
+                                                    <td colspan="5"><strong>企業資料</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>unicode</td>
+                                                    <td>統一編號</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_unicode">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_unicode">
+                                                        </div>
+                                                    </td>
+                                                    <td>企業用戶專用</td>
+                                                </tr>
+
+                                                <!-- 系統資料 -->
+                                                <tr class="table-secondary">
+                                                    <td colspan="5"><strong>系統資料</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>role_level</td>
+                                                    <td>會員等級</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_role_level">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_role_level">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-warning">需謹慎操作</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>is_active</td>
+                                                    <td>帳號狀態</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_is_active">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_is_active">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>password</td>
+                                                    <td>密碼</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_password" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_password">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">僅可重設</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>create_time</td>
+                                                    <td>註冊時間</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_create_time">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_create_time" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">系統自動記錄</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>update_time</td>
+                                                    <td>最後更新時間</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="view_update_time">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-inline-block">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="edit_update_time" disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-muted">系統自動更新</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- 快速設定按鈕 -->
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                            onclick="selectAllView()">
+                                            <i class="bi bi-check-square"></i> 全選檢視
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                            onclick="selectAllEdit()">
+                                            <i class="bi bi-check-square"></i> 全選編輯
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            onclick="clearAll()">
+                                            <i class="bi bi-square"></i> 清除全部
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-info"
+                                            onclick="loadDefaultPermissions()">
+                                            <i class="bi bi-arrow-clockwise"></i> 載入預設
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按鈕 -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <button type="button" class="btn btn-success" onclick="savePermissions()">
+                                        <i class="bi bi-save"></i> 儲存權限設定
+                                    </button>
+                                    <a href="role_management.html" class="btn btn-secondary ms-2">
+                                        <i class="bi bi-x-circle"></i> 取消
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="float-end d-none d-sm-inline">TIA203-G2</div>
+            <strong>
+                Copyright &copy; 2025&nbsp;
+                <a href="https://gamma.app/docs/TickEasy-gd84wknpd0a0roz?mode=doc"
+                    class="text-decoration-none">TickEasy</a>.
+            </strong>
+            All rights reserved.
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+        integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <script src="../common/js/adminlte.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+
+    <script>
+        // OverlayScrollbars 設定
+        const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+        const Default = {
+            scrollbarTheme: 'os-theme-light',
+            scrollbarAutoHide: 'leave',
+            scrollbarClickScroll: true,
+        };
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                    scrollbars: {
+                        theme: Default.scrollbarTheme,
+                        autoHide: Default.scrollbarAutoHide,
+                        clickScroll: Default.scrollbarClickScroll,
+                    },
+                });
+            }
+        });
+
+        // 角色資料
+        const roleData = {
+            0: {
+                name: '未開通',
+                description: '註冊但尚未啟用的會員，無任何系統權限',
+                badgeClass: 'secondary',
+                memberCount: 1,
+                permissions: {
+                    view: [],
+                    edit: []
+                }
+            },
+            1: {
+                name: '購票方',
+                description: '一般會員，可瀏覽活動、購買票券、管理個人訂單',
+                badgeClass: 'success',
+                memberCount: 5,
+                permissions: {
+                    view: ['user_name', 'nick_name'],  // 只能看到基本公開資訊
+                    edit: []  // 不能編輯其他會員資料
+                }
+            },
+            2: {
+                name: '活動方',
+                description: '活動主辦方，可建立活動、管理票券、查看銷售報表',
+                badgeClass: 'warning text-dark',
+                memberCount: 3,
+                permissions: {
+                    view: ['user_name', 'nick_name', 'email', 'phone', 'role_level', 'is_active'],  // 可以看到購票者的聯絡資訊
+                    edit: ['nick_name', 'email', 'phone']  // 可以編輯部分欄位
+                }
+            },
+            3: {
+                name: '平台方',
+                description: '系統管理員，擁有所有系統權限',
+                badgeClass: 'danger',
+                memberCount: 1,
+                permissions: {
+                    view: 'all',  // 可以看到所有欄位
+                    edit: 'all'   // 可以編輯所有欄位（除了不可修改的）
+                }
+            }
+        };
+
+        // 所有可設定的欄位
+        const allFields = [
+            'user_name', 'nick_name', 'email', 'phone',
+            'birth_date', 'gender', 'id_card', 'unicode',
+            'role_level', 'is_active', 'password'
+        ];
+
+        let currentRoleLevel = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            // 從 URL 參數取得角色等級
+            const urlParams = new URLSearchParams(window.location.search);
+            currentRoleLevel = parseInt(urlParams.get('role')) || 1;
+
+            loadRoleInfo();
+            loadDefaultPermissions();
+            setupEventListeners();
+        });
+
+        // 載入角色資訊
+        function loadRoleInfo() {
+            const role = roleData[currentRoleLevel];
+            if (!role) {
+                alert('無效的角色等級');
+                window.location.href = 'role_management.html';
+                return;
+            }
+
+            document.getElementById('roleTitle').textContent = `${role.name} - 權限設定`;
+            document.getElementById('roleLevel').innerHTML = `<span class="badge bg-${role.badgeClass}">Level ${currentRoleLevel}</span>`;
+            document.getElementById('roleDescription').textContent = role.description;
+            document.getElementById('memberCount').textContent = role.memberCount;
+        }
+
+        // 載入預設權限
+        function loadDefaultPermissions() {
+            const role = roleData[currentRoleLevel];
+
+            // 先清除所有勾選
+            clearAll();
+
+            // 設定檢視權限
+            if (role.permissions.view === 'all') {
+                allFields.forEach(field => {
+                    const checkbox = document.getElementById(`view_${field}`);
+                    if (checkbox && !checkbox.disabled) {
+                        checkbox.checked = true;
+                    }
+                });
+            } else {
+                role.permissions.view.forEach(field => {
+                    const checkbox = document.getElementById(`view_${field}`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+
+            // 設定編輯權限
+            if (role.permissions.edit === 'all') {
+                allFields.forEach(field => {
+                    const checkbox = document.getElementById(`edit_${field}`);
+                    if (checkbox && !checkbox.disabled) {
+                        checkbox.checked = true;
+                    }
+                });
+            } else {
+                role.permissions.edit.forEach(field => {
+                    const checkbox = document.getElementById(`edit_${field}`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+
+            // 如果是未開通角色，禁用所有權限
+            if (currentRoleLevel === 0) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.disabled = true;
+                });
+            }
+        }
+
+        // 設定事件監聽器
+        function setupEventListeners() {
+            // 當勾選檢視權限時，自動勾選相應的編輯權限檢查
+            document.querySelectorAll('input[id^="view_"]').forEach(viewCheckbox => {
+                viewCheckbox.addEventListener('change', function () {
+                    const field = this.id.replace('view_', '');
+                    const editCheckbox = document.getElementById(`edit_${field}`);
+
+                    if (editCheckbox && !this.checked) {
+                        // 如果取消檢視權限，也要取消編輯權限
+                        editCheckbox.checked = false;
+                    }
+                });
+            });
+
+            // 當勾選編輯權限時，自動勾選檢視權限
+            document.querySelectorAll('input[id^="edit_"]').forEach(editCheckbox => {
+                editCheckbox.addEventListener('change', function () {
+                    const field = this.id.replace('edit_', '');
+                    const viewCheckbox = document.getElementById(`view_${field}`);
+
+                    if (viewCheckbox && this.checked) {
+                        // 如果勾選編輯權限，必須也要有檢視權限
+                        viewCheckbox.checked = true;
+                    }
+                });
+            });
+        }
+
+        // 全選檢視權限
+        function selectAllView() {
+            document.querySelectorAll('input[id^="view_"]').forEach(checkbox => {
+                if (!checkbox.disabled) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+
+        // 全選編輯權限
+        function selectAllEdit() {
+            document.querySelectorAll('input[id^="edit_"]').forEach(checkbox => {
+                if (!checkbox.disabled) {
+                    checkbox.checked = true;
+                    // 同時勾選對應的檢視權限
+                    const field = checkbox.id.replace('edit_', '');
+                    const viewCheckbox = document.getElementById(`view_${field}`);
+                    if (viewCheckbox && !viewCheckbox.disabled) {
+                        viewCheckbox.checked = true;
+                    }
+                }
+            });
+        }
+
+        // 清除所有勾選
+        function clearAll() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (!checkbox.disabled) {
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        // 儲存權限設定
+        function savePermissions() {
+            // 收集已勾選的權限
+            const permissions = {
+                view: [],
+                edit: []
+            };
+
+            allFields.forEach(field => {
+                const viewCheckbox = document.getElementById(`view_${field}`);
+                const editCheckbox = document.getElementById(`edit_${field}`);
+
+                if (viewCheckbox && viewCheckbox.checked) {
+                    permissions.view.push(field);
+                }
+                if (editCheckbox && editCheckbox.checked) {
+                    permissions.edit.push(field);
+                }
+            });
+
+            // 這裡應該要呼叫 API 儲存到資料庫
+            console.log('儲存權限設定:', {
+                role_level: currentRoleLevel,
+                permissions: permissions
+            });
+
+            // 顯示成功訊息
+            showSuccessMessage();
+        }
+
+        // 顯示成功訊息
+        function showSuccessMessage() {
+            const alertHtml = `
+               <div class="alert alert-success alert-dismissible fade show" role="alert">
+                   <i class="bi bi-check-circle-fill me-2"></i>
+                   權限設定已儲存成功！
+                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+               </div>
+           `;
+
+            const container = document.querySelector('.app-content .container-fluid');
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = alertHtml;
+            container.insertBefore(tempDiv.firstElementChild, container.firstChild);
+
+            // 2秒後跳轉回角色列表
+            setTimeout(() => {
+                window.location.href = 'role_management.html';
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>

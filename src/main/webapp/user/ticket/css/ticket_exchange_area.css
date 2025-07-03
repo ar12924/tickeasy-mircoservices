@@ -651,6 +651,36 @@ body {
     font-style: italic;
 }
 
+/* 票券狀態指示樣式 */
+.ticket-status-available {
+    color: #10b981;
+    font-weight: 500;
+}
+
+.ticket-status-posted {
+    color: #f59e0b;
+    font-weight: 500;
+}
+
+.ticket-status-commenting {
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+/* 票券選擇優化 */
+.form-control option {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* 幫助文字樣式 */
+.help-text {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
 /* RWD 響應式設計 */
 @media (max-width: 768px) {
     .event-navigation {
@@ -720,6 +750,15 @@ body {
     .status-button {
         flex: 1;
         min-width: 80px;
+    }
+
+    .form-control option {
+        font-size: 0.85rem;
+        padding: 0.4rem;
+    }
+    
+    .help-text {
+        font-size: 0.75rem;
     }
 }
 

@@ -9,7 +9,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "MEMBER_NOTIFICATION")
 public class Notification {
 		@Id
@@ -56,83 +65,32 @@ public class Notification {
 		    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '記錄更新時間'
 			*/
 		
-		public Integer getMemberNotificationId() {
-			return memberNotificationId;
-		}
-		public void setMemberNotificationId(Integer memberNotification) {
-			this.memberNotificationId = memberNotification;
-		}
-		public Integer getNotificationId() {
-			return notificationId;
-		}
-		public void setNotificationId(Integer notificationId) {
-			this.notificationId = notificationId;
-		}
-		public Integer getMemberId() {
-			return memberId;
-		}
-		public void setMemberId(Integer memberId) {
-			this.memberId = memberId;
-		}
-		public Integer getIsRead() {
-			return isRead;
-		}
-		public void setIsRead(Integer isRead) {
-			this.isRead = isRead;
-		}
-		public Integer getIsVisible() {
-			return isVisible;
-		}
-		public void setIsVisible(Integer isVisible) {
-			this.isVisible = isVisible;
-		}
-		public Integer getNotificationStatus() {
-			return notificationStatus;
-		}
-		public void setNotificationStatus(Integer notificationStatus) {
-			this.notificationStatus = notificationStatus;
-		}
-		public String getTitle() {
-			return title;
-		}
-		public void setTitle(String title) {
-			this.title = title;
-		}
-		public String getMessage() {
-			return message;
-		}
-		public void setMessage(String message) {
-			this.message = message;
-		}
-		public String getLinkURL() {
-			return linkURL;
-		}
-		public void setLinkURL(String linkURL) {
-			this.linkURL = linkURL;
-		}
-		public Timestamp getReadTime() {
-			return readTime;
-		}
-		public void setReadTime(Timestamp readTime) {
-			this.readTime = readTime;
-		}
-		public Timestamp getSendTime() {
-			return sendTime;
-		}
-		public void setSendTime(Timestamp sendTime) {
-			this.sendTime = sendTime;
-		}
-		public Timestamp getCreateTime() {
-			return createTime;
-		}
-		public void setCreateTime(Timestamp createTime) {
-			this.createTime = createTime;
-		}
-		public Timestamp getUpdateTime() {
-			return updateTime;
-		}
-		public void setUpdateTime(Timestamp updateTime) {
-			this.updateTime = updateTime;
-		}
+			/*
+			 * public Integer getMemberNotificationId() { return memberNotificationId; }
+			 * public void setMemberNotificationId(Integer memberNotification) {
+			 * this.memberNotificationId = memberNotification; } public Integer
+			 * getNotificationId() { return notificationId; } public void
+			 * setNotificationId(Integer notificationId) { this.notificationId =
+			 * notificationId; } public Integer getMemberId() { return memberId; } public
+			 * void setMemberId(Integer memberId) { this.memberId = memberId; } public
+			 * Integer getIsRead() { return isRead; } public void setIsRead(Integer isRead)
+			 * { this.isRead = isRead; } public Integer getIsVisible() { return isVisible; }
+			 * public void setIsVisible(Integer isVisible) { this.isVisible = isVisible; }
+			 * public Integer getNotificationStatus() { return notificationStatus; } public
+			 * void setNotificationStatus(Integer notificationStatus) {
+			 * this.notificationStatus = notificationStatus; } public String getTitle() {
+			 * return title; } public void setTitle(String title) { this.title = title; }
+			 * public String getMessage() { return message; } public void setMessage(String
+			 * message) { this.message = message; } public String getLinkURL() { return
+			 * linkURL; } public void setLinkURL(String linkURL) { this.linkURL = linkURL; }
+			 * public Timestamp getReadTime() { return readTime; } public void
+			 * setReadTime(Timestamp readTime) { this.readTime = readTime; } public
+			 * Timestamp getSendTime() { return sendTime; } public void
+			 * setSendTime(Timestamp sendTime) { this.sendTime = sendTime; } public
+			 * Timestamp getCreateTime() { return createTime; } public void
+			 * setCreateTime(Timestamp createTime) { this.createTime = createTime; } public
+			 * Timestamp getUpdateTime() { return updateTime; } public void
+			 * setUpdateTime(Timestamp updateTime) { this.updateTime = updateTime; }
+			 */
 		
 }

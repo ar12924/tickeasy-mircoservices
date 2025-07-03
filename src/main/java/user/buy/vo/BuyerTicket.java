@@ -14,34 +14,34 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name="buyer_ticket")
+@Table(name = "buyer_ticket")
 public class BuyerTicket {
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY)
-	@Column(name="ticket_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ticket_id")
 	private Integer ticketId;
-	@Column(name="order_id")
+	@Column(name = "order_id")
 	private Integer orderId;
 	private String email;
 	private String phone;
 	private BigDecimal price;
 	private Integer status;
-	@Column(name="id_card")
+	@Column(name = "id_card")
 	private String idCard;
-	@Column(name="current_holder_member_id")
+	@Column(name = "current_holder_member_id")
 	private Integer currentHolderMemberId;
-	@Column(name="is_used")
+	@Column(name = "is_used")
 	private Integer isUsed;
-	@Column(name="participant_name")
+	@Column(name = "participant_name")
 	private String participantName;
-	@Column(name="event_name")
+	@Column(name = "event_name")
 	private String eventName;
-	@Column(name="type_id")
+	@Column(name = "type_id")
 	private Integer typeId;
-	@Column(name="queue_id")
+	@Column(name = "queue_id")
 	private Integer queneId;
-	@Column(name="create_time")
+	@Column(name = "create_time", insertable = false, updatable = false)
 	private Timestamp createTime;
-	@Column(name="update_time")
+	@Column(name = "update_time", insertable = false, updatable = false)
 	private Timestamp updateTime;
 }

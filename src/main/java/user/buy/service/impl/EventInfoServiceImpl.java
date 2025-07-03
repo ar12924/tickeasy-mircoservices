@@ -1,18 +1,17 @@
 package user.buy.service.impl;
 
-import user.buy.dao.EventInfoDAO;
-import user.buy.dao.impl.EventInfoDAOImpl;
-import user.buy.service.EventInfoService;
-import user.buy.vo.EventBuyVO;
-import user.buy.vo.FavoriteVO;
-import user.buy.vo.TicketTypeVO;
-
 import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import user.buy.dao.EventInfoDAO;
+import user.buy.service.EventInfoService;
+import user.buy.vo.EventBuyVO;
+import user.buy.vo.FavoriteVO;
+import user.buy.vo.TicketTypeVO;
 
 /**
  * 活動資訊服務實現類 創建者: archchang 創建日期: 2025-05-07
@@ -27,7 +26,6 @@ public class EventInfoServiceImpl implements EventInfoService {
 	public EventBuyVO getEventDetail(Integer eventId, Integer memberId) {
 		EventBuyVO eventVO = eventInfoDAO.getEventInfoById(eventId);
 
-		// 早期返回，避免巢狀結構
 		if (eventVO == null) {
 			return null;
 		}
@@ -68,17 +66,33 @@ public class EventInfoServiceImpl implements EventInfoService {
 
 	@Override
 	public List<TicketTypeVO> getEventTicketTypes(Integer eventId) {
-		return eventInfoDAO.getEventTicketTypesByEventId(eventId);
+		List<TicketTypeVO> ticketTypes = eventInfoDAO.getEventTicketTypesByEventId(eventId);
+		
+		// 業務邏輯：為每個票券類型計算剩餘票數
+        for (TicketTypeVO ticketType : ticketTypes) {
+            Integer remainingTickets = eventInfoDAO.calculateRemainingTickets(ticketType.getTypeId());
+            ticketType.setRemainingTickets(remainingTickets != null ? Math.max(0, remainingTickets) : 0);
+        }
+
+        return ticketTypes;
 	}
 
 	@Override
 	public boolean checkTicketAvailability(Integer typeId, Integer quantity) {
+		// 業務邏輯：參數驗證
+        if (typeId == null || quantity == null || quantity <= 0) {
+            return false;
+        }
+        
 		Integer remainingTickets = eventInfoDAO.calculateRemainingTickets(typeId);
-		return remainingTickets >= quantity;
+		
+		// 業務邏輯：庫存檢查
+		return remainingTickets != null && remainingTickets >= quantity;
 	}
 
 	@Override
 	public boolean toggleEventFavorite(Integer memberId, Integer eventId, Integer isFollowed) {
+		// 業務邏輯：檢查現有狀態並決定操作
 		Integer currentStatus = eventInfoDAO.checkFavoriteStatus(memberId, eventId);
 
 		FavoriteVO favorite = new FavoriteVO();
