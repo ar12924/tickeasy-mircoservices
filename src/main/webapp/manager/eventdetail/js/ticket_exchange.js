@@ -594,9 +594,37 @@ function resetSearch() {
     showSuccess('搜尋條件已重置');
 }
 
+/**
+ * 安全檢查並執行初始化
+ */
+function safeInitialize() {
+    if (typeof initTicketExchange === 'function') {
+        initTicketExchange();
+    } else {
+        console.error('initTicketExchange 函數未找到');
+    }
+}
+
+/**
+ * 檢查 DOM 狀態並初始化應用程式
+ */
+function initializeApp() {
+    // 檢查 document.readyState 以確保在正確的時機執行初始化
+    if (document.readyState === 'loading') {
+        // DOM 仍在載入中，等待 DOMContentLoaded 事件
+        document.addEventListener('DOMContentLoaded', safeInitialize);
+    } else {
+        // DOM 已經載入完成，直接執行初始化
+        safeInitialize();
+    }
+}
+
 // 將需要全域存取的函數匯出
 window.goToPage = goToPage;
 window.resetSearch = resetSearch;
 window.performSearch = performSearch;
 window.loadExchangeList = loadExchangeList;
 window.initTicketExchange = initTicketExchange;
+
+// 自動初始化應用程式
+initializeApp();
