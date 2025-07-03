@@ -26,6 +26,41 @@ document.getElementById('datatable_search').addEventListener('input', function (
   });
 
 
+  
+  
+  //活動列表
+  const select_el=document.getElementsByClassName("form-select")[0];
+  function EventListBar_loaded() {
+
+
+
+   	fetch('/maven-tickeasy-v1/eventdetail/event-list-bar', {
+   		method: `POST`,
+   		headers: { 'Content-Type': 'application/json' },
+   		body: JSON.stringify({
+  		
+   		})
+   	})
+   		.then(resp => resp.json())
+   		.then(eventListBars => {
+   			if(!Array.isArray(eventListBars)){
+   									distTicketLists = [];
+   						}
+  			for (let eventListBar of eventListBars) {
+
+  			
+
+  										select_el.insertAdjacentHTML("afterbegin", `
+											<option selected>${eventListBar.eventName}</option>
+  							                `)
+  										
+											
+  									}
+									})
+									}
+  
+  
+
 
 
 
@@ -34,6 +69,7 @@ document.getElementById('datatable_search').addEventListener('input', function (
   //設定一開始load一個月內的資料
 
   window.addEventListener("DOMContentLoaded", function () {
+	EventListBar_loaded();
   	
     const startInput = document.getElementById("start");
     const endInput = document.getElementById("end");
@@ -159,13 +195,27 @@ function changeList(){
 											                item.distedTime,
 											                '已分票'
 											            ])).draw();
-											}
-											})
+				
+						}
+						})
 											
 				}
+				//jquery Datatable的因素
+						/*						$('#datatable_search').on('input', function () {
+												    var searchValue = this.value;  // 獲取輸入框的值
+												    
+												    dataTableInstance.columns().every(function () {
+												        var column = this;
+												        
+												        // 排除時間欄位的篩選，假設時間在第五列 (index 4)
+												        if (column.index() !== 4) {
+												            column.search(searchValue).draw();  // 使用 search() 來設置篩選條件
+												        }
+												    });
+													dataTableInstance.draw(); 
+												});
 
-
-	
+	*/
     /*fetch("/maven-tickeasy-v1/eventdetail/dist-ticket-list", {
         method: `POST`,
         headers: { "Content-Type": "application/json" },
