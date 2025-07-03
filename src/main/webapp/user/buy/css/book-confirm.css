@@ -1,0 +1,61 @@
+/* section 主內容 */
+section.columns {
+  & .buttons {
+    & .next {
+      background-color: #ec4899;
+      color: white;
+    }
+  }
+  /* 付款提示區塊 */
+  & .warning-box {
+    background-color: #fff3cd;
+    border: 3px solid #ffeaa7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & .warning-icon {
+      background-color: #f39c12;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+
+  /* 活動資訊區塊 */
+  & .event-box .event-image {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  /* 購票明細區塊 */
+  & .table-container {
+    /* dropdown 箭頭動畫 */
+    & .dropdown-arrow {
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    & .dropdown-arrow.is-active {
+      transform: rotate(180deg);
+    }
+
+    /* 票券明細動畫 */
+    & .ticket-details {
+      display: none;
+    }
+    & .ticket-details.is-active {
+      display: table-row;
+    }
+    & .ticket-item-box {
+      box-shadow: none;
+      border: 1px solid #dbdbdb;
+    }
+  }
+}

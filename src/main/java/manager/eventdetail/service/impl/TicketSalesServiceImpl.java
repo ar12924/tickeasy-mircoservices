@@ -1,5 +1,6 @@
 package manager.eventdetail.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import manager.eventdetail.dao.TicketSalesDao;
 import manager.eventdetail.service.TicketSalesService;
+import manager.eventdetail.service.EventInfoVOService;
 import manager.eventdetail.vo.EventTicketType;
-
+import manager.eventdetail.vo.EventInfoEventVer;
 
 @Service
 public class TicketSalesServiceImpl implements TicketSalesService {
@@ -19,39 +21,54 @@ public class TicketSalesServiceImpl implements TicketSalesService {
     @Autowired
     private TicketSalesDao ticketSalesDao;
     
+    @Autowired
+    private EventInfoVOService eventInfoVOService;
+    
     @Transactional
     @Override
     public Map<String, Object> getTicketSalesStatus(Integer eventId) {
         Map<String, Object> result = new HashMap<>();
         
-        // 獲取所有票種
-        List<EventTicketType> ticketTypes = ticketSalesDao.getEventTicketTypes(eventId);
-        result.put("ticketTypes", ticketTypes);
-        
-        // 獲取銷售統計數據
-        Map<Integer, Map<String, Object>> salesStatistics = ticketSalesDao.getTicketSalesStatistics(eventId);
-        result.put("salesStatistics", salesStatistics);
-        
-        // 計算總體銷售情況
-        int totalCapacity = 0;
-        int totalSold = 0;
-        int totalUsed = 0;
-        
-        for (Map<String, Object> statistics : salesStatistics.values()) {
-            totalCapacity += (Integer) statistics.get("capacity");
-            totalSold += (Integer) statistics.get("soldCount");
-            totalUsed += (Integer) statistics.get("usedCount");
+        // 獲取活動信息
+        EventInfoEventVer event = eventInfoVOService.getEventById(eventId);
+        if (event == null) {
+            return result;
         }
         
-        Map<String, Object> totalStatistics = new HashMap<>();
-        totalStatistics.put("totalCapacity", totalCapacity);
-        totalStatistics.put("totalSold", totalSold);
-        totalStatistics.put("totalRemaining", totalCapacity - totalSold);
-        totalStatistics.put("totalUsed", totalUsed);
-        totalStatistics.put("totalSoldPercentage", totalCapacity > 0 ? (double) totalSold / totalCapacity * 100 : 0);
+        result.put("eventName", event.getEventName());
+        Integer capacity = event.getCapacity();
+        result.put("capacity", capacity);
         
-        result.put("totalStatistics", totalStatistics);
+        // 獲取所有票種
+        List<EventTicketType> ticketTypes = ticketSalesDao.getEventTicketTypes(eventId);
         
+        // 準備銷售數據
+        List<Map<String, Object>> salesData = new ArrayList<>();
+        double totalRevenue = 0.0;
+        for (EventTicketType ticketType : ticketTypes) {
+            Map<String, Object> salesItem = new HashMap<>();
+            salesItem.put("categoryName", ticketType.getCategoryName());
+            salesItem.put("capacity", ticketType.getCapacity());
+            Integer soldCount = ticketSalesDao.getSoldTicketCount(ticketType.getTypeId());
+            soldCount = soldCount != null ? soldCount : 0;
+            int unsold = ticketType.getCapacity() != null ? (ticketType.getCapacity() - soldCount) : 0;
+            salesItem.put("ticketsSold", soldCount);
+            salesItem.put("unsold", unsold);
+            double revenue = soldCount * ticketType.getPrice().doubleValue();
+            salesItem.put("totalRevenue", revenue);
+            salesData.add(salesItem);
+            totalRevenue += revenue;
+        }
+        result.put("salesData", salesData);
+        result.put("totalRevenue", totalRevenue);
+
+        // 正確計算已售出、未銷售、銷售率
+        Integer soldCount = ticketSalesDao.getSoldTicketCountByEventId(eventId);
+        int unsold = capacity != null && soldCount != null ? (capacity - soldCount) : 0;
+        double salesRate = (capacity != null && capacity > 0 && soldCount != null) ? (soldCount * 100.0 / capacity) : 0;
+        result.put("soldCount", soldCount);
+        result.put("unsold", unsold);
+        result.put("salesRate", salesRate);
         return result;
     }
     

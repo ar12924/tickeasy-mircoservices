@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tickeasy!!!</title>
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
+    <link
+      rel="stylesheet"
+      href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/book-finished.css" class="main-css" />
+    <link rel="stylesheet" href="./ui/header.css" />
+    <link rel="stylesheet" href="../layout/nav/nav.css" />
+    <link rel="stylesheet" href="../layout/footer/footer.css" />
+  </head>
+  <body>
+    <!-- nav 導覽列(元件化) -->
+    <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
+
+    <!-- header 麵包屑 & 進度條(元件化) -->
+    <header></header>
+
+    <!-- section 主內容 -->
+    <section class="columns is-centered mt-5 mb-5">
+      <div class="column is-8">
+        <!-- 付款成功區塊 -->
+        <div class="notification is-success is-light success-box">
+          <span class="success-icon">✓</span>
+          <span class="has-text-weight-semibold is-size-4"
+            >您的訂單付款成功</span
+          >
+        </div>
+
+        <!-- 活動資訊(元件化) -->
+        <div class="event-container"></div>
+
+        <!-- 購票明細區塊 -->
+        <div class="box has-background-success-light p-0 mt-5">
+          <h3 class="title is-5 has-text-centered pt-5">購票明細</h3>
+          <div class="table-container mb-0">
+            <table class="table is-fullwidth is-hoverable">
+              <!-- (表頭) -->
+              <thead>
+                <tr>
+                  <th class="py-4">票種</th>
+                  <th class="has-text-centered py-4">數量</th>
+                  <th class="has-text-centered py-4">單價</th>
+                  <th class="has-text-centered py-4">金額</th>
+                  <th class="has-text-centered py-4">操作</th>
+                </tr>
+              </thead>
+              <!-- 購票明細(元件化) -->
+              <tbody class="details-container"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 金額合計 -->
+        <div class="notification is-light">
+          <div class="columns is-vcentered">
+            <div class="column">
+              <span class="title is-5">合計</span>
+            </div>
+            <div class="column is-narrow">
+              <span class="title is-4 has-text-primary book-total-price"
+                >NT$ 6,600</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 上/下一步按鈕區塊 -->
+        <div class="buttons is-flex is-justify-content-space-between mt-5">
+          <button class="button back">回首頁</button>
+          <button class="button next">查看訂單</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- footer 頁底列(元件化) -->
+    <footer></footer>
+  </body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js"></script>
+  <script type="module" src="./js/book-finished.js"></script>
+</html>

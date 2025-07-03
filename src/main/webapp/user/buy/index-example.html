@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TickEasy - 探索精彩活動，創造難忘回憶</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .hero-gradient {
+        background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+      }
+
+      .event-card {
+        transition: transform 0.3s ease;
+      }
+
+      .event-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .price-tag {
+        background: #ff6b9d;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+      }
+
+      .btn-purchase {
+        background: #ff6b9d;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+        transition: background 0.3s ease;
+      }
+
+      .btn-purchase:hover {
+        background: #ff5a8a;
+        color: white;
+      }
+
+      .favorite-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        padding: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .favorite-btn:hover {
+        background: #ff6b9d;
+        color: white;
+      }
+
+      .search-input {
+        border-radius: 25px;
+        border: none;
+        padding: 0.75rem 1.5rem;
+      }
+
+      .search-btn {
+        background: #ff6b9d;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 0.75rem 1.5rem;
+        margin-left: 10px;
+        font-weight: bold;
+      }
+
+      .search-btn:hover {
+        background: #ff5a8a;
+      }
+
+      .event-image {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+      }
+
+      .card-content-custom {
+        padding: 1rem;
+      }
+
+      .event-title {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .event-location {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .event-date {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .card-footer-custom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-top: 1px solid #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 英雄區塊 -->
+    <section class="hero hero-gradient is-medium">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title has-text-white is-size-2 has-text-weight-bold">
+            探索精彩活動，創造難忘回憶
+          </h1>
+          <p class="subtitle has-text-white is-size-5">
+            豐富多彩的活動展演平台，為您提供最優質的購票體驗
+          </p>
+          <div class="search-container">
+            <div class="field has-addons">
+              <div class="control is-expanded">
+                <input
+                  class="input is-large search-input"
+                  type="text"
+                  placeholder="搜尋活動..."
+                />
+              </div>
+              <div class="control">
+                <button class="button is-large search-btn">
+                  <i class="fas fa-search"></i>
+                  搜尋
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 熱門活動 -->
+    <section class="section">
+      <div class="container">
+        <h2 class="title is-size-3 has-text-weight-bold mb-5">熱門活動</h2>
+
+        <!-- 所有活動卡片 -->
+        <div class="columns is-multiline">
+          <!-- 第一個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=200&fit=crop"
+                  alt="2025春季音樂節"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">2025春季音樂節</div>
+                <div class="event-location">台北市信義區</div>
+                <div class="event-date">2024/03/15</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 1,800 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第二個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=200&fit=crop"
+                  alt="演唱會"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">演唱會</div>
+                <div class="event-location">台中市東區</div>
+                <div class="event-date">2024/04/01</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 500 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第三個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=400&h=200&fit=crop"
+                  alt="演唱會"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">演唱會</div>
+                <div class="event-location">高雄市鳳山區</div>
+                <div class="event-date">2024/05/20</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 800 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第四個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=200&fit=crop"
+                  alt="2025春季音樂節"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">2025春季音樂節</div>
+                <div class="event-location">台北市信義區</div>
+                <div class="event-date">2024/03/15</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 1,800 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第五個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=200&fit=crop"
+                  alt="演唱會"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">演唱會</div>
+                <div class="event-location">台中市東區</div>
+                <div class="event-date">2024/04/01</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 500 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第六個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=400&h=200&fit=crop"
+                  alt="演唱會"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">演唱會</div>
+                <div class="event-location">高雄市鳳山區</div>
+                <div class="event-date">2024/05/20</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 800 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第七個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=200&fit=crop"
+                  alt="2025春季音樂節"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">2025春季音樂節</div>
+                <div class="event-location">台北市信義區</div>
+                <div class="event-date">2024/03/15</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 1,800 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第八個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=200&fit=crop"
+                  alt="演唱會"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">演唱會</div>
+                <div class="event-location">台中市東區</div>
+                <div class="event-date">2024/04/01</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 500 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第九個活動 -->
+          <div class="column is-4">
+            <div class="card event-card">
+              <div class="card-image" style="position: relative">
+                <img
+                  src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=400&h=200&fit=crop"
+                  alt="演唱會"
+                  class="event-image"
+                />
+                <button class="favorite-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              <div class="card-content card-content-custom">
+                <div class="event-title">演唱會</div>
+                <div class="event-location">高雄市鳳山區</div>
+                <div class="event-date">2024/05/20</div>
+              </div>
+              <div class="card-footer-custom">
+                <span class="price-tag">NT$ 800 起</span>
+                <button class="btn-purchase">
+                  <i class="fas fa-ticket-alt"></i>
+                  搶購去
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // 愛心按鈕點擊效果
+      document.querySelectorAll(".favorite-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const icon = this.querySelector("i");
+          if (icon.classList.contains("far")) {
+            icon.classList.remove("far");
+            icon.classList.add("fas");
+            this.style.background = "#ff6b9d";
+            this.style.color = "white";
+          } else {
+            icon.classList.remove("fas");
+            icon.classList.add("far");
+            this.style.background = "white";
+            this.style.color = "#333";
+          }
+        });
+      });
+
+      // 搜尋功能
+      document
+        .querySelector(".search-btn")
+        .addEventListener("click", function () {
+          const searchInput = document.querySelector(".search-input");
+          if (searchInput.value.trim()) {
+            alert("搜尋功能：" + searchInput.value);
+          }
+        });
+    </script>
+  </body>
+</html>

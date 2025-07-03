@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "BUYER_TICKET")
@@ -18,11 +19,11 @@ import java.time.LocalDateTime;
 @ToString(exclude = {"buyerOrder", "eventTicketType"})
 @NoArgsConstructor
 @AllArgsConstructor
-public class BuyerTicketEventVer {
+public class BuyerTicketEventVer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TICKET_ID")
-    private Long ticketId;
+    private Integer ticketId;
 
     @ManyToOne
     @JoinColumn(name = "ORDER_ID", insertable = false, updatable = false)

@@ -1,0 +1,31 @@
+<!-- 票種選擇結果 -->
+<tr>
+  <td class="has-text-weight-semibold py-4 type-name">票種名...</td>
+  <td class="has-text-centered py-4 type-quantity">票數...</td>
+  <td class="has-text-centered py-4 type-price">NT$ 1,xxx</td>
+  <td class="has-text-centered has-text-weight-semibold py-4 d total-price">
+    NT$ 2,xxx
+  </td>
+  <td class="has-text-centered py-4">
+    <span
+      class="dropdown-arrow has-text-grey"
+      data-ticket-type="vip"
+      ticket-item-box
+    >
+      <i class="fas fa-chevron-down"></i>
+    </span>
+  </td>
+</tr>
+<!-- 每張票券明細(元件化 (ticket-details)) -->
+<tr class="ticket-details" id="ticket-details-vip">
+  <td colspan="5" class="p-0" style="border: none">
+    <div
+      class="ticket-details-content has-background-light p-5"
+      style="width: 100%"
+    >
+      <div class="columns is-centered">
+        <div class="column is-8 ticket-details-container"></div>
+      </div>
+    </div>
+  </td>
+</tr>

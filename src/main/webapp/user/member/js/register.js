@@ -31,47 +31,47 @@ const agreeError = document.querySelector("#agreeError");
 
 // 顯示／清除錯誤
 function showError(el, errorEl, text) {
-	errorEl.textContent = text;
-	el.classList.add("error");
+  errorEl.textContent = text;
+  el.classList.add("error");
 }
 function clearError(el, errorEl) {
-	errorEl.textContent = "";
-	el.classList.remove("error");
+  errorEl.textContent = "";
+  el.classList.remove("error");
 }
 
 // === 即時驗證 ===
 // 使用者名稱
-username.addEventListener("input", function() {
-	clearError(username, userNameError);
-	const len = username.value.trim().length;
-	if (len < 5 || len > 50) {
-		showError(username, userNameError, "使用者名稱長度須介於5~50字元");
-	}
+username.addEventListener("input", function () {
+  clearError(username, userNameError);
+  const len = username.value.trim().length;
+  if (len < 5 || len > 50) {
+    showError(username, userNameError, "使用者名稱長度須介於5~50字元");
+  }
 });
 
 // 暱稱
-nickname.addEventListener("input", function() {
-	clearError(nickname, nickNameError);
-	const len = nickname.value.trim().length;
-	if (len < 1 || len > 20) {
-		showError(nickname, nickNameError, "暱稱長度須介於1~20字元");
-	}
+nickname.addEventListener("input", function () {
+  clearError(nickname, nickNameError);
+  const len = nickname.value.trim().length;
+  if (len < 1 || len > 20) {
+    showError(nickname, nickNameError, "暱稱長度須介於1~20字元");
+  }
 });
 
 // Email
 function validateEmail() {
-	clearError(email, emailError);
-	let e = email.value.trim();
-	if (!e.includes("@")) {
-		if (domainSelect.value !== "other") e += domainSelect.value;
-		else if (customDomain.value.trim()) {
-			let cd = customDomain.value.trim();
-			if (!cd.startsWith("@")) cd = "@" + cd;
-			e += cd;
-		}
-	}
-	const re = /^[\w.-]+@[\w.-]+\.[A-Za-z]{2,6}$/;
-	if (!re.test(e)) showError(email, emailError, "電子信箱格式錯誤");
+  clearError(email, emailError);
+  let e = email.value.trim();
+  if (!e.includes("@")) {
+    if (domainSelect.value !== "other") e += domainSelect.value;
+    else if (customDomain.value.trim()) {
+      let cd = customDomain.value.trim();
+      if (!cd.startsWith("@")) cd = "@" + cd;
+      e += cd;
+    }
+  }
+  const re = /^[\w.-]+@[\w.-]+\.[A-Za-z]{2,6}$/;
+  if (!re.test(e)) showError(email, emailError, "電子信箱格式錯誤");
 }
 email.addEventListener("input", validateEmail);
 domainSelect.addEventListener("change", validateEmail);
@@ -80,158 +80,164 @@ customDomain.addEventListener("input", validateEmail);
 // 密碼
 
 function validateConfirmPassword() {
-	clearError(cPassword, rePasswordError);
+  clearError(cPassword, rePasswordError);
 
-	const pwd = password.value;
-	const rep = cPassword.value;
-	if (rep !== "" || pwd !== "") {
-		if (rep !== pwd) {
-			showError(cPassword, rePasswordError, "密碼與確認密碼不一致");
-			return false;
-		}
-	}
-	return true;
+  const pwd = password.value;
+  const rep = cPassword.value;
+  if (rep !== "" || pwd !== "") {
+    if (rep !== pwd) {
+      showError(cPassword, rePasswordError, "密碼與確認密碼不一致");
+      return false;
+    }
+  }
+  return true;
 }
 
 cPassword.addEventListener("input", validateConfirmPassword);
-password.addEventListener("input", function() {
-	clearError(password, passwordError);
-	clearError(cPassword, rePasswordError);
+password.addEventListener("input", function () {
+  clearError(password, passwordError);
+  clearError(cPassword, rePasswordError);
 
-	const len = password.value.length;
-	if (len < 6 || len > 12) {
-		showError(password, passwordError, "密碼長度須介於6~12字元");
-	}
+  const len = password.value.length;
+  if (len < 6 || len > 12) {
+    showError(password, passwordError, "密碼長度須介於6~12字元");
+  }
 });
 
-
 // 電話
-phone.addEventListener("input", function() {
-	clearError(phone, phoneError);
-	if (!/^09\d{8}$/.test(phone.value.trim())) {
-		showError(phone, phoneError, "手機格式錯誤，需 09 開頭共 10 碼");
-	}
+phone.addEventListener("input", function () {
+  clearError(phone, phoneError);
+  if (!/^09\d{8}$/.test(phone.value.trim())) {
+    showError(phone, phoneError, "手機格式錯誤，需 09 開頭共 10 碼");
+  }
 });
 
 // 身分證
-idCard.addEventListener("input", function() {
-	clearError(idCard, idCardError);
-	if (!/^[A-Za-z]\d{9}$/.test(idCard.value.trim())) {
-		showError(idCard, idCardError, "身分證格式錯誤，開頭英文字母＋9碼數字");
-	}
+idCard.addEventListener("input", function () {
+  clearError(idCard, idCardError);
+  if (!/^[A-Za-z]\d{9}$/.test(idCard.value.trim())) {
+    showError(idCard, idCardError, "身分證格式錯誤，開頭英文字母＋9碼數字");
+  }
 });
 
 // 統一編號
-unicode.addEventListener("input", function() {
-	clearError(unicode, unicodeError);
-	const v = unicode.value.trim();
-	if (v !== "" && !/^\d{8}$/.test(v)) {
-		showError(unicode, unicodeError, "統一編號格式錯誤，應為8碼數字");
-	}
+unicode.addEventListener("input", function () {
+  clearError(unicode, unicodeError);
+  const v = unicode.value.trim();
+  if (v !== "" && !/^\d{8}$/.test(v)) {
+    showError(unicode, unicodeError, "統一編號格式錯誤，應為8碼數字");
+  }
 });
 
 // 同意條款
-agree.addEventListener("change", function() {
-	clearError(agree, agreeError);
-	if (!agree.checked) {
-		showError(agree, agreeError, "請先同意服務條款");
-	}
+agree.addEventListener("change", function () {
+  clearError(agree, agreeError);
+  if (!agree.checked) {
+    showError(agree, agreeError, "請先同意服務條款");
+  }
 });
 
 // domainSelect 切換顯示 customDomain
-domainSelect.addEventListener("change", function() {
-	const isOther = domainSelect.value === "other";
-	customDomain.style.display = isOther ? "inline-block" : "none";
-	customDomain.required = isOther;
-	if (!isOther) customDomain.value = "";
+domainSelect.addEventListener("change", function () {
+  const isOther = domainSelect.value === "other";
+  customDomain.style.display = isOther ? "inline-block" : "none";
+  customDomain.required = isOther;
+  if (!isOther) customDomain.value = "";
 });
 
 // 圖片預覽
-photoInput.addEventListener("change", function(e) {
-	const file = e.target.files[0]; if (!file) return;
-	const reader = new FileReader();
-	reader.onload = function() {
-		photoPreview.src = reader.result;
-		photoPreview.style.display = "block";
-		defaultIcon.style.display = "none";
-	};
-	reader.readAsDataURL(file);
+photoInput.addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function () {
+    photoPreview.src = reader.result;
+    photoPreview.style.display = "block";
+    defaultIcon.style.display = "none";
+  };
+  reader.readAsDataURL(file);
 });
 
-form.addEventListener("submit", function(e) {
-	e.preventDefault();
-	msg.textContent = "";
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  msg.textContent = "";
 
-	// 逐一再執行一次各欄位檢驗
-	validateEmail();
-	username.dispatchEvent(new Event('input'));
-	nickname.dispatchEvent(new Event('input'));
-	password.dispatchEvent(new Event('input'));
-	phone.dispatchEvent(new Event('input'));
-	idCard.dispatchEvent(new Event('input'));
+  // 逐一再執行一次各欄位檢驗
+  validateEmail();
+  username.dispatchEvent(new Event("input"));
+  nickname.dispatchEvent(new Event("input"));
+  password.dispatchEvent(new Event("input"));
+  phone.dispatchEvent(new Event("input"));
+  idCard.dispatchEvent(new Event("input"));
 
-	if (unicode.value.trim()) {
-		unicode.dispatchEvent(new Event("input"));
-	} else {
-		clearError(unicode, unicodeError);
-	}
-	
-	agree.dispatchEvent(new Event('change'));
+  if (unicode.value.trim()) {
+    unicode.dispatchEvent(new Event("input"));
+  } else {
+    clearError(unicode, unicodeError);
+  }
 
-	const isConfirmValid = validateConfirmPassword();
-	if (!isConfirmValid) {
-		return;
-	}
+  agree.dispatchEvent(new Event("change"));
 
-	const invalidFields = document.querySelectorAll('input.error, select.error, textarea.error');
-	if (invalidFields.length > 0) {
-		return;
-	}
+  const isConfirmValid = validateConfirmPassword();
+  if (!isConfirmValid) {
+    return;
+  }
 
-	// 組 Email
-	let fullEmail = email.value.trim();
-	if (!fullEmail.includes("@")) {
-		if (domainSelect.value !== "other") fullEmail += domainSelect.value;
-		else {
-			let cd = customDomain.value.trim();
-			if (!cd.startsWith("@")) cd = "@" + cd;
-			fullEmail += cd;
-		}
-	}
+  const invalidFields = document.querySelectorAll(
+    "input.error, select.error, textarea.error"
+  );
+  if (invalidFields.length > 0) {
+    return;
+  }
 
-	const payload = {
-		userName: username.value,
-		nickName: nickname.value,
-		email: fullEmail,
-		password: password.value,
-		rePassword: cPassword.value,
-		birthDate: birthDate.value,
-		phone: phone.value,
-		gender: gender.value,
-		idCard: idCard.value,
-		unicode: unicode.value,
-		agree: agree.checked,
-		hostApply: hostApply.checked
-	};
+  // 組 Email
+  let fullEmail = email.value.trim();
+  if (!fullEmail.includes("@")) {
+    if (domainSelect.value !== "other") fullEmail += domainSelect.value;
+    else {
+      let cd = customDomain.value.trim();
+      if (!cd.startsWith("@")) cd = "@" + cd;
+      fullEmail += cd;
+    }
+  }
 
-	const fd = new FormData();
-	fd.append("json", JSON.stringify(payload));
-	if (photoInput.files[0]) fd.append("photo", photoInput.files[0]);
+  const payload = {
+    userName: username.value,
+    nickName: nickname.value,
+    email: fullEmail,
+    password: password.value,
+    rePassword: cPassword.value,
+    birthDate: birthDate.value,
+    phone: phone.value,
+    gender: gender.value,
+    idCard: idCard.value,
+    unicode: unicode.value,
+    agree: agree.checked,
+    hostApply: hostApply.checked,
+  };
 
-	fetch(form.action, {
-		method: "POST",
-		body: fd,
-		credentials: "include"
-	})
-		.then(resp => resp.json())
-		.then(body => {
-			msg.style.color = body.successful ? "green" : "red";
-			msg.textContent = body.message;
-			if (body.successful) setTimeout(() => window.location.href = "login.html", 2000);
-		})
-		.catch(err => {
-			console.error(err);
-			msg.style.color = "red";
-			msg.textContent = "伺服器錯誤，請稍後再試";
-		});
+  const fd = new FormData();
+  fd.append(
+    "member",
+    new Blob([JSON.stringify(payload)], { type: "application/json" })
+  );
+  if (photoInput.files[0]) fd.append("photo", photoInput.files[0]);
+
+  fetch(form.action, {
+    method: "POST",
+    body: fd,
+    credentials: "include",
+  })
+    .then((resp) => resp.json())
+    .then((body) => {
+      msg.style.color = body.successful ? "green" : "red";
+      msg.textContent = body.message;
+      if (body.successful)
+        setTimeout(() => (window.location.href = "login.html"), 2000);
+    })
+    .catch((err) => {
+      console.error(err);
+      msg.style.color = "red";
+      msg.textContent = "伺服器錯誤，請稍後再試";
+    });
 });

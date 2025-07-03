@@ -1,17 +1,8 @@
 package user.buy.controller;
 
-import com.google.gson.Gson;
-
-import common.util.CommonUtil;
-import user.buy.service.EventInfoService;
-import user.buy.service.impl.EventInfoServiceImpl;
-import user.buy.vo.TicketTypeVO;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import user.buy.service.EventInfoService;
+import user.buy.vo.TicketTypeVO;
 
 /**
  * 活動票券類型控制器
@@ -34,24 +20,41 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/event/tickets")
-public class EventTicketsController extends HttpServlet {
+public class EventTicketsController {
 	@Autowired
     private EventInfoService eventService;
 	
 	@GetMapping("/{eventId}")
     public ResponseEntity<Map<String, Object>> getEventTicketTypes(@PathVariable Integer eventId) {
-        List<TicketTypeVO> ticketTypes = eventService.getEventTicketTypes(eventId);
         
         Map<String, Object> response = new HashMap<>();
         
-        if (ticketTypes != null && !ticketTypes.isEmpty()) {
-            response.put("status", 200);
-            response.put("data", ticketTypes);
-        } else {
-            response.put("status", 404);
-            response.put("errorCode", "B0010");
-            response.put("errorMessage", "找不到票券類型");
-            response.put("userMessage", "該活動尚未設置票券類型");
+        try {
+            if (eventId == null || eventId <= 0) {
+                response.put("status", 400);
+                response.put("errorCode", "B0003");
+                response.put("errorMessage", "無效的活動ID參數");
+                response.put("userMessage", "活動ID格式不正確");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            List<TicketTypeVO> ticketTypes = eventService.getEventTicketTypes(eventId);
+            
+            if (ticketTypes != null && !ticketTypes.isEmpty()) {
+                response.put("status", 200);
+                response.put("data", ticketTypes);
+            } else {
+                response.put("status", 404);
+                response.put("errorCode", "B0010");
+                response.put("errorMessage", "找不到票券類型");
+                response.put("userMessage", "該活動尚未設置票券類型");
+            }
+            
+        } catch (Exception e) {
+            response.put("status", 500);
+            response.put("errorCode", "B0001");
+            response.put("errorMessage", "系統內部錯誤：" + e.getMessage());
+            response.put("userMessage", "系統暫時無法處理請求，請稍後再試");
         }
         
         return ResponseEntity.ok(response);
