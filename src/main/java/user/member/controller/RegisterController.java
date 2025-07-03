@@ -1,60 +1,50 @@
 package user.member.controller;
 
-import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
-import user.member.service.MailService;
-import user.member.service.MemberService;
+import common.vo.Core;
 import user.member.vo.Member;
+import user.member.service.MemberService;
 
-import static common.util.CommonUtilNora.*;
-import static common.util.CommonUtil.getBean;
+@RestController
+@RequestMapping("user/member/register")
+public class RegisterController {
 
-@WebServlet("/user/member/register")
-@MultipartConfig(
-		  fileSizeThreshold = 1024*1024,       // 1MB
-		  maxFileSize       = 5*1024*1024,     // 5MB
-		  maxRequestSize    = 10*1024*1024     // 10MB
-		)
-public class RegisterController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    @Autowired
 	private MemberService service;
-	private MailService mailService;
-	
-	@Override
-	public void init() throws ServletException {
-		service = getBean(getServletContext(), MemberService.class);
-		mailService = getBean(getServletContext(), MailService.class);
-	}
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
-            throws ServletException, IOException {
-        req.getRequestDispatcher("/user/member/register.html")
-           .forward(req, resp);
-    }
-	
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	Member input = json2Pojo(req, Member.class);
-    	
-    	//  處理 photo part，轉成 byte[] 放到 entity 裡
-    	Part photoPart = req.getPart("photo");
-        if (photoPart != null && photoPart.getSize() > 0) {
-        	input.setPhoto(photoPart.getInputStream().readAllBytes());
+
+    @PostMapping(value = "register", consumes = {"multipart/form-data"})
+    public Core<Member> register(
+            @RequestPart("member") Member member,
+            @RequestPart(value = "photo", required = false) MultipartFile photo) {
+
+        Core<Member> core = new Core<>();
+        if (member == null) {
+            core.setMessage("無會員資訊");
+            core.setSuccessful(false);
+            return core;
+        }
+        try {
+            if (photo != null && !photo.isEmpty()) {
+                member.setPhoto(photo.getBytes());
+            }
+        } catch (Exception e) {
+            core.setSuccessful(false);
+            core.setMessage("照片上傳失敗");
+            return core;
         }
     	
-        Member result = service.register(input);  
+        Member result = service.register(member);
         if (result.isSuccessful()) {
-			writeSuccess(resp, "註冊成功", result);
+            core.setSuccessful(true);
+            core.setMessage("註冊成功");
+            core.setData(result);
 		} else {
-			writeError(resp, result.getMessage());
+            core.setSuccessful(false);
+            core.setMessage(result.getMessage());
 		}
+        return core;
     }
 }

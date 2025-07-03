@@ -1,67 +1,110 @@
 package user.member.controller;
 
-import java.io.IOException;
+import java.util.Objects;
+import java.sql.Timestamp;
+import java.util.UUID;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import user.member.service.MailService;
-import user.member.service.MemberService;
+import common.vo.Core;
 import user.member.vo.Member;
+import user.member.service.MemberService;
+import user.member.dao.VerificationDao;
+import user.member.vo.VerificationToken;
+import user.member.service.MailService;
 
-import static common.util.CommonUtilNora.*;
-import static common.util.CommonUtil.getBean;
-//import static user.member.util.MemberConstants.SERVICE;
-
-@WebServlet("/user/member/edit")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
-		maxFileSize = 5 * 1024 * 1024, // 5MB
-		maxRequestSize = 10 * 1024 * 1024 // 10MB
-)
-public class EditController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@RestController
+@RequestMapping("user/member/edit")
+public class EditController {
+	@Autowired
 	private MemberService service;
+	@Autowired
+	private VerificationDao verifyDao;
+	@Autowired
 	private MailService mailService;
-	
-	@Override
-	public void init() throws ServletException {
-		service = getBean(getServletContext(), MemberService.class);
-		mailService = getBean(getServletContext(), MailService.class);
+
+	// 查詢會員資料
+	@GetMapping
+	public Core<Member> getInfo(@SessionAttribute(required = false) Member member) {
+		Core<Member> core = new Core<>();
+		if (member == null) {
+			core.setMessage("無會員資訊");
+			core.setSuccessful(false);
+		} else {
+			core.setSuccessful(true);
+			core.setData(member);
+		}
+		return core;
 	}
-	
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		// 1. 取得session中已登入會員
-		final HttpSession session = req.getSession(false);
-		if (session == null || session.getAttribute("member") == null) {
-			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			writeError(resp, "請先登入");
-			return;
+	// 驗證舊密碼
+	@GetMapping("{password}")
+	public Core<Void> checkPassword(@PathVariable String password, @SessionAttribute(required = false) Member member) {
+		Core<Void> core = new Core<>();
+		if (member == null) {
+			core.setMessage("無會員資訊");
+			core.setSuccessful(false);
+		} else {
+			final String currentPassword = member.getPassword();
+			if (Objects.equals(password, currentPassword)) {
+				core.setSuccessful(true);
+			} else {
+				core.setMessage("舊密碼錯誤");
+				core.setSuccessful(false);
+			}
 		}
-		Member login = (Member) session.getAttribute("member");
+		return core;
+	}
 
-		// 後續確認：使用BeanUtils.populate()去把 request 裡的資料自動對應，去少寫setXXX
-		Member input = new Member();
-		input.setMemberId(login.getMemberId()); 
-		input.setUserName(login.getUserName());
-		input.setPassword(req.getParameter("password"));
-		input.setNickName(req.getParameter("nickName"));
-		input.setEmail(req.getParameter("email"));
-		input.setUnicode(req.getParameter("unicode"));
-
-		Part photoPart = req.getPart("photo");
-		if (photoPart != null && photoPart.getSize() > 0) {
-			input.setPhoto(photoPart.getInputStream().readAllBytes());
+	// 修改會員資料（支援大頭貼上傳）
+	@PutMapping(consumes = {"multipart/form-data"})
+	public Core<Member> edit(
+			@RequestPart("member") Member reqMember,
+			@RequestPart(value = "photo", required = false) MultipartFile photo,
+			@SessionAttribute Member member) {
+		Core<Member> core = new Core<>();
+		try {
+			reqMember.setMemberId(member.getMemberId());
+			reqMember.setUserName(member.getUserName());
+			if (photo != null && !photo.isEmpty()) {
+				reqMember.setPhoto(photo.getBytes());
+			}
+			Member updated = service.editMember(reqMember);
+			core.setSuccessful(true);
+			core.setMessage("會員資料已更新");
+			core.setData(updated);
+		} catch (Exception e) {
+			core.setSuccessful(false);
+			core.setMessage("會員資料更新失敗：" + e.getMessage());
 		}
+		return core;
+	}
 
-		Member updated = service.editMember(input);
-		writeSuccess(resp, "會員資料已更新", updated);
+	// 驗證信 API
+	@PostMapping("send-verify-mail")
+	public Core<Void> sendVerifyMail(@SessionAttribute Member member) {
+		Core<Void> core = new Core<>();
+		try {
+			// 產生新 token
+			String tokenName = UUID.randomUUID().toString();
+			VerificationToken token = new VerificationToken();
+			token.setTokenName(tokenName);
+			token.setTokenType("EMAIL_VERIFY");
+			token.setExpiredTime(new Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000)); // 24小時
+			token.setMember(member);
+			verifyDao.insert(token);
+
+			// 寄信
+			mailService.sendActivationNotification(member.getEmail(), member.getUserName(), tokenName);
+
+			core.setSuccessful(true);
+			core.setMessage("驗證信已發送，請至信箱收信");
+		} catch (Exception e) {
+			core.setSuccessful(false);
+			core.setMessage("發送失敗：" + e.getMessage());
+		}
+		return core;
 	}
 }
