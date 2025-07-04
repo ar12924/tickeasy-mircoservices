@@ -52,30 +52,34 @@ export const fetchKeyword = async (keywordId) => {
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
-const initIndexJSEvents = async () => {
+const initIndexJSEvents = () => {
   // 愛心按鈕點擊效果
-  document.querySelectorAll(".favorite-btn").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const icon = this.querySelector("i");
-      if (icon.classList.contains("far")) {
-        icon.classList.remove("far");
-        icon.classList.add("fas");
-        this.style.background = "#ff6b9d";
-        this.style.color = "white";
+  $(".favorite-btn").each((i, btn) => {
+    const $btn = $(btn);
+    $btn.on("click", (e) => {
+      console.log("進入關注按鈕...");
+      const $icon = $btn.find("i");
+      if ($icon.hasClass("far")) {
+        console.log("按下關注....");
+        $icon.removeClass("far");
+        $icon.addClass("fas");
+        $btn.css("background", "#ff6b9d");
+        $btn.css("color", "white");
       } else {
-        icon.classList.remove("fas");
-        icon.classList.add("far");
-        this.style.background = "white";
-        this.style.color = "#333";
+        console.log("解除關注....");
+        $icon.removeClass("fas");
+        $icon.addClass("far");
+        $btn.css("background", "white");
+        $btn.css("color", "#333");
       }
     });
   });
 
   // 搜尋功能
-  document.querySelector(".search-btn").addEventListener("click", function () {
-    const searchInput = document.querySelector(".search-input");
-    if (searchInput.value.trim()) {
-      alert("搜尋功能：" + searchInput.value);
+  $(".search-btn").on("click", () => {
+    const $searchInput = $(".search-input");
+    if ($searchInput.val().trim()) {
+      alert("搜尋功能：" + $searchInput.val());
     }
   });
 };
@@ -95,10 +99,10 @@ const initIndexJSEvents = async () => {
 
   // ====== hot-event 部分 ======
   const eventTemplate = await fetchEventInfoTemplate();
-  renderRecentEventBox(eventTemplate, recentEvent);
+  await renderRecentEventBox(eventTemplate, recentEvent);
 
   // ====== index 部分 ======
-  await initIndexJSEvents(); // 載入 index 主要事件
+  initIndexJSEvents(); // 載入 index 主要事件
 
   // ====== footer 部分 ======
   const footerTemplate = await fetchFooterTemplate();

@@ -14,12 +14,18 @@ nav {
     }
   }
   & .navbar-menu {
-    & .navbar-item {
-      & .button {
+    & .container {
+      padding: 8px 12px;
+      & .theme-color {
         background-color: #ec4899;
         color: white;
       }
     }
   }
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 開關效果 */
+.hide {
+  display: none;
 }
