@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   console.log("權限檢查:", { roleLevel, memberId });
 
-  if (!roleLevel || roleLevel !== "2") {
+  if (!roleLevel || (roleLevel !== "2" && roleLevel !== "3")) {
     alert("您沒有權限訪問此頁面");
     window.location.href = "/maven-tickeasy-v1/user/member/login.html";
     return;
@@ -109,16 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     console.log("使用 memberId:", memberId);
-
-    // 獲取應用程序的上下文路徑
-    const currentPath = window.location.pathname;
-    const pathParts = currentPath.split("/");
-    const contextPath = pathParts.slice(0, 2).join("/"); // 取前2段: /maven-tickeasy-v1
-    const apiUrl = `${contextPath}/manager/eventdetail/participants?memberId=${memberId}`;
-
-    console.log("API URL:", apiUrl);
-
-    fetch(apiUrl, {
+    fetch(`../eventdetail/participants?memberId=${memberId}`, {
       credentials: "include",
     })
       .then((response) => {
@@ -181,21 +172,15 @@ document.addEventListener("DOMContentLoaded", function () {
       ticketType: ticketTypeFilter,
     });
 
-    // 獲取應用程序的上下文路徑
-    const currentPath = window.location.pathname;
-    const pathParts = currentPath.split("/");
-    const contextPath = pathParts.slice(0, 2).join("/");
-
-    let apiUrl = `${contextPath}/manager/eventdetail/participants?eventId=${currentEventId}&pageNumber=${currentPage}&pageSize=${pageSize}`;
-    if (nameFilter) apiUrl += `&participantName=${nameFilter}`;
-    if (emailFilter) apiUrl += `&email=${emailFilter}`;
-    if (ticketTypeFilter) apiUrl += `&ticketTypeId=${ticketTypeFilter}`;
-
-    console.log("API URL:", apiUrl);
-
-    fetch(apiUrl, {
-      credentials: "include",
-    })
+    fetch(
+      `../eventdetail/participants?eventId=${currentEventId}&pageNumber=${currentPage}&pageSize=${pageSize}` +
+        (nameFilter ? `&participantName=${nameFilter}` : "") +
+        (emailFilter ? `&email=${emailFilter}` : "") +
+        (ticketTypeFilter ? `&ticketTypeId=${ticketTypeFilter}` : ""),
+      {
+        credentials: "include",
+      }
+    )
       .then((response) => {
         console.log("參與者列表響應狀態:", response.status);
         return response.json();
@@ -240,6 +225,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!participantTableEl) return;
 
     if (!participants || participants.length === 0) {
+      // 先清空表格
+      participantTableEl.innerHTML = "";
+
       // 根據篩選條件顯示不同的訊息
       let message = "該活動暫無參與者";
 
