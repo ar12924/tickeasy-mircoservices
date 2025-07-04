@@ -259,9 +259,24 @@ function category_count() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+	
+	//先判斷有無登入
+			fetch('/maven-tickeasy-v1/notify/check-login')
+			    .then(response => response.json())
+			    .then(isLoggedIn => {
+			        if (!isLoggedIn) {
+			            window.location.href = "/maven-tickeasy-v1/user/member/login.html";  // 如果未登入，跳轉到登入頁
+						console.log("未登入");
+			        } else {
+	
+	
+	
+	
 	ticket_el.innerHTML = '';
 	category_count();
 	ticket_loaded(1);
+	}
+						})
 })
 //各頁籤切換
 document.querySelectorAll(".tk_tab").forEach(button => {
