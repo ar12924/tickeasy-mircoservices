@@ -68,8 +68,7 @@ function smoothScrollTo(element, targetScrollTop, duration = 600) {
 //所有票券的load
 
 function ticket_loaded(category) {
-	
-	
+	var count=0;
 
 	fetch('/maven-tickeasy-v1/ticket/ticket-list', {
 		method: `POST`,
@@ -82,10 +81,27 @@ function ticket_loaded(category) {
 	})
 		.then(resp => resp.json())
 		.then(ticketsView => {
+			if(!Array.isArray(ticketsView)){
+												ticketsView = [];
+									}
+			/*if(category==1){
+				var category_count_get = document.querySelector("span.coming_tk").innerHTML;
+				tk_isEmpty(category_count_get);
+			}
+			if(category==2){
+				var category_count_get = document.querySelector("span.history_tk").innerHTML;
+				console.log(category_count_get);
+				tk_isEmpty(category_count_get);
+			}
+			if(category=3){
+				var category_count_get = document.querySelector("span.allchange_tk").innerHTML;
+				tk_isEmpty(category_count_get);
+			}
+*/
 			for (let ticketView of ticketsView) {
-
-			if(ticketView.viewCategoryType==category){
 		
+			if(ticketView.viewCategoryType==category){
+				count++;
 									ticket_el.insertAdjacentHTML("afterbegin", `
 										<div class="tk">
 															<div class="tk_region tk_left">
@@ -165,6 +181,8 @@ function ticket_loaded(category) {
 						                `)
 }
 }
+console.log(count);
+tk_isEmpty(count);
 })
 }
 
@@ -174,9 +192,9 @@ function ticket_loaded(category) {
 function tk_isEmpty(count) {
 	if (count == 0) {
 		console.log("123");
-		notification_el.insertAdjacentHTML("beforeend", `<div class="tk_empty">
+		ticket_el.insertAdjacentHTML("beforeend", `<div class="tk_empty">
 																				            <div class="tk_empty_text">
-																							Oops~目前沒有沒有票券
+																							Oops~目前沒有票券
 																				           </div>
 																				                           
 																				      </div>
@@ -217,20 +235,19 @@ function category_count() {
 			for (let ticket of tickets) {
 				let eventDate = new Date(ticket.eventFromDate);
 				
-				if (eventDate<now) {
+				if (ticket.viewCategoryType==1) {
 					coming_count++;
-					console.log("testcoming");
+					
 				}
 
-				if (eventDate>now) {
+				if (ticket.viewCategoryType==2) {
 					history_count++;
-					console.log("testhistory");
+					
 				}
 
-				if (ticket.memberId !== ticket.currentHolderMemberId) {
+				if (ticket.viewCategoryType==3) {
 					allchange_count++;
-					console.log(ticket.memberId);
-					console.log(ticket.currentHolderMemberId);
+				
 				}
 
 				
@@ -245,4 +262,36 @@ document.addEventListener("DOMContentLoaded", function() {
 	ticket_el.innerHTML = '';
 	category_count();
 	ticket_loaded(1);
+})
+//各頁籤切換
+document.querySelectorAll(".tk_tab").forEach(button => {
+	button.addEventListener("click", () => {
+		const tabId = button.getAttribute("data-tab");
+
+		// 移除目前的 active 樣式
+		document.querySelectorAll(".tk_tab").forEach(btn => btn.closest("div.tk_nav").classList.remove("-on"));
+		document.querySelectorAll(".tab_content").forEach(tab => tab.closest("div.tk_nav").classList.remove("-on"));
+
+		// 加入新的 active 樣式
+		button.closest("div.tk_nav").classList.add("-on");
+		let ticketCategory = tabId.split("_")[1];
+		/*console.log(tabId);
+		console.log(notificationCategory);*/
+
+		/*document.getElementById(tabId).classList.add("-on");*/
+		/*	document.querySelector(`[data-id="${tabId}"]`).classList.add("-on");*/
+		if (ticketCategory == 1) {
+			ticket_el.innerHTML = '';
+			ticket_loaded(1);
+		}
+		if (ticketCategory == 2) {
+			ticket_el.innerHTML = '';
+			ticket_loaded(2);
+		}
+		if (ticketCategory == 3) {
+			ticket_el.innerHTML = '';
+			ticket_loaded(3);
+		}
+
+	})
 })

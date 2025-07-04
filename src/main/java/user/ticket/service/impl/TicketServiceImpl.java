@@ -68,18 +68,21 @@ public class TicketServiceImpl implements TicketService{
 			}else {
 				dto.setIsUsedText("未使用");
 			}
-			result.add(dto);
+			
 			
 			Date now = new Date();
 			//前端頁面狀態分類
-			if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().before(now)) {
+			if(ticket.getBuyerOrderTicketVer().getMemberId()!=ticket.getCurrentHolderMemberId()) {
+				dto.setViewCategoryType(3);
+			}else if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().before(now) && ticket.getBuyerOrderTicketVer().getMemberId()==ticket.getCurrentHolderMemberId()) {
 				//歷史票
 				dto.setViewCategoryType(2);
-			}else {
+			}else if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().after(now) && ticket.getBuyerOrderTicketVer().getMemberId()==ticket.getCurrentHolderMemberId()){
 				//即將到來
 				dto.setViewCategoryType(1);
 			}
 			
+			result.add(dto);
 		}
 		
 		
