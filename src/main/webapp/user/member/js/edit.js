@@ -15,24 +15,21 @@ const passwordChangeArea = document.querySelector("#passwordChangeArea");
 const defaultIcon = document.querySelector("#defaultIcon");
 const sendVerificationBtn = document.querySelector("#sendVerificationBtn");
 const verificationMsg = document.querySelector("#verificationMsg");
+const photoError = document.querySelector("#photoError");
 
 // 顯示登入者暱稱
 loggedInNickname.textContent =
   sessionStorage.getItem("loggedInNickname") || "訪客";
 
-if (!checkLoginAndRedirect()){
-return;
-}
-
 // 載入會員資訊
 fetch("/maven-tickeasy-v1/user/member/edit", { credentials: "include" })
   .then((resp) => resp.json())
-//  .then((body) => {
-//    if (!body.successful) {
-//      msg.textContent = "尚未登入，請先登入";
-//      msg.innerHTML += '<br><a href="login.html">登入頁面</a>';
-//      return;
-//    }
+  .then((body) => {
+    if (!body.successful) {
+      msg.textContent = "尚未登入，請先登入";
+      msg.innerHTML += '<br><a href="login.html">登入頁面</a>';
+      return;
+    }
     const data = body.data;
     username.value = data.userName || "";
     nickname.value = data.nickName || "";
@@ -56,9 +53,18 @@ fetch("/maven-tickeasy-v1/user/member/edit", { credentials: "include" })
 // 圖片即時預覽
 photoInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
-  if (!file) return;
+  if (!file) {
+    // 沒有選擇檔案時，顯示預設圖示
+    photoPreview.style.display = "none";
+    defaultIcon.style.display = "inline-block";
+    return;
+  }
   const reader = new FileReader();
-  reader.onload = () => (photoPreview.src = reader.result);
+  reader.onload = () => {
+    photoPreview.src = reader.result;
+    photoPreview.style.display = "block";
+    defaultIcon.style.display = "none";
+  };
   reader.readAsDataURL(file);
 });
 
@@ -82,6 +88,16 @@ changePasswordBtn.addEventListener("click", () => {
 saveButton.addEventListener("click", (e) => {
   e.preventDefault();
   msg.textContent = "";
+  photoError.textContent = "";
+
+  // 檢查照片格式
+  if (photoInput.files.length > 0) {
+    const file = photoInput.files[0];
+    if (!file.type.startsWith("image/")) {
+      photoError.textContent = "請選擇圖片檔案";
+      return;
+    }
+  }
 
   // 前端驗證
   const nick = nickname.value.trim();

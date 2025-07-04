@@ -1,4 +1,3 @@
-
 const username = document.querySelector("#username");
 const password = document.querySelector("#password");
 const remember = document.querySelector("#rememberMe"); // 「記住我」checkbox
@@ -26,18 +25,10 @@ loginBtn.addEventListener("click", () => {
     .then((body) => {
       if (body.successful) {
         msg.style.color = "green";
-        sessionStorage.setItem(
-          "loggedInNickname",
-          body.nickName || (body.data && body.data.nickName)
-        );
-        sessionStorage.setItem(
-          "memberId",
-          body.memberId || (body.data && body.data.memberId)
-        );
-        sessionStorage.setItem(
-          "roleLevel",
-          body.roleLevel || (body.data && body.data.roleLevel)
-        );
+        const memberData = body.data; // 從 Core<T> 中提取資料
+        sessionStorage.setItem("loggedInNickname", memberData.nickName || "");
+        sessionStorage.setItem("memberId", memberData.memberId || "");
+        sessionStorage.setItem("roleLevel", memberData.roleLevel || "");
         if (remember && remember.checked) {
           localStorage.setItem("savedUsername", username.value.trim());
         } else {
@@ -45,14 +36,14 @@ loginBtn.addEventListener("click", () => {
         }
         // 分角色導向前，顯示會員頭像預覽
         const avatar = document.getElementById("avatarPreview");
-        if (avatar && (body.memberId || (body.data && body.data.memberId))) {
-          const memberId = body.memberId || (body.data && body.data.memberId);
+        if (avatar && memberData.memberId) {
+          const memberId = memberData.memberId;
           avatar.src = `/maven-tickeasy-v1/api/member-photos/${memberId}`;
           avatar.style.display = "block";
         }
         // 分角色導向
-        const role = body.roleLevel || (body.data && body.data.roleLevel);
-        if (parseInt(role) === 2) {
+        const role = memberData.roleLevel;
+        if (parseInt(role) === 2 || parseInt(role) === 3) {
           alert("登入成功！您的角色是活動方，即將跳轉到活動儀表板。");
           window.location.href =
             "/maven-tickeasy-v1/manager/eventdetail/dashboard.html";
@@ -73,6 +64,7 @@ loginBtn.addEventListener("click", () => {
       }
     })
     .catch((error) => {
+      console.error("登入請求失敗:", error);
       alert("登入請求失敗，請稍後再試");
     });
 });
