@@ -1,5 +1,6 @@
 package manager.eventdetail.controller;
 
+import com.google.gson.Gson;
 import common.util.CommonUtil;
 import manager.eventdetail.service.ParticipantService;
 import manager.eventdetail.vo.BuyerTicketEventVer;
@@ -14,9 +15,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static user.member.util.CommonUtil.*;
+import static common.util.CommonUtilNora.*;
 
-@WebServlet("/participants/detail")
+@WebServlet("/manager/eventdetail/participants/detail")
 public class ParticipantDetailController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ParticipantService participantService;
@@ -28,50 +29,27 @@ public class ParticipantDetailController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 1. 檢查必要參數
+        req.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json; charset=UTF-8");
+
         String ticketIdStr = req.getParameter("ticketId");
-        if (ticketIdStr == null || ticketIdStr.trim().isEmpty()) {
-            writeError(resp, "請提供票券ID");
+        if (ticketIdStr == null || ticketIdStr.isEmpty()) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"缺少 ticketId 參數\"}");
             return;
         }
 
-        // 2. 解析參數
-        Long ticketId;
         try {
-            ticketId = Long.valueOf(ticketIdStr);
+            Integer ticketId = Integer.parseInt(ticketIdStr);
+            Map<String, Object> detailData = participantService.getParticipantDetail(ticketId);
+            writePojo2Json(resp, detailData);
         } catch (NumberFormatException e) {
-            writeError(resp, "無效的票券ID格式");
-            return;
-        }
-
-        // 3. 執行查詢
-        Map<String, Object> result;
-        try {
-            result = participantService.getParticipantDetail(ticketId);
-            if (result == null || !(Boolean) result.get("success")) {
-                writeError(resp, (String) result.get("msg"));
-                return;
-            }
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"ticketId 格式不正確\"}");
         } catch (Exception e) {
-            writeError(resp, "查詢失敗：" + e.getMessage());
-            return;
-        }
-
-        // 4. 獲取票種列表
-        BuyerTicketEventVer ticket = (BuyerTicketEventVer) result.get("ticket");
-        if (ticket != null && ticket.getEventTicketType() != null) {
-            Integer eventId = ticket.getEventTicketType().getEventId();
-            if (eventId != null) {
-                try {
-                    List<EventTicketType> ticketTypes = participantService.getEventTicketTypes(eventId);
-                    result.put("ticketTypes", ticketTypes);
-                } catch (Exception e) {
-                    writeError(resp, "獲取票種列表失敗：" + e.getMessage());
-                    return;
-                }
-            }
-
-            writeSuccess(resp, "查詢成功", result);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+            e.printStackTrace();
         }
     }
 }

@@ -12,4 +12,9 @@ public interface NotificationService {
 	Integer notificationVisibleUpdate(int memberNotificationId);
 	void sendReminderNotificationForTomorrow();
 	void sendFavoriteSellReminderNotificationForTomorrow();
+	void sendFavoriteSoldOutReminderNotification();
+	void sendFavoriteLeftPercentReminderNotification();
+	//Redis
+	boolean isAlreadyNotifiedFavoriteLeftPercent(Integer eventId,Integer memberId,String type);
+	void markAsNotifiedFavoriteLeftPercent(Integer eventId,Integer memberId,String type);
 }

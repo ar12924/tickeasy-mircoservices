@@ -704,7 +704,7 @@
         });
     });
 
-    exports.CardWidget = CardWidget;
+    /*exports.CardWidget = CardWidget;*/
     exports.DirectChat = DirectChat;
     exports.FullScreen = FullScreen;
     exports.Layout = Layout;

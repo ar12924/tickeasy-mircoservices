@@ -309,7 +309,7 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional
 	@Override
 	public boolean requestPasswordReset(Integer memberId) {
-		Member member = memberDao.findById(memberId); // 假設您有 findById 方法
+		Member member = memberDao.findById(memberId); 
     if (member == null) {
         return false;
     }

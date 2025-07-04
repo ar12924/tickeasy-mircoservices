@@ -1,36 +1,46 @@
 package user.ticket.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
-import user.notify.vo.Notification;
+import manager.eventdetail.vo.DistTicket;
 import user.ticket.dao.TicketDao;
 import user.ticket.vo.Ticket;
 import user.ticket.vo.TicketView;
 
-public class TicketDaoImpl implements TicketDao {
-	private DataSource ds;
 
-	public TicketDaoImpl() throws NamingException {
-		ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/tickeasy");
-	}
+@Repository
+public class TicketDaoImpl implements TicketDao {
+	
+	@PersistenceContext
+	private Session session;
+	/*
+	 * private DataSource ds;
+	 * 
+	 * public TicketDaoImpl() throws NamingException { ds = (DataSource) new
+	 * InitialContext().lookup("java:comp/env/jdbc/tickeasy"); }
+	 */
 
 	@Override
-	public List<TicketView> selectAllByMemberId(int memberId){
-		List<TicketView> ticketViewList = new ArrayList<>();
+	public List<Ticket> selectAllByMemberId(int memberId){
+		
+		
+	
+		
+		List<Ticket> ticketList = new ArrayList<>();
 
-		String sql = "SELECT bt.ticket_id,bt.order_id,bt.email,bt.phone,"
+		
+		String hql = "SELECT tt FROM Ticket tt JOIN FETCH tt.buyerOrderTicketVer botv\r\n"
+				+ "JOIN FETCH botv.eventInfoTicketVer\r\n"
+				+ "JOIN FETCH tt.eventTicketTypeTicketVer\r\n"
+				+ "WHERE tt.currentHolderMemberId=:currentHolderMemberId";
+				
+				/*+ "SELECt bt.ticket_id,bt.order_id,bt.email,bt.phone,"
 				+ "bt.price,bt.status,bt.id_card,bt.current_holder_member_id,"
 				+ "bt.is_used,bt.participant_name,bt.event_name,ett.category_name,bt.queue_id,"
 				+ "be.event_from_date,be.place,be.member_id,bt.create_time,bt.update_time\r\n"
@@ -38,9 +48,25 @@ public class TicketDaoImpl implements TicketDao {
 				+ "JOIN (SELECT ei.event_from_date,ei.place,bo.order_id,bo.member_id\r\n "
 				+ "FROM event_info ei JOIN buyer_order bo ON ei.event_id=bo.event_id) AS be ON be.order_id=bt.order_id\r\n"
 				+ "JOIN event_ticket_type ett ON ett.type_id=bt.type_id\r\n"
-				+ "WHERE bt.current_holder_member_id=?\r\n";
+				+ "WHERE bt.current_holder_member_id=?\r\n";*/
+		
+				ticketList = session
+				.createQuery(hql, Ticket.class)
+				.setParameter("currentHolderMemberId", memberId)
+				.getResultList();
+		return ticketList;
+		
+	
 
-		try (Connection conn = ds.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
+		
+		/*ticketViewList = session.createNativeQuery(sql, TicketView.class).setParameter(1, memberId)
+				.getResultList();
+
+		System.out.println("查到資料筆數：" + ticketViewList.size());
+		return ticketViewList;*/
+		/*
+		try (Connection conn = session.getConnection(); 
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setInt(1, memberId);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
@@ -75,7 +101,7 @@ public class TicketDaoImpl implements TicketDao {
 		System.out.println("查到資料筆數：" + ticketViewList.size());
 		return ticketViewList;
 
-		
+		*/
 	}
 
 }

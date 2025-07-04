@@ -41,7 +41,7 @@ public class EventTicketType {
     private BigDecimal price;
 
     @OneToMany(mappedBy = "eventTicketType")
-    private List<BuyerTicketEventVer> buyerTicketEventVer; // 票券與報名資料的關聯
+    private transient List<BuyerTicketEventVer> buyerTicketEventVer; // 票券與報名資料的關聯
 
     @Column(name = "CREATE_TIME")
     private Timestamp createTime;

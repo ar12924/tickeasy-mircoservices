@@ -1,0 +1,4 @@
+/* Add your custom styles for participant-list.html here */
+.table-hover tbody tr:hover {
+  cursor: pointer;
+}
