@@ -47,25 +47,25 @@ export const renderNav = (templateHTML) => {
   console.log(`role level: ${roleLevel}`);
   if (memberId && roleLevel === "1") {
     // 已登入
-    $registerBtn.addClass("hide");
-    $loginBtn.addClass("hide");
-    $orderBtn.removeClass("hide");
-    $concernBtn.removeClass("hide");
-    $ticketBtn.removeClass("hide");
-    $notifyBtn.removeClass("hide");
-    $userBtn.removeClass("hide");
+    $registerBtn.addClass("is-hidden");
+    $loginBtn.addClass("is-hidden");
+    $orderBtn.removeClass("is-hidden");
+    $concernBtn.removeClass("is-hidden");
+    $ticketBtn.removeClass("is-hidden");
+    $notifyBtn.removeClass("is-hidden");
+    $userBtn.removeClass("is-hidden");
     $userBtn
       .find(".user-name")
       .text(sessionStorage.getItem("loggedInNickname")); // 添加 userName
   } else {
     // 未登入
-    $registerBtn.removeClass("hide");
-    $loginBtn.removeClass("hide");
-    $orderBtn.addClass("hide");
-    $concernBtn.addClass("hide");
-    $ticketBtn.addClass("hide");
-    $notifyBtn.addClass("hide");
-    $userBtn.addClass("hide");
+    $registerBtn.removeClass("is-hidden");
+    $loginBtn.removeClass("is-hidden");
+    $orderBtn.addClass("is-hidden");
+    $concernBtn.addClass("is-hidden");
+    $ticketBtn.addClass("is-hidden");
+    $notifyBtn.addClass("is-hidden");
+    $userBtn.addClass("is-hidden");
   }
 
   // 插入 DOM

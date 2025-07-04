@@ -53,6 +53,7 @@ public class SpringMvcConfig implements WebMvcConfigurer {
 		var objMapper = new ObjectMapper();
 		objMapper.setDateFormat(sdf);
 		objMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		objMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
 		// 設定 messageConverter 物件
 		var messageConverter = new MappingJackson2HttpMessageConverter(objMapper);
 		messageConverter.setPrettyPrint(true);
