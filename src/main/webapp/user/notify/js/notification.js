@@ -72,7 +72,7 @@ function notification_loaded(category) {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			memberId: 5,
+			memberId: 5
 		})
 	})
 		.then(resp => resp.json())
@@ -528,9 +528,20 @@ function time_count(sendtime) {
 
 //頁面加載的初始值
 document.addEventListener("DOMContentLoaded", function() {
-	notification_el.innerHTML = '';
-	category_count();
-	notification_loaded(1);
+	//先判斷有無登入
+	fetch('/maven-tickeasy-v1/notify/check-login')
+	    .then(response => response.json())
+	    .then(isLoggedIn => {
+	        if (!isLoggedIn) {
+	            window.location.href = "/maven-tickeasy-v1/user/member/login.html";  // 如果未登入，跳轉到登入頁
+				console.log("未登入");
+	        } else {
+				notification_el.innerHTML = '';
+				category_count();
+				notification_loaded(1);
+	        }
+	    });
+	
 })
 
 
