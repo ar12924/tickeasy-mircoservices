@@ -233,7 +233,7 @@ function category_count() {
 
 			//處理ticket各頁籤顯示數量
 			for (let ticket of tickets) {
-				let eventDate = new Date(ticket.eventFromDate);
+				/*let eventDate = new Date(ticket.eventFromDate);*/
 				
 				if (ticket.viewCategoryType==1) {
 					coming_count++;

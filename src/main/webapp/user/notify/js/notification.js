@@ -132,7 +132,7 @@ function notification_loaded(category) {
 					let displayTimeCount = time_count(notification.sendTime);
 
 					notification_el.insertAdjacentHTML("afterbegin", `
-						<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}.html" class="ntf_link" target="blank" >
+						<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
 						    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 								<div class="ntf_region ntf_left">
 						            <div class="ntf_title">${notification.title}</div>
@@ -202,7 +202,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-												<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}.html" class="ntf_link" target="blank" >
+												<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
 												    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 														<div class="ntf_region ntf_left">
 												            <div class="ntf_title">${notification.title}</div>
@@ -267,7 +267,7 @@ function notification_loaded(category) {
 					if (notification.notificationId == 2) {
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-															<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}.html" class="ntf_link" target="blank" >
+															<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
 															    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																	<div class="ntf_region ntf_left">
 															            <div class="ntf_title">${notification.title}</div>
@@ -334,7 +334,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-																			<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}.html" class="ntf_link" target="blank" >
+																			<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
 																			    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																					<div class="ntf_region ntf_left">
 																			            <div class="ntf_title">${notification.title}</div>
@@ -408,7 +408,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-																							<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}.html" class="ntf_link" target="blank" >
+																							<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
 																							    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																									<div class="ntf_region ntf_left">
 																							            <div class="ntf_title">${notification.title}</div>
