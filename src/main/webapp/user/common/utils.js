@@ -31,3 +31,12 @@ export const getContextPath = () => {
 export const validateIdCard = (idCard) => {
   return /^[A-Z][0-9]{9}$/.test(idCard);
 };
+
+/**
+ * 從後端 Session 抓取會員資料。
+ * @return {Object} 驗證結果(含會員資料)。
+ */
+export const fetchMemberFromSession = async () => {
+  const resp = await fetch(`${getContextPath()}/common/identify`);
+  return await resp.json();
+};
