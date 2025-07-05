@@ -29,11 +29,11 @@ async function initializeTicketExchangeApp() {
 
         // 同步載入 nav 和 footer
         const navTemplate = await fetchNavTemplate();
-        renderNav(navTemplate);
+        await renderNav(navTemplate);
         console.log('導覽列載入完成');
 
         const footerTemplate = await fetchFooterTemplate();
-        renderFooter(footerTemplate);
+        await renderFooter(footerTemplate);
         console.log('頁腳載入完成');
 
         // 給 DOM 一點時間更新

@@ -16,11 +16,11 @@ async function initializeApp() {
         // 先載入共用組件
         console.log('開始載入共用組件...');
         const navTemplate = await fetchNavTemplate();
-        renderNav(navTemplate);
+        await renderNav(navTemplate);
         console.log('導覽列載入完成');
 
         const footerTemplate = await fetchFooterTemplate();
-        renderFooter(footerTemplate);
+        await renderFooter(footerTemplate);
         console.log('頁腳載入完成');
 
         initNavJSEvents();
