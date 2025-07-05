@@ -97,7 +97,7 @@ export const initNavJSEvents = () => {
 
   // "登出" 按鈕點擊
   $(".logout").on("click", async () => {
-    const resp = await fetch(`${getContextPath()}/user/buy/common/logout`);
+    const resp = await fetch(`${getContextPath()}/common/logout`);
     location.reload();
   });
 
