@@ -275,9 +275,20 @@ document.addEventListener("DOMContentLoaded", function() {
 	ticket_el.innerHTML = '';
 	category_count();
 	ticket_loaded(1);
+	createWebSocket();
+	/*testPush();*/
 	}
 						})
 })
+
+/*function testPush(){
+
+fetch('/maven-tickeasy-v1/notify/test-push', {
+  method: 'POST'
+})
+.then(resp => resp.text())
+.then(msg => console.log("後端回應：", msg));
+}*/
 //各頁籤切換
 document.querySelectorAll(".tk_tab").forEach(button => {
 	button.addEventListener("click", () => {
@@ -310,3 +321,53 @@ document.querySelectorAll(".tk_tab").forEach(button => {
 
 	})
 })
+/*
+function createWebSocket() {
+	notificationQueue = [];
+	var memberId = sessionStorage.getItem("memberId");  // 使用者的 memberId 
+        var socket = new WebSocket("ws://localhost:8080/maven-tickeasy-v1/notify/notification?memberId=" + memberId);
+
+		// 監聽 WebSocket 連接成功事件
+		socket.addEventListener('open', e => {
+		    console.log("WebSocket 連接已建立！");  // 可以在控制台中打印這條信息確認連接成功
+		    // 可以在這裡執行其他邏輯，比如發送消息到後端等
+		});
+		
+        socket.addEventListener('message', e => {
+            var message = e.data;
+			console.log(message);
+			// 如果隊列中沒有通知，直接顯示，否則將其加入隊列
+			const notificationBox = document.getElementById('notification_box');
+	        if (notificationBox && !document.getElementById('notification_box').classList.contains('show')) {
+	            showNotification(message);
+	        } else {
+	            // 把新通知加入隊列
+	            notificationQueue.push({ content: message });
+	        };
+        });
+		// 當 WebSocket 連接錯誤時
+		socket.addEventListener('error', function (e) {
+		    console.error("WebSocket 發生錯誤:", e);
+		});
+
+		// 當 WebSocket 連接關閉時
+		socket.addEventListener('close', function (e) {
+		    console.log("WebSocket 連接已關閉");
+		    // 這裡可以執行一些清理工作，或者根據需求重連
+		    reconnectWebSocket();  // 重連邏輯
+		});
+		}
+		// 重連 WebSocket 連接
+function reconnectWebSocket() {
+			var reconnectTimeout;
+			// 如果已有重連操作，取消之前的重試
+			   if (reconnectTimeout) {
+			       clearTimeout(reconnectTimeout);
+			   }
+
+			   // 5秒後嘗試重新建立 WebSocket 連接
+			   reconnectTimeout = setTimeout(function() {
+			       console.log("正在重試 WebSocket 連接...");
+			       createWebSocket();  // 重新創建 WebSocket 連接
+			   }, 5000);  // 5秒後重試
+		}*/
