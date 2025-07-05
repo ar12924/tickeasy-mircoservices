@@ -227,7 +227,7 @@ function initTicketExchangeVueApp() {
                 try {
                     console.log('獲取用戶票券...');
 
-                    const response = await fetch(`${API_BASE_URL}/my-tickets`, {
+                    const response = await fetch(`${API_BASE_URL}/my-tickets/event/${eventId.value}`, {
                         credentials: 'include'
                     });
 
@@ -365,14 +365,19 @@ function initTicketExchangeVueApp() {
 
             // 提交留言
             const submitComment = async (post) => {
+
                 if (!validateCommentForm(post.commentForm)) {
                     return;
                 }
 
-                //  提交前確認
                 const selectedTicket = post.commentForm.availableTickets.find(
                     t => t.ticketId == post.commentForm.ticketId
                 );
+
+                if (!selectedTicket) {
+                    alert('找不到選中的票券，請重新選擇');
+                    return;
+                }
 
                 if (!confirm(`確定要用「${selectedTicket.categoryName} - 票券#${selectedTicket.ticketId}」進行交換嗎？`)) {
                     return;
@@ -381,13 +386,12 @@ function initTicketExchangeVueApp() {
                 post.commentSubmitting = true;
 
                 try {
+                    // 🔥 完全按照 submitSwapPost 的格式處理數據
                     const requestData = {
-                        postId: post.postId,
+                        postId: parseInt(post.postId),
                         ticketId: parseInt(post.commentForm.ticketId),
                         description: post.commentForm.description
                     };
-
-
 
                     const response = await fetch(`${API_BASE_URL}/ticket-exchange/comments`, {
                         method: 'POST',
@@ -401,35 +405,22 @@ function initTicketExchangeVueApp() {
                     if (response.ok) {
                         const data = await response.json();
 
-
                         if (data.success) {
                             // 重新載入該貼文的留言
                             await loadComments(post.postId);
-
-                            // 隱藏留言表單
                             hideCommentForm(post);
-
-                            // 自動顯示留言
                             post.showComments = true;
-
                             alert('留言發表成功！');
                         } else {
-                            throw new Error(data.userMessage || '發表留言失敗');
+                            throw new Error(data.message || '發表留言失敗');
                         }
                     } else {
-                        const errorData = await response.json().catch(() => ({}));
-
-                        throw new Error(errorData.userMessage || `HTTP錯誤: ${response.status}`);
+                        const errorText = await response.text();
+                        throw new Error(`HTTP錯誤 ${response.status}: ${errorText}`);
                     }
                 } catch (err) {
-                    console.error('提交留言時發生錯誤:', err);
-                    if (err.message.includes('已用於其他轉票')) {
-                        alert('您選擇的票券已用於其他換票貼文，請選擇其他票券');
-                    } else if (err.message.includes('同一活動')) {
-                        alert('只能交換同一活動的票券，請確認您的選擇');
-                    } else {
-                        alert(`發表失敗：${err.message || '請稍後再試'}`);
-                    }
+                    console.error('提交留言錯誤:', err);
+                    alert(`發表失敗：${err.message}`);
                 } finally {
                     post.commentSubmitting = false;
                 }
@@ -654,13 +645,25 @@ function initTicketExchangeVueApp() {
 
             // 驗證留言表單
             const validateCommentForm = (commentForm) => {
-                if (!commentForm.ticketId) {
+
+                if (!commentForm) {
+                    alert('表單對象不存在');
+                    return false;
+                }
+
+                if (!commentForm.ticketId || commentForm.ticketId === '' || commentForm.ticketId === 0) {
                     alert('請選擇您要交換的票券');
                     return false;
                 }
 
-                if (!commentForm.description.trim()) {
+                if (!commentForm.description || String(commentForm.description).trim() === '') {
                     alert('請輸入留言內容');
+                    return false;
+                }
+
+                const ticketId = parseInt(commentForm.ticketId);
+                if (isNaN(ticketId) || ticketId <= 0) {
+                    alert('票券ID格式錯誤');
                     return false;
                 }
 
