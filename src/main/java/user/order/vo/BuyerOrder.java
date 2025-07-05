@@ -1,0 +1,47 @@
+package user.order.vo;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.Data;
+
+@Entity
+@Data
+@Table(name = "buyer_order")
+public class BuyerOrder {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "order_id")
+	private Integer orderId;
+
+	@Column(name = "event_id")
+	private Integer eventId;
+
+	@Column(name = "member_id")
+	private Integer memberId;
+
+	@Column(name = "order_time", nullable = false)
+	private LocalDateTime orderTime;
+
+	@Column(name = "is_paid")
+	private Boolean isPaid;
+
+	@Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
+	private BigDecimal totalAmount;
+
+	@Column(name = "order_status", nullable = false, length = 50)
+	private String orderStatus;
+
+	@Column(name = "create_time", nullable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+	private LocalDateTime createTime;
+
+	@Column(name = "update_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	private LocalDateTime updateTime;
+}

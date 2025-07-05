@@ -1,4 +1,4 @@
-package user.buy.vo;
+package manager.event.vo;
 
 import java.sql.Timestamp;
 
@@ -10,50 +10,66 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-@Entity
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity(name = "MngEventInfo")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "event_info")
-public class EventInfo {
+public class MngEventInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "event_id")
+	@Column(name = "event_id", insertable = false)
 	private int eventId;
+
 	@Column(name = "event_name")
 	private String eventName;
+
 	@Column(name = "event_from_date")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Timestamp eventFromDate;
+
 	@Column(name = "event_to_date")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Timestamp eventToDate;
+
 	@Column(name = "event_host")
 	private String eventHost;
+
 	@Column(name = "total_capacity")
 	private int totalCapacity;
+
 	private String place;
+
 	private String summary;
+
 	private String detail;
-	@Column(name = "is_posted")
+
+	@Column(name = "is_posted", insertable = false)
 	private int isPosted;
+
 	@Column(name = "image_dir")
 	private String imageDir;
+
 	@Lob
 	@Column(name = "image")
 	private byte[] image;
+
 	@Column(name = "keyword_id")
 	private int keywordId;
+
 	@Column(name = "member_id")
 	private int memberId;
-	@Column(name = "create_time")
-	private Timestamp createTime;
-	@Column(name = "update_time")
-	private Timestamp updateTime;
-	
-	
 
-	public EventInfo createevent(EventInfo eventInfo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	@Column(name = "create_time", insertable = false)
+	private Timestamp createTime;
+
+	@Column(name = "update_time", insertable = false)
+	private Timestamp updateTime;
 
 }
