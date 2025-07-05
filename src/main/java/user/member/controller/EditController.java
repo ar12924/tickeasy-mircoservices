@@ -40,23 +40,24 @@ public class EditController {
 	}
 
 	// 驗證舊密碼
-	@GetMapping("{password}")
-	public Core<Void> checkPassword(@PathVariable String password, @SessionAttribute(required = false) Member member) {
-		Core<Void> core = new Core<>();
-		if (member == null) {
-			core.setMessage("無會員資訊");
-			core.setSuccessful(false);
-		} else {
-			final String currentPassword = member.getPassword();
-			if (Objects.equals(password, currentPassword)) {
-				core.setSuccessful(true);
-			} else {
-				core.setMessage("舊密碼錯誤");
-				core.setSuccessful(false);
-			}
-		}
-		return core;
-	}
+	// @GetMapping("{password}")
+	// public Core<Void> checkPassword(@PathVariable String password, @SessionAttribute(required = false) Member member) {
+	// 	Core<Void> core = new Core<>();
+	// 	if (member == null) {
+	// 		core.setMessage("無會員資訊");
+	// 		core.setSuccessful(false);
+	// 	} else {
+	// 		final String currentPassword = member.getPassword();
+	// 		if (Objects.equals(password, currentPassword)) {
+	// 			core.setSuccessful(true);
+	// 		} else {
+	// 			core.setMessage("舊密碼錯誤");
+	// 			core.setSuccessful(false);
+	// 		}
+	// 	}
+	// 	return core;
+	// }
+
 
 	// 修改會員資料（支援大頭貼上傳）
 	@PutMapping(consumes = {"multipart/form-data"})

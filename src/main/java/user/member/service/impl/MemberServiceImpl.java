@@ -127,6 +127,7 @@ public class MemberServiceImpl implements MemberService {
 		// 1. 寫入 member，
 		try {
 			memberDao.insert(member);
+			
 			// 2. 產生 token驗證、與Member關聯
 			String tokenName = UUID.randomUUID().toString();
 			VerificationToken token = new VerificationToken();
@@ -144,9 +145,14 @@ public class MemberServiceImpl implements MemberService {
 
 		} catch (Exception e) {
 			// DAO失敗rollback交易、mailService失敗也rollback資料
-			e.printStackTrace();
+			System.err.println("註冊過程中發生錯誤: " + e.getMessage());
+			
 			member.setSuccessful(false);
-			member.setMessage("註冊成功，但驗證信寄送失敗，請稍後聯絡客服");
+			if (e.getMessage() != null && e.getMessage().contains("郵件發送失敗")) {
+				member.setMessage("註冊成功，但驗證信寄送失敗，請稍後聯絡客服或重新發送驗證信");
+			} else {
+				member.setMessage("註冊失敗: " + e.getMessage());
+			}
 		}
 		return member;
 	}
@@ -270,8 +276,8 @@ public class MemberServiceImpl implements MemberService {
 
 	@Transactional
 	@Override
-	public List<Member> getAll() {
-		return memberDao.listAll();
+	public Member getByEmail(String email) {
+		return memberDao.findByEmail(email);
 	}
 
 	@Transactional
@@ -290,8 +296,6 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional
 	@Override
 	public boolean activateMemberByToken(String tokenName) {
-		System.out.println("開始驗證 token: " + tokenName);
-
 		// 1. 會員點連結過來字串
 		VerificationToken token = verifyDao.findByToken(tokenName);
 		// 2. 檢查：驗證是否存在、未過期、且類型為EMAIL_VERIFY
@@ -331,4 +335,13 @@ public class MemberServiceImpl implements MemberService {
         return false;
     }
 }
+
+	// 提供給控制器使用的方法
+	public VerificationDao getVerificationDao() {
+		return verifyDao;
+	}
+	
+	public MailService getMailService() {
+		return mailService;
+	}
 }
