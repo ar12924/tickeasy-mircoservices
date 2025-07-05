@@ -1,6 +1,7 @@
 package user.ticket.dao.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class SwapCommentDaoImpl implements SwapCommentDao {
     @Override
     public SwapCommentVO saveSwapComment(Integer postId, Integer memberId, Integer ticketId, String description) {
         SwapCommentVO swapComment = new SwapCommentVO();
-        LocalDateTime now = LocalDateTime.now();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         swapComment.setPostId(postId);
         swapComment.setCommentMemberId(memberId);
         swapComment.setCommentTicketId(ticketId);
@@ -64,9 +65,9 @@ public class SwapCommentDaoImpl implements SwapCommentDao {
         if (comment != null) {
             comment.setSwappedStatus(status);
             if (status == 2) { // 已完成
-                comment.setSwappedTime(LocalDateTime.now());
+            	comment.setSwappedTime(new Timestamp(System.currentTimeMillis()));
             }
-            comment.setUpdateTime(LocalDateTime.now());
+            comment.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             session.merge(comment);
             return true;
         }
@@ -148,7 +149,7 @@ public class SwapCommentDaoImpl implements SwapCommentDao {
 
     @Override
     public Member getMemberById(Integer memberId) {
-        String hql = "FROM MemberVO m WHERE m.memberId = :memberId";
+        String hql = "FROM Member m WHERE m.memberId = :memberId";
         List<Member> results = session
                 .createQuery(hql, Member.class)
                 .setParameter("memberId", memberId)

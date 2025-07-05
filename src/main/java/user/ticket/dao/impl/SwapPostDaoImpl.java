@@ -1,6 +1,7 @@
 package user.ticket.dao.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class SwapPostDaoImpl implements SwapPostDao {
     @Override
     public SwapPostVO saveSwapPost(Integer memberId, Integer ticketId, String description, Integer eventId) {
         SwapPostVO swapPost = new SwapPostVO();
-        LocalDateTime now = LocalDateTime.now();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         swapPost.setPostMemberId(memberId);
         swapPost.setPostTicketId(ticketId);
         swapPost.setPostDescription(description);
@@ -64,7 +65,7 @@ public class SwapPostDaoImpl implements SwapPostDao {
         SwapPostVO swapPost = session.get(SwapPostVO.class, postId);
         if (swapPost != null) {
             swapPost.setPostDescription(description);
-            swapPost.setUpdateTime(LocalDateTime.now());
+            swapPost.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             session.merge(swapPost);
         }
         return null;

@@ -1,5 +1,6 @@
 package user.ticket.dao.impl;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class BuyerTicketDaoImpl implements BuyerTicketDao {
             String hql = "UPDATE BuyerTicketVO bt SET bt.currentHolderMemberId = :newOwnerId, bt.updateTime = :updateTime WHERE bt.ticketId = :ticketId";
             int updatedRows = session.createQuery(hql)
                     .setParameter("newOwnerId", newOwnerId)
-                    .setParameter("updateTime", LocalDateTime.now())
+                    .setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
                     .setParameter("ticketId", ticketId)
                     .executeUpdate();
             return updatedRows > 0;
@@ -88,5 +89,20 @@ public class BuyerTicketDaoImpl implements BuyerTicketDao {
                 .setParameter("ticketId", ticketId)
                 .getResultList();
         return results.isEmpty() ? null : results.get(0);
+    }
+    
+    @Override
+    public List<BuyerTicketVO> getTicketsByMemberIdAndEventId(Integer memberId, Integer eventId) {
+    	String sql = "SELECT bt.* FROM buyer_ticket bt " +
+                "JOIN buyer_order bo ON bt.order_id = bo.order_id " +
+                "WHERE bt.current_holder_member_id = ? " +
+                "AND bo.event_id = ? " +
+                "AND bt.is_used = 0 " +
+                "ORDER BY bt.ticket_id DESC";
+    
+    	return session.createNativeQuery(sql, BuyerTicketVO.class)
+            .setParameter(1, memberId)
+            .setParameter(2, eventId)
+            .getResultList();
     }
 }
