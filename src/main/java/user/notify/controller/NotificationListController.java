@@ -2,6 +2,8 @@ package user.notify.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import user.member.vo.Member;
 import user.notify.service.NotificationService;
 import user.notify.vo.Notification;
+import user.notify.websocket.NotifyWebSocketHandler;
 
 
 
@@ -29,6 +32,9 @@ public class NotificationListController{
 	@Autowired
 	private NotificationService notificationService;
 	
+	@Autowired
+    private NotifyWebSocketHandler notifyWebSocketHandler;
+	
 	@GetMapping("check-login")
     @ResponseBody
     public boolean checkLoginStatus(@SessionAttribute(required = false) Member member) {
@@ -39,7 +45,7 @@ public class NotificationListController{
 	@PostMapping("notification-list")
 	@ResponseBody
 	public List<Notification> notificationList(
-			/* @RequestBody Member member */ @SessionAttribute  (required = false) Member member) {
+			/*@RequestBody Member member*/ @SessionAttribute  (required = false) Member member) {
 		
     	if (member == null || member.getMemberId() == null) {
             System.out.println("未登入");
@@ -47,7 +53,6 @@ public class NotificationListController{
             }
     	Integer memId=member.getMemberId();
 		List<Notification> notifications = notificationService.notificationList(memId);
-		
 		
 		return notifications;
 		
