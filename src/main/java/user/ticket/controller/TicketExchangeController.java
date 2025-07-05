@@ -91,7 +91,7 @@ public class TicketExchangeController {
      * 創建換票留言
      */
     @PostMapping("/comments")
-    public ResponseEntity<Map<String, Object>> createSwapComment(@RequestBody Map<String, Object> requestData, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> createSwapComment(@RequestBody Map<String, Object> requestData, HttpSession session) {       
     	try {
             Integer memberId = getMemberIdFromSession(session);
             if (memberId == null) {
@@ -112,7 +112,7 @@ public class TicketExchangeController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(buildErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(buildErrorResponse("系統錯誤"));
+        	return ResponseEntity.internalServerError().body(buildErrorResponse("系統錯誤"));
         }
 	}
 

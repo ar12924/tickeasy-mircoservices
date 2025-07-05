@@ -14,8 +14,8 @@ import user.member.vo.Member;
 import user.ticket.vo.SwapCommentVO;
 import user.ticket.vo.SwapPostVO;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -301,12 +301,13 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 	 */
 	private String calculateRelativeTime(String createTimeStr) {
 		try {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-			LocalDateTime createTime = LocalDateTime.parse(createTimeStr, formatter);
-			LocalDateTime now = LocalDateTime.now();
-
-			long hours = java.time.Duration.between(createTime, now).toHours();
-			long days = java.time.Duration.between(createTime, now).toDays();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	        Date createTime = formatter.parse(createTimeStr);
+	        Date now = new Date();
+	        
+	        long diffInMillis = now.getTime() - createTime.getTime();
+	        long hours = diffInMillis / (60 * 60 * 1000);
+	        long days = diffInMillis / (24 * 60 * 60 * 1000);
 
 			if (hours < 1) {
 				return "剛剛";
@@ -350,7 +351,7 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 
 		postInfo.put("postId", post.getPostId());
 		postInfo.put("postDescription", post.getPostDescription());
-		postInfo.put("createTime", post.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		postInfo.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(post.getCreateTime()));
 
 		// 查詢會員資訊
 		Member member = swapPostDao.getMemberById(post.getPostMemberId());
@@ -403,11 +404,11 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 		commentInfo.put("commentDescription", comment.getCommentDescription());
 		commentInfo.put("swappedStatus", comment.getSwappedStatus());
 		commentInfo.put("createTime",
-				comment.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(comment.getCreateTime()));
 
 		if (comment.getSwappedTime() != null) {
 			commentInfo.put("swappedTime",
-					comment.getSwappedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(comment.getSwappedTime()));
 		}
 
 		// 查詢會員資訊
@@ -565,6 +566,46 @@ public class TicketExchangeServiceImpl implements TicketExchangeService {
 	    }
 
 	    List<BuyerTicketVO> tickets = buyerTicketDao.getTicketsByMemberId(memberId);
+	    List<Map<String, Object>> result = new ArrayList<>();
+	    
+	    for (BuyerTicketVO ticket : tickets) {
+	        Map<String, Object> ticketInfo = new HashMap<>();
+	        ticketInfo.put("ticketId", ticket.getTicketId());
+	        ticketInfo.put("participantName", ticket.getParticipantName());
+	        ticketInfo.put("eventName", ticket.getEventName());
+	        ticketInfo.put("price", ticket.getPrice());
+	        
+	        ticketInfo.put("createTime", ticket.getCreateTime());
+	        ticketInfo.put("orderId", ticket.getOrderId());
+	        
+	        if (ticket.getTypeId() != null) {
+	            try {
+	                EventTicketTypeVO ticketType = swapPostDao.getEventTicketTypeById(ticket.getTypeId());
+	                if (ticketType != null) {
+	                    ticketInfo.put("categoryName", ticketType.getCategoryName());
+	                }
+	            } catch (Exception e) {
+	                ticketInfo.put("categoryName", "未知票種");
+	            }
+	        }
+	        
+	        result.add(ticketInfo);
+	    }
+
+	    return result;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> getUserTicketsByEvent(Integer memberId, Integer eventId) {
+	    if (memberId == null || memberId <= 0) {
+	        throw new IllegalArgumentException("會員ID不能為空或小於等於0");
+	    }
+	    if (eventId == null || eventId <= 0) {
+	        throw new IllegalArgumentException("活動ID不能為空或小於等於0");
+	    }
+
+	    List<BuyerTicketVO> tickets = buyerTicketDao.getTicketsByMemberIdAndEventId(memberId, eventId);
 	    List<Map<String, Object>> result = new ArrayList<>();
 	    
 	    for (BuyerTicketVO ticket : tickets) {
