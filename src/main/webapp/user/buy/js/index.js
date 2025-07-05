@@ -94,7 +94,7 @@ const initIndexJSEvents = () => {
   await renderNav(navTemplate);
   initNavJSEvents();
 
-  // ====== hot-event 部分 ======
+  // ====== 熱門活動部分 ======
   const eventTemplate = await fetchEventInfoTemplate();
   await renderRecentEventBox(eventTemplate, recentEvent);
 
