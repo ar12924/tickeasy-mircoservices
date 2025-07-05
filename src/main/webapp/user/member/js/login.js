@@ -1,3 +1,5 @@
+import { getContextPath } from "../../common/utils.js";
+
 const username = document.querySelector("#username");
 const password = document.querySelector("#password");
 const remember = document.querySelector("#rememberMe"); // 「記住我」checkbox
@@ -20,7 +22,9 @@ loginBtn.addEventListener("click", () => {
   }
 
   // 僅用 GET 方式
-  fetch(`login/${username.value}/${password.value}`)
+  fetch(
+    `${getContextPath()}/user/member/login/${username.value}/${password.value}`
+  )
     .then((resp) => resp.json())
     .then((body) => {
       if (body.successful) {
@@ -38,25 +42,23 @@ loginBtn.addEventListener("click", () => {
         const avatar = document.getElementById("avatarPreview");
         if (avatar && memberData.memberId) {
           const memberId = memberData.memberId;
-          avatar.src = `/maven-tickeasy-v1/api/member-photos/${memberId}`;
+          avatar.src = `${getContextPath()}/api/member-photos/${memberId}`;
           avatar.style.display = "block";
         }
         // 分角色導向
         const role = memberData.roleLevel;
         if (parseInt(role) === 2 || parseInt(role) === 3) {
           alert("登入成功！您的角色是活動方，即將跳轉到活動儀表板。");
-          window.location.href =
-            "/maven-tickeasy-v1/manager/eventdetail/dashboard.html";
+          window.location.href = `${getContextPath()}/manager/eventdetail/dashboard.html`;
         } else {
           alert("登入成功！即將跳轉到首頁。");
-          window.location.href = "/maven-tickeasy-v1/user/buy/index.html";
+          window.location.href = `${getContextPath()}/user/buy/index.html`;
         }
       } else {
         // 新增：查無會員時導向註冊
         if (body.message && body.message.includes("使用者名稱或密碼錯誤")) {
           if (confirm("查無此會員，是否前往註冊？")) {
-            window.location.href =
-              "/maven-tickeasy-v1/user/member/register.html";
+            window.location.href = `${getContextPath()}/user/member/register.html`;
             return;
           }
         }
