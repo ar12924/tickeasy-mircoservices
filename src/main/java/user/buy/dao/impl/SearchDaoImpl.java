@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import user.buy.dao.SearchDao;
 import user.buy.vo.EventInfo;
+import user.buy.vo.Favorite;
 import user.buy.vo.KeywordCategory;
 
 @Repository
@@ -19,6 +20,7 @@ public class SearchDaoImpl implements SearchDao {
 
     /**
      * 查詢 n 筆活動資料。
+     *
      * @param {Integer} n - 筆數
      * @return List<EventInfo> n 筆活動資料。
      */
@@ -31,6 +33,23 @@ public class SearchDaoImpl implements SearchDao {
     	Query<EventInfo> query = session.createQuery(hql, EventInfo.class)
     			.setFirstResult(0) // 略過筆數
     			.setMaxResults(n); // 顯示筆數
+    	return query.getResultList();
+	}
+    
+    /**
+     * 透過 memberId 查詢我的關注。
+     *
+     * @param {Integer} memberId - 會員 id。
+     * @return List<Favorite> n 筆活動資料。
+     */
+    @Override
+	public List<Favorite> selectFavoriteByMemberId(Integer memberId) {
+    	// 1. HQL 語句
+    	var hql = "FROM Favorite WHERE memberId = :memberId";
+    	
+    	// 2. 查詢
+    	Query<Favorite> query = session.createQuery(hql, Favorite.class);
+    	query.setParameter("memberId", memberId);
     	return query.getResultList();
 	}
     
