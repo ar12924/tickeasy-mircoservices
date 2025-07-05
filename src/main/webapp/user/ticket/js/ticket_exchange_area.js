@@ -827,12 +827,6 @@ function initTicketExchangeVueApp() {
                 }
             };
 
-            const goToTicketPrice = () => {
-                if (eventId.value) {
-                    window.location.href = `../buy/event_ticket_purchase.html?eventId=${eventId.value}#price`;
-                }
-            };
-
             //  改良後的票券顯示格式
             const formatTicketDisplay = (ticket) => {
                 const purchaseDate = ticket.createTime ?
@@ -957,7 +951,6 @@ function initTicketExchangeVueApp() {
                 goToLogin,
                 goBackToEvent,
                 goToEventInfo,
-                goToTicketPrice,
                 formatTicketDisplay,
                 isTicketUsedInExchange,
                 getTicketStatus,

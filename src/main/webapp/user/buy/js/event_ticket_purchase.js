@@ -16,16 +16,16 @@ async function initializeApp() {
         // 先載入共用組件
         console.log('開始載入共用組件...');
         const navTemplate = await fetchNavTemplate();
-        renderNav(navTemplate); 
+        renderNav(navTemplate);
         console.log('導覽列載入完成');
-        
+
         const footerTemplate = await fetchFooterTemplate();
-        renderFooter(footerTemplate); 
+        renderFooter(footerTemplate);
         console.log('頁腳載入完成');
-        
+
         initNavJSEvents();
         console.log('導覽列事件綁定完成');
-        
+
     } catch (error) {
         console.error('載入共用組件時發生錯誤:', error);
         // 即使共用組件載入失敗，也要繼續載入主要功能
@@ -361,6 +361,14 @@ function initVueApp() {
             goToTicketExchange() {
                 if (this.eventId) {
                     window.location.href = `../ticket/ticket_exchange_area.html?eventId=${this.eventId}`;
+                }
+            },
+
+            // 導航回活動資訊頁面
+            goToEventInfo() {
+                if (this.eventId) {
+                    // window.location.href = `../event/event_ticket_purchase.html?eventId=${this.eventId}`;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             }
         },
