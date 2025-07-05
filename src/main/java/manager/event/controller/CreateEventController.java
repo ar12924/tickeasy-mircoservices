@@ -1,7 +1,5 @@
 package manager.event.controller;
 
-import java.util.Collections;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +18,8 @@ public class CreateEventController {
 
 
 	@PostMapping
-	public Core<MngEventInfo> createEvent(@RequestBody(required = false) MngEventInfo mngEventInfo) {
-		Core<MngEventInfo> core = new Core<>();
+	public Core<Integer> createEvent(@RequestBody(required = false) MngEventInfo mngEventInfo) {
+		Core<Integer> core = new Core<>();
 		if (mngEventInfo == null) {
 			core.setSuccessful(false);
 			core.setMessage("未提供任何事件資訊");
@@ -34,7 +32,7 @@ public class CreateEventController {
 		core.setSuccessful(true);
 		core.setMessage("建立成功");
 		core.setCount(1L);
-		core.setData((MngEventInfo)Collections.singletonList(result));
+		core.setData(result);
 		return core;
 	}
 }
