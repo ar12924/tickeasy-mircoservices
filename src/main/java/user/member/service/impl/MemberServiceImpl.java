@@ -91,21 +91,21 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		String unicode = member.getUnicode();
-		if (unicode != null && !unicode.matches(UNICODE_PATTERN)) {
+		if (unicode != null && !unicode.trim().isEmpty() && !unicode.matches(UNICODE_PATTERN)) {
 			member.setMessage("統一編號格式錯誤，應為 8 碼數字");
 			member.setSuccessful(false);
 			return member;
 		}
 
 		String idCard = member.getIdCard();
-		if (idCard != null && !idCard.matches(ID_PATTERN)) {
+		if (idCard != null && !idCard.trim().isEmpty() && !idCard.matches(ID_PATTERN)) {
 			member.setMessage("身分證開頭應為英文字母");
 			member.setSuccessful(false);
 			return member;
 		}
 
 		String email = member.getEmail();
-		if (email != null && !email.matches(EMAIL_PATTERN)) {
+		if (email != null && !email.trim().isEmpty() && !email.matches(EMAIL_PATTERN)) {
 			member.setMessage("電子郵件格式錯誤");
 			member.setSuccessful(false);
 			return member;
@@ -180,14 +180,14 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		String unicode = member.getUnicode();
-		if (unicode != null && !unicode.matches(UNICODE_PATTERN)) {
+		if (unicode != null && !unicode.trim().isEmpty() && !unicode.matches(UNICODE_PATTERN)) {
 			member.setMessage("統一編號格式錯誤，應為 8 碼數字");
 			member.setSuccessful(false);
 			return member;
 		}
 
 		String email = member.getEmail();
-		if (email != null && !email.matches(EMAIL_PATTERN)) {
+		if (email != null && !email.trim().isEmpty() && !email.matches(EMAIL_PATTERN)) {
 			member.setMessage("電子郵件格式錯誤");
 			member.setSuccessful(false);
 			return member;
@@ -195,6 +195,7 @@ public class MemberServiceImpl implements MemberService {
 
 		try {
 			boolean updated = memberDao.update(member);
+			
 			if (updated) {
 				member.setSuccessful(true);
 				member.setMessage("更新成功");
