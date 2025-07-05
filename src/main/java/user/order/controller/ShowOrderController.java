@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import common.vo.Core;
 import user.order.service.ShowOrderService;
-import user.order.vo.BuyerOrder;
+import user.order.vo.BuyerOrderDC;
 
 @RestController
 @RequestMapping("/user/orders")
@@ -23,7 +23,7 @@ public class ShowOrderController {
 	
 	@GetMapping
 	public <T> Core<T> showAllEvents() {
-		List<BuyerOrder> orders = showOrderService.ShowOrders();
+		List<BuyerOrderDC> orders = showOrderService.ShowOrders();
 
 		if (orders == null || orders.isEmpty()) {
 			Core<T> core = new Core<T>();

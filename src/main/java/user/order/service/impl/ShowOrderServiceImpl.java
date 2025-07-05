@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import user.order.dao.ShowOrderDao;
 import user.order.service.ShowOrderService;
-import user.order.vo.BuyerOrder;
+import user.order.vo.BuyerOrderDC;
 
 @Service
 public class ShowOrderServiceImpl implements ShowOrderService {
@@ -16,7 +16,7 @@ public class ShowOrderServiceImpl implements ShowOrderService {
 	private ShowOrderDao showOrderDao;
 
 	@Override
-	public List<BuyerOrder> ShowOrders() {
+	public List<BuyerOrderDC> ShowOrders() {
 		return showOrderDao.findAllOrders();
 	}
 

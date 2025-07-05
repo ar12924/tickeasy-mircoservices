@@ -1,6 +1,5 @@
 package manager.event.controller;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +41,13 @@ public class ShowEventController {
 	        core.setMessage("找不到活動資料");
 	        core.setData(null);
 	        core.setCount(0L);
-	        return core;
 	    } else {
 	        core.setSuccessful(true);
 	        core.setMessage("查詢成功");
-	        core.setData(Collections.singletonList(mngEventInfo));
+	        core.setData(mngEventInfo);
 	        core.setCount(1L);
-	        return core;
 	    }
+	    return core;
 	}
 
 }

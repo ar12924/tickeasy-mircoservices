@@ -1,7 +1,7 @@
 package user.order.vo;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,12 +10,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "BuyerOrderDC")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "buyer_order")
-public class BuyerOrder {
+public class BuyerOrderDC {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id")
@@ -28,7 +32,7 @@ public class BuyerOrder {
 	private Integer memberId;
 
 	@Column(name = "order_time", nullable = false)
-	private LocalDateTime orderTime;
+	private Timestamp orderTime;
 
 	@Column(name = "is_paid")
 	private Boolean isPaid;
@@ -40,8 +44,8 @@ public class BuyerOrder {
 	private String orderStatus;
 
 	@Column(name = "create_time", nullable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-	private LocalDateTime createTime;
+	private Timestamp createTime;
 
 	@Column(name = "update_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-	private LocalDateTime updateTime;
+	private Timestamp updateTime;
 }
