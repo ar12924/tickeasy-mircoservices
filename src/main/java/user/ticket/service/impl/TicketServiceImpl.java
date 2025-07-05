@@ -58,7 +58,7 @@ public class TicketServiceImpl implements TicketService{
 			
 			
 			//狀態轉換邏輯
-			if(ticket.getStatus()==1) {
+			if(ticket.getStatus() != null && ticket.getStatus()==1) {
 				dto.setStatusText("已付款");
 			}else {
 				dto.setStatusText("未付款");
