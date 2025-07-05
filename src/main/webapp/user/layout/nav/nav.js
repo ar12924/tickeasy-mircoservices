@@ -1,5 +1,5 @@
 // ==================== import all ====================
-import { getContextPath } from "../../common/utils.js";
+import { fetchMemberFromSession, getContextPath } from "../../common/utils.js";
 
 // ==================== 1. UI 渲染層 (UI Rendering Layer) ====================
 // 這些函數負責動態生成或更新 HTML 內容。
@@ -17,7 +17,7 @@ export const fetchNavTemplate = async () => {
  * 動態生成並插入導覽列的 HTML。
  * @param {string} templateHTML - HTML模板。
  */
-export const renderNav = (templateHTML) => {
+export const renderNav = async (templateHTML) => {
   const $template = $(templateHTML);
 
   // 抓取每個按鈕
@@ -41,22 +41,30 @@ export const renderNav = (templateHTML) => {
     .attr("href", `${getContextPath()}/user/member/edit.html`);
 
   // 判斷會員是否登入？(且 roleLevel == 1)
-  const memberId = sessionStorage.getItem("memberId");
-  const roleLevel = sessionStorage.getItem("roleLevel");
-  console.log(`member id: ${memberId}`);
-  console.log(`role level: ${roleLevel}`);
-  if (memberId && roleLevel === "1") {
-    // 已登入
-    $registerBtn.addClass("is-hidden");
-    $loginBtn.addClass("is-hidden");
-    $orderBtn.removeClass("is-hidden");
-    $concernBtn.removeClass("is-hidden");
-    $ticketBtn.removeClass("is-hidden");
-    $notifyBtn.removeClass("is-hidden");
-    $userBtn.removeClass("is-hidden");
-    $userBtn
-      .find(".user-name")
-      .text(sessionStorage.getItem("loggedInNickname")); // 添加 userName
+  const identifyCore = await fetchMemberFromSession();
+  const isLoggedIn = identifyCore.successful;
+  if (isLoggedIn) {
+    const sessionMember = identifyCore.data;
+    if (sessionMember.roleLevel === 1) {
+      // 已登入
+      $registerBtn.addClass("is-hidden");
+      $loginBtn.addClass("is-hidden");
+      $orderBtn.removeClass("is-hidden");
+      $concernBtn.removeClass("is-hidden");
+      $ticketBtn.removeClass("is-hidden");
+      $notifyBtn.removeClass("is-hidden");
+      $userBtn.removeClass("is-hidden");
+      $userBtn.find(".user-name").text(sessionMember.nickName); // 添加 userName
+    } else {
+      // 非使用者權限
+      $registerBtn.removeClass("is-hidden");
+      $loginBtn.removeClass("is-hidden");
+      $orderBtn.addClass("is-hidden");
+      $concernBtn.addClass("is-hidden");
+      $ticketBtn.addClass("is-hidden");
+      $notifyBtn.addClass("is-hidden");
+      $userBtn.addClass("is-hidden");
+    }
   } else {
     // 未登入
     $registerBtn.removeClass("is-hidden");
@@ -83,13 +91,13 @@ export const initNavJSEvents = () => {
 
   // "使用者名稱" 下拉選單
   $(".dropdown").on("click", () => {
+    console.log("hahahaha");
     $(".dropdown").toggleClass("is-active");
   });
 
   // "登出" 按鈕點擊
-  $(".logout").on("click", (e) => {
-    e.preventDefault();
-    sessionStorage.clear();
+  $(".logout").on("click", async () => {
+    const resp = await fetch(`${getContextPath()}/common/logout`);
     location.reload();
   });
 

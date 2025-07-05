@@ -57,16 +57,13 @@ const initIndexJSEvents = () => {
   $(".favorite-btn").each((i, btn) => {
     const $btn = $(btn);
     $btn.on("click", (e) => {
-      console.log("進入關注按鈕...");
       const $icon = $btn.find("i");
       if ($icon.hasClass("far")) {
-        console.log("按下關注....");
         $icon.removeClass("far");
         $icon.addClass("fas");
         $btn.css("background", "#ff6b9d");
         $btn.css("color", "white");
       } else {
-        console.log("解除關注....");
         $icon.removeClass("fas");
         $icon.addClass("far");
         $btn.css("background", "white");
@@ -94,7 +91,7 @@ const initIndexJSEvents = () => {
 
   // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
-  renderNav(navTemplate);
+  await renderNav(navTemplate);
   initNavJSEvents();
 
   // ====== hot-event 部分 ======
