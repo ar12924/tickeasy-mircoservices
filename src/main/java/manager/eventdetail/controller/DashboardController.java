@@ -24,7 +24,7 @@ public class DashboardController {
     private EventInfoVOService eventInfoVOService;
 
     @GetMapping
-    public Core<?> dashboard(
+    public Core<Object> dashboard(
             @RequestParam(value = "eventId", required = false) String eventIdStr,
             @RequestParam(value = "memberId", required = false) String memberIdStr,
             HttpSession session) {
@@ -57,7 +57,7 @@ public class DashboardController {
         }
     }
 
-    private Core<?> handleEventsList(String memberIdStr, Integer loginMemberId) {
+    private Core<Object> handleEventsList(String memberIdStr, Integer loginMemberId) {
         Core<Object> core = new Core<>();
         Integer memberId;
         try {
@@ -84,7 +84,7 @@ public class DashboardController {
         return core;
     }
 
-    private Core<?> handleDashboardData(String eventIdStr, Integer loginMemberId) {
+    private Core<Object> handleDashboardData(String eventIdStr, Integer loginMemberId) {
         Core<Object> core = new Core<>();
         Integer eventId;
         try {

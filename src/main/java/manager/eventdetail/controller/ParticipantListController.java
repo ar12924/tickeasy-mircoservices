@@ -34,7 +34,7 @@ public class ParticipantListController {
     private EventInfoVOService eventInfoVOService;
 
     @GetMapping
-    public Core<?> participants(
+    public Core<Object> participants(
             @RequestParam(value = "eventId", required = false) String eventIdStr,
             @RequestParam(value = "memberId", required = false) String memberIdStr,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -76,7 +76,7 @@ public class ParticipantListController {
         }
     }
 
-    private Core<?> handleEventsList(Integer loginMemberId) {
+    private Core<Object> handleEventsList(Integer loginMemberId) {
         Core<Object> core = new Core<>();
         List<EventInfoEventVer> events = eventInfoVOService.getEventsByMemberId(loginMemberId);
         if (events == null) {
@@ -90,7 +90,7 @@ public class ParticipantListController {
         return core;
     }
 
-    private Core<?> handleParticipantsList(String eventIdStr, Integer pageNumber, Integer pageSize, String participantName, String email, String phone, Integer status, Integer ticketTypeId, Integer isUsed, Integer loginMemberId) {
+    private Core<Object> handleParticipantsList(String eventIdStr, Integer pageNumber, Integer pageSize, String participantName, String email, String phone, Integer status, Integer ticketTypeId, Integer isUsed, Integer loginMemberId) {
         Core<Object> core = new Core<>();
         Integer eventId;
         try {

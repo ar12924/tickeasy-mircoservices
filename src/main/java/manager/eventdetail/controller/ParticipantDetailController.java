@@ -28,7 +28,7 @@ public class ParticipantDetailController {
     private ParticipantService participantService;
 
     @GetMapping("/{ticketId}")
-    public Core<?> getParticipantDetail(@PathVariable Integer ticketId) {
+    public Core<Object> getParticipantDetail(@PathVariable Integer ticketId) {
         Core<Object> core = new Core<>();
         if (ticketId == null) {
             core.setSuccessful(false);
