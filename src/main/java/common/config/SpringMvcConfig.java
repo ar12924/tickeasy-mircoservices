@@ -20,7 +20,7 @@ import java.util.List;
 // 驅動 Spring-MVC 功能
 @EnableWebMvc
 // 掃描 Controller 元件
-@ComponentScan("*.*.controller")
+@ComponentScan(basePackages = { "*.controller", "*.*.controller" })
 public class SpringMvcConfig implements WebMvcConfigurer {
 
 	// 託管 ViewResolver 物件
