@@ -174,6 +174,8 @@ public class BookDaoImpl implements BookDao {
 		ticket.setEventName(eventName);
 		ticket.setTypeId(typeId);
 		ticket.setPrice(price);
+		ticket.setStatus(1);
+		ticket.setQueneId(101);
 
 		// 4. 插入新的一筆訂單
 		session.persist(ticket);
