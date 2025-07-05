@@ -202,9 +202,7 @@ sendVerificationBtn.addEventListener("click", () => {
   sendVerificationBtn.disabled = true;
   fetch("/maven-tickeasy-v1/user/member/edit/send-verify-mail", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ email: em }),
   })
     .then((resp) => resp.json())
     .then((body) => {

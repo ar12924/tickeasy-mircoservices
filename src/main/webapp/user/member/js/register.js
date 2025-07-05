@@ -201,26 +201,21 @@ form.addEventListener("submit", function (e) {
     }
   }
 
-  const payload = {
-    userName: username.value,
-    nickName: nickname.value,
-    email: fullEmail,
-    password: password.value,
-    rePassword: cPassword.value,
-    birthDate: birthDate.value,
-    phone: phone.value,
-    gender: gender.value,
-    idCard: idCard.value,
-    unicode: unicode.value,
-    agree: agree.checked,
-    hostApply: hostApply.checked,
-  };
-
   const fd = new FormData();
-  fd.append(
-    "member",
-    new Blob([JSON.stringify(payload)], { type: "application/json" })
-  );
+  fd.append("userName", username.value);
+  fd.append("nickName", nickname.value);
+  fd.append("email", fullEmail);
+  fd.append("password", password.value);
+  fd.append("rePassword", cPassword.value);
+  fd.append("birthDate", birthDate.value);
+  fd.append("phone", phone.value);
+  fd.append("gender", gender.value);
+  fd.append("idCard", idCard.value);
+  if (unicode.value.trim()) {
+    fd.append("unicode", unicode.value);
+  }
+  fd.append("agree", agree.checked.toString());
+  fd.append("hostApply", hostApply.checked.toString());
   if (photoInput.files[0]) fd.append("photo", photoInput.files[0]);
 
   fetch(form.action, {

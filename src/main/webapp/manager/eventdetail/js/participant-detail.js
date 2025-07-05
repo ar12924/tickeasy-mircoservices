@@ -64,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     })
     .catch((error) => {
-      console.error("獲取詳細資料時出錯:", error);
       detailContentEl.innerHTML = `<div class="alert alert-danger">無法載入資料: ${error.message}</div>`;
     });
 });
