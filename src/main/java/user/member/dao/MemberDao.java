@@ -20,6 +20,4 @@ public interface MemberDao extends CommonDao{
 
 	Member findByPhone(String phone);
 
-	List<Member> listAll();
-
 }
