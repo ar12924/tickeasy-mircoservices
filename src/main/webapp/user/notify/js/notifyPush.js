@@ -1,10 +1,15 @@
 document.addEventListener("DOMContentLoaded", function() {
-	 document.querySelector('main').insertAdjacentHTML("beforeend", `	<div id="notification_box" class="notification_box">
-	       		 	<p id="notification_title">通知內容</p>
-			        <p id="notification_text">這是通知內容</p>
-			        <button onclick="hideNotification()">關閉</button>
-			    </div> `)
+	 htmlNotifyPush();
+	createWebSocket();
 })
+
+function htmlNotifyPush(){
+	document.querySelector('main').insertAdjacentHTML("beforeend", `	<div id="notification_box" class="notification_box">
+		       		 	<p id="notification_title">通知內容</p>
+				        <p id="notification_text">這是通知內容</p>
+				        <button onclick="hideNotification()">關閉</button>
+				    </div> `)
+}
 
 let notificationQueue;
 // 顯示通知函數

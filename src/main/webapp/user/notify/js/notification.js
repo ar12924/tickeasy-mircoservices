@@ -542,7 +542,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				notification_loaded(1);
 				/*showNotification("歡迎來到此頁");*/
 				
-				createWebSocket();
+				/*createWebSocket();*/
 				/*testPush();*/
 	        }
 	    });
