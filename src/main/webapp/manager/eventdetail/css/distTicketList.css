@@ -1,0 +1,110 @@
+
+.page-change{
+    margin-left:10px;
+   
+}
+.change_bar{
+	display:inline-block;
+}
+.event_change{
+	margin-left:650px;
+}
+.list_button{
+    display:inline-block;
+    width:100px;
+    height:30px;
+    align-content: center;
+    text-align: center;
+    background-color: #D9D9D9;
+}
+.list_button.on{
+    background-color: #A39292;
+}
+
+.form-control-lg_ {
+    /* min-height: calc(1.5em + 1rem + calc(var(--bs-border-width) * 2)); */
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+    border-radius: var(--bs-border-radius-lg);
+  }
+  .form-control-lg_::-webkit-file-upload-button {
+    padding: 0.5rem 1rem;
+    margin: -0.5rem -1rem;
+    -webkit-margin-end: 1rem;
+    margin-inline-end: 1rem;
+  }
+  .form-control-lg_::file-selector-button {
+    padding: 0.5rem 1rem;
+    margin: -0.5rem -1rem;
+    -webkit-margin-end: 1rem;
+    margin-inline-end: 1rem;
+  }
+
+.form-control.form-control-lg_.search_type{
+    width:160px;
+    height:30px;
+    font-size: 12px;
+    border: 1px solid darkgray;
+}
+.form-control:focus {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border-color: black !important;
+    outline: 0; 
+    box-shadow: var(--bs-box-shadow-inset), 0 0 0 0.1rem black !important;
+  }
+
+.search_time {
+    display: flex;
+    align-items: center;
+    background-color: #f7f7f7;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .search_time input[type="date"] {
+    border: 1px solid darkgray;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+  }
+  .search_bar{
+    display: inline-block;
+    margin-top:20px;
+    margin-left:20px;
+}
+
+
+
+.title_link{
+	 text-decoration: none;
+	 color:black;
+}
+
+.title_bar{
+	background: #D9D9D9;
+}
+
+.table-footer {
+    margin-top:60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* 可避免小螢幕擠不下時斷行 */
+    gap: 10px;
+  }
+  
+  .table-footer .dataTables_length,
+  .table-footer .dataTables_info,
+  .table-footer .dataTables_paginate {
+    margin: 0;
+  }
+
+  th, td {
+    text-align: center  !important;    /* 水平置中 */
+    vertical-align: middle;  /* 垂直置中 */
+  }
+

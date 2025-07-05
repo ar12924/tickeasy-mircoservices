@@ -1,5 +1,5 @@
 // ==================== import all ====================
-import { getContextPath } from "../../common/utils.js";
+import { fetchMemberFromSession, getContextPath } from "../../common/utils.js";
 
 // ==================== 1. UI 渲染層 (UI Rendering Layer) ====================
 // 這些函數負責動態生成或更新 HTML 內容。
@@ -17,9 +17,67 @@ export const fetchNavTemplate = async () => {
  * 動態生成並插入導覽列的 HTML。
  * @param {string} templateHTML - HTML模板。
  */
-export const renderNav = (templateHTML) => {
-  const templateJQuery = $(templateHTML);
-  $(".navbar").html(templateJQuery);
+export const renderNav = async (templateHTML) => {
+  const $template = $(templateHTML);
+
+  // 抓取每個按鈕
+  const $registerBtn = $template.find(".register");
+  const $loginBtn = $template.find(".login");
+  const $orderBtn = $template.find(".order");
+  const $concernBtn = $template.find(".concern");
+  const $ticketBtn = $template.find(".ticket");
+  const $notifyBtn = $template.find(".notify");
+  const $userBtn = $template.find(".user");
+
+  // 加入 URL 連結
+  $registerBtn.attr("href", `${getContextPath()}/user/member/register.html`);
+  $loginBtn.attr("href", `${getContextPath()}/user/member/login.html`);
+  $orderBtn.attr("href", `${getContextPath()}/111`);
+  $concernBtn.attr("href", `${getContextPath()}/222`);
+  $ticketBtn.attr("href", `${getContextPath()}/333`);
+  $notifyBtn.attr("href", `${getContextPath()}/user/notify/notification.html`);
+  $userBtn
+    .find(".member")
+    .attr("href", `${getContextPath()}/user/member/edit.html`);
+
+  // 判斷會員是否登入？(且 roleLevel == 1)
+  const identifyCore = await fetchMemberFromSession();
+  const isLoggedIn = identifyCore.successful;
+  if (isLoggedIn) {
+    const sessionMember = identifyCore.data;
+    if (sessionMember.roleLevel === 1) {
+      // 已登入
+      $registerBtn.addClass("is-hidden");
+      $loginBtn.addClass("is-hidden");
+      $orderBtn.removeClass("is-hidden");
+      $concernBtn.removeClass("is-hidden");
+      $ticketBtn.removeClass("is-hidden");
+      $notifyBtn.removeClass("is-hidden");
+      $userBtn.removeClass("is-hidden");
+      $userBtn.find(".user-name").text(sessionMember.nickName); // 添加 userName
+    } else {
+      // 非使用者權限
+      $registerBtn.removeClass("is-hidden");
+      $loginBtn.removeClass("is-hidden");
+      $orderBtn.addClass("is-hidden");
+      $concernBtn.addClass("is-hidden");
+      $ticketBtn.addClass("is-hidden");
+      $notifyBtn.addClass("is-hidden");
+      $userBtn.addClass("is-hidden");
+    }
+  } else {
+    // 未登入
+    $registerBtn.removeClass("is-hidden");
+    $loginBtn.removeClass("is-hidden");
+    $orderBtn.addClass("is-hidden");
+    $concernBtn.addClass("is-hidden");
+    $ticketBtn.addClass("is-hidden");
+    $notifyBtn.addClass("is-hidden");
+    $userBtn.addClass("is-hidden");
+  }
+
+  // 插入 DOM
+  $(".navbar").html($template);
 };
 
 // ==================== 2. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
@@ -31,9 +89,16 @@ export const initNavJSEvents = () => {
     $(".navbar-menu").toggleClass("is-active");
   });
 
-  // "會員中心/登入" 按鈕點擊
-  $(".navbar").on("mouseenter mouseleave", ".navbar-item button", (e) => {
-    $(e.target).toggleClass("is-focused");
+  // "使用者名稱" 下拉選單
+  $(".dropdown").on("click", () => {
+    console.log("hahahaha");
+    $(".dropdown").toggleClass("is-active");
+  });
+
+  // "登出" 按鈕點擊
+  $(".logout").on("click", async () => {
+    const resp = await fetch(`${getContextPath()}/common/logout`);
+    location.reload();
   });
 
   // "回首頁" 按鈕點擊

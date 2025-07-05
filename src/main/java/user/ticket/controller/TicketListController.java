@@ -1,27 +1,59 @@
 package user.ticket.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import common.util.CommonUtil;
-import user.notify.service.NotificationService;
-import user.notify.service.impl.NotificationServiceImpl;
+import user.member.vo.Member;
 import user.ticket.dto.TicketViewDto;
 import user.ticket.service.TicketService;
-import user.ticket.service.impl.TicketServiceImpl;
-import user.ticket.vo.Ticket;
-import user.ticket.vo.TicketView;
+
+
+
+
+@Controller
+@RequestMapping("ticket")
+
+public class TicketListController{
+	
+	@Autowired
+	private TicketService ticketService;
+	
+	@PostMapping("ticket-list")
+	@ResponseBody
+	public List<TicketViewDto> notificationUnvisible(@RequestBody Member member) {
+		
+
+    	Integer memId=member.getMemberId();
+
+		
+		List<TicketViewDto> ticketsView =  ticketService.ticketList(memId);
+
+		return ticketsView;
+		
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
 
 
 
@@ -34,12 +66,12 @@ public class TicketListController extends HttpServlet{
 				try {
 					ticketService = new TicketServiceImpl();
 				} catch (NamingException e) {
-					// TODO Auto-generated catch block
+				
 					e.printStackTrace();
 				}
-				/*
-				 * ticketService =CommonUtil.getBean(getServletContext(),TicketService.class);
-				 */
+				
+				 // ticketService =CommonUtil.getBean(getServletContext(),TicketService.class);//
+				 
 			
 		}
 		
@@ -63,5 +95,5 @@ public class TicketListController extends HttpServlet{
 		}
 
 	}
-
+*/
 

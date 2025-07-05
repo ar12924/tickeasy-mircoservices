@@ -120,7 +120,7 @@ div#notification{
 div.ntf{
     background-color: #D9D9D93A;
     width:90%;
-    height:80px;
+    height:auto;
     margin: 20px auto 20px auto;
     /* position:relative;
     left:50%;
@@ -143,6 +143,7 @@ div.ntf_left{
     margin-top:5px;
     margin-left:30px;
     width:80%;
+    margin-bottom:5px;
 }
 div.ntf_title{
     font-weight: bold;

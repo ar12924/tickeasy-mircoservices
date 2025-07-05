@@ -67,11 +67,11 @@ function smoothScrollTo(element, targetScrollTop, duration = 600) {
 
 //所有票券的load
 
-function ticket_loaded() {
+function ticket_loaded(category) {
 	
 	
 
-	fetch('/maven-tickeasy-v1/ticket-list', {
+	fetch('/maven-tickeasy-v1/ticket/ticket-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
@@ -84,7 +84,7 @@ function ticket_loaded() {
 		.then(ticketsView => {
 			for (let ticketView of ticketsView) {
 
-
+			if(ticketView.viewCategoryType==category){
 		
 									ticket_el.insertAdjacentHTML("afterbegin", `
 										<div class="tk">
@@ -164,9 +164,10 @@ function ticket_loaded() {
 										  
 						                `)
 }
+}
 })
 }
-ticket_loaded();
+
 
 
 //判斷通知中心的分類是否為空需要顯示為空的畫面
@@ -189,7 +190,7 @@ function tk_isEmpty(count) {
 
 //計算各分類的數量
 function category_count() {
-	fetch('/maven-tickeasy-v1/ticket-list', {
+	fetch('/maven-tickeasy-v1/ticket/ticket-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
@@ -239,4 +240,9 @@ function category_count() {
 			tk_nav_span_change_el.innerHTML = allchange_count;
 		})
 }
-category_count();
+
+document.addEventListener("DOMContentLoaded", function() {
+	ticket_el.innerHTML = '';
+	category_count();
+	ticket_loaded(1);
+})

@@ -15,7 +15,7 @@ const now = new Date();
 
 //計算通知中心各分類頁籤的通知數
 function category_count() {
-	fetch('/maven-tickeasy-v1/notification-list', {
+	fetch('/maven-tickeasy-v1/notify/notification-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
@@ -68,7 +68,7 @@ function notification_loaded(category) {
 	/*const category_type=category;*/
 	notification_el.innerHTML = "";
 
-	fetch('/maven-tickeasy-v1/notification-list', {
+	fetch('/maven-tickeasy-v1/notify/notification-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
@@ -159,7 +159,7 @@ function notification_loaded(category) {
 
 					ntf_el.addEventListener("click", function() {
 						if (notification.isRead != 1) {
-							fetch('/maven-tickeasy-v1/notification-read', {
+							fetch('/maven-tickeasy-v1/notify/notification-read', {
 								method: `POST`,
 								headers: { 'Content-Type': 'application/json' },
 								body: JSON.stringify({
@@ -229,7 +229,7 @@ function notification_loaded(category) {
 
 						ntf_el.addEventListener("click", function() {
 							if (notification.isRead != 1) {
-								fetch('/maven-tickeasy-v1/notification-read', {
+								fetch('/maven-tickeasy-v1/notify/notification-read', {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
@@ -295,7 +295,7 @@ function notification_loaded(category) {
 						ntf_el.addEventListener("click", function(e) {
 							if (e.target.closest(".ntf_delete")) return;
 							if (notification.isRead != 1) {
-								fetch('/maven-tickeasy-v1/notification-read', {
+								fetch('/maven-tickeasy-v1/notify/notification-read', {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
@@ -361,7 +361,7 @@ function notification_loaded(category) {
 
 						ntf_el.addEventListener("click", function() {
 							if (notification.isRead != 1) {
-								fetch('/maven-tickeasy-v1/notification-read', {
+								fetch('/maven-tickeasy-v1/notify/notification-read', {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
@@ -436,7 +436,7 @@ function notification_loaded(category) {
 						ntf_el.addEventListener("click", function(e) {
 							/*if (e.target.closest(".ntf_delete")) return;*/
 							if (notification.isRead != 1) {
-								fetch('/maven-tickeasy-v1/notification-read', {
+								fetch('/maven-tickeasy-v1/notify/notification-read', {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
@@ -549,7 +549,7 @@ document.addEventListener("click", function(e) {
 		/*console.log(ntf_unvisible_el);*/
 		ntf_delete_el.remove();
 
-		fetch('/maven-tickeasy-v1/notification-unvisible', {
+		fetch('/maven-tickeasy-v1/notify/notification-unvisible', {
 			method: `POST`,
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({

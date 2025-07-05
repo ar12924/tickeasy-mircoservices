@@ -14,7 +14,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	// Spring Root Context 設定
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[] { SpringConfig.class, SpringDataConfig.class };
+		return new Class[] { SpringConfig.class, SpringDataConfig.class , SchedulingConfig.class};
 	}
 
 	// Spring MVC Config 設定

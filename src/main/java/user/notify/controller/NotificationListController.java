@@ -1,33 +1,75 @@
 package user.notify.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
-import common.util.CommonUtil;
+import user.member.vo.Member;
 import user.notify.service.NotificationService;
-import user.notify.service.impl.NotificationServiceImpl;
 import user.notify.vo.Notification;
 
 
 
+@Controller
+@RequestMapping("notify")
+
+public class NotificationListController{
+	
+	@Autowired
+	private NotificationService notificationService;
+	
+	@PostMapping("notification-list")
+	@ResponseBody
+	public List<Notification> notificationList(@RequestBody Member member /* @SessionAttribute Member member */) {
+		
+		
+    	Integer memId=member.getMemberId();
+	
+
+		/*
+		 * if(memId==null || memId.equals("")) { System.out.println("未登入"); }
+		 */
+		List<Notification> notifications = notificationService.notificationList(memId);
+		
+		
+		return notifications;
+		
+		
+		
+		
+		/*
+		 HttpSession session = req.getSession(false);
+	        Member member = (session != null) ? (Member) session.getAttribute("member") : null;
+
+	        if (member == null) {
+	            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	            return;
+	        }
+
+	        int memberId = member.getMemberId(); // ❗使用 session 中的 memberId，非前端傳來的
+	        */
+		
+	}
+}
+
+/*
 @WebServlet("/notification-list")
+
 public class NotificationListController extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 		private NotificationService notificationService;
 		public void init() throws ServletException {
-				/* notificationService = new NotificationServiceImpl(); */
+				// notificationService = new NotificationServiceImpl(); //
 				notificationService =CommonUtil.getBean(getServletContext(),NotificationService.class);
 			
 		}
@@ -36,13 +78,13 @@ public class NotificationListController extends HttpServlet{
 		@Override
 		protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			Gson gson =new Gson();
-			JsonObject info= gson.fromJson(req.getReader(),JsonObject.class);
-	    	String memId=info.get("memberId").getAsString();
+			Member info= gson.fromJson(req.getReader(),Member.class);
+	    	Integer memId=info.getMemberId();
 		
 
 
 			
-			List<Notification> notifications = notificationService.notificationList(Integer.parseInt(memId));
+			List<Notification> notifications = notificationService.notificationList(memId);
 			String json = gson.toJson(notifications);
 			
 			resp.setContentType("application/json");
@@ -50,6 +92,6 @@ public class NotificationListController extends HttpServlet{
 
 		}
 
-	}
+	}*/
 
 

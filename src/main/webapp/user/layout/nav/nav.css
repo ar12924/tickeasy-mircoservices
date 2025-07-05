@@ -14,8 +14,11 @@ nav {
     }
   }
   & .navbar-menu {
-    & .navbar-item {
-      & .button {
+    & .container {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      & .theme-color {
         background-color: #ec4899;
         color: white;
       }
