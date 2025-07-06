@@ -21,6 +21,7 @@ export const renderNav = async (templateHTML) => {
   const $template = $(templateHTML);
 
   // 抓取每個按鈕
+  const $homeBtn = $template.find(".go-home");
   const $registerBtn = $template.find(".register");
   const $loginBtn = $template.find(".login");
   const $orderBtn = $template.find(".order");
@@ -30,6 +31,7 @@ export const renderNav = async (templateHTML) => {
   const $userBtn = $template.find(".user");
 
   // 加入 URL 連結
+  $homeBtn.attr("href", `${getContextPath()}/user/buy/index.html`);
   $registerBtn.attr("href", `${getContextPath()}/user/member/register.html`);
   $loginBtn.attr("href", `${getContextPath()}/user/member/login.html`);
   $orderBtn.attr("href", `${getContextPath()}/111`);
@@ -99,10 +101,5 @@ export const initNavJSEvents = () => {
   $(".logout").on("click", async () => {
     const resp = await fetch(`${getContextPath()}/common/logout`);
     location.reload();
-  });
-
-  // "回首頁" 按鈕點擊
-  $(".go-home").on("click", () => {
-    location.href = `${getContextPath()}/user/buy/index.html`;
   });
 };

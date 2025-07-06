@@ -40,13 +40,13 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	@Transactional
 	@Override
-	public Core<List<Favorite>> getFavorite(Member member) {
+	public Core<List<Favorite>> getAllFavorite(Member member) {
 		var core = new Core<List<Favorite>>();
 		var memberId = member.getMemberId();
-		
-		List<Favorite> favarite = dao.selectFavoriteByMemberId(memberId);
+
+		List<Favorite> favarite = dao.selectAllFavoriteByMemberId(memberId);
 		// 如果查不到資料，回傳空的 List
-		if(favarite.isEmpty()) {
+		if (favarite.isEmpty()) {
 			core.setDataStatus(DataStatus.NOT_FOUND);
 			core.setMessage("沒有任何關注活動");
 			core.setSuccessful(false);
@@ -57,6 +57,78 @@ public class SearchServiceImpl implements SearchService {
 		core.setData(favarite);
 		core.setMessage("有關注活動");
 		core.setSuccessful(true);
+		return core;
+	}
+
+	/**
+	 * 儲存會員的我的關注資料。
+	 * 
+	 * @param{Member} member - session.member 會員資料。
+	 * @param{Integer} eventId - 活動 id。
+	 * @return{Core<Integer>} 儲存資料的識別 id 和操作結果。
+	 */
+	@Transactional
+	@Override
+	public Core<Integer> saveFavorite(Member member, Integer eventId) {
+		var core = new Core<Integer>();
+		var memberId = member.getMemberId();
+
+		// 檢查 eventId 不為0或 < 0
+		if (eventId == null || eventId < 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("資料不合法");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 插入1筆新關注名單
+		final var newId = dao.insertFavorite(eventId, memberId);
+		if (newId == null || newId <= 0) {
+			core.setDataStatus(DataStatus.EXECUTION_FAILED);
+			core.setMessage("操作失敗");
+			core.setSuccessful(false);
+			return core;
+		}
+		core.setDataStatus(DataStatus.EXECUTION_PASSED);
+		core.setMessage("操作成功");
+		core.setSuccessful(true);
+		core.setData(newId);
+		return core;
+	}
+
+	/**
+	 * 刪除會員的我的關注資料 by (memberId, eventId)。
+	 * 
+	 * @param{Member} member - session.member 會員資料。
+	 * @param{Integer} eventId - 活動 id。
+	 * @return{Core<Integer>}
+	 */
+	@Transactional
+	@Override
+	public Core<Integer> deleteFavorite(Member member, Integer eventId) {
+		var core = new Core<Integer>();
+		var memberId = member.getMemberId();
+
+		// 檢查 eventId 不為0或 < 0
+		if (eventId == null || eventId < 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("資料不合法");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 刪除1筆關注名單
+		final var deleteCount = dao.removeFavorite(eventId, memberId);
+		if (deleteCount == null || deleteCount <= 0) {
+			core.setDataStatus(DataStatus.EXECUTION_FAILED);
+			core.setMessage("操作失敗");
+			core.setSuccessful(false);
+			return core;
+		}
+		core.setDataStatus(DataStatus.EXECUTION_PASSED);
+		core.setMessage("操作成功");
+		core.setSuccessful(true);
+		core.setData(deleteCount);
 		return core;
 	}
 

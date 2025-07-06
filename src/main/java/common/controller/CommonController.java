@@ -1,4 +1,4 @@
-package user.buy.controller;
+package common.controller;
 
 import javax.servlet.http.HttpSession;
 

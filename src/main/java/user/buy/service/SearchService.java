@@ -11,8 +11,12 @@ import user.member.vo.Member;
 public interface SearchService {
 	public List<EventInfo> getRecentEventInfo(Integer n);
 
-	public Core<List<Favorite>> getFavorite(Member member);
+	public Core<List<Favorite>> getAllFavorite(Member member);
+
+	public Core<Integer> saveFavorite(Member member, Integer eventId);
 	
+	public Core<Integer> deleteFavorite(Member member, Integer eventId);
+
 	public KeywordCategory getKeyword(Integer keywordId);
 
 	public Core<List<EventInfo>> searchEventByKeyword(String keyword, Integer pageNumber, Integer pageSize);

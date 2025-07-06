@@ -25,8 +25,8 @@ public class Favorite {
 	private Integer eventId;
 	@Column(name = "is_followed")
 	private Integer isFollowed;
-	@Column(name = "create_time")
+	@Column(name = "create_time", insertable = false, updatable = false)
 	private Timestamp createTime;
-	@Column(name = "update_time")
+	@Column(name = "update_time", insertable = false)
 	private Timestamp updateTime;
 }

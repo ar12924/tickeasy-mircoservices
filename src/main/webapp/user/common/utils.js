@@ -34,7 +34,7 @@ export const validateIdCard = (idCard) => {
 
 /**
  * 從後端 Session 抓取會員資料。
- * @return {Object} 驗證結果(含會員資料)。
+ * @return {Object} member 和驗證結果。
  */
 export const fetchMemberFromSession = async () => {
   const resp = await fetch(`${getContextPath()}/common/identify`);
