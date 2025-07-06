@@ -213,7 +213,7 @@ const initBookInfoJSEvents = async (book) => {
 
   // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
-  renderNav(navTemplate);
+  await renderNav(navTemplate);
   initNavJSEvents();
 
   // ====== header 部分 ======
