@@ -119,7 +119,7 @@ function ticket_loaded(category) {
 																		<div class="tk_content_text tk_content_palce">${ticketView.place}</div>
 																	</div>
 																	<div class="tk_content_set">
-																		<div class="tk_content_title">票號</div>
+																		<div class="tk_content_title">訂單編號</div>
 																		<div class="tk_content_text tk_content_tkNo">${ticketView.orderId}</div>
 																	</div>
 																	<div class="tk_content_set">

@@ -3,9 +3,9 @@
 	box-sizing: border-box;
 	 
 }
-:root {
+ :root {
   --bulma-link-text: #EC4899 ;
-}
+} 
 
 html {
 	 overflow-y: overlay;
