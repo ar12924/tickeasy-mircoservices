@@ -113,7 +113,7 @@ public class TicketDaoImpl implements TicketDao {
 		String hql = "SELECT tt FROM Ticket tt JOIN FETCH tt.buyerOrderTicketVer botv\r\n"
 				+ "JOIN FETCH botv.eventInfoTicketVer\r\n"
 				+ "JOIN FETCH tt.eventTicketTypeTicketVer\r\n"
-				+ "WHERE tt.buyerOrderTicketVer.memberId=:memberId AND tt.buyerOrderTicketVer.memberId!=tt.currentHolderMemberId";
+				+ "WHERE tt.buyerOrderTicketVer.memberId=:memberId AND tt.buyerOrderTicketVer.memberId != tt.currentHolderMemberId";
 				
 				/*+ "SELECt bt.ticket_id,bt.order_id,bt.email,bt.phone,"
 				+ "bt.price,bt.status,bt.id_card,bt.current_holder_member_id,"
@@ -129,6 +129,7 @@ public class TicketDaoImpl implements TicketDao {
 				.createQuery(hql, Ticket.class)
 				.setParameter("memberId", memberId)
 				.getResultList();
+				
 		return ticketList;
 		
 	
