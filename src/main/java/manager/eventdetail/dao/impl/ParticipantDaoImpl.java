@@ -181,9 +181,4 @@ public class ParticipantDaoImpl implements ParticipantDao {
         searchParams.put("pageSize", pageSize);
         return searchParticipants(eventId, searchParams);
     }
-
-    @Override
-    public List<EventTicketType> getTicketTypesByEventId(Integer eventId) {
-        return getEventTicketTypes(eventId);
-    }
 }

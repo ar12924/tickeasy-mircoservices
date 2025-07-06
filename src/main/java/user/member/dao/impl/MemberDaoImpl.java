@@ -77,11 +77,6 @@ public class MemberDaoImpl implements MemberDao {
 	}
 
 	@Override
-	public List<Member> listAll() {
-		return session.createQuery("FROM Member m ORDER BY m.memberId", Member.class).getResultList();
-	}
-
-	@Override
 	public Member findByEmail(String email) {
 		List<Member> list = session.createQuery("FROM Member m WHERE m.email = :email", Member.class)
 				.setParameter("email", email).getResultList();

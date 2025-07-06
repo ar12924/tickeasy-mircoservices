@@ -1,122 +1,139 @@
 package user.member.service.impl;
 
-import java.util.Properties;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import org.springframework.stereotype.Component;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import user.member.service.MailService;
 
-@Component
-public class MailServiceImpl implements MailService{
-	
-    private static final String SMTP_HOST = "smtp.gmail.com";
-    private static final int    SMTP_PORT = 587;
-    private static final String SMTP_USER = "xxxx@gmail.com";      // 寄件帳號
-    private static final String SMTP_PASS = "P@ssWord";   
-    private static final String FROM_EMAIL = "noreply@tickeasy.com";
-    private static final String APP_NAME   = "TickEasy";
-    private static final String VERIFY_URL = "http://localhost:8080/verify?token=";
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 
-    private final Session session;
+@Service
+public class MailServiceImpl implements MailService {
 
-    public MailServiceImpl() {
-        Properties props = new Properties();
-        props.put("mail.smtp.host", SMTP_HOST);
-        props.put("mail.smtp.port", String.valueOf(SMTP_PORT));
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
+    @Autowired
+    private JavaMailSender mailSender;
 
-        session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SMTP_USER, SMTP_PASS);
-            }
-        });
-    }
+    @Value("${app.mail.from-email:noreply@tickeasy.com}")
+    private String fromEmail;
+
+    @Value("${app.mail.from-name:TickEasy}")
+    private String fromName;
+
+    @Value("${app.mail.activation.subject:歡迎加入 TickEasy - 請驗證您的帳號}")
+    private String activationSubject;
+
+    @Value("${app.mail.reset.subject:重設TickEasy密碼}")
+    private String resetSubject;
 
     @Override
     public void sendActivationNotification(String toEmail, String userName, String tokenName) {
-        try {
-            MimeMessage msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(FROM_EMAIL, APP_NAME));
-            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-            msg.setSubject("【" + APP_NAME + "】帳號啟用驗證信", "UTF-8");
-
-            String link = VERIFY_URL + tokenName;
-            String html = "<p>親愛的 " + userName + "，您好：</p>"
-                        + "<p>請點擊以下連結啟用帳號：</p>"
-                        + "<p><a href=\"" + link + "\">" + link + "</a></p>"
-                        + "<p>本連結有效期為 24 小時。</p>"
-                        + "<br><p>--<br>" + APP_NAME + " TickEasy團隊敬上</p>";
-
-            msg.setContent(html, "text/html; charset=UTF-8");
-            Transport.send(msg);
-        } catch (Exception e) {
-            throw new RuntimeException("寄送啟用郵件失敗", e);
-        }
-
+        String subject = activationSubject;
+        String content = buildActivationEmailContent(userName, tokenName);
+        sendHtmlEmail(toEmail, subject, content);
     }
 
     @Override
     public void sendPasswordResetNotification(String toEmail, String userName, String tokenName) {
+        String subject = resetSubject;
+        String content = buildPasswordResetEmailContent(userName, tokenName);
+        sendHtmlEmail(toEmail, subject, content);
+    }
+
+    private void sendHtmlEmail(String toEmail, String subject, String htmlContent) {
         try {
-            MimeMessage msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(FROM_EMAIL, APP_NAME));
-            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-            msg.setSubject("【" + APP_NAME + "】密碼重置驗證信", "UTF-8");
-
-            // 注意：這裡的 RESET_PASSWORD_URL 應該指向您處理密碼重置的頁面/控制器
-            // 例如：http://localhost:8080/reset-password?token=
-            String resetLink = "http://localhost:8080/maven-tickeasy-v1/user/member/resetPasswordPage.html?token=" + tokenName; 
-            String html = "<p>親愛的 " + userName + "，您好：</p>"
-                        + "<p>您正在申請重置密碼。請點擊以下連結完成密碼重置：</p>"
-                        + "<p><a href=\"" + resetLink + "\">" + resetLink + "</a></p>"
-                        + "<p>如果您未申請此操作，請忽略此郵件。</p>"
-                        + "<p>本連結有效期為 1 小時。</p>"
-                        + "<br><p>--<br>" + APP_NAME + " TickEasy團隊敬上</p>";
-
-            msg.setContent(html, "text/html; charset=UTF-8");
-            Transport.send(msg);
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            
+            helper.setFrom(fromEmail, fromName);
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true); // true 表示 HTML 內容
+            
+            mailSender.send(message);
+            System.out.println("郵件發送成功: " + toEmail);
+        } catch (MessagingException e) {
+            System.err.println("郵件發送失敗 (MessagingException): " + e.getMessage());
+            throw new RuntimeException("郵件發送失敗: " + e.getMessage(), e);
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("郵件發送失敗 (UnsupportedEncodingException): " + e.getMessage());
+            throw new RuntimeException("郵件編碼失敗: " + e.getMessage(), e);
         } catch (Exception e) {
-            throw new RuntimeException("寄送密碼重置郵件失敗", e);
+            System.err.println("郵件發送失敗 (其他異常): " + e.getMessage());
+            throw new RuntimeException("郵件發送失敗: " + e.getMessage(), e);
         }
-    }    
-    
-	
-	
-//    以下是Spring寫法，因為DAO還沒有Spring化...
-//	private final JavaMailSenderImpl mailSender;
-//	
-//	public MailServiceImpl() {
-//		mailSender = new JavaMailSenderImpl();
-//		mailSender.setHost("smtp.gmail.com");
-//		mailSender.setPort(587);
-//		mailSender.setUsername("xxxx@gmail.com"); //需要請求註冊 
-//		mailSender.setPassword("password");
-//        
-//        Properties props = mailSender.getJavaMailProperties();
-//        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.starttls.enable", "true");
-//	}
-//	
-//	@Override
-//	public void sendActivationNotification(String toEmail, String userName, String token) {
-//        String link = "http://localhost:8080/verify?token=" + token;
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(toEmail);
-//        message.setSubject("帳號啟用驗證信");
-//        message.setText("親愛的 " + userName + "：\n\n請點選以下連結啟用您的帳號：\n" + link
-//        );
-//        message.setFrom("noreply@tickeasy.com");
-//        mailSender.send(message);
-//	}
+    }
 
+    private String buildActivationEmailContent(String userName, String tokenName) {
+        return String.format(
+            "<!DOCTYPE html>" +
+            "<html>" +
+            "<head>" +
+            "    <meta charset=\"UTF-8\">" +
+            "    <title>帳號驗證</title>" +
+            "</head>" +
+            "<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">" +
+            "    <div style=\"max-width: 600px; margin: 0 auto; padding: 20px;\">" +
+            "        <h2 style=\"color: #007bff;\">歡迎加入 TickEasy！</h2>" +
+            "        <p>親愛的 %s，</p>" +
+            "        <p>感謝您註冊 TickEasy 帳號。請點擊下方按鈕驗證您的電子郵件地址：</p>" +
+            "        <div style=\"text-align: center; margin: 30px 0;\">" +
+            "            <a href=\"http://localhost:8080/maven-tickeasy-v1/user/member/verify?token=%s\" " +
+            "               style=\"background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;\">" +
+            "                驗證帳號" +
+            "            </a>" +
+            "        </div>" +
+            "        <p>如果您無法點擊按鈕，請複製以下連結到瀏覽器：</p>" +
+            "        <p style=\"word-break: break-all; color: #666;\">" +
+            "            http://localhost:8080/maven-tickeasy-v1/user/member/verify?token=%s" +
+            "        </p>" +
+            "        <p>此連結將在 24 小時後失效。</p>" +
+            "        <hr style=\"margin: 30px 0; border: none; border-top: 1px solid #eee;\">" +
+            "        <p style=\"font-size: 12px; color: #666;\">" +
+            "            此郵件由 TickEasy 系統自動發送，請勿回覆。<br>" +
+            "            如果您沒有註冊 TickEasy 帳號，請忽略此郵件。" +
+            "        </p>" +
+            "    </div>" +
+            "</body>" +
+            "</html>", 
+            userName, tokenName, tokenName);
+    }
+
+    private String buildPasswordResetEmailContent(String userName, String tokenName) {
+        return String.format(
+            "<!DOCTYPE html>" +
+            "<html>" +
+            "<head>" +
+            "    <meta charset=\"UTF-8\">" +
+            "    <title>密碼重置</title>" +
+            "</head>" +
+            "<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">" +
+            "    <div style=\"max-width: 600px; margin: 0 auto; padding: 20px;\">" +
+            "        <h2 style=\"color: #dc3545;\">TickEasy 密碼重置</h2>" +
+            "        <p>親愛的 %s，</p>" +
+            "        <p>我們收到了您的密碼重置請求。請點擊下方按鈕重置您的密碼：</p>" +
+            "        <div style=\"text-align: center; margin: 30px 0;\">" +
+            "            <a href=\"http://localhost:8080/maven-tickeasy-v1/user/member/reset-password.html?token=%s\" " +
+            "               style=\"background-color: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;\">" +
+            "                重置密碼" +
+            "            </a>" +
+            "        </div>" +
+            "        <p>如果您無法點擊按鈕，請複製以下連結到瀏覽器：</p>" +
+            "        <p style=\"word-break: break-all; color: #666;\">" +
+            "            http://localhost:8080/maven-tickeasy-v1/user/member/reset-password.html?token=%s" +
+            "        </p>" +
+            "        <p>此連結將在 1 小時後失效。</p>" +
+            "        <p><strong>如果您沒有請求重置密碼，請忽略此郵件。</strong></p>" +
+            "        <hr style=\"margin: 30px 0; border: none; border-top: 1px solid #eee;\">" +
+            "        <p style=\"font-size: 12px; color: #666;\">" +
+            "            此郵件由 TickEasy 系統自動發送，請勿回覆。" +
+            "        </p>" +
+            "    </div>" +
+            "</body>" +
+            "</html>", 
+            userName, tokenName, tokenName);
+    }
 }

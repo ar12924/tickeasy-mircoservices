@@ -15,6 +15,7 @@ import static common.util.CommonUtilNora.*;
 import static common.util.CommonUtil.getBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +31,7 @@ public class VerifyController {
 	private MemberService memberService;
 
 	@GetMapping
+	@Transactional
 	public Core<Void> verify(@RequestParam("token") String token) {
 		Core<Void> core = new Core<>();
 		boolean result = memberService.activateMemberByToken(token);

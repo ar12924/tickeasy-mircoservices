@@ -2,6 +2,7 @@ package user.member.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaUpdate;
@@ -16,9 +17,12 @@ import user.member.vo.VerificationToken;
 @Repository
 public class VerificationDaoImpl implements VerificationDao {
 
+	@PersistenceContext
+	private Session session;
+
 	@Override
 	public VerificationToken findByToken(String tokenName) {
-		List<VerificationToken> list = getSession()
+		List<VerificationToken> list = session
 	            .createQuery(
 	                "SELECT t FROM VerificationToken t JOIN FETCH t.member WHERE t.tokenName = :tn",
 	                VerificationToken.class)
@@ -30,18 +34,17 @@ public class VerificationDaoImpl implements VerificationDao {
 
 	@Override
 	public VerificationToken findById(Integer tokenId) {
-		return getSession().get(VerificationToken.class, tokenId);
+		return session.get(VerificationToken.class, tokenId);
 	}
 
 	@Override
 	public boolean insert(VerificationToken token) {
-		getSession().save(token);
+		session.save(token);
 		return true;
 	}
 
 	@Override
 	public boolean update(VerificationToken token) {
-		Session session = getSession();
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaUpdate<VerificationToken> cu = cb.createCriteriaUpdate(VerificationToken.class);
 		Root<VerificationToken> root = cu.from(VerificationToken.class);
@@ -54,7 +57,6 @@ public class VerificationDaoImpl implements VerificationDao {
 
 	@Override
 	public boolean deleteById(Integer tokenId) {
-		Session session = getSession();
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 
 		CriteriaDelete<VerificationToken> cd = cb.createCriteriaDelete(VerificationToken.class);

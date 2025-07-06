@@ -1,72 +1,64 @@
+<!DOCTYPE html>
 <html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>會員登入</title>
-<link rel="stylesheet" href="css/indexM.css">
-<link rel="stylesheet" href="css/login.css">
-</head>
-<body> 
-	<nav>
-		<div class="logo">
-			<a href="/maven-tickeasy-v1/user/buy/index.html">TickEasy</a>
-		</div>
-		<ul class="nav-links">
-			<li><a href="#tickets">我的訂單</a></li>
-			<li><a href="#favorites">我的關注</a></li>
-			<li><a href="#account">我的票券</a></li>
-			<li><a href="#notifications">通知中心</a></li>
-			<li><a href="/user/login.html" class="cta-button">會員中心</a></li>
-		</ul>
-	</nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>會員登入</title>
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
+    <link
+      rel="stylesheet"
+      href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../buy/css/index.css" class="main-css" />
+    <link rel="stylesheet" href="../layout/nav/nav.css" />
+    <link rel="stylesheet" href="css/login.css" />
+    <link rel="stylesheet" href="../layout/footer/footer.css" />
+  </head>
+  <body>
+    <!-- nav 導覽列(元件化) -->
+    <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
 
-		<div class="login-box">
-			<h2>TickEasy</h2>
-			<div class="form-group">
-				<label for="username">帳號</label> <input type="text" id="username"
-					placeholder="請輸入你的帳號">
-			</div>
-			<div class="form-group">
-				<label for="password">密碼</label> <input type="password"
-					id="password" placeholder="請輸入你的密碼">
-			</div>
-			<div class="form-group checkbox">
-				<label><input type="checkbox" id="rememberMe">
-					記住我的登入狀態</label>
-			</div>
-			<button id="loginBtn" type="button">登入帳號</button>
-			<div id="msg"></div>
-		</div>
+    <main class="login-container section">
+      <div class="login-box">
+        <h2 class="logo-text">TickEasy</h2>
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label for="username">帳號</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="請輸入你的帳號"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">密碼</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="請輸入你的密碼"
+            />
+          </div>
+          <div class="form-group checkbox">
+            <label>
+              <input type="checkbox" id="rememberMe" name="rememberMe" />
+              記住我的登入狀態
+            </label>
+          </div>
+          <button type="button" id="loginBtn">登入帳號</button>
+          <div id="msg"></div>
+          <div class="form-links">
+            <a href="reset-password.html">忘記密碼？</a>
+          </div>
+        </form>
+      </div>
+    </main>
 
-	<footer>
-		<div class="footer-content">
-			<div class="footer-section">
-				<h3>關於我們</h3>
-				<ul>
-					<li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
-				</ul>
-			</div>
-			<div class="footer-section">
-				<h3>客戶服務</h3>
-				<ul>
-					<li><a href="#faq">常見問題</a></li>
-					<li><a href="#contact">聯絡我們</a></li>
-				</ul>
-			</div>
-			<div class="footer-section">
-				<h3>售票須知</h3>
-				<ul>
-					<li><a href="#terms">購票說明</a></li>
-					<li><a href="#policy">退票政策</a></li>
-				</ul>
-			</div>
-			<div class="footer-section social-links">
-				<h3>追蹤我們</h3>
-				<a href="#facebook">Facebook</a> <a href="#instagram">Instagram</a>
-			</div>
-		</div>
-	</footer>
-
-	<script src="js/login.js"></script>
-</body>
+    <footer></footer>
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/validator@latest/validator.min.js"></script>
+  <script type="module" src="js/member-common.js"></script>
+  <script type="module" src="js/login.js"></script>
 </html>
