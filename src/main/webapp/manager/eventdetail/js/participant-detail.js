@@ -10,9 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const detailContentEl = document.querySelector("#detail-content");
 
-  const API_URL = `/maven-tickeasy-v1/manager/eventdetail/participants/detail?ticketId=${ticketId}`;
-
-  fetch(API_URL, {
+  fetch(`../eventdetail/participants/detail/${ticketId}`, {
     credentials: "include", // 發送 cookie 以進行 session 驗證
   })
     .then((response) => {
@@ -66,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     })
     .catch((error) => {
-      console.error("獲取詳細資料時出錯:", error);
       detailContentEl.innerHTML = `<div class="alert alert-danger">無法載入資料: ${error.message}</div>`;
     });
 });

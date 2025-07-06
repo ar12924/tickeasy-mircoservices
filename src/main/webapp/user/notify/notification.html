@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./css/notifyPush.css" />
     <link rel="stylesheet" href="../../common/index.css" />
     <link rel="stylesheet" href="./css/notification.css" />
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
     <link rel="stylesheet" href="../layout/nav/nav.css" />
     <link rel="stylesheet" href="../layout/footer/footer.css" />
   </head>
@@ -23,8 +24,8 @@
           <li><a href="../member/edit.html" class="cta-button">會員中心</a></li>
         </ul>
       </nav> --> 
-   <nav id="nav-container"></nav>
-  <!--   <nav class="navbar" role="navigation" aria-label="main navigation"></nav> -->
+  <!--  <nav id="nav-container"></nav> -->
+  <nav class="navbar" role="navigation" aria-label="main navigation"></nav> 
     
     <main>
       <div id="title">
@@ -229,7 +230,8 @@
           </div>
         </div>
       </footer>-->
-    <footer id="footer-container"></footer>
+  <!--   <footer id="footer-container"></footer> -->
+    <footer></footer>
     <!--  <script>
         // document.getElementById("nav").innerHTML = fetch("header.html").then(res => res.text()).then(data => {
         // document.getElementById("nav").innerHTML = data;
@@ -242,7 +244,9 @@
     </script> -->
     <script src="./js/notifyPush.js"></script>
     <script src="./js/notification.js"></script>
-        <script>
+    <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
+    <script type="module" src="../buy/js/index.js"></script>
+   <!--     <script>
 		    fetch('../layout/nav/nav.html')
 		    .then(response => response.text())
 		    .then(data => {
@@ -257,10 +261,10 @@
 		        document.getElementById('footer-container').innerHTML = data;
 		    })
 		    .catch(error => console.error('加載 footer 失敗:', error));
-    </script> 
+    </script> -->
    <!-- <script type="module" src="./js/notification_navFooterTest.js"></script>-->
-   <script type="module" src="../layout/nav/nav.js"></script>
+ <!--  <script type="module" src="../layout/nav/nav.js"></script>
    <script type="module" src="../layout/footer/footer.js"></script>
-    
+    -->
   </body>
 </html>

@@ -21,9 +21,5 @@ public interface ParticipantService {
 
     boolean updateTicketStatus(Integer ticketId, Integer status, Integer isUsed);
 
-    Map<String, Object> getSalesDashboardData(Integer eventId);
-
     Map<String, Object> getParticipants(Integer eventId, int page, int pageSize);
-
-    List<EventTicketType> getTicketTypesByEventId(Integer eventId);
 }

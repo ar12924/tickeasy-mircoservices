@@ -45,13 +45,12 @@ public class ParticipantServiceImpl implements ParticipantService {
         if (ticket == null) {
             return Collections.singletonMap("error", "找不到指定的票券");
         }
-        
         // 設定 QR code 內容
         ticket.setQrCodeContent("QR:" + (ticket.getTicketId() != null ? ticket.getTicketId() : ""));
         Map<String, Object> map = new HashMap<>();
-        map.put("ticket", ticket);
+        map.put("ticket", ticket); // 直接放 VO 物件
         map.put("success", true);
-    
+
         // 設定報名人資料
         Map<String, Object> participantInfo = new HashMap<>();
         participantInfo.put("name", ticket.getParticipantName());
@@ -59,20 +58,18 @@ public class ParticipantServiceImpl implements ParticipantService {
         participantInfo.put("idCard", ticket.getIdCard());
         participantInfo.put("phone", ticket.getPhone());
         map.put("participantInfo", participantInfo);
-    
-        // 設置訂單時間
+
+        // 訂單時間
         if (ticket.getBuyerOrder() != null && ticket.getBuyerOrder().getOrderTime() != null) {
-            ticket.setOrderTime(ticket.getBuyerOrder().getOrderTime().toLocalDateTime());
-            map.put("orderTime", ticket.getOrderTime());
+            map.put("orderTime", ticket.getBuyerOrder().getOrderTime());
         }
-    
+
         // 訂單資訊
         Integer orderId = ticket.getOrderId();
         if (orderId != null) {
             BuyerOrderEventVer order = participantDao.getOrderInfo(orderId);
             if (order != null) {
                 map.put("order", order);
-                // 查詢該訂單下所有票券數量
                 int ticketQuantity = participantDao.countTicketsByOrderId(orderId);
                 map.put("ticketQuantity", ticketQuantity);
             }
@@ -87,22 +84,18 @@ public class ParticipantServiceImpl implements ParticipantService {
         return participantDao.getOrderInfo(orderId);
     }
 
+    // 搜尋報名人
     @Override
     @Transactional
     public Map<String, Object> searchParticipants(Integer eventId, Map<String, Object> searchParams) {
-        // First, get the search results (participants and total count) from DAO
         Map<String, Object> searchResult = participantDao.searchParticipants(eventId, searchParams);
         
-        // Then, get the event name from DAO
         String eventName = participantDao.getEventNameById(eventId);
         
-        // Create a new map to hold the final result
         Map<String, Object> finalResult = new HashMap<>();
         
-        // Put all search results (which should include 'participants' and 'totalCount') into the final map
         finalResult.putAll(searchResult);
         
-        // Add the event name to the final map
         finalResult.put("eventName", eventName);
         
         return finalResult;
@@ -120,24 +113,10 @@ public class ParticipantServiceImpl implements ParticipantService {
         return participantDao.getEventTicketTypes(eventId);
     }
 
-    @Override
-    @Transactional
-    public Map<String, Object> getSalesDashboardData(Integer eventId) {
-        Map<String, Object> dashboardData = ticketSalesDao.getSalesDashboardData(eventId);
-        String eventName = participantDao.getEventNameById(eventId);
-        dashboardData.put("eventName", eventName);
-        return dashboardData;
-    }
-
+    // 取得報名人列表（分頁）
     @Override
     @Transactional
     public Map<String, Object> getParticipants(Integer eventId, int page, int pageSize) {
         return participantDao.getParticipants(eventId, page, pageSize);
-    }
-
-    @Override
-    @Transactional
-    public List<EventTicketType> getTicketTypesByEventId(Integer eventId) {
-        return participantDao.getTicketTypesByEventId(eventId);
     }
 }

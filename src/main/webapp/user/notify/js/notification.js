@@ -174,7 +174,8 @@ function notification_loaded(category) {
 									if (notificationRead.success) {
 										/*let ntf_id_el=document.querySelector(`[data-ntf-id="${notification.memberNotificationId}"]`);*/
 										// location.href='edit.html';
-										alert("訊息已閱讀");
+										console.log("訊息已閱讀");
+										/*alert("訊息已閱讀");*/
 										ntf_el.classList.remove("-unread");
 
 									} else {
@@ -243,7 +244,8 @@ function notification_loaded(category) {
 									.then(notificationRead => {
 										if (notificationRead.success) {
 											// location.href='edit.html';
-											alert("訊息已閱讀");
+											console.log("訊息已閱讀");
+											/*alert("訊息已閱讀");*/
 											ntf_el.classList.remove("-unread");
 										} else {
 											alert("訊息閱讀更新錯誤");
@@ -309,7 +311,8 @@ function notification_loaded(category) {
 									.then(notificationRead => {
 										if (notificationRead.success) {
 											// location.href='edit.html';
-											alert("訊息已閱讀");
+											console.log("訊息已閱讀");
+											/*alert("訊息已閱讀");*/
 											ntf_el.classList.remove("-unread");
 										} else {
 											alert("訊息閱讀更新錯誤");
@@ -375,7 +378,8 @@ function notification_loaded(category) {
 									.then(notificationRead => {
 										if (notificationRead.success) {
 											// location.href='edit.html';
-											alert("訊息已閱讀");
+											console.log("訊息已閱讀");
+											/*alert("訊息已閱讀");*/
 											ntf_el.classList.remove("-unread");
 										} else {
 											alert("訊息閱讀更新錯誤");
@@ -450,7 +454,8 @@ function notification_loaded(category) {
 									.then(notificationRead => {
 										if (notificationRead.success) {
 											// location.href='edit.html';
-											alert("訊息已閱讀");
+											console.log("訊息已閱讀");
+											/*alert("訊息已閱讀");*/
 											ntf_el.classList.remove("-unread");
 										} else {
 											alert("訊息閱讀更新錯誤");
@@ -542,7 +547,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				notification_loaded(1);
 				/*showNotification("歡迎來到此頁");*/
 				
-				createWebSocket();
+				/*createWebSocket();*/
 				/*testPush();*/
 	        }
 	    });
@@ -585,7 +590,8 @@ document.addEventListener("click", function(e) {
 			.then(body => {
 				if (body.success) {
 					// location.href='edit.html';
-					alert("訊息已改成隱藏");
+					console.log("訊息已改成隱藏");
+					/*alert("訊息已改成隱藏");*/
 					category_count();
 					let ntf_nav_get = document.querySelector(".ntf_nav.-on");
 					/*console.log(ntf_nav_get);*/
@@ -596,6 +602,7 @@ document.addEventListener("click", function(e) {
 					notification_loaded(notificationCategory_get);
 
 				} else {
+					/*console.log("訊息隱藏更新錯誤");*/
 					alert("訊息隱藏更新錯誤");
 				}
 			})

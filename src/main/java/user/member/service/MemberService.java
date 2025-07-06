@@ -3,6 +3,7 @@ package user.member.service;
 import java.util.List;
 
 import common.service.CommonService;
+import user.member.dao.VerificationDao;
 import user.member.vo.Member;
 
 public interface MemberService extends CommonService {
@@ -16,7 +17,7 @@ public interface MemberService extends CommonService {
 
 	Member getByUsername(String username);
 
-	List<Member> getAll();
+	Member getByEmail(String email);
 
 	String getRoleById(Integer memberId);
 
@@ -26,4 +27,8 @@ public interface MemberService extends CommonService {
 
 	boolean requestPasswordReset(Integer memberId);
 	
+	// 提供給控制器使用的方法
+	VerificationDao getVerificationDao();
+	
+	MailService getMailService();
 }

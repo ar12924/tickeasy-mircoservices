@@ -14,6 +14,7 @@ import user.member.service.MemberService;
 import user.member.dao.VerificationDao;
 import user.member.vo.VerificationToken;
 import user.member.service.MailService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("user/member/edit")
@@ -40,38 +41,46 @@ public class EditController {
 	}
 
 	// 驗證舊密碼
-	@GetMapping("{password}")
-	public Core<Void> checkPassword(@PathVariable String password, @SessionAttribute(required = false) Member member) {
-		Core<Void> core = new Core<>();
-		if (member == null) {
-			core.setMessage("無會員資訊");
-			core.setSuccessful(false);
-		} else {
-			final String currentPassword = member.getPassword();
-			if (Objects.equals(password, currentPassword)) {
-				core.setSuccessful(true);
-			} else {
-				core.setMessage("舊密碼錯誤");
-				core.setSuccessful(false);
-			}
-		}
-		return core;
-	}
+	// @GetMapping("{password}")
+	// public Core<Void> checkPassword(@PathVariable String password, @SessionAttribute(required = false) Member member) {
+	// 	Core<Void> core = new Core<>();
+	// 	if (member == null) {
+	// 		core.setMessage("無會員資訊");
+	// 		core.setSuccessful(false);
+	// 	} else {
+	// 		final String currentPassword = member.getPassword();
+	// 		if (Objects.equals(password, currentPassword)) {
+	// 			core.setSuccessful(true);
+	// 		} else {
+	// 			core.setMessage("舊密碼錯誤");
+	// 			core.setSuccessful(false);
+	// 		}
+	// 	}
+	// 	return core;
+	// }
+
 
 	// 修改會員資料（支援大頭貼上傳）
-	@PutMapping(consumes = {"multipart/form-data"})
+	@PostMapping(value = "update", consumes = {"multipart/form-data"})
 	public Core<Member> edit(
-			@RequestPart("member") Member reqMember,
+			@RequestParam("member") String memberJson,
 			@RequestPart(value = "photo", required = false) MultipartFile photo,
 			@SessionAttribute Member member) {
 		Core<Member> core = new Core<>();
 		try {
+			// 使用 ObjectMapper 解析 JSON
+			ObjectMapper mapper = new ObjectMapper();
+			Member reqMember = mapper.readValue(memberJson, Member.class);
+			
 			reqMember.setMemberId(member.getMemberId());
 			reqMember.setUserName(member.getUserName());
+			
 			if (photo != null && !photo.isEmpty()) {
 				reqMember.setPhoto(photo.getBytes());
 			}
+			
 			Member updated = service.editMember(reqMember);
+			
 			core.setSuccessful(true);
 			core.setMessage("會員資料已更新");
 			core.setData(updated);
