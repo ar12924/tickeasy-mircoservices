@@ -209,7 +209,7 @@ div.ntf_empty{
     color:#D9D9D9;
     border-radius: 10px; 
     position: relative;
-    width:600px;
+   /*  width:600px; */
    /*  text-align:center;
     vertical-align:middle; */
 }
