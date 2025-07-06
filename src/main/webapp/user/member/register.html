@@ -4,26 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>會員註冊</title>
-    <link rel="stylesheet" href="css/indexM.css" />
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
+    <link
+      rel="stylesheet"
+      href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../buy/css/index.css" class="main-css" />
+    <link rel="stylesheet" href="../layout/nav/nav.css" />
     <link rel="stylesheet" href="css/register.css" />
+    <link rel="stylesheet" href="../layout/footer/footer.css" />
   </head>
   <body>
-    <nav>
-      <div class="logo">
-        <a href="/maven-tickeasy-v1/user/buy/index.html">TickEasy</a>
-      </div>
-      <ul class="nav-links">
-        <li><a href="#tickets">我的訂單</a></li>
-        <li><a href="#favorites">我的關注</a></li>
-        <li><a href="#account">我的票券</a></li>
-        <li><a href="#notifications">通知中心</a></li>
-        <li>
-          <a href="/maven-tickeasy-v1/user/member/edit.html" class="cta-button"
-            >會員中心</a
-          >
-        </li>
-      </ul>
-    </nav>
+    <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
     <main class="register-box">
       <h2>註冊 TickEasy 帳號</h2>
       <form
@@ -160,37 +152,10 @@
         <div id="msg" style="color: red; margin-top: 1rem"></div>
       </form>
     </main>
-    <footer>
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>關於我們</h3>
-          <ul>
-            <li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>客戶服務</h3>
-          <ul>
-            <li><a href="#faq">常見問題</a></li>
-            <li><a href="#contact">聯絡我們</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>售票須知</h3>
-          <ul>
-            <li><a href="#terms">購票說明</a></li>
-            <li><a href="#policy">退票政策</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>追蹤我們</h3>
-          <div class="social-links">
-            <a href="#facebook">Facebook</a>
-            <a href="#instagram">Instagram</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <script src="js/register.js"></script>
+    <footer></footer>
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/validator@latest/validator.min.js"></script>
+  <script type="module" src="js/member-common.js"></script>
+  <script type="module" src="js/register.js"></script>
 </html>

@@ -1,3 +1,5 @@
+import { fetchMemberFromSession, getContextPath } from "../../common/utils.js";
+
 const loggedInNickname = document.querySelector("#loggedInNickname");
 const logoutButton = document.querySelector("#logoutButton");
 const saveButton = document.querySelector("#saveButton");
@@ -22,62 +24,102 @@ loggedInNickname.textContent =
   sessionStorage.getItem("loggedInNickname") || "訪客";
 
 // 載入會員資訊
-fetch("/maven-tickeasy-v1/user/member/edit", { credentials: "include" })
-  .then((resp) => resp.json())
-  .then((body) => {
+async function loadMemberInfo() {
+  try {
+    const resp = await fetch(`${getContextPath()}/user/member/edit`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const body = await resp.json();
+
     if (!body.successful) {
       msg.textContent = "尚未登入，請先登入";
       msg.innerHTML += '<br><a href="login.html">登入頁面</a>';
       return;
     }
     const data = body.data;
+    console.log("會員資料:", data); // 除錯資訊
     username.value = data.userName || "";
     nickname.value = data.nickName || "";
     email.value = data.email || "";
     unicode.value = data.unicode || "";
-    if (data.photo) {
-      photoPreview.src = "data:image/jpeg;base64," + data.photo;
-      photoPreview.style.display = "block";
-      if (defaultIcon) defaultIcon.style.display = "none";
-    } else {
-      photoPreview.style.display = "none";
-      if (defaultIcon) defaultIcon.style.display = "inline-block";
-    }
-  })
-  .catch((err) => {
+
+    // 載入會員照片
+    await loadMemberPhoto(data.memberId);
+  } catch (err) {
     console.error(err);
     msg.textContent = "載入會員資料失敗";
     msg.innerHTML += '<br><a href="login.html">重新登入</a>';
-  });
+  }
+}
+
+// 載入會員照片
+async function loadMemberPhoto(memberId) {
+  if (!memberId) {
+    console.warn("會員ID為空，無法載入照片");
+    photoPreview.classList.remove("show");
+    defaultIcon.classList.remove("hide");
+    return;
+  }
+
+  console.log("載入會員照片，會員ID:", memberId); // 除錯資訊
+  try {
+    const photoUrl = `${getContextPath()}/api/member-photos/${memberId}`;
+    console.log("照片URL:", photoUrl); // 除錯資訊
+    const img = new Image();
+
+    img.onload = function () {
+      console.log("照片載入成功"); // 除錯資訊
+      photoPreview.src = photoUrl + "?t=" + new Date().getTime(); // 加時間戳避免快取
+      photoPreview.classList.add("show");
+      defaultIcon.classList.add("hide");
+    };
+
+    img.onerror = function () {
+      // 照片載入失敗，顯示預設圖示
+      console.log("照片載入失敗，顯示預設圖示");
+      photoPreview.classList.remove("show");
+      defaultIcon.classList.remove("hide");
+    };
+
+    img.src = photoUrl;
+  } catch (err) {
+    console.error("載入照片失敗:", err);
+    photoPreview.classList.remove("show");
+    defaultIcon.classList.remove("hide");
+  }
+}
+
+// 載入會員資料
+loadMemberInfo();
 
 // 圖片即時預覽
 photoInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) {
     // 沒有選擇檔案時，顯示預設圖示
-    photoPreview.style.display = "none";
-    defaultIcon.style.display = "inline-block";
+    photoPreview.classList.remove("show");
+    defaultIcon.classList.remove("hide");
     return;
   }
   const reader = new FileReader();
   reader.onload = () => {
     photoPreview.src = reader.result;
-    photoPreview.style.display = "block";
-    defaultIcon.style.display = "none";
+    photoPreview.classList.add("show");
+    defaultIcon.classList.add("hide");
   };
   reader.readAsDataURL(file);
 });
 
-// 密碼區塊展開/收合
+// 密碼區塊滑動展開/收合
 changePasswordBtn.addEventListener("click", () => {
-  if (
-    passwordChangeArea.style.display === "none" ||
-    passwordChangeArea.style.display === ""
-  ) {
-    passwordChangeArea.style.display = "block";
+  const isVisible = passwordChangeArea.classList.contains("show");
+
+  if (!isVisible) {
+    passwordChangeArea.classList.add("show");
     changePasswordBtn.textContent = "取消變更密碼";
   } else {
-    passwordChangeArea.style.display = "none";
+    passwordChangeArea.classList.remove("show");
     changePasswordBtn.textContent = "變更密碼";
     password.value = "";
     cPassword.value = "";
@@ -118,7 +160,7 @@ saveButton.addEventListener("click", (e) => {
     msg.textContent = "統一編號格式錯誤，應為 8 碼數字";
     return;
   }
-  if (passwordChangeArea.style.display === "block" && (pw || cpw)) {
+  if (passwordChangeArea.classList.contains("show") && (pw || cpw)) {
     if (pw.length < 6) {
       msg.textContent = "密碼長度須大於等於 6 字元";
       return;
@@ -135,22 +177,20 @@ saveButton.addEventListener("click", (e) => {
     email: em,
     unicode: uni,
   };
-  if (passwordChangeArea.style.display === "block" && pw) {
+  if (passwordChangeArea.classList.contains("show") && pw) {
     member.password = pw;
   }
 
   // 建立 FormData
   const fd = new FormData();
-  fd.append(
-    "member",
-    new Blob([JSON.stringify(member)], { type: "application/json" })
-  );
+  fd.append("member", JSON.stringify(member));
   if (photoInput.files.length > 0) {
     fd.append("photo", photoInput.files[0]);
   }
 
-  fetch("/maven-tickeasy-v1/user/member/edit", {
-    method: "PUT",
+  // 使用 getContextPath() 替代硬編碼路徑
+  fetch(`${getContextPath()}/user/member/edit/update`, {
+    method: "POST",
     credentials: "include",
     body: fd,
   })
@@ -162,6 +202,11 @@ saveButton.addEventListener("click", (e) => {
 							使用者名稱：${body.data.userName}<br>
 							暱稱：${body.data.nickName}`;
         sessionStorage.setItem("loggedInNickname", body.data.nickName);
+
+        // 如果成功儲存照片，重新載入照片
+        if (photoInput.files.length > 0) {
+          loadMemberPhoto(body.data.memberId);
+        }
       } else {
         msg.style.color = "red";
         msg.textContent = body.message || "更新失敗";
@@ -176,7 +221,8 @@ saveButton.addEventListener("click", (e) => {
 // 登出
 logoutButton.addEventListener("click", () => {
   if (!confirm("是否登出？")) return;
-  fetch("/maven-tickeasy-v1/user/member/logout", {
+  // 使用 getContextPath() 替代硬編碼路徑
+  fetch(`${getContextPath()}/user/member/logout`, {
     method: "DELETE",
     credentials: "include",
   })
@@ -200,7 +246,8 @@ sendVerificationBtn.addEventListener("click", () => {
     return;
   }
   sendVerificationBtn.disabled = true;
-  fetch("/maven-tickeasy-v1/user/member/edit/send-verify-mail", {
+  // 使用 getContextPath() 替代硬編碼路徑
+  fetch(`${getContextPath()}/user/member/edit/send-verify-mail`, {
     method: "POST",
     credentials: "include",
   })

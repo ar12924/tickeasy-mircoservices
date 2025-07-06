@@ -1,6 +1,7 @@
+import { getUrlParam, getContextPath } from "../../common/utils.js";
+
 document.addEventListener("DOMContentLoaded", function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get("token");
+  const token = getUrlParam("token");
 
   const step1 = document.getElementById("step1");
   const step2 = document.getElementById("step2");
@@ -30,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     requestBtn.disabled = true;
     requestBtn.textContent = "發送中...";
 
-    fetch("/maven-tickeasy-v1/user/member/reset-password/request", {
+    fetch(`${getContextPath()}/user/member/reset-password/request`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -78,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     resetBtn.disabled = true;
     resetBtn.textContent = "重置中...";
 
-    fetch("/maven-tickeasy-v1/user/member/reset-password/reset", {
+    fetch(`${getContextPath()}/user/member/reset-password/reset`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -111,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // 驗證 token
   function verifyToken(token) {
     fetch(
-      `/maven-tickeasy-v1/user/member/reset-password/verify?token=${encodeURIComponent(
+      `${getContextPath()}/user/member/reset-password/verify?token=${encodeURIComponent(
         token
       )}`
     )

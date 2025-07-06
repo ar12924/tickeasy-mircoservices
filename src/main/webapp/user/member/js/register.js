@@ -1,3 +1,5 @@
+import { validateIdCard, getContextPath } from "../../common/utils.js";
+
 const form = document.querySelector("#registerForm");
 const username = document.querySelector("#userName");
 const nickname = document.querySelector("#nickName");
@@ -112,10 +114,10 @@ phone.addEventListener("input", function () {
   }
 });
 
-// 身分證
+// 身分證 - 使用 utils.js 的 validateIdCard 函數
 idCard.addEventListener("input", function () {
   clearError(idCard, idCardError);
-  if (!/^[A-Za-z]\d{9}$/.test(idCard.value.trim())) {
+  if (!validateIdCard(idCard.value.trim())) {
     showError(idCard, idCardError, "身分證格式錯誤，開頭英文字母＋9碼數字");
   }
 });
@@ -218,7 +220,8 @@ form.addEventListener("submit", function (e) {
   fd.append("hostApply", hostApply.checked.toString());
   if (photoInput.files[0]) fd.append("photo", photoInput.files[0]);
 
-  fetch(form.action, {
+  // 使用 getContextPath() 替代硬編碼路徑
+  fetch(`${getContextPath()}/user/member/register`, {
     method: "POST",
     body: fd,
     credentials: "include",
