@@ -229,14 +229,27 @@ div.tk_region {
 	display: inline-block;
 }
 
+
+
 div.tk_right {
 	margin-left: 60px;
 	text-align: center;
 	margin-top: 5px;
 	vertical-align:top;
-	margin-top:150px;
+	margin-top: 120px;
 }
 
+
+
+div.tk_ticket_type{
+	background-color:#EC4899;
+	color:#D9D9D9;
+	width:85px;
+	margin-bottom:10px;
+	border-radius:5px;
+	text-align: center;
+	
+}
 @media all and (max-width: 1440px) {
 	div.tk_right {
 		display: none;
@@ -349,6 +362,8 @@ div.inner_tk_block.-on {
   height: auto; /* 讓元素展開 */
   transition: opacity 1.5s ease;
 }
+
+
 
 
 /* div.inner_tk_block{

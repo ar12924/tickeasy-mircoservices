@@ -35,7 +35,7 @@ public class TicketListController{
 	
 	@PostMapping("ticket-list")
 	@ResponseBody
-	public List<TicketViewDto> notificationUnvisible(/* @RequestBody Member member */ @SessionAttribute  (required = false) Member member) {
+	public List<TicketViewDto> ticketList(/* @RequestBody Member member */ @SessionAttribute  (required = false) Member member) {
 		
     	if (member == null || member.getMemberId() == null) {
             System.out.println("未登入");

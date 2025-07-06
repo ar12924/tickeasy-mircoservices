@@ -8,4 +8,5 @@ import user.ticket.vo.TicketView;
 
 public interface TicketService {
 	List<TicketViewDto> ticketList(int memberId);
+	
 }

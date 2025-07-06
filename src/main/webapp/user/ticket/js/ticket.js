@@ -69,7 +69,7 @@ function smoothScrollTo(element, targetScrollTop, duration = 600) {
 
 function ticket_loaded(category) {
 	var count=0;
-
+	
 	fetch('/maven-tickeasy-v1/ticket/ticket-list', {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
@@ -99,9 +99,10 @@ function ticket_loaded(category) {
 			}
 */
 			for (let ticketView of ticketsView) {
-		
+			
 			if(ticketView.viewCategoryType==category){
 				count++;
+				if((category==1 || category==2 )&&(ticketView.memberId==ticketView.currentHolderMemberId)){
 									ticket_el.insertAdjacentHTML("afterbegin", `
 										<div class="tk">
 															<div class="tk_region tk_left">
@@ -109,7 +110,7 @@ function ticket_loaded(category) {
 															</div>
 															<div class="tk_region tk_center">
 																<div class="tk_title">${ticketView.eventName}</div>
-																<div class="tk_content">
+																<div class="tk_content">																	
 																	<div class="tk_content_set">
 																		<div class="tk_content_title ">活動時間</div>
 																		<div class="tk_content_text tk_content_time">${ticketView.eventFromDate}</div>
@@ -178,12 +179,172 @@ function ticket_loaded(category) {
 															</div>
 														</div>
 										  
-						                `)
+						                `)}
+		if((category==1 || category==2 )&&(ticketView.memberId!=ticketView.currentHolderMemberId)){
+											ticket_el.insertAdjacentHTML("afterbegin", `
+												<div class="tk">
+																	<div class="tk_region tk_left">
+																		<img src="../../common/images/activityPic.png" alt="ticket">
+																	</div>
+																	<div class="tk_region tk_center">
+																		<div class="tk_title">${ticketView.eventName}</div>
+																		<div class="tk_content">																
+																			<div class="tk_content_set">
+																				<div class="tk_content_title ">活動時間</div>
+																				<div class="tk_content_text tk_content_time">${ticketView.eventFromDate}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">活動地點</div>
+																				<div class="tk_content_text tk_content_palce">${ticketView.place}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">訂單編號</div>
+																				<div class="tk_content_text tk_content_tkNo">${ticketView.orderId}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">票種</div>
+																				<div class="tk_content_text tk_content_tkType">${ticketView.categoryName}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">序號</div>
+																				<div class="tk_content_text tk_content_No">${ticketView.queueId}</div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="tk_region tk_right">
+																	<div class="tk_ticket_type">轉讓票</div>
+																		<div class="tk_status">${ticketView.statusText}</div>
+																		<div class="tk_more"><a class="tk_more_ -view"href="#">查看票券詳情</a></div>
+																		<div class="tk_more"><a class="tk_more_ -unview" href="#">收合票券詳情</a></div>
+																	</div>
+																	<div class="inner_tk_block">
+																	<hr style="border: none; border-top: 1px solid #ccc; margin: 16px auto; width:80%;">
+																	<div class="tk_region_open tk_botton_left">
+																		<div class="tk_content">
+																			<div class="tk_content_set">
+																				<div class="tk_content_title ">價格</div>
+																				<div class="tk_content_text tk_content_price">${ticketView.price}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">是否使用</div>
+																				<div class="tk_content_text tk_content_used">${ticketView.isUsedText}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">姓名</div>
+																				<div class="tk_content_text tk_content_name">${ticketView.participantName}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">手機號碼</div>
+																				<div class="tk_content_text tk_content_phone">${ticketView.phone}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">電子郵件</div>
+																				<div class="tk_content_text tk_content_email">${ticketView.email}</div>
+																			</div>
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">身份證字號</div>
+																				<div class="tk_content_text tk_content_id">${ticketView.idCard}</div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="tk_region_open tk_botton_right">
+																		<div class="tk_content">
+																			<div class="tk_content_set">
+																				<div class="tk_content_title">QR code</div>
+																				<div class="tk_content_text tk_content_qrcode"><img src="../../common/images/qrcode.png" alt="qrcode"></div>
+																			</div>
+																		</div>
+																	</div>
+																	</div>
+																</div>
+												  
+								                `)}
+	if(category==3){
+										ticket_el.insertAdjacentHTML("afterbegin", `
+											<div class="tk">
+																<div class="tk_region tk_left">
+																	<img src="../../common/images/activityPic.png" alt="ticket">
+																</div>
+																<div class="tk_region tk_center">
+																	<div class="tk_title">${ticketView.eventName}</div>
+																	<div class="tk_content">																	
+																		<div class="tk_content_set">
+																			<div class="tk_content_title ">活動時間</div>
+																			<div class="tk_content_text tk_content_time">${ticketView.eventFromDate}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">活動地點</div>
+																			<div class="tk_content_text tk_content_palce">${ticketView.place}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">訂單編號</div>
+																			<div class="tk_content_text tk_content_tkNo">${ticketView.orderId}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">票種</div>
+																			<div class="tk_content_text tk_content_tkType">${ticketView.categoryName}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">序號</div>
+																			<div class="tk_content_text tk_content_No">${ticketView.queueId}</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="tk_region tk_right">
+																	<div class="tk_status">${ticketView.statusText}</div>
+																	<div class="tk_more"><a class="tk_more_ -view"href="#">查看票券詳情</a></div>
+																	<div class="tk_more"><a class="tk_more_ -unview" href="#">收合票券詳情</a></div>
+																</div>
+																<div class="inner_tk_block">
+																<hr style="border: none; border-top: 1px solid #ccc; margin: 16px auto; width:80%;">
+																<div class="tk_region_open tk_botton_left">
+																	<div class="tk_content">
+																		<div class="tk_content_set">
+																			<div class="tk_content_title ">價格</div>
+																			<div class="tk_content_text tk_content_price">${ticketView.price}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">是否使用</div>
+																			<div class="tk_content_text tk_content_used">${ticketView.isUsedText}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">姓名</div>
+																			<div class="tk_content_text tk_content_name">${ticketView.participantName}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">手機號碼</div>
+																			<div class="tk_content_text tk_content_phone">${ticketView.phone}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">電子郵件</div>
+																			<div class="tk_content_text tk_content_email">${ticketView.email}</div>
+																		</div>
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">身份證字號</div>
+																			<div class="tk_content_text tk_content_id">${ticketView.idCard}</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="tk_region_open tk_botton_right">
+																	<div class="tk_content">
+																		<div class="tk_content_set">
+																			<div class="tk_content_title">QR code</div>
+																			<div class="tk_content_text tk_content_qrcode"><img src="../../common/images/qrcode.png" alt="qrcode"></div>
+																		</div>
+																	</div>
+																</div>
+																</div>
+															</div>
+											  
+							                `)}											
+
 }
 }
+
 console.log(count);
 tk_isEmpty(count);
 })
+
 }
 
 
