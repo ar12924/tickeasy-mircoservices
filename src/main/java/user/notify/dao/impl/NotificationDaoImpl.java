@@ -103,7 +103,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		 
 
 		int result = session.createNativeQuery(sql)
-				.setParameter("notificationId", 5) // 或自動遞增可以省略
+				.setParameter("notificationId", 5)
 				.setParameter("memberId", memberId)
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
@@ -142,15 +142,16 @@ public class NotificationDaoImpl implements NotificationDao {
 		String message = String.format("親愛的會員，您關注的活動「%s」%s票種 將於 %s 開賣至 %s，請記得準備購買！", eventName,
 				categoryName, eventSellFromTime.toString(), eventSellToTime.toString());
 
+		String link_template=linkTemplateNotification(2).replace("{event_id}", eventId+"");
 		int result = session.createNativeQuery(sql)
-				.setParameter("notificationId", 2) // 或自動遞增可以省略
+				.setParameter("notificationId", 2)
 				.setParameter("memberId", memberId)
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
 				.setParameter("status", 1)
 				.setParameter("title", "關注開賣提醒")
 				.setParameter("message", message)
-				.setParameter("linkUrl", "/event/" + eventId)
+				.setParameter("linkUrl", link_template)
 				.executeUpdate();
 		return result;
 		
@@ -181,15 +182,15 @@ public class NotificationDaoImpl implements NotificationDao {
 		String message2= String.format("%s 售票即將結束",eventName);
 	
 		
-		int result = session.createNativeQuery(sql)// 或自動遞增可以省略
-				.setParameter("notificationId", 4) // 或自動遞增可以省略
+		int result = session.createNativeQuery(sql)
+				.setParameter("notificationId", 4) 
 				.setParameter("memberId", memberId)
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
 				.setParameter("status", 1)
 				.setParameter("title", message2)
 				.setParameter("message", message)
-				.setParameter("linkUrl", "/event/" + eventId)
+				.setParameter("linkUrl", "/user/buy/event_ticket_purchase.html?eventId=" + eventId)
 				.executeUpdate();
 		return result;
 	}
@@ -226,15 +227,15 @@ public class NotificationDaoImpl implements NotificationDao {
 		String message2 = eventName + "票券售出已達"+ percent+"%";
 	
 		
-		int result = session.createNativeQuery(sql)// 或自動遞增可以省略
-				.setParameter("notificationId", 3) // 或自動遞增可以省略
+		int result = session.createNativeQuery(sql)
+				.setParameter("notificationId", 3) 
 				.setParameter("memberId", memberId)
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
 				.setParameter("status", 1)
 				.setParameter("title", message2)
 				.setParameter("message", message)
-				.setParameter("linkUrl", "/event/" + eventId)
+				.setParameter("linkUrl", "/user/buy/event_ticket_purchase.html?eventId=" + eventId)
 				.executeUpdate();
 		return result;
 	}

@@ -1,12 +1,16 @@
 package user.notify.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import user.member.vo.Member;
 import user.notify.service.NotificationService;
 import user.notify.vo.Notification;
+import user.notify.websocket.NotifyWebSocketHandler;
 
 
 
@@ -27,19 +32,27 @@ public class NotificationListController{
 	@Autowired
 	private NotificationService notificationService;
 	
+	@Autowired
+    private NotifyWebSocketHandler notifyWebSocketHandler;
+	
+	@GetMapping("check-login")
+    @ResponseBody
+    public boolean checkLoginStatus(@SessionAttribute(required = false) Member member) {
+        return member != null && member.getMemberId() != null;
+    }
+	
+	
 	@PostMapping("notification-list")
 	@ResponseBody
-	public List<Notification> notificationList(@RequestBody Member member /* @SessionAttribute Member member */) {
+	public List<Notification> notificationList(
+			/*@RequestBody Member member*/ @SessionAttribute  (required = false) Member member) {
 		
-		
+    	if (member == null || member.getMemberId() == null) {
+            System.out.println("未登入");
+            return new ArrayList<>();
+            }
     	Integer memId=member.getMemberId();
-	
-
-		/*
-		 * if(memId==null || memId.equals("")) { System.out.println("未登入"); }
-		 */
 		List<Notification> notifications = notificationService.notificationList(memId);
-		
 		
 		return notifications;
 		

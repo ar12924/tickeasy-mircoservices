@@ -68,8 +68,7 @@ function smoothScrollTo(element, targetScrollTop, duration = 600) {
 //所有票券的load
 
 function ticket_loaded(category) {
-	
-	
+	var count=0;
 
 	fetch('/maven-tickeasy-v1/ticket/ticket-list', {
 		method: `POST`,
@@ -82,10 +81,27 @@ function ticket_loaded(category) {
 	})
 		.then(resp => resp.json())
 		.then(ticketsView => {
+			if(!Array.isArray(ticketsView)){
+												ticketsView = [];
+									}
+			/*if(category==1){
+				var category_count_get = document.querySelector("span.coming_tk").innerHTML;
+				tk_isEmpty(category_count_get);
+			}
+			if(category==2){
+				var category_count_get = document.querySelector("span.history_tk").innerHTML;
+				console.log(category_count_get);
+				tk_isEmpty(category_count_get);
+			}
+			if(category=3){
+				var category_count_get = document.querySelector("span.allchange_tk").innerHTML;
+				tk_isEmpty(category_count_get);
+			}
+*/
 			for (let ticketView of ticketsView) {
-
-			if(ticketView.viewCategoryType==category){
 		
+			if(ticketView.viewCategoryType==category){
+				count++;
 									ticket_el.insertAdjacentHTML("afterbegin", `
 										<div class="tk">
 															<div class="tk_region tk_left">
@@ -165,6 +181,8 @@ function ticket_loaded(category) {
 						                `)
 }
 }
+console.log(count);
+tk_isEmpty(count);
 })
 }
 
@@ -174,9 +192,9 @@ function ticket_loaded(category) {
 function tk_isEmpty(count) {
 	if (count == 0) {
 		console.log("123");
-		notification_el.insertAdjacentHTML("beforeend", `<div class="tk_empty">
+		ticket_el.insertAdjacentHTML("beforeend", `<div class="tk_empty">
 																				            <div class="tk_empty_text">
-																							Oops~目前沒有沒有票券
+																							Oops~目前沒有票券
 																				           </div>
 																				                           
 																				      </div>
@@ -215,22 +233,21 @@ function category_count() {
 
 			//處理ticket各頁籤顯示數量
 			for (let ticket of tickets) {
-				let eventDate = new Date(ticket.eventFromDate);
+				/*let eventDate = new Date(ticket.eventFromDate);*/
 				
-				if (eventDate<now) {
+				if (ticket.viewCategoryType==1) {
 					coming_count++;
-					console.log("testcoming");
+					
 				}
 
-				if (eventDate>now) {
+				if (ticket.viewCategoryType==2) {
 					history_count++;
-					console.log("testhistory");
+					
 				}
 
-				if (ticket.memberId !== ticket.currentHolderMemberId) {
+				if (ticket.viewCategoryType==3) {
 					allchange_count++;
-					console.log(ticket.memberId);
-					console.log(ticket.currentHolderMemberId);
+				
 				}
 
 				
@@ -242,7 +259,115 @@ function category_count() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+	
+	//先判斷有無登入
+			fetch('/maven-tickeasy-v1/notify/check-login')
+			    .then(response => response.json())
+			    .then(isLoggedIn => {
+			        if (!isLoggedIn) {
+			            window.location.href = "/maven-tickeasy-v1/user/member/login.html";  // 如果未登入，跳轉到登入頁
+						console.log("未登入");
+			        } else {
+	
+	
+	
+	
 	ticket_el.innerHTML = '';
 	category_count();
 	ticket_loaded(1);
+	createWebSocket();
+	/*testPush();*/
+	}
+						})
 })
+
+/*function testPush(){
+
+fetch('/maven-tickeasy-v1/notify/test-push', {
+  method: 'POST'
+})
+.then(resp => resp.text())
+.then(msg => console.log("後端回應：", msg));
+}*/
+//各頁籤切換
+document.querySelectorAll(".tk_tab").forEach(button => {
+	button.addEventListener("click", () => {
+		const tabId = button.getAttribute("data-tab");
+
+		// 移除目前的 active 樣式
+		document.querySelectorAll(".tk_tab").forEach(btn => btn.closest("div.tk_nav").classList.remove("-on"));
+		document.querySelectorAll(".tab_content").forEach(tab => tab.closest("div.tk_nav").classList.remove("-on"));
+
+		// 加入新的 active 樣式
+		button.closest("div.tk_nav").classList.add("-on");
+		let ticketCategory = tabId.split("_")[1];
+		/*console.log(tabId);
+		console.log(notificationCategory);*/
+
+		/*document.getElementById(tabId).classList.add("-on");*/
+		/*	document.querySelector(`[data-id="${tabId}"]`).classList.add("-on");*/
+		if (ticketCategory == 1) {
+			ticket_el.innerHTML = '';
+			ticket_loaded(1);
+		}
+		if (ticketCategory == 2) {
+			ticket_el.innerHTML = '';
+			ticket_loaded(2);
+		}
+		if (ticketCategory == 3) {
+			ticket_el.innerHTML = '';
+			ticket_loaded(3);
+		}
+
+	})
+})
+/*
+function createWebSocket() {
+	notificationQueue = [];
+	var memberId = sessionStorage.getItem("memberId");  // 使用者的 memberId 
+        var socket = new WebSocket("ws://localhost:8080/maven-tickeasy-v1/notify/notification?memberId=" + memberId);
+
+		// 監聽 WebSocket 連接成功事件
+		socket.addEventListener('open', e => {
+		    console.log("WebSocket 連接已建立！");  // 可以在控制台中打印這條信息確認連接成功
+		    // 可以在這裡執行其他邏輯，比如發送消息到後端等
+		});
+		
+        socket.addEventListener('message', e => {
+            var message = e.data;
+			console.log(message);
+			// 如果隊列中沒有通知，直接顯示，否則將其加入隊列
+			const notificationBox = document.getElementById('notification_box');
+	        if (notificationBox && !document.getElementById('notification_box').classList.contains('show')) {
+	            showNotification(message);
+	        } else {
+	            // 把新通知加入隊列
+	            notificationQueue.push({ content: message });
+	        };
+        });
+		// 當 WebSocket 連接錯誤時
+		socket.addEventListener('error', function (e) {
+		    console.error("WebSocket 發生錯誤:", e);
+		});
+
+		// 當 WebSocket 連接關閉時
+		socket.addEventListener('close', function (e) {
+		    console.log("WebSocket 連接已關閉");
+		    // 這裡可以執行一些清理工作，或者根據需求重連
+		    reconnectWebSocket();  // 重連邏輯
+		});
+		}
+		// 重連 WebSocket 連接
+function reconnectWebSocket() {
+			var reconnectTimeout;
+			// 如果已有重連操作，取消之前的重試
+			   if (reconnectTimeout) {
+			       clearTimeout(reconnectTimeout);
+			   }
+
+			   // 5秒後嘗試重新建立 WebSocket 連接
+			   reconnectTimeout = setTimeout(function() {
+			       console.log("正在重試 WebSocket 連接...");
+			       createWebSocket();  // 重新創建 WebSocket 連接
+			   }, 5000);  // 5秒後重試
+		}*/

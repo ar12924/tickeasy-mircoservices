@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import user.notify.dao.NotificationDao;
 import user.notify.service.NotificationService;
 import user.notify.vo.Notification;
+import user.notify.websocket.NotifyWebSocketHandler;
 
 
 @Service
@@ -24,6 +25,9 @@ public class NotificationServiceImpl implements NotificationService {
 	private final static Logger logger = LogManager.getLogger(NotificationServiceImpl.class);
 	@Autowired
 	private NotificationDao notificationDao;
+	
+	@Autowired
+    private NotifyWebSocketHandler notifyWebSocketHandler;
 	
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
@@ -72,6 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 			if (result > 0) {
 				System.out.println("✅ 活動提醒通知已成功透過 Hibernate SQL 插入！");
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "活動提醒通知已送達通知中心,請查看");
 			} else {
 				System.out.println("⚠️ 活動提醒通知插入失敗！");
 			}
@@ -111,6 +116,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 			if (result > 0) {
 				System.out.println("✅ 關注開賣通知已成功透過 Hibernate SQL 插入！");
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "關注開賣通知已送達通知中心,請查看");
 			} else {
 				System.out.println("⚠️ 關注開賣通知插入失敗！");
 			}
@@ -144,6 +150,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 			if (result > 0) {
 				System.out.println("✅ 售票截止提醒通知已成功透過 Hibernate SQL 插入！");
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "售票截止提醒已送達通知中心,請查看");
 			} else {
 				System.out.println("⚠️ 售票截止提醒通知插入失敗！");
 			}
@@ -195,6 +202,7 @@ public class NotificationServiceImpl implements NotificationService {
 			if (result > 0) {
 				System.out.println("✅ 剩餘票券60%提醒通知已成功透過 Hibernate SQL 插入！");
 				markAsNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType); // ➤ 寫入 Redis
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "關注活動的剩餘票券60%提醒通知已送達通知中心,請查看");
 			} else {
 				System.out.println("⚠️ 剩餘票券60%提醒通知插入失敗！");
 			}
@@ -222,6 +230,7 @@ public class NotificationServiceImpl implements NotificationService {
 			if (result > 0) {
 				System.out.println("✅ 剩餘票券20%提醒通知已成功透過 Hibernate SQL 插入！");
 				markAsNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType); // ➤ 寫入 Redis
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "關注活動的剩餘票券20%提醒通知已送達通知中心,請查看");
 			} else {
 				System.out.println("⚠️ 剩餘票券20%提醒通知插入失敗！");
 			}
