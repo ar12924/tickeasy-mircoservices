@@ -12,20 +12,53 @@ import {
 } from "../../layout/footer/footer.js";
 import {
   fetchEventInfoTemplate,
-  renderRecentEventBox,
+  renderEventInfoBox,
   initEventBoxJSEvents,
+  fetchPaginationTemplate,
+  renderPagination,
+  showPage,
 } from "../ui/search/event-box.js";
 
 // ==================== 1. API 服務層 (API Service Layer) ====================
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
 
 /**
- * 查詢熱門活動資料。
+ * 查詢活動資料(含條件篩選功能)。
  *
+ * @param {Object} options - 請求參數物件。
+ * @param {number} [options.searchTerm] - 關鍵字。
+ * @param {number} [options.page] - 頁數。
+ * @param {String} [options.order] - 排序方法(ASC、DESC 共兩種)。
  * @return {Object} 近期9筆活動資料。
  */
-export const fetchRecentEventInfo = async () => {
-  const resp = await fetch(`${getContextPath()}/search-event`);
+export const searchEventInfo = async ({
+  searchTerm = "",
+  page = 1,
+  order = "ASC",
+}) => {
+  let url = `${getContextPath()}/search-event`;
+  // URLSearchParams 來建立查詢參數物件
+  const params = new URLSearchParams();
+
+  // 檢查每個參數，非預設就加入參數
+  if (searchTerm !== "") {
+    params.append("searchTerm", searchTerm);
+  }
+  if (page !== 1) {
+    params.append("page", page);
+  }
+  if (order !== "ASC") {
+    params.append("order", order);
+  }
+
+  const queryString = params.toString();
+  // 只要有任何參數加入，就附加到 URL
+  if (queryString) {
+    url += `?${queryString}`;
+  }
+  console.log(url); // 檢查用
+
+  const resp = await fetch(url);
   return await resp.json();
 };
 
@@ -89,12 +122,25 @@ export const deleteFavorite = async (eventId) => {
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
-const initIndexJSEvents = () => {
+const initSearchJSEvents = () => {
   // 搜尋功能
   $(".search-btn").on("click", () => {
+    // 去輸入空白
     const $searchInput = $(".search-input");
-    if ($searchInput.val().trim()) {
-      alert("搜尋功能：" + $searchInput.val());
+    const searchTerm = $searchInput.val().trim();
+
+    // 建立查詢參數物件
+    const params = new URLSearchParams();
+    params.append("searchTerm", searchTerm);
+
+    // 將搜尋字串傳遞至 URL 後方並跳轉
+    location.href = `${getContextPath()}/user/buy/search.html?${params.toString()}`;
+  });
+
+  // 支援 Enter 鍵搜尋(e.which 為 13)
+  $(".search-input").on("keypress", (e) => {
+    if (e.which === 13) {
+      $(".search-btn").click();
     }
   });
 };
@@ -104,21 +150,32 @@ const initIndexJSEvents = () => {
 
 (async () => {
   // ====== 資料儲存變數區 ======
-  const recentEvent = await fetchRecentEventInfo();
-  //console.log(recentEvent); // ok!!!
+  const searchTerm = getUrlParam("searchTerm");
+  const eventResponse = await searchEventInfo({ searchTerm });
+  console.log(eventResponse); // ok!!
 
   // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
   await renderNav(navTemplate);
   initNavJSEvents();
 
+  // ====== hero 部分(含搜尋列) ======
+  $(".search-input").val(getUrlParam("searchTerm"));
+
   // ====== event-box 部分 ======
-  const eventTemplate = await fetchEventInfoTemplate();
-  await renderRecentEventBox(eventTemplate, recentEvent);
-  initEventBoxJSEvents();
+  // 預設載入第1頁
+  await showPage(1, 9, eventResponse);
+
+  // const eventTemplate = await fetchEventInfoTemplate();
+  // await renderEventInfoBox(eventTemplate, eventResponse);
+  initEventBoxJSEvents(eventResponse);
+
+  // ====== 分頁(panigation)部分 ======
+  // const paginationTemplate = await fetchPaginationTemplate();
+  // await renderPagination(paginationTemplate, eventResponse.count, 1, 9); // pageSize = 9 (比照後端寫死!!)
 
   // ====== index 部分 ======
-  initIndexJSEvents(); // 載入 index 主要事件
+  initSearchJSEvents(); // 載入 index 主要事件
 
   // ====== footer 部分 ======
   const footerTemplate = await fetchFooterTemplate();

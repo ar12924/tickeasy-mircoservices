@@ -25,12 +25,12 @@ export const fetchEventInfoTemplate = async () => {
 };
 
 /**
- * 動態插入近期 9 筆活動資料的 HTML。
+ * 動態插入活動資料的 HTML。
  *
  * @param {string} templateHTML - HTML模板。
- * @param {Array<Object>} recentEvent - 9筆近期活動資料。
+ * @param {Array<Object>} eventResponse - 活動資料查詢結果。
  */
-export const renderRecentEventBox = async (templateHTML, recentEvent) => {
+export const renderEventInfoBox = async (templateHTML, eventResponse) => {
   $(".event-container").empty();
 
   // 抓取關注資料
@@ -41,11 +41,13 @@ export const renderRecentEventBox = async (templateHTML, recentEvent) => {
   }
 
   // 依序查找每個活動資料
-  for (const eventOne of recentEvent) {
+  for (const eventOne of eventResponse.data) {
     const $template = $(templateHTML);
+
     // 解構需要的欄位
     const { eventName, place, eventFromDate, eventHost, keywordId, eventId } =
       eventOne;
+
     // 將數據放入標籤
     $template.find(".event-title").text(eventName);
     $template.find(".event-location").text(place);

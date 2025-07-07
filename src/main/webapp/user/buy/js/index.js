@@ -12,7 +12,7 @@ import {
 } from "../../layout/footer/footer.js";
 import {
   fetchEventInfoTemplate,
-  renderRecentEventBox,
+  renderEventInfoBox,
   initEventBoxJSEvents,
 } from "../ui/index/event-box.js";
 
@@ -24,7 +24,7 @@ import {
  *
  * @return {Object} 近期9筆活動資料。
  */
-export const fetchRecentEventInfo = async () => {
+export const fetchEventInfo = async () => {
   const resp = await fetch(`${getContextPath()}/search-event`);
   return await resp.json();
 };
@@ -92,9 +92,22 @@ export const deleteFavorite = async (eventId) => {
 const initIndexJSEvents = () => {
   // 搜尋功能
   $(".search-btn").on("click", () => {
+    // 去輸入空白
     const $searchInput = $(".search-input");
-    if ($searchInput.val().trim()) {
-      alert("搜尋功能：" + $searchInput.val());
+    const searchTerm = $searchInput.val().trim();
+
+    // 建立查詢參數物件
+    const params = new URLSearchParams();
+    params.append("searchTerm", searchTerm);
+
+    // 將搜尋字串傳遞至 URL 後方並跳轉
+    location.href = `${getContextPath()}/user/buy/search.html?${params.toString()}`;
+  });
+
+  // 支援 Enter 鍵搜尋(e.which 為 13)
+  $(".search-input").on("keypress", (e) => {
+    if (e.which === 13) {
+      $(".search-btn").click();
     }
   });
 };
@@ -104,8 +117,8 @@ const initIndexJSEvents = () => {
 
 (async () => {
   // ====== 資料儲存變數區 ======
-  const recentEvent = await fetchRecentEventInfo();
-  console.log(recentEvent); // ok!!!
+  const eventResponse = await fetchEventInfo();
+  console.log(eventResponse); // ok!!!
 
   // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
@@ -114,7 +127,7 @@ const initIndexJSEvents = () => {
 
   // ====== event-box 部分 ======
   const eventTemplate = await fetchEventInfoTemplate();
-  await renderRecentEventBox(eventTemplate, recentEvent);
+  await renderEventInfoBox(eventTemplate, eventResponse);
   initEventBoxJSEvents();
 
   // ====== index 部分 ======

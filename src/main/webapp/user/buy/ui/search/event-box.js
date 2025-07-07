@@ -25,12 +25,32 @@ export const fetchEventInfoTemplate = async () => {
 };
 
 /**
- * 動態插入近期 9 筆活動資料的 HTML。
+ * 預先載入 empty.html 模板。
+ * @return {Promise<string>} HTML 模板。
+ */
+export const fetchEmptyTemplate = async () => {
+  const resp = await fetch(`${getContextPath()}/user/buy/ui/search/empty.html`);
+  return await resp.text();
+};
+
+/**
+ * 預先載入 pagination.html 模板。
+ * @return {Promise<string>} HTML 模板。
+ */
+export const fetchPaginationTemplate = async () => {
+  const resp = await fetch(
+    `${getContextPath()}/user/buy/ui/search/pagination.html`
+  );
+  return await resp.text();
+};
+
+/**
+ * 動態插入活動資料的 HTML。
  *
  * @param {string} templateHTML - HTML模板。
- * @param {Array<Object>} recentEvent - 9筆近期活動資料。
+ * @param {Array<Object>} eventResponse - 活動資料查詢結果。
  */
-export const renderRecentEventBox = async (templateHTML, recentEvent) => {
+export const renderEventInfoBox = async (templateHTML, eventResponse) => {
   $(".event-container").empty();
 
   // 抓取關注資料
@@ -40,12 +60,24 @@ export const renderRecentEventBox = async (templateHTML, recentEvent) => {
     favoriteIdArr = favoriteResult.data.map((item) => item.eventId);
   }
 
+  // 如果活動資料是空陣列，則顯示空白頁
+  if (eventResponse.data.length === 0) {
+    // 載入 empty.html
+    const emptyHTML = await fetchEmptyTemplate();
+    const $empty = $(emptyHTML);
+    // 直接插入 DOM 並結束渲染
+    $(".event-container").append($empty);
+    return;
+  }
+
   // 依序查找每個活動資料
-  for (const eventOne of recentEvent) {
+  for (const eventOne of eventResponse.data) {
     const $template = $(templateHTML);
+
     // 解構需要的欄位
     const { eventName, place, eventFromDate, eventHost, keywordId, eventId } =
       eventOne;
+
     // 將數據放入標籤
     $template.find(".event-title").text(eventName);
     $template.find(".event-location").text(place);
@@ -81,10 +113,153 @@ export const renderRecentEventBox = async (templateHTML, recentEvent) => {
   }
 };
 
+/**
+ * 動態插入 分頁(pagination)的 HTML。
+ *
+ * @param {string} templateHTML - HTML模板。
+ * @param {number} totalItemCount - 查詢活動資料之個數。
+ * @param {number} currentPage - 當前點擊頁數。
+ * @param {number} itemPerPage - 每頁活動框之個數。
+ */
+export const renderPagination = (
+  templateHTML,
+  totalItemCount,
+  currentPage,
+  itemPerPage
+) => {
+  // 強制轉換為數字，避免字串比較問題
+  currentPage = Number(currentPage);
+  totalItemCount = Number(totalItemCount);
+  itemPerPage = Number(itemPerPage);
+
+  const totalPage = Math.ceil(totalItemCount / itemPerPage);
+  if (totalPage <= 1) {
+    $(".pagination-container").html("");
+    return;
+  }
+
+  const $template = $(templateHTML); // 分頁主模板
+
+  // 上一頁按鈕
+  const $prevBtn = $template.find(".pagination-previous");
+  if (currentPage === 1) {
+    $prevBtn.addClass("is-disabled");
+  }
+  $prevBtn.attr("data-page", currentPage - 1);
+
+  // 下一頁按鈕
+  const $nextBtn = $template.find(".pagination-next");
+  if (currentPage === totalPage) {
+    $nextBtn.addClass("is-disabled");
+  }
+  $nextBtn.attr("data-page", currentPage + 1);
+
+  // 頁碼列表(不需修改)
+  const $paginationList = $template.find(".pagination-list li");
+
+  // 第一頁
+  if (currentPage > 3) {
+    $paginationList
+      .eq(0)
+      .removeClass("is-hidden")
+      .find(".pagination-link")
+      .attr("data-page", 1)
+      .text(`${1}`);
+    if (currentPage > 4) {
+      $paginationList.eq(1).removeClass("is-hidden");
+    }
+  } else {
+    $paginationList.eq(0).addClass("is-hidden");
+    $paginationList.eq(1).addClass("is-hidden");
+  }
+
+  // 當前頁面附近的頁碼(介於 currentPage - 1 到 currentPage + 1 之間)
+  // ex. (curr - 1, curr, curr + 1)
+  for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+    const listIndex = 2 + (i - (currentPage - 1));
+
+    if (i < 1 || i > totalPage) {
+      // 無效頁碼，隱藏
+      $paginationList.eq(listIndex).addClass("is-hidden");
+      continue;
+    } else {
+      // 有效頁碼，顯示並設定內容
+      $paginationList
+        .eq(listIndex)
+        .removeClass("is-hidden")
+        .find(".pagination-link")
+        .attr("data-page", i)
+        .text(`${i}`);
+    }
+
+    // 如果是當前頁，加上 is-current 類別
+    if (i === currentPage) {
+      $paginationList
+        .eq(listIndex)
+        .find(".pagination-link")
+        .addClass("is-current");
+    } else {
+      $paginationList
+        .eq(listIndex)
+        .find(".pagination-link")
+        .removeClass("is-current");
+    }
+  }
+
+  // 最後一頁
+  if (currentPage < totalPage - 2) {
+    if (currentPage < totalPage - 3) {
+      $paginationList.eq(5).removeClass("is-hidden");
+    }
+    $paginationList
+      .eq(6)
+      .removeClass("is-hidden")
+      .find(".pagination-link")
+      .attr("data-page", totalPage)
+      .text(`${totalPage}`);
+  } else {
+    $paginationList.eq(5).addClass("is-hidden");
+    $paginationList.eq(6).addClass("is-hidden");
+  }
+
+  $(".pagination-container").html($template);
+};
+
+/**
+ * 顯示指定頁面(含主內容、pagination)
+ * @param {number} currentPage - 當前頁數。
+ * @param {number} itemsPerPage - 每頁活動框之個數。
+ * @param {Object} eventResponse - 查詢活動結果。
+ */
+export const showPage = async (
+  currentPage,
+  itemsPerPage = 9,
+  eventResponse
+) => {
+  const eventTemplate = await fetchEventInfoTemplate();
+  // 資料已在後端 eventResponse
+  await renderEventInfoBox(eventTemplate, eventResponse);
+  const paginationTemplate = await fetchPaginationTemplate();
+  renderPagination(
+    paginationTemplate,
+    eventResponse.count,
+    currentPage,
+    itemsPerPage
+  ); // itemPerPage 固定為 9 (同後端寫死!!)
+
+  // 滾動到頂部
+  $("html, body").animate(
+    {
+      scrollTop: $(".event-container").offset().top,
+    },
+    300
+  );
+};
+
 // ==================== 2. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
-export const initEventBoxJSEvents = () => {
+export const initEventBoxJSEvents = (eventResponse) => {
   $(".favorite-btn").on("click", async (e) => {
     let result;
     const favorCard = $(e.target).closest(".event-card");
@@ -126,4 +301,23 @@ export const initEventBoxJSEvents = () => {
       $btn.css("color", "#333");
     }
   });
+
+  // 分頁點擊事件
+  $(document).on(
+    "click",
+    ".pagination-link, .pagination-previous, .pagination-next",
+    (e) => {
+      e.preventDefault();
+      const currentPage = parseInt($(e.currentTarget).data("page"));
+      console.log(currentPage);
+      if (
+        currentPage &&
+        currentPage >= 1 &&
+        currentPage <= Math.ceil(eventResponse.count / 9) &&
+        !$(e.currentTarget).hasClass("is-disabled")
+      ) {
+        showPage(currentPage, 9, eventResponse);
+      }
+    }
+  );
 };

@@ -150,7 +150,6 @@ function renderPagination(totalItems, currentPage, itemsPerPage) {
   $("#pagination-container").html(html);
 }
 
-//
 /**
  * 顯示指定頁面(含主內容、pagination)
  * @param {number} page - 指定頁數。

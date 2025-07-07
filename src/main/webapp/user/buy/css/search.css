@@ -71,6 +71,7 @@
   background: #ff5a8a;
 }
 
+/* 活動展示 */
 .event-image {
   height: 200px;
   object-fit: cover;
@@ -110,4 +111,28 @@
   align-items: center;
   padding: 1rem;
   border-top: 1px solid #eee;
+}
+
+/* 分頁列 */
+.pagination {
+  padding-top: 10px;
+}
+
+.pagination-link.is-current {
+  background-color: #ff8fab !important;
+  border-color: #ff8fab !important;
+  color: white;
+}
+
+.pagination-link,
+.pagination-previous,
+.pagination-next {
+  color: #666;
+  border-width: 2px; /* 預設通常是1px，改成2px */
+}
+
+.pagination-link:hover,
+.pagination-previous:hover,
+.pagination-next:hover {
+  border-color: #ff8fab !important;
 }
