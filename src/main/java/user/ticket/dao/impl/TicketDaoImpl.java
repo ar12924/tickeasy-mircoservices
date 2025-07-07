@@ -8,10 +8,8 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
-import manager.eventdetail.vo.DistTicket;
 import user.ticket.dao.TicketDao;
 import user.ticket.vo.Ticket;
-import user.ticket.vo.TicketView;
 
 
 @Repository

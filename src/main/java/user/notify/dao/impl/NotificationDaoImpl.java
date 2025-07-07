@@ -1,18 +1,10 @@
 package user.notify.dao.impl;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;

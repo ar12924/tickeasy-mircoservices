@@ -1,12 +1,10 @@
 package user.notify.dao;
 
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
 import org.hibernate.Session;
-
 
 import common.util.HibernateUtil5;
 import user.notify.vo.Notification;

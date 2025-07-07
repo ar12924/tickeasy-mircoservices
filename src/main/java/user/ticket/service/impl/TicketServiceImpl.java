@@ -12,7 +12,6 @@ import user.ticket.dao.TicketDao;
 import user.ticket.dto.TicketViewDto;
 import user.ticket.service.TicketService;
 import user.ticket.vo.Ticket;
-import user.ticket.vo.TicketView;
 
 
 @Service
@@ -89,7 +88,7 @@ public class TicketServiceImpl implements TicketService{
 			//已轉讓票種
 			
 			List<Ticket> changetickets = ticketDao.selectAllChangeByMemberId(memberId);
-			List<TicketViewDto> changeresult= new ArrayList<>();
+			
 
 
 			for(Ticket changeticket:changetickets) {

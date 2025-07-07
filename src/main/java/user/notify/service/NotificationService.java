@@ -1,6 +1,5 @@
 package user.notify.service;
 
-import java.sql.Date;
 import java.util.List;
 
 import user.notify.vo.Notification;

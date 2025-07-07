@@ -1,11 +1,9 @@
 package user.notify.service.impl;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
