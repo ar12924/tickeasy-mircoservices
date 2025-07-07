@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import common.vo.AuthStatus;
 import common.vo.Core;
+import common.vo.Order;
 import user.buy.service.SearchService;
 import user.buy.vo.EventInfo;
 import user.buy.vo.Favorite;
@@ -29,15 +31,22 @@ public class SearchEventController {
 	private SearchService service;
 
 	/**
-	 * 查詢近期 9 筆活動資料。
+	 * 查詢活動資料。 api 範例： GET
+	 * /api/events?keyword={keyword}&page={page}&size={size}&sort={sort}&order={order}
 	 * 
-	 * @return {EventInfo} 回應近期 9 筆活動資料。
+	 * @param {String}  keyword - 輸入關鍵字。
+	 * @param {Integer} page - 第幾頁。
+	 * @param {Order}   order - 排序方法(DESC/ASC)。
+	 * @return {List<EventInfo>} 回應活動資料查詢結果(查無資料時，回應空的 List 而非 null)。
 	 */
 	@CrossOrigin(origins = "*")
-	@GetMapping("recent")
-	public List<EventInfo> getRecentEventInfo() {
-		Integer rowToShow = 9; // 9筆近期
-		return service.getRecentEventInfo(rowToShow);
+	@GetMapping
+	public Core<List<EventInfo>> getEventInfo(
+			@RequestParam(defaultValue = "") String keyword,
+			@RequestParam(defaultValue = "1") Integer page, 
+			@RequestParam(defaultValue = "ASC") Order order) {
+		Integer pageSize = 9; // 強制每頁顯示9筆資料
+		return service.getEventInfo(keyword, page, order, pageSize);
 	}
 
 	/**
@@ -82,7 +91,7 @@ public class SearchEventController {
 		// 執行儲存關注資料
 		return service.saveFavorite(member, favorite.getEventId());
 	}
-	
+
 	/**
 	 * 移除會員的我的關注資料 by (memberId, eventId)。
 	 * 

@@ -25,7 +25,7 @@ import {
  * @return {Object} 近期9筆活動資料。
  */
 export const fetchRecentEventInfo = async () => {
-  const resp = await fetch(`${getContextPath()}/search-event/recent`);
+  const resp = await fetch(`${getContextPath()}/search-event`);
   return await resp.json();
 };
 
@@ -90,39 +90,6 @@ export const deleteFavorite = async (eventId) => {
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
 const initIndexJSEvents = () => {
-  // 愛心按鈕點擊效果
-  // $(".favorite-btn").each((i, btn) => {
-  //   const $btn = $(btn);
-  //   $btn.on("click", (e) => {
-  //     const $icon = $btn.find("i");
-  //     if ($icon.hasClass("far")) {
-  //       $icon.removeClass("far");
-  //       $icon.addClass("fas");
-  //       $btn.css("background", "#ff6b9d");
-  //       $btn.css("color", "white");
-  //     } else {
-  //       $icon.removeClass("fas");
-  //       $icon.addClass("far");
-  //       $btn.css("background", "white");
-  //       $btn.css("color", "#333");
-  //     }
-  //   });
-  // });
-  // $(".favorite-btn").on("click", (e) => {
-  //   const $icon = $(e.target).closest(".favorite-btn").find("i");
-  //   if ($icon.hasClass("far")) {
-  //     $icon.removeClass("far");
-  //     $icon.addClass("fas");
-  //     $btn.css("background", "#ff6b9d");
-  //     $btn.css("color", "white");
-  //   } else {
-  //     $icon.removeClass("fas");
-  //     $icon.addClass("far");
-  //     $btn.css("background", "white");
-  //     $btn.css("color", "#333");
-  //   }
-  // });
-
   // 搜尋功能
   $(".search-btn").on("click", () => {
     const $searchInput = $(".search-input");

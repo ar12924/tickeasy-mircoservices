@@ -93,7 +93,6 @@ export const initNavJSEvents = () => {
 
   // "使用者名稱" 下拉選單
   $(".dropdown").on("click", () => {
-    console.log("hahahaha");
     $(".dropdown").toggleClass("is-active");
   });
 

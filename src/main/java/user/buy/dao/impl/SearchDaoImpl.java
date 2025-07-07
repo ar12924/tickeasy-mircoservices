@@ -7,7 +7,9 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
+import common.vo.Order;
 import user.buy.dao.SearchDao;
 import user.buy.vo.EventInfo;
 import user.buy.vo.Favorite;
@@ -19,19 +21,42 @@ public class SearchDaoImpl implements SearchDao {
 	private Session session;
 
 	/**
-	 * 查詢 n 筆活動資料。
+	 * 查詢活動資料。
 	 *
-	 * @param {Integer} n - 筆數
-	 * @return List<EventInfo> n 筆活動資料。
+	 * @param {String}  keyword - 輸入關鍵字。
+	 * @param {Integer} page - 第幾頁。
+	 * @param {Order}   order - 排序方法(DESC/ASC)。
+	 * @return {List<EventInfo>}
 	 */
 	@Override
-	public List<EventInfo> selectRecentEventInfo(Integer n) {
-		// 1. HQL 語句
-		var hql = "FROM EventInfo ei WHERE ei.isPosted = 1 ORDER BY ei.eventFromDate ASC";
+	public List<EventInfo> selectEventInfo(String keyword, Integer page, Order order, Integer pageSize) {
+		// HQL 語句建構器
+		var hqlTmp = new StringBuilder("FROM EventInfo ei WHERE ei.isPosted = 1 ");
 
-		// 2. 查詢前 n 筆
-		Query<EventInfo> query = session.createQuery(hql, EventInfo.class).setFirstResult(0) // 略過筆數
-				.setMaxResults(n); // 顯示筆數
+		// 判斷是否查詢關鍵字(不判斷會影響查詢效率)
+		if (StringUtils.hasText(keyword)) {
+			hqlTmp.append("AND ei.eventName LIKE :keyword ");
+		}
+
+		// 追加查詢時間及排序
+		if (order.equals(Order.DESC)) {
+			hqlTmp.append("ORDER BY ei.eventFromDate DESC");
+		}
+		if (order.equals(Order.ASC)) {
+			hqlTmp.append("ORDER BY ei.eventFromDate ASC");
+		}
+
+		// 執行查詢
+		String hql = hqlTmp.toString();
+		Query<EventInfo> query = session.createQuery(hql, EventInfo.class)
+				.setFirstResult((page - 1) * pageSize) // 略過筆數(從...開始)
+				.setMaxResults(pageSize); // 顯示筆數
+
+		// 判斷是否查詢關鍵字
+		if (StringUtils.hasText(keyword)) {
+			query.setParameter("keyword", "%" + keyword + "%");
+		}
+
 		return query.getResultList();
 	}
 
@@ -80,7 +105,9 @@ public class SearchDaoImpl implements SearchDao {
 	 * 抓著 eventId 移除至我的關注中對應的資料。 (必須先有 session.member)
 	 *
 	 * @param {Integer} eventId - 活動 id。
+	 * 
 	 * @param {Integer} memberId - 會員 id。
+	 * 
 	 * @return {Integer} 刪除實體物件筆數。
 	 */
 	@Override
@@ -88,9 +115,7 @@ public class SearchDaoImpl implements SearchDao {
 		// 1. HQL 語句
 		String hql = "DELETE Favorite f WHERE f.eventId = :eventId AND f.memberId = :memberId";
 		// 2. 執行刪除 by (memberId, eventId)
-		return session.createQuery(hql)
-				.setParameter("eventId", eventId)
-				.setParameter("memberId", memberId)
+		return session.createQuery(hql).setParameter("eventId", eventId).setParameter("memberId", memberId)
 				.executeUpdate();
 	}
 

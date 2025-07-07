@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import common.vo.Core;
 import common.vo.DataStatus;
+import common.vo.Order;
 import user.buy.dao.SearchDao;
 import user.buy.service.SearchService;
 import user.buy.vo.EventInfo;
@@ -21,15 +22,40 @@ public class SearchServiceImpl implements SearchService {
 	private SearchDao dao;
 
 	/**
-	 * 查詢近期 n 筆活動資料。
+	 * 查詢活動資料。
 	 * 
-	 * @param {Integer} n - 指定查詢筆數。
+	 * @param {String}  keyword - 輸入關鍵字。
+	 * @param {Integer} page - 第幾頁。
+	 * @param {Order}   order - 排序方法(DESC/ASC)。
+	 * @param {Integer} pageSize - 每頁 item 數量。
 	 * @return {EventInfo} 回應近期活動資料。
 	 */
 	@Transactional
 	@Override
-	public List<EventInfo> getRecentEventInfo(Integer n) {
-		return dao.selectRecentEventInfo(n);
+	public Core<List<EventInfo>> getEventInfo(String keyword, Integer page, Order order, Integer pageSize) {
+		var core = new Core<List<EventInfo>>();
+
+		// 參數驗證
+		if (page <= 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("頁數必須大於 0");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 呼叫 dao 層操作查詢
+		List<EventInfo> eventList = dao.selectEventInfo(keyword, page, order, pageSize);
+		if (eventList.isEmpty()) {
+			core.setDataStatus(DataStatus.NOT_FOUND);
+			core.setMessage("查無資料");
+			core.setSuccessful(true);
+			return core;
+		}
+		core.setDataStatus(DataStatus.FOUND);
+		core.setMessage("查詢成功");
+		core.setSuccessful(true);
+		core.setData(eventList);
+		return core;
 	}
 
 	/**
@@ -49,7 +75,7 @@ public class SearchServiceImpl implements SearchService {
 		if (favarite.isEmpty()) {
 			core.setDataStatus(DataStatus.NOT_FOUND);
 			core.setMessage("沒有任何關注活動");
-			core.setSuccessful(false);
+			core.setSuccessful(true);
 			return core;
 		}
 		// 查到資料，回傳有資料的 List
@@ -162,7 +188,7 @@ public class SearchServiceImpl implements SearchService {
 		count = dao.selectEventCountByKeyword(keyword);
 		eventCore.setCount(count);
 		if (count <= 0) {
-			eventCore.setSuccessful(false);
+			eventCore.setSuccessful(true);
 			eventCore.setMessage("查無資料");
 		} else {
 			eventCore.setSuccessful(true);

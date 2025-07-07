@@ -3,12 +3,13 @@ package user.buy.dao;
 import java.util.List;
 
 import common.dao.CommonDao;
+import common.vo.Order;
 import user.buy.vo.EventInfo;
 import user.buy.vo.Favorite;
 import user.buy.vo.KeywordCategory;
 
 public interface SearchDao extends CommonDao {
-	public List<EventInfo> selectRecentEventInfo(Integer n);
+	public List<EventInfo> selectEventInfo(String keyword, Integer page, Order order, Integer pageSize);
 	
 	public List<Favorite> selectAllFavoriteByMemberId(Integer memberId);
 

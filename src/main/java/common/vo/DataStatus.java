@@ -7,8 +7,6 @@ public enum DataStatus {
 	FOUND, NOT_FOUND,
 	// 比較成功與否？
 	COMPARISON_PASSED, COMPARISON_FAILED,
-	// 權限不足
-	FORBIDDEN,
 	// 操作成功與否？
 	EXECUTION_PASSED, EXECUTION_FAILED
 }
