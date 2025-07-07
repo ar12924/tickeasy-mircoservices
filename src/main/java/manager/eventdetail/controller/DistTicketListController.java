@@ -32,7 +32,7 @@ public class DistTicketListController {
 
 	@GetMapping("check-login")
 	@ResponseBody
-	public Core<Object> checkLoginStatus(@SessionAttribute(required = false) Member member) {
+	public Core<Object> checkLoginStatus(@SessionAttribute(name = "member"required = false) Member member) {
 		Core<Object> core = new Core<>();
 		  if (member == null ) {
 		  
@@ -45,7 +45,7 @@ public class DistTicketListController {
 		  if (member.getRoleLevel() != 2 && member.getRoleLevel() != 3) {
 			core.setSuccessful(false);
 			core.setMessage("無權限訪問此功能");
-			core.setAuthStatus(AuthStatus.PROHIBITED);
+			core.setAuthStatus(AuthStatus.FORBIDDEN);
 			return core;
 		  }
 		  core.setSuccessful(true); 
