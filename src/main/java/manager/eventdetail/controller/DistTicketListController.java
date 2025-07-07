@@ -32,7 +32,7 @@ public class DistTicketListController {
 
 	@GetMapping("check-login")
 	@ResponseBody
-	public Core<Object> checkLoginStatus(@SessionAttribute(name = "member"required = false) Member member) {
+	public Core<Object> checkLoginStatus(@SessionAttribute(name = "member" ,required = false) Member member) {
 		Core<Object> core = new Core<>();
 		  if (member == null ) {
 		  
