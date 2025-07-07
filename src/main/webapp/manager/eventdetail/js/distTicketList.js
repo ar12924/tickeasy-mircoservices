@@ -107,7 +107,7 @@ document.getElementById('datatable_search').addEventListener('input', function (
 					
 				}
 					
-					else if(isLoggedIn.authStatus=="NO_PERMISSION"){
+					else if(isLoggedIn.authStatus=="PROHIBITED"){
 						alert("您沒有權限訪問此頁面");
 						  window.location.href = "/maven-tickeasy-v1/user/member/login.html";
 						  

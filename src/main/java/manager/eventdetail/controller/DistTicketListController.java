@@ -45,7 +45,7 @@ public class DistTicketListController {
 		  if (member.getRoleLevel() != 2 && member.getRoleLevel() != 3) {
 			core.setSuccessful(false);
 			core.setMessage("無權限訪問此功能");
-			core.setAuthStatus(AuthStatus.NO_PERMISSION);
+			core.setAuthStatus(AuthStatus.PROHIBITED);
 			return core;
 		  }
 		  core.setSuccessful(true); 
