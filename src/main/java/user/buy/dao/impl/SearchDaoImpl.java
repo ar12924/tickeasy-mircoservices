@@ -23,19 +23,19 @@ public class SearchDaoImpl implements SearchDao {
 	/**
 	 * 查詢活動資料。
 	 *
-	 * @param {String}  keyword - 輸入關鍵字。
+	 * @param {String}  searchTerm - 輸入關鍵字。
 	 * @param {Integer} page - 第幾頁。
 	 * @param {Order}   order - 排序方法(DESC/ASC)。
-	 * @return {List<EventInfo>}
+	 * @return {List<EventInfo>} 查詢活動結果。
 	 */
 	@Override
-	public List<EventInfo> selectEventInfo(String keyword, Integer page, Order order, Integer pageSize) {
+	public List<EventInfo> selectEventInfo(String searchTerm, Integer page, Order order, Integer pageSize) {
 		// HQL 語句建構器
 		var hqlTmp = new StringBuilder("FROM EventInfo ei WHERE ei.isPosted = 1 ");
 
 		// 判斷是否查詢關鍵字(不判斷會影響查詢效率)
-		if (StringUtils.hasText(keyword)) {
-			hqlTmp.append("AND ei.eventName LIKE :keyword ");
+		if (StringUtils.hasText(searchTerm)) {
+			hqlTmp.append("AND ei.eventName LIKE :searchTerm ");
 		}
 
 		// 追加查詢時間及排序
@@ -48,16 +48,43 @@ public class SearchDaoImpl implements SearchDao {
 
 		// 執行查詢
 		String hql = hqlTmp.toString();
-		Query<EventInfo> query = session.createQuery(hql, EventInfo.class)
-				.setFirstResult((page - 1) * pageSize) // 略過筆數(從...開始)
+		Query<EventInfo> query = session.createQuery(hql, EventInfo.class).setFirstResult((page - 1) * pageSize) // 略過筆數(從...開始)
 				.setMaxResults(pageSize); // 顯示筆數
 
-		// 判斷是否查詢關鍵字
-		if (StringUtils.hasText(keyword)) {
-			query.setParameter("keyword", "%" + keyword + "%");
+		// 判斷要查詢關鍵字
+		if (StringUtils.hasText(searchTerm)) {
+			query.setParameter("searchTerm", "%" + searchTerm + "%");
 		}
 
 		return query.getResultList();
+	}
+	
+	/**
+	 * 活動資料查詢筆數。(配合 selectEventInfo() 的方法)
+	 *
+	 * @param {String}  searchTerm - 輸入關鍵字。
+	 * @return {Long} 查詢筆數。
+	 */
+	@Override
+	public Long countEventInfo(String searchTerm) {
+		// HQL 語句建構器
+		var hqlTmp = new StringBuilder("SELECT COUNT(ei) FROM EventInfo ei WHERE ei.isPosted = 1 ");
+
+		// 判斷是否查詢關鍵字(不判斷會影響查詢效率)
+		if (StringUtils.hasText(searchTerm)) {
+			hqlTmp.append("AND ei.eventName LIKE :searchTerm ");
+		}
+
+		// 執行查詢
+		String hql = hqlTmp.toString();
+		Query<Long> query = session.createQuery(hql, Long.class);
+
+		// 判斷要查詢關鍵字
+		if (StringUtils.hasText(searchTerm)) {
+			query.setParameter("searchTerm", "%" + searchTerm + "%");
+		}
+
+		return query.uniqueResult();
 	}
 
 	/**

@@ -34,19 +34,19 @@ public class SearchEventController {
 	 * 查詢活動資料。 api 範例： GET
 	 * /api/events?keyword={keyword}&page={page}&size={size}&sort={sort}&order={order}
 	 * 
-	 * @param {String}  keyword - 輸入關鍵字。
+	 * @param {String}  searchTerm - 輸入關鍵字。
 	 * @param {Integer} page - 第幾頁。
 	 * @param {Order}   order - 排序方法(DESC/ASC)。
-	 * @return {List<EventInfo>} 回應活動資料查詢結果(查無資料時，回應空的 List 而非 null)。
+	 * @return {List<EventInfo>} 回應活動查詢結果(查無資料時，回應空的 List 而非 null)。
 	 */
 	@CrossOrigin(origins = "*")
 	@GetMapping
 	public Core<List<EventInfo>> getEventInfo(
-			@RequestParam(defaultValue = "") String keyword,
+			@RequestParam(defaultValue = "") String searchTerm,
 			@RequestParam(defaultValue = "1") Integer page, 
 			@RequestParam(defaultValue = "ASC") Order order) {
 		Integer pageSize = 9; // 強制每頁顯示9筆資料
-		return service.getEventInfo(keyword, page, order, pageSize);
+		return service.getEventInfo(searchTerm, page, order, pageSize);
 	}
 
 	/**

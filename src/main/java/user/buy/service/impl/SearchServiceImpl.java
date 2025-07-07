@@ -24,15 +24,15 @@ public class SearchServiceImpl implements SearchService {
 	/**
 	 * 查詢活動資料。
 	 * 
-	 * @param {String}  keyword - 輸入關鍵字。
+	 * @param {String}  searchTerm - 輸入關鍵字。
 	 * @param {Integer} page - 第幾頁。
 	 * @param {Order}   order - 排序方法(DESC/ASC)。
 	 * @param {Integer} pageSize - 每頁 item 數量。
-	 * @return {EventInfo} 回應近期活動資料。
+	 * @return {Core<List<EventInfo>>} 查詢活動結果。
 	 */
 	@Transactional
 	@Override
-	public Core<List<EventInfo>> getEventInfo(String keyword, Integer page, Order order, Integer pageSize) {
+	public Core<List<EventInfo>> getEventInfo(String searchTerm, Integer page, Order order, Integer pageSize) {
 		var core = new Core<List<EventInfo>>();
 
 		// 參數驗證
@@ -44,17 +44,21 @@ public class SearchServiceImpl implements SearchService {
 		}
 
 		// 呼叫 dao 層操作查詢
-		List<EventInfo> eventList = dao.selectEventInfo(keyword, page, order, pageSize);
+		List<EventInfo> eventList = dao.selectEventInfo(searchTerm, page, order, pageSize);
+		Long eventCount = dao.countEventInfo(searchTerm);
 		if (eventList.isEmpty()) {
 			core.setDataStatus(DataStatus.NOT_FOUND);
 			core.setMessage("查無資料");
 			core.setSuccessful(true);
+			core.setData(eventList);
+			core.setCount(eventCount);
 			return core;
 		}
 		core.setDataStatus(DataStatus.FOUND);
 		core.setMessage("查詢成功");
 		core.setSuccessful(true);
 		core.setData(eventList);
+		core.setCount(eventCount);
 		return core;
 	}
 
