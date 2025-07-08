@@ -40,7 +40,6 @@ public class VerificationDaoImpl implements VerificationDao {
 	@Override
 	public boolean insert(VerificationToken token) {
 		session.save(token);
-		session.flush();
 		return true;
 	}
 
@@ -67,5 +66,17 @@ public class VerificationDaoImpl implements VerificationDao {
 
 		int deleted = session.createQuery(cd).executeUpdate();
 		return deleted > 0;
+	}
+
+	@Override
+	public VerificationToken findByTokenPrefix(String tokenPrefix) {
+		List<VerificationToken> list = session
+				.createQuery(
+					"SELECT t FROM VerificationToken t JOIN FETCH t.member WHERE t.tokenName LIKE :prefix",
+					VerificationToken.class)
+				.setParameter("prefix", tokenPrefix + "|%")
+				.setMaxResults(1)
+				.getResultList();
+		return list.isEmpty() ? null : list.get(0);
 	}
 }
