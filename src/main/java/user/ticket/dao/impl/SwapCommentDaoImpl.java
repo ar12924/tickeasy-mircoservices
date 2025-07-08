@@ -200,7 +200,7 @@ public class SwapCommentDaoImpl implements SwapCommentDao {
     	String sql = "SELECT " +
                 "sc.comment_id, " +
                 "sc.comment_description, " +
-                "sc.swapped_status, " +
+                "CAST(sc.swapped_status AS SIGNED) as swapped_status, " +
                 "sc.swapped_time, " +
                 "sc.create_time, " +
                 "sc.update_time, " +
