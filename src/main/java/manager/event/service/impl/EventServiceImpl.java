@@ -43,8 +43,8 @@ public class EventServiceImpl implements EventService {
 //		return eventDao.createEvent(eventInfo);
 //	}
 	@Override
-	public boolean createEvent(MngEventInfo eventInfo) {
-	    return eventDao.insertEvent(eventInfo); // ✅ 確保這個方法會 insert
+	public int createEvent(MngEventInfo eventInfo) {
+	    return eventDao.createEvent(eventInfo); // ✅ 確保這個方法會 insert
 	}
 
 }
