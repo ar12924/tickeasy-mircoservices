@@ -231,7 +231,7 @@ function ticket_loaded(category) {
 																			</div>
 																			<div class="tk_content_set">
 																				<div class="tk_content_title">姓名</div>
-																				<div class="tk_content_text tk_content_name">${ticketView.currentHolderChangeUserName}</div>
+																				<div class="tk_content_text tk_content_name">${ticketView.currentHolderChangeNickName}</div>
 																			</div>
 																			<div class="tk_content_set">
 																				<div class="tk_content_title">手機號碼</div>
