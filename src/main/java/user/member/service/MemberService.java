@@ -38,4 +38,7 @@ public interface MemberService extends CommonService {
 
 	// 新增：發送驗證信
 	Member sendVerificationMail(Member member);
+
+	// 密碼變更並刪除token（事務性操作）
+	Member updatePasswordAndDeleteToken(Member member, String newPassword, Integer tokenId);
 }

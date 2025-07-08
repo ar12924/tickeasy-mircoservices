@@ -28,8 +28,7 @@ public class MemberServiceImpl implements MemberService {
 	private MailService mailService;
 
 	// 共用：產生驗證/重設 token
-	private VerificationToken createToken(Member member, String type, long expireMillis) {
-		String tokenName = UUID.randomUUID().toString();
+	private VerificationToken createToken(Member member, String type, long expireMillis, String tokenName) {
 		VerificationToken token = new VerificationToken();
 		token.setTokenName(tokenName);
 		token.setTokenType(type);
@@ -51,6 +50,57 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional
 	@Override
 	public Member register(Member member) {
+		// 格式驗證
+		if (member.getUserName() == null || member.getUserName().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("使用者名稱不可為空");
+			return member;
+		}
+		if (member.getNickName() == null || member.getNickName().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("暱稱不可為空");
+			return member;
+		}
+		if (member.getEmail() == null || member.getEmail().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("Email 不可為空");
+			return member;
+		}
+		if (member.getPassword() == null || member.getPassword().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("密碼不可為空");
+			return member;
+		}
+		if (member.getRePassword() == null || member.getRePassword().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("請再次輸入密碼");
+			return member;
+		}
+		if (member.getBirthDate() == null) {
+			member.setSuccessful(false);
+			member.setMessage("出生日期不可為空");
+			return member;
+		}
+		if (member.getPhone() == null || member.getPhone().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("手機號碼不可為空");
+			return member;
+		}
+		if (member.getGender() == null || member.getGender().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("性別不可為空");
+			return member;
+		}
+		if (member.getIdCard() == null || member.getIdCard().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("身分證不可為空");
+			return member;
+		}
+		if (member.getAgree() == null || !member.getAgree()) {
+			member.setSuccessful(false);
+			member.setMessage("請同意服務條款");
+			return member;
+		}
 
 		String username = member.getUserName();
 		if (username == null || username.length() < 5 || username.length() > 50) {
@@ -137,6 +187,9 @@ public class MemberServiceImpl implements MemberService {
 			return member;
 		}
 
+		// 註冊時預設未啟用
+		member.setIsActive(0);
+
 		// 寫入DAO之前進行密碼雜湊、預設member為0
 		member.setPassword(HashUtil.hashpw(password));
 		member.setRoleLevel(0);
@@ -154,7 +207,7 @@ public class MemberServiceImpl implements MemberService {
 				throw new RuntimeException("會員插入後無法找到");
 			}
 			
-			VerificationToken token = createToken(savedMember, "EMAIL_VERIFY", TOKEN_EXPIRATION);
+			VerificationToken token = createToken(savedMember, "EMAIL_VERIFY", TOKEN_EXPIRATION, UUID.randomUUID().toString());
 			sendMail(savedMember, "EMAIL_VERIFY", token.getTokenName());
 			savedMember.setSuccessful(true);
 			savedMember.setMessage("註冊成功！請查收驗證信以開通會員");
@@ -179,21 +232,21 @@ public class MemberServiceImpl implements MemberService {
 	public Member editMember(Member member) {
 		final Member existingMemberInDB = memberDao.findById(member.getMemberId());
 		if (existingMemberInDB == null) {
-			member.setSuccessful(false); // 可以直接修改傳入的 member 來返回狀態
+			member.setSuccessful(false);
 			member.setMessage("查無此會員");
 			return member;
 		}
 
 		String newPassword = member.getPassword();
 		if (newPassword != null && !newPassword.isEmpty()) {
-			if (newPassword.length() < 6) { // 假設密碼最小長度為6
-				member.setSuccessful(false); // 修改傳入的 member 以返回錯誤訊息
+			if (newPassword.length() < 6) {
+				member.setSuccessful(false);
 				member.setMessage("密碼長度須至少 6 字元");
 				return member;
 			}
-			member.setPassword(HashUtil.hashpw(newPassword)); // 有新密碼依然要雜湊
+			existingMemberInDB.setPassword(HashUtil.hashpw(newPassword));
 		} else {
-			member.setPassword(existingMemberInDB.getPassword()); // 如未輸入要修改密碼，則維持原密碼
+			existingMemberInDB.setPassword(existingMemberInDB.getPassword());
 		}
 
 		String unicode = member.getUnicode();
@@ -210,21 +263,32 @@ public class MemberServiceImpl implements MemberService {
 			return member;
 		}
 
+		// 合併欄位（有值才 set，否則保留原值）
+		if (member.getNickName() != null) existingMemberInDB.setNickName(member.getNickName());
+		if (member.getEmail() != null) existingMemberInDB.setEmail(member.getEmail());
+		if (member.getPhone() != null) existingMemberInDB.setPhone(member.getPhone());
+		if (member.getBirthDate() != null) existingMemberInDB.setBirthDate(member.getBirthDate());
+		if (member.getGender() != null) existingMemberInDB.setGender(member.getGender());
+		if (member.getUnicode() != null) existingMemberInDB.setUnicode(member.getUnicode());
+		// 只有有新照片才 set，否則保留原本照片
+		if (member.getPhoto() != null) {
+			existingMemberInDB.setPhoto(member.getPhoto());
+		}
+
 		try {
-			boolean updated = memberDao.update(member);
-			
+			boolean updated = memberDao.update(existingMemberInDB);
 			if (updated) {
-				member.setSuccessful(true);
-				member.setMessage("更新成功");
+				existingMemberInDB.setSuccessful(true);
+				existingMemberInDB.setMessage("更新成功");
 			} else {
-				member.setSuccessful(false);
-				member.setMessage("更新失敗");
+				existingMemberInDB.setSuccessful(false);
+				existingMemberInDB.setMessage("更新失敗");
 			}
 		} catch (Exception e) {
-			member.setSuccessful(false);
-			member.setMessage("更新失敗：" + e.getMessage());
+			existingMemberInDB.setSuccessful(false);
+			existingMemberInDB.setMessage("更新失敗：" + e.getMessage());
 		}
-		return member;
+		return existingMemberInDB;
 	}
 
 	@Transactional
@@ -334,6 +398,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 		Member m = token.getMember();
 		m.setRoleLevel(1);
+		m.setIsActive(1);
 		memberDao.update(m);
 		verifyDao.deleteById(token.getTokenId());
 		return true;
@@ -350,7 +415,7 @@ public class MemberServiceImpl implements MemberService {
 			return member;
 		}
 		try {
-			VerificationToken token = createToken(member, "RESET_PASSWORD", 3600 * 1000);
+			VerificationToken token = createToken(member, "RESET_PASSWORD", 3600 * 1000, UUID.randomUUID().toString());
 			sendMail(member, "RESET_PASSWORD", token.getTokenName());
 			member.setSuccessful(true);
 			member.setMessage("密碼重設郵件已發送，請檢查您的信箱");
@@ -409,7 +474,7 @@ public class MemberServiceImpl implements MemberService {
 			return member;
 		}
 		try {
-			VerificationToken token = createToken(member, "EMAIL_VERIFY", 24 * 60 * 60 * 1000);
+			VerificationToken token = createToken(member, "EMAIL_VERIFY", 24 * 60 * 60 * 1000, UUID.randomUUID().toString());
 			sendMail(member, "EMAIL_VERIFY", token.getTokenName());
 			member.setSuccessful(true);
 			member.setMessage("驗證信已重新發送，請檢查您的信箱");
@@ -424,7 +489,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member sendVerificationMail(Member member) {
 		try {
-			VerificationToken token = createToken(member, "EMAIL_VERIFY", 24 * 60 * 60 * 1000);
+			VerificationToken token = createToken(member, "EMAIL_VERIFY", 24 * 60 * 60 * 1000, UUID.randomUUID().toString());
 			sendMail(member, "EMAIL_VERIFY", token.getTokenName());
 			member.setSuccessful(true);
 			member.setMessage("驗證信已發送，請至信箱收信");
@@ -439,12 +504,16 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member sendPasswordUpdateMail(Member member, String newPassword) {
 		try {
+			// 產生 uuid
+			String uuid = UUID.randomUUID().toString();
+			// 密碼加密
+			String encryptedPassword = HashUtil.hashpw(newPassword);
+			// tokenName = uuid|加密密碼
+			String tokenName = uuid + "|" + encryptedPassword;
 			// 創建密碼更新認證 token
-			VerificationToken token = createToken(member, "PASSWORD_UPDATE", 3600 * 1000);
-			
-			// 發送密碼更新認證信
-			mailService.sendPasswordUpdateNotification(member.getEmail(), member.getNickName(), token.getTokenName());
-			
+			VerificationToken token = createToken(member, "PASSWORD_UPDATE", 3600 * 1000, tokenName);
+			// 發送密碼更新認證信（信件只帶 uuid）
+			mailService.sendPasswordUpdateNotification(member.getEmail(), member.getNickName(), uuid);
 			member.setSuccessful(true);
 			member.setMessage("密碼更新認證信已發送");
 		} catch (Exception e) {
@@ -452,6 +521,17 @@ public class MemberServiceImpl implements MemberService {
 			member.setMessage("密碼更新認證信發送失敗：" + e.getMessage());
 		}
 		return member;
+	}
+
+	@Transactional
+	@Override
+	public Member updatePasswordAndDeleteToken(Member member, String newPassword, Integer tokenId) {
+		member.setPassword(newPassword);
+		Member result = editMember(member);
+		if (result.isSuccessful()) {
+			verifyDao.deleteById(tokenId);
+		}
+		return result;
 	}
 
 	// 提供給控制器使用的方法
