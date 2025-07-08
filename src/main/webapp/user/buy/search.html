@@ -3,155 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TickEasy - 探索精彩活動</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link rel="stylesheet" href="./css/search.css" />
+    <title>TickEasy - 探索精彩活動，創造難忘回憶</title>
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
+    <link
+      rel="stylesheet"
+      href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/search.css" class="main-css" />
+    <link rel="stylesheet" href="../layout/nav/nav.css" />
+    <link rel="stylesheet" href="../layout/footer/footer.css" />
   </head>
   <body>
-    <div id="app">
-      <!-- 導覽列 nav -->
-      <nav>
-        <div class="logo">
-          <a href="index.html">TickEasy</a>
-        </div>
-        <ul class="nav-links">
-          <li><a href="#tickets">我的訂單</a></li>
-          <li><a href="#favorites">我的關注</a></li>
-          <li><a href="#account">我的票券</a></li>
-          <li><a href="#notifications">通知中心</a></li>
-          <li><a href="#profile" class="cta-button">會員中心</a></li>
-        </ul>
-      </nav>
+    <!-- nav 導覽列(元件化) -->
+    <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
 
-      <!-- 搜尋列 header -->
-      <header class="hero">
-        <h1>探索精彩活動，創造難忘回憶</h1>
-        <p>最專業的活動票券平台，為您提供最優質的購票體驗</p>
-        <div class="search-bar">
-          <input
-            type="text"
-            placeholder="搜尋活動..."
-            v-model="searchKeyword"
-          />
-          <button type="button" @click="searchClick">搜尋</button>
-        </div>
-      </header>
-
-      <!-- 主內容 main -->
-      <main>
-        <!-- 搜尋結果 section -->
-        <section class="hot-events" v-if="eventPayload.successful">
-          <div class="event-grid">
-            <div class="event-card" v-for="item in eventPayload.data">
-              <img
-                src="https://picsum.photos/200/300?v=1"
-                alt="2025春季音樂節"
-              />
-              <div class="event-info">
-                <div class="info-top">
-                  <div class="info-left">
-                    <h3>{{ item.eventName }}</h3>
-                    <p class="location">{{ item.place }}</p>
-                    <p class="date">{{ formatDate(item.eventFromDate) }}</p>
-                    <p class="price">{{ item.eventHost }}</p>
+    <!-- header 英雄區塊 -->
+    <section class="hero hero-gradient is-medium">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title has-text-white is-size-2 has-text-weight-bold">
+            探索精彩活動，創造難忘回憶
+          </h1>
+          <p class="subtitle has-text-white is-size-5">
+            豐富多彩的活動展演平台，為您提供最優質的購票體驗
+          </p>
+          <div class="columns is-centered">
+            <div class="column is-half">
+              <div class="search-container">
+                <div class="field has-addons">
+                  <div class="control is-expanded">
+                    <input
+                      class="input is-large search-input"
+                      type="text"
+                      placeholder="搜尋活動..."
+                    />
                   </div>
-                  <div class="info-right">
-                    <button class="join-button">檢視活動</button>
+                  <div class="control">
+                    <button class="button is-large search-btn">
+                      <i class="fas fa-search"></i>
+                      搜尋
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <!-- 頁籤 section -->
-          <div class="pagination">
-            <ul class="pagination-list">
-              <li class="pagination-item">
-                <a
-                  href="#"
-                  class="pagination-link pagination-prev"
-                  aria-label="上一頁"
-                  @click.prevent="tabPrev"
-                >
-                  &lt;
-                </a>
-              </li>
-              <li
-                :class="['pagination-item',{'pagination-active':currentPage === page}]"
-                v-for="page in pageNumberArr"
-              >
-                <a
-                  href="#"
-                  :class="['pagination-link',{'pagination-active':currentPage === page}]"
-                  @click.prevent="tabClick"
-                  >{{ page }}</a
-                >
-              </li>
-              <li class="pagination-item">
-                <a
-                  href="#"
-                  class="pagination-link pagination-next"
-                  aria-label="下一頁"
-                  @click.prevent="tabNext"
-                >
-                  &gt;
-                </a>
-              </li>
-            </ul>
-          </div>
-        </section>
-        <!-- 無狀態 section -->
-        <section class="events-none" v-if="!eventPayload.successful">
-          <div class="icon">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z"
-                fill="currentColor"
-              />
-              <path d="M10 8H9V11H12V10H10V8Z" fill="currentColor" />
-            </svg>
-          </div>
-          <h2>找不到符合的活動</h2>
-          <p>我們找不到符合「{{ searchKeyword }}」的搜尋結果</p>
-        </section>
-      </main>
-
-      <!-- 頁腳 footer -->
-      <footer>
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>關於我們</h3>
-            <ul>
-              <li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>客戶服務</h3>
-            <ul>
-              <li><a href="#faq">常見問題</a></li>
-              <li><a href="#contact">聯絡我們</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>售票須知</h3>
-            <ul>
-              <li><a href="#terms">購票說明</a></li>
-              <li><a href="#policy">退票政策</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>追蹤我們</h3>
-            <div class="social-links">
-              <a href="#facebook">Facebook</a>
-              <a href="#instagram">Instagram</a>
-            </div>
-          </div>
         </div>
-      </footer>
-    </div>
-    <script src="./js/search.js"></script>
+      </div>
+    </section>
+
+    <!-- section 熱門活動 -->
+    <section class="section">
+      <div class="container">
+        <!-- 活動卡片(元件化) -->
+        <div class="columns is-multiline event-container"></div>
+
+        <!-- pagination 分頁(元件化) -->
+        <div class="pagination-container"></div>
+      </div>
+    </section>
+
+    <!-- footer 頁底列(元件化) -->
+    <footer></footer>
   </body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/validator@latest/validator.min.js"></script>
+  <script type="module" src="./js/search.js"></script>
 </html>

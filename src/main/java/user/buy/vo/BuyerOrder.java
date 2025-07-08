@@ -34,6 +34,6 @@ public class BuyerOrder {
 	private String orderStatus;
 	@Column(name = "create_time", insertable = false, updatable = false)
 	private Timestamp createTime;
-	@Column(name = "update_time", insertable = false, updatable = false)
+	@Column(name = "update_time", insertable = false)
 	private Timestamp updateTime;
 }

@@ -127,7 +127,7 @@ public class BookDaoImpl implements BookDao {
 		order.setOrderStatus("已付款");
 		order.setOrderTime(new Timestamp(System.currentTimeMillis()));
 		order.setTotalAmount(totalAmount);
-		
+
 		// 2. 插入新的一筆訂單
 		session.persist(order);
 		session.flush(); // 強制執行 SQL，生成 id

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bulma 內容與分頁示範</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .content-item {
+        transition: transform 0.2s ease;
+      }
+      .content-item:hover {
+        transform: translateY(-2px);
+      }
+      .pagination-link:hover {
+        background-color: hsl(204, 86%, 53%);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 主要內容區域 -->
+    <div class="container mt-6 mb-6">
+      <!-- 頁面標題 -->
+      <div class="has-text-centered mb-6">
+        <h1 class="title is-2 has-text-primary">
+          <i class="fas fa-calendar-alt mr-3"></i>
+          熱門活動
+        </h1>
+        <p class="subtitle is-4 has-text-grey">探索最新最熱門的活動與演出</p>
+      </div>
+
+      <!-- 搜尋與篩選區域 -->
+      <div class="box mb-5">
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input
+              class="input"
+              type="text"
+              placeholder="搜尋活動名稱或關鍵字..."
+            />
+          </div>
+          <div class="control">
+            <button class="button is-primary">
+              <span class="icon">
+                <i class="fas fa-search"></i>
+              </span>
+              <span>搜尋</span>
+            </button>
+          </div>
+        </div>
+        <div class="field is-grouped is-grouped-multiline mt-4">
+          <div class="control">
+            <div class="tags has-addons">
+              <span class="tag is-dark">分類</span>
+              <span class="tag is-info">音樂</span>
+            </div>
+          </div>
+          <div class="control">
+            <div class="tags has-addons">
+              <span class="tag is-dark">地區</span>
+              <span class="tag is-success">台北</span>
+            </div>
+          </div>
+          <div class="control">
+            <div class="tags has-addons">
+              <span class="tag is-dark">時間</span>
+              <span class="tag is-warning">本週</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 內容區塊 -->
+      <div id="content-container">
+        <!-- 動態內容將在這裡顯示 -->
+      </div>
+
+      <!-- 分頁區域 -->
+      <nav
+        id="pagination-container"
+        class="pagination is-centered mt-6"
+        role="navigation"
+      >
+        <!-- 分頁將在這裡動態生成 -->
+      </nav>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script type="module" src="./pagination-example.js"></script>
+  </body>
+</html>

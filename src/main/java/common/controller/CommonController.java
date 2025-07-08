@@ -1,4 +1,4 @@
-package user.buy.controller;
+package common.controller;
 
 import javax.servlet.http.HttpSession;
 
@@ -22,7 +22,7 @@ public class CommonController {
 	 * @return {Core<Member>} 回應操作結果。
 	 */
 	@CrossOrigin(origins = "*")
-	@GetMapping("identify")
+	@GetMapping("authenticate")
 	public Core<Member> getMemberFromSession(@SessionAttribute(required = false) Member member) {
 		var core = new Core<Member>();
 		if (member == null) {
