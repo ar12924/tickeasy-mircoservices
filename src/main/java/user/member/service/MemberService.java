@@ -24,8 +24,11 @@ public interface MemberService extends CommonService {
 
 	boolean activateMemberByToken(String tokenStr);
 
-	// 以 email 請求密碼重置
+	// 以 email 請求密碼重設
 	Member requestPasswordResetByEmail(String email);
+
+	// 發送密碼更新認證信
+	Member sendPasswordUpdateMail(Member member, String newPassword);
 
 	// 以 token 重設密碼
 	Member resetPasswordByToken(String token, String newPassword);

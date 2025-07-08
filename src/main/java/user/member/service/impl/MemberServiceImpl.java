@@ -249,6 +249,12 @@ public class MemberServiceImpl implements MemberService {
 		if (found != null) {
 			String stored = found.getPassword();
 			if (password.equals(stored)) {
+				// 檢查帳號是否已驗證
+				if (found.getRoleLevel() == null || found.getRoleLevel() == 0) {
+					found.setSuccessful(false);
+					found.setMessage("帳號尚未驗證，請先驗證您的電子郵件");
+					return found;
+				}
 				String newHash = HashUtil.hashpw(password);
 				found.setPassword(newHash);
 				memberDao.update(found);
@@ -257,11 +263,16 @@ public class MemberServiceImpl implements MemberService {
 				return found;
 			}
 			if (HashUtil.verify(password, stored)) {
+				// 檢查帳號是否已驗證
+				if (found.getRoleLevel() == null || found.getRoleLevel() == 0) {
+					found.setSuccessful(false);
+					found.setMessage("帳號尚未驗證，請先驗證您的電子郵件");
+					return found;
+				}
 				found.setSuccessful(true);
 				found.setMessage("登入成功");
 				return found;
 			}
-
 		}
 
 		Member fail = new Member();
@@ -328,6 +339,7 @@ public class MemberServiceImpl implements MemberService {
 		return true;
 	}
 
+	@Transactional
 	@Override
 	public Member requestPasswordResetByEmail(String email) {
 		Member member = getByEmail(email);
@@ -341,14 +353,15 @@ public class MemberServiceImpl implements MemberService {
 			VerificationToken token = createToken(member, "RESET_PASSWORD", 3600 * 1000);
 			sendMail(member, "RESET_PASSWORD", token.getTokenName());
 			member.setSuccessful(true);
-			member.setMessage("密碼重置郵件已發送，請檢查您的信箱");
+			member.setMessage("密碼重設郵件已發送，請檢查您的信箱");
 		} catch (Exception e) {
 			member.setSuccessful(false);
-			member.setMessage("密碼重置郵件發送失敗：" + e.getMessage());
+			member.setMessage("密碼重設郵件發送失敗：" + e.getMessage());
 		}
 		return member;
 	}
 
+	@Transactional
 	@Override
 	public Member resetPasswordByToken(String token, String newPassword) {
 		Member member = new Member();
@@ -358,7 +371,7 @@ public class MemberServiceImpl implements MemberService {
 				resetToken.getExpiredTime().before(new Timestamp(System.currentTimeMillis())) ||
 				!"RESET_PASSWORD".equals(resetToken.getTokenType())) {
 				member.setSuccessful(false);
-				member.setMessage("無效或已過期的重置連結");
+				member.setMessage("無效或已過期的重設連結");
 				return member;
 			}
 			member = resetToken.getMember();
@@ -367,19 +380,20 @@ public class MemberServiceImpl implements MemberService {
 			if (updated.isSuccessful()) {
 				verifyDao.deleteById(resetToken.getTokenId());
 				member.setSuccessful(true);
-				member.setMessage("密碼重置成功");
+				member.setMessage("密碼重設成功");
 			} else {
 				member.setSuccessful(false);
-				member.setMessage("密碼重置失敗");
+				member.setMessage("密碼重設失敗");
 			}
 			return member;
 		} catch (Exception e) {
 			member.setSuccessful(false);
-			member.setMessage("密碼重置失敗：" + e.getMessage());
+			member.setMessage("密碼重設失敗：" + e.getMessage());
 			return member;
 		}
 	}
 
+	@Transactional
 	@Override
 	public Member resendVerificationMail(String email) {
 		Member member = getByEmail(email);
@@ -406,6 +420,7 @@ public class MemberServiceImpl implements MemberService {
 		return member;
 	}
 
+	@Transactional
 	@Override
 	public Member sendVerificationMail(Member member) {
 		try {
@@ -416,6 +431,25 @@ public class MemberServiceImpl implements MemberService {
 		} catch (Exception e) {
 			member.setSuccessful(false);
 			member.setMessage("發送失敗：" + e.getMessage());
+		}
+		return member;
+	}
+
+	@Transactional
+	@Override
+	public Member sendPasswordUpdateMail(Member member, String newPassword) {
+		try {
+			// 創建密碼更新認證 token
+			VerificationToken token = createToken(member, "PASSWORD_UPDATE", 3600 * 1000);
+			
+			// 發送密碼更新認證信
+			mailService.sendPasswordUpdateNotification(member.getEmail(), member.getNickName(), token.getTokenName());
+			
+			member.setSuccessful(true);
+			member.setMessage("密碼更新認證信已發送");
+		} catch (Exception e) {
+			member.setSuccessful(false);
+			member.setMessage("密碼更新認證信發送失敗：" + e.getMessage());
 		}
 		return member;
 	}
