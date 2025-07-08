@@ -77,7 +77,7 @@ function initTicketExchangeVueApp() {
                 description: ''
             });
 
-            // ==================== 方法定義 ====================
+            // ==================== 初始化方法 ====================
 
             // 初始化頁面
             const initPage = async () => {
@@ -126,25 +126,22 @@ function initTicketExchangeVueApp() {
                         console.log('後端登入狀態回應:', data);
 
                         if (data.success && data.data) {
-                            if (data.data.isLoggedIn && data.data.nickname) {
+                            if (data.data.isLoggedIn && data.data.nickname && data.data.memberId) {
                                 isLoggedIn.value = true;
                                 memberNickname.value = data.data.nickname;
-                                console.log('登入成功:', memberNickname.value);
+                                memberId.value = data.data.memberId;
                             } else {
                                 isLoggedIn.value = false;
                                 memberNickname.value = null;
                                 memberId.value = null;
-                                console.log('用戶未登入');
                             }
                         }
                     } else {
-                        console.error('檢查登入狀態HTTP錯誤:', response.status);
                         isLoggedIn.value = false;
                         memberNickname.value = null;
                         memberId.value = null;
                     }
                 } catch (err) {
-                    console.error('檢查登錄狀態時發生錯誤:', err);
                     isLoggedIn.value = false;
                     memberNickname.value = null;
                     memberId.value = null;
@@ -182,41 +179,67 @@ function initTicketExchangeVueApp() {
 
             // 獲取轉票貼文列表
             const fetchSwapPosts = async () => {
-                if (!eventId.value) return;
-
                 try {
-                    console.log('獲取轉票貼文，eventId:', eventId.value);
-                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/posts/event/${eventId.value}`);
+                    if (!eventId.value) return;
+
+                    const timestamp = new Date().getTime();
+                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/posts/event/${eventId.value}?t=${timestamp}`, {
+                        cache: 'no-cache',
+                        headers: {
+                            'Cache-Control': 'no-cache',
+                            'Pragma': 'no-cache'
+                        }
+                    });
 
                     if (response.ok) {
                         const data = await response.json();
-                        console.log('轉票貼文回應:', data);
-
                         if (data.success && data.data) {
-                            swapPosts.value = data.data.map(post => ({
-                                ...post,
-                                showComments: false,
-                                showCommentForm: false,
-                                comments: null,
-                                commentCount: 0,
-                                commentSubmitting: false,
-                                commentForm: {
-                                    ticketId: '',
-                                    description: ''
+                            // ✅ 核心修正：保留現有的UI狀態和留言資料
+                            const currentPosts = swapPosts.value || [];
+
+                            swapPosts.value = data.data.map(post => {
+                                // 查找對應的現有貼文
+                                const existingPost = currentPosts.find(p => p.postId === post.postId);
+
+                                if (existingPost) {
+                                    // ✅ 現有貼文：保留所有UI狀態，只更新後端資料
+                                    return {
+                                        ...post,                                    // 新的後端資料
+                                        showComments: existingPost.showComments,   // 保留留言顯示狀態
+                                        showCommentForm: existingPost.showCommentForm, // 保留表單顯示狀態
+                                        comments: existingPost.comments,           // 保留已載入的留言
+                                        commentCount: existingPost.commentCount,   // 保留留言數量
+                                        commentForm: existingPost.commentForm,     // 保留表單資料
+                                        commentSubmitting: existingPost.commentSubmitting // 保留提交狀態
+                                    };
+                                } else {
+                                    // ✅ 新貼文：使用預設的UI狀態
+                                    return {
+                                        ...post,
+                                        showComments: false,
+                                        showCommentForm: false,
+                                        comments: null,
+                                        commentCount: 0,
+                                        commentForm: {
+                                            ticketId: '',
+                                            description: '',
+                                            availableTickets: []
+                                        },
+                                        commentSubmitting: false
+                                    };
                                 }
-                            }));
-                            console.log('已載入轉票貼文數量:', swapPosts.value.length);
+                            });
+
+                            console.log('✅ 貼文列表已更新，UI狀態已保留');
                         } else {
-                            console.warn('轉票貼文回應格式不正確:', data);
                             swapPosts.value = [];
                         }
                     } else {
-                        console.error('獲取轉票貼文HTTP錯誤:', response.status);
                         swapPosts.value = [];
                     }
+
                 } catch (err) {
-                    console.error('獲取轉票貼文時發生錯誤:', err);
-                    swapPosts.value = [];
+                    console.error('載入換票貼文時發生錯誤:', err);
                 }
             };
 
@@ -251,10 +274,17 @@ function initTicketExchangeVueApp() {
                 }
             };
 
+            // ==================== 貼文操作方法 ====================
+
             // 提交轉票貼文
             const submitSwapPost = async () => {
                 if (!isLoggedIn.value) {
                     alert('請先登入才能發表轉票貼文');
+                    return;
+                }
+
+                if (isSubmitting.value) {
+                    console.log('正在提交中，忽略重複請求');
                     return;
                 }
 
@@ -271,8 +301,6 @@ function initTicketExchangeVueApp() {
                         eventId: parseInt(eventId.value)
                     };
 
-
-
                     const response = await fetch(`${API_BASE_URL}/ticket-exchange/posts`, {
                         method: 'POST',
                         headers: {
@@ -285,7 +313,6 @@ function initTicketExchangeVueApp() {
                     if (response.ok) {
                         const data = await response.json();
 
-
                         if (data.success) {
                             // 重新載入貼文列表
                             await fetchSwapPosts();
@@ -295,17 +322,16 @@ function initTicketExchangeVueApp() {
 
                             alert('轉票貼文發表成功！');
                         } else {
-                            throw new Error(data.userMessage || '發表轉票貼文失敗');
+                            throw new Error(data.message || '發表轉票貼文失敗');
                         }
                     } else {
                         const errorData = await response.json().catch(() => ({}));
-
-                        throw new Error(errorData.userMessage || `HTTP錯誤: ${response.status}`);
+                        throw new Error(errorData.message || `HTTP錯誤: ${response.status}`);
                     }
                 } catch (err) {
                     console.error('提交轉票貼文時發生錯誤:', err);
-                    if (err.message.includes('已用於其他轉票')) {
-                        alert('您選擇的票券已用於其他換票貼文，請選擇其他票券或先刪除原有貼文');
+                    if (err.message.includes('已將此票券用於其他進行中的換票')) {
+                        alert('您選擇的票券已用於其他進行中的換票，請選擇其他票券或先完成/取消原有的換票');
                     } else if (err.message.includes('已對此活動發布')) {
                         alert('您已對此活動發布過換票貼文，請編輯現有貼文或先刪除後重新發布');
                     } else if (err.message.includes('同一活動')) {
@@ -315,216 +341,6 @@ function initTicketExchangeVueApp() {
                     }
                 } finally {
                     isSubmitting.value = false;
-                }
-            };
-
-            // 顯示留言表單
-            const showCommentForm = (post) => {
-                if (!isLoggedIn.value) {
-                    alert('請先登入才能發表留言');
-                    return;
-                }
-
-                const postEventName = post.event?.eventName;
-
-                // 同活動、可用、排除貼文本身的票券
-                const availableTickets = userTickets.value.filter(ticket => {
-                    return ticket.eventName === postEventName &&
-                        !isTicketUsedInExchange(ticket.ticketId) &&
-                        ticket.ticketId !== post.ticket?.ticketId;
-                });
-
-                if (availableTickets.length === 0) {
-                    alert(`您沒有「${postEventName}」的可用票券進行交換，或您的票券已用於其他換票中`);
-                    return;
-                }
-
-                // 用戶友好提示
-                if (availableTickets.length === 1) {
-                    console.log('系統已為您篩選出唯一可交換的票券');
-                } else if (availableTickets.length > 3) {
-                    console.log(`您有 ${availableTickets.length} 張可交換票券，請仔細選擇`);
-                }
-                // 重置表單
-                post.commentForm = {
-                    ticketId: '',
-                    description: '',
-                    availableTickets: availableTickets
-                };
-                post.showCommentForm = true;
-            };
-
-            // 隱藏留言表單
-            const hideCommentForm = (post) => {
-                post.showCommentForm = false;
-                post.commentForm = {
-                    ticketId: '',
-                    description: ''
-                };
-            };
-
-            // 提交留言
-            const submitComment = async (post) => {
-
-                if (!validateCommentForm(post.commentForm)) {
-                    return;
-                }
-
-                const selectedTicket = post.commentForm.availableTickets.find(
-                    t => t.ticketId == post.commentForm.ticketId
-                );
-
-                if (!selectedTicket) {
-                    alert('找不到選中的票券，請重新選擇');
-                    return;
-                }
-
-                if (!confirm(`確定要用「${selectedTicket.categoryName} - 票券#${selectedTicket.ticketId}」進行交換嗎？`)) {
-                    return;
-                }
-
-                post.commentSubmitting = true;
-
-                try {
-                    // 🔥 完全按照 submitSwapPost 的格式處理數據
-                    const requestData = {
-                        postId: parseInt(post.postId),
-                        ticketId: parseInt(post.commentForm.ticketId),
-                        description: post.commentForm.description
-                    };
-
-                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/comments`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(requestData)
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-
-                        if (data.success) {
-                            // 重新載入該貼文的留言
-                            await loadComments(post.postId);
-                            hideCommentForm(post);
-                            post.showComments = true;
-                            alert('留言發表成功！');
-                        } else {
-                            throw new Error(data.message || '發表留言失敗');
-                        }
-                    } else {
-                        const errorText = await response.text();
-                        throw new Error(`HTTP錯誤 ${response.status}: ${errorText}`);
-                    }
-                } catch (err) {
-                    console.error('提交留言錯誤:', err);
-                    alert(`發表失敗：${err.message}`);
-                } finally {
-                    post.commentSubmitting = false;
-                }
-            };
-
-            // 載入留言
-            const loadComments = async (postId) => {
-                try {
-                    console.log('載入留言，postId:', postId);
-                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/posts/${postId}/comments`);
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('留言回應:', data);
-
-                        if (data.success) {
-                            // 找到對應的貼文並更新留言
-                            const postIndex = swapPosts.value.findIndex(p => p.postId === postId);
-                            if (postIndex !== -1) {
-                                swapPosts.value[postIndex].comments = data.data;
-                                swapPosts.value[postIndex].commentCount = data.data.length;
-                                console.log('已載入留言數量:', data.data.length);
-                            }
-                        } else {
-                            console.warn('留言回應格式不正確:', data);
-                        }
-                    } else {
-                        console.error('載入留言HTTP錯誤:', response.status);
-                    }
-                } catch (err) {
-                    console.error('載入留言時發生錯誤:', err);
-                }
-            };
-
-            // 切換留言顯示
-            const toggleComments = async (postId) => {
-                const postIndex = swapPosts.value.findIndex(p => p.postId === postId);
-                if (postIndex === -1) return;
-
-                const post = swapPosts.value[postIndex];
-
-                if (!post.showComments && !post.comments) {
-                    // 首次顯示留言時從API載入
-                    await loadComments(postId);
-                }
-
-                swapPosts.value[postIndex].showComments = !post.showComments;
-            };
-
-            // 更新留言狀態
-            const updateCommentStatus = async (commentId, status) => {
-                try {
-                    const requestData = {
-                        status: status
-                    };
-
-                    console.log('更新留言狀態:', commentId, status);
-
-                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/comments/${commentId}/status`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(requestData)
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('更新留言狀態回應:', data);
-
-                        if (data.success) {
-                            // 重新載入所有有顯示留言的貼文
-                            for (const post of swapPosts.value) {
-                                if (post.showComments) {
-                                    await loadComments(post.postId);
-                                }
-                            }
-
-                            // 根據狀態顯示不同訊息
-                            if (status === 2) {
-                                alert('轉票完成！票券已成功交換。');
-                                // 🆕 重新載入用戶票券列表
-                                if (isLoggedIn.value) {
-                                    await fetchUserTickets();
-                                }
-                            } else if (status === 1) {
-                                alert('已接受換票請求，等待確認完成。');
-                            } else if (status === 3) {
-                                alert('已取消換票。');
-                            } else {
-                                alert('狀態更新成功！');
-                            }
-                        } else {
-                            throw new Error(data.userMessage || '狀態更新失敗');
-                        }
-                    } else {
-                        const errorData = await response.json().catch(() => ({}));
-                        console.error('更新留言狀態HTTP錯誤:', response.status, errorData);
-                        throw new Error(errorData.userMessage || `HTTP錯誤: ${response.status}`);
-                    }
-                } catch (err) {
-                    console.error('更新留言狀態時發生錯誤:', err);
-                    alert(err.message || '更新失敗，請稍後再試');
                 }
             };
 
@@ -551,12 +367,12 @@ function initTicketExchangeVueApp() {
                             await fetchSwapPosts();
                             alert('貼文刪除成功！');
                         } else {
-                            throw new Error(data.userMessage || '刪除失敗');
+                            throw new Error(data.message || '刪除失敗');
                         }
                     } else {
                         const errorData = await response.json().catch(() => ({}));
                         console.error('刪除貼文HTTP錯誤:', response.status, errorData);
-                        throw new Error(errorData.userMessage || `HTTP錯誤: ${response.status}`);
+                        throw new Error(errorData.message || `HTTP錯誤: ${response.status}`);
                     }
                 } catch (err) {
                     console.error('刪除貼文時發生錯誤:', err);
@@ -564,7 +380,377 @@ function initTicketExchangeVueApp() {
                 }
             };
 
+            // ==================== 留言操作方法 ====================
+
+            // 顯示留言表單
+            const showCommentForm = (post) => {
+                if (!isLoggedIn.value) {
+                    alert('請先登入才能發表留言');
+                    return;
+                }
+
+                const postEventName = post.event?.eventName;
+
+                // 過濾掉已用於進行中換票的票券
+                const availableTickets = userTickets.value.filter(ticket => {
+                    return ticket.eventName === postEventName &&
+                        !isTicketUsedInActiveExchange(ticket.ticketId) &&
+                        ticket.ticketId !== post.ticket?.ticketId;
+                });
+
+                if (availableTickets.length === 0) {
+                    alert(`您沒有「${postEventName}」的可用票券進行交換，或您的票券已用於其他進行中的換票`);
+                    return;
+                }
+
+                // 用戶友好提示
+                if (availableTickets.length === 1) {
+                    console.log('系統已為您篩選出唯一可交換的票券');
+                } else if (availableTickets.length > 3) {
+                    console.log(`您有 ${availableTickets.length} 張可交換票券，請仔細選擇`);
+                }
+
+                // 重置表單
+                post.commentForm = {
+                    ticketId: '',
+                    description: '',
+                    availableTickets: availableTickets
+                };
+                post.showCommentForm = true;
+            };
+
+            // 隱藏留言表單
+            const hideCommentForm = (post) => {
+                post.showCommentForm = false;
+                post.commentForm = {
+                    ticketId: '',
+                    description: ''
+                };
+            };
+
+            // 提交留言
+            const submitComment = async (post) => {
+                if (post.commentSubmitting) {
+                    return;
+                }
+
+                if (!validateCommentForm(post.commentForm)) {
+                    return;
+                }
+
+                const selectedTicket = post.commentForm.availableTickets.find(
+                    t => t.ticketId === parseInt(post.commentForm.ticketId, 10)
+                );
+
+                if (!selectedTicket) {
+                    alert('找不到選中的票券，請重新選擇');
+                    return;
+                }
+
+                if (isTicketUsedInActiveExchange(selectedTicket.ticketId)) {
+                    alert('選中的票券已用於其他交換，請重新整理頁面');
+                    return;
+                }
+
+                if (!confirm(`確定要用「${selectedTicket.categoryName} - 票券#${selectedTicket.ticketId}」進行交換嗎？`)) {
+                    return;
+                }
+
+                post.commentSubmitting = true;
+
+                try {
+                    const requestData = {
+                        postId: parseInt(post.postId, 10),
+                        ticketId: parseInt(post.commentForm.ticketId, 10),
+                        description: String(post.commentForm.description || '').trim()
+                    };
+
+                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/comments`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(requestData)
+                    });
+
+                    if (response.status === 401) {
+                        alert('登入已過期，請重新登入');
+                        goToLogin();
+                        return;
+                    }
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            await loadComments(post.postId);
+                            hideCommentForm(post);
+                            post.showComments = true;
+                            alert('留言發表成功！');
+                        } else {
+                            throw new Error(data.message || '發表留言失敗');
+                        }
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || `HTTP錯誤 ${response.status}`);
+                    }
+                } catch (err) {
+                    console.error('提交留言錯誤:', err);
+                    alert(`發表失敗：${err.message}`);
+                } finally {
+                    post.commentSubmitting = false;
+                }
+            };
+
+            // 🔧 修改：載入留言時確保響應式
+            const loadComments = async (postId) => {
+                try {
+                    const timestamp = new Date().getTime();
+                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/posts/${postId}/comments?t=${timestamp}`, {
+                        cache: 'no-cache',
+                        headers: {
+                            'Cache-Control': 'no-cache, no-store, must-revalidate',
+                            'Pragma': 'no-cache',
+                            'Expires': '0'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            const postIndex = swapPosts.value.findIndex(p => p.postId === postId);
+                            if (postIndex !== -1) {
+                                // 🔧 關鍵：確保留言資料響應式
+                                const reactiveComments = data.data.map(comment => ({
+                                    ...comment,
+                                    swappedStatus: comment.swappedStatus || 0,
+                                    statusText: comment.statusText || getStatusText(comment.swappedStatus || 0)
+                                }));
+                                
+                                swapPosts.value[postIndex].comments = reactiveComments;
+                                swapPosts.value[postIndex].commentCount = reactiveComments.length;
+                                console.log(`貼文 ${postId} 的留言已更新，共 ${reactiveComments.length} 則`);
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error('載入留言時發生錯誤:', err);
+                }
+            };
+
+            // 切換留言顯示
+            const toggleComments = async (postId) => {
+                const postIndex = swapPosts.value.findIndex(p => p.postId === postId);
+                if (postIndex === -1) return;
+
+                const post = swapPosts.value[postIndex];
+
+                if (!post.showComments && !post.comments) {
+                    // 首次顯示留言時從API載入
+                    await loadComments(postId);
+                }
+
+                swapPosts.value[postIndex].showComments = !post.showComments;
+            };
+
+            // ==================== 🔧 修改：簡化的狀態操作方法 ====================
+
+            // 🔧 新增：接受請求並直接完成交換
+            const acceptAndCompleteExchange = async (commentId) => {
+                if (!confirm('確定要接受此換票請求嗎？票券將立即完成交換且無法撤銷。')) {
+                    return;
+                }
+
+                console.log('開始接受並完成交換，commentId:', commentId);
+
+                try {
+                    // 🔧 修改：直接發送狀態2
+                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/comments/${commentId}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ status: 2 }) // 🔧 直接設為完成狀態
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            console.log('後端回應成功');
+                            
+                            // 🔧 立即更新本地狀態為已完成
+                            updateLocalCommentStatusReactive(commentId, 2);
+                            
+                            // 顯示成功訊息
+                            alert(data.message || '票券交換完成！');
+                            
+                            // 重新載入資料
+                            setTimeout(async () => {
+                                await refreshAllData(commentId);
+                            }, 500);
+                            
+                        } else {
+                            throw new Error(data.message || '操作失敗');
+                        }
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || `HTTP錯誤: ${response.status}`);
+                    }
+                } catch (err) {
+                    console.error('接受並完成交換時發生錯誤:', err);
+                    alert(`操作失敗：${err.message}`);
+                }
+            };
+
+            // 🔧 修改：取消請求（保持不變）
+            const cancelSwapRequest = async (commentId) => {
+                if (!confirm('確定要取消此換票請求嗎？')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/ticket-exchange/comments/${commentId}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ status: 3 })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            // 立即更新本地狀態
+                            updateLocalCommentStatusReactive(commentId, 3);
+                            alert(data.message || '已取消換票請求');
+                            
+                            // 重新載入資料
+                            setTimeout(async () => {
+                                await refreshAllData(commentId);
+                            }, 500);
+                        } else {
+                            throw new Error(data.message || '操作失敗');
+                        }
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || `HTTP錯誤: ${response.status}`);
+                    }
+                } catch (err) {
+                    console.error('取消請求時發生錯誤:', err);
+                    alert(`操作失敗：${err.message}`);
+                }
+            };
+
+            // ==================== 🔧 修改：響應式更新和權限判斷 ====================
+
+            // 🔧 新增：修復響應式更新問題
+            const updateLocalCommentStatusReactive = (commentId, newStatus) => {
+                console.log(`立即更新本地留言狀態: commentId=${commentId}, newStatus=${newStatus}`);
+                
+                for (const post of swapPosts.value) {
+                    if (post.comments && Array.isArray(post.comments)) {
+                        const commentIndex = post.comments.findIndex(c => c.commentId === commentId);
+                        if (commentIndex !== -1) {
+                            // 🔧 關鍵：使用 Vue 3 正確的響應式更新
+                            const updatedComment = {
+                                ...post.comments[commentIndex],
+                                swappedStatus: newStatus,
+                                statusText: getStatusText(newStatus)
+                            };
+                            post.comments.splice(commentIndex, 1, updatedComment);
+                            
+                            console.log(`成功更新留言 ${commentId} 的狀態為 ${newStatus}`);
+                            break;
+                        }
+                    }
+                }
+            };
+
+            // 🔧 新增：統一的資料重新載入方法
+            const refreshAllData = async (targetCommentId) => {
+                try {
+                    console.log('開始重新載入所有資料...');
+                    
+                    // 1. 重新載入貼文列表（保留UI狀態）
+                    await fetchSwapPosts();
+                    
+                    // 2. 重新載入用戶票券
+                    if (isLoggedIn.value) {
+                        await fetchUserTickets();
+                    }
+                    
+                    // 3. 找到包含目標留言的貼文，重新載入留言
+                    for (const post of swapPosts.value) {
+                        if (post.showComments || (post.comments && post.comments.length > 0)) {
+                            const hasTargetComment = post.comments && 
+                                post.comments.some(c => c.commentId === targetCommentId);
+                            
+                            if (hasTargetComment) {
+                                console.log(`重新載入貼文 ${post.postId} 的留言`);
+                                await loadComments(post.postId);
+                                post.showComments = true; // 確保留言區塊保持展開
+                                break;
+                            }
+                        }
+                    }
+                    
+                    console.log('所有資料重新載入完成');
+                } catch (error) {
+                    console.error('重新載入資料失敗:', error);
+                }
+            };
+
+            // ==================== 🔧 修改：簡化權限判斷方法 ====================
+
+            // 🔧 新增：檢查是否可以接受並完成交換
+            const canAcceptAndComplete = (post, comment) => {
+                if (!isLoggedIn.value || !post.member || !comment || comment.swappedStatus !== 0) {
+                    return false;
+                }
+                // 只有貼文發起方可以接受並完成交換
+                return post.member.memberId === memberId.value;
+            };
+
+            // 🔧 修改：簡化取消權限判斷
+            const canCancel = (post, comment) => {
+                if (!isLoggedIn.value || !comment || comment.swappedStatus !== 0) { // 🔧 只有待換票狀態可以取消
+                    return false;
+                }
+                
+                // 留言方或貼文方都可以取消
+                const isCommentOwner = comment.member && comment.member.memberId === memberId.value;
+                const isPostOwner = post.member && post.member.memberId === memberId.value;
+                
+                return isCommentOwner || isPostOwner;
+            };
+
             // ==================== 輔助方法 ====================
+
+            // 檢查票券是否已用於進行中的換票
+            const isTicketUsedInActiveExchange = (ticketId) => {
+                // 檢查是否已在貼文中
+                const usedInPost = swapPosts.value.some(post =>
+                    post.ticket && post.ticket.ticketId === ticketId
+                );
+
+                if (usedInPost) {
+                    return true;
+                }
+
+                // 🔧 修改：檢查是否已在進行中的留言中（狀態為0）
+                const usedInActiveComment = swapPosts.value.some(post =>
+                    post.comments && post.comments.some(comment =>
+                        comment.ticket && comment.ticket.ticketId === ticketId &&
+                        comment.swappedStatus === 0 // 🔧 只檢查待換票狀態
+                    )
+                );
+
+                return usedInActiveComment;
+            };
+
+            // ==================== 其他原有方法保持不變 ====================
 
             // 安全獲取會員暱稱
             const getMemberNickName = (post) => {
@@ -645,25 +831,21 @@ function initTicketExchangeVueApp() {
 
             // 驗證留言表單
             const validateCommentForm = (commentForm) => {
-
+                console.log('驗證留言表單:', commentForm);
                 if (!commentForm) {
                     alert('表單對象不存在');
                     return false;
                 }
 
-                if (!commentForm.ticketId || commentForm.ticketId === '' || commentForm.ticketId === 0) {
+                const ticketId = parseInt(commentForm.ticketId, 10);
+
+                if (!commentForm.ticketId || commentForm.ticketId === '' || isNaN(ticketId) || ticketId <= 0) {
                     alert('請選擇您要交換的票券');
                     return false;
                 }
 
                 if (!commentForm.description || String(commentForm.description).trim() === '') {
                     alert('請輸入留言內容');
-                    return false;
-                }
-
-                const ticketId = parseInt(commentForm.ticketId);
-                if (isNaN(ticketId) || ticketId <= 0) {
-                    alert('票券ID格式錯誤');
                     return false;
                 }
 
@@ -679,38 +861,7 @@ function initTicketExchangeVueApp() {
 
             // 檢查是否為用戶自己的貼文
             const isMyPost = (post) => {
-                return isLoggedIn.value && post.member && post.member.nickName === memberNickname.value;
-            };
-
-            // 檢查是否可以更新留言狀態
-            const canUpdateCommentStatus = (post, comment) => {
-                if (!isLoggedIn.value) return false;
-
-                // 貼文擁有者或留言者可以更新狀態
-                return (post.member && post.member.nickName === memberNickname.value) ||
-                    (comment.member && comment.member.nickName === memberNickname.value);
-            };
-
-            // 獲取狀態CSS類別
-            const getStatusClass = (status) => {
-                const statusClasses = {
-                    0: 'status-pending',
-                    1: 'status-waiting',
-                    2: 'status-completed',
-                    3: 'status-cancelled'
-                };
-                return statusClasses[status] || '';
-            };
-
-            // 獲取狀態文字
-            const getStatusText = (status) => {
-                const statusTexts = {
-                    0: '待換票',
-                    1: '待確認',
-                    2: '已完成',
-                    3: '已取消'
-                };
-                return statusTexts[status] || '未知狀態';
+                return isLoggedIn.value && post.member && post.member.memberId === memberId.value;
             };
 
             // 提取希望交換的票種
@@ -783,7 +934,7 @@ function initTicketExchangeVueApp() {
                         placeholder.style.display = 'flex';
                     }
 
-                    // ✅ 正確使用傳入的 member 參數
+                    // 正確使用傳入的 member 參數
                     if (member && member.memberId) {
                         console.warn(`會員 ${member.memberId} 的照片載入失敗`);
                     }
@@ -827,44 +978,33 @@ function initTicketExchangeVueApp() {
                 }
             };
 
-            //  改良後的票券顯示格式
+            // 改良後的票券顯示格式
             const formatTicketDisplay = (ticket) => {
                 const purchaseDate = ticket.createTime ?
                     new Date(ticket.createTime).toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit' }) : '';
                 return `${ticket.categoryName} - ${ticket.participantName} (NT$ ${formatPrice(ticket.price)}) - 票券#${ticket.ticketId}${purchaseDate ? ` [${purchaseDate}購買]` : ''}`;
             };
 
-            //  檢查票券是否已用於轉票
-            const isTicketUsedInExchange = (ticketId) => {
-                return swapPosts.value.some(post =>
-                    post.ticket && post.ticket.ticketId === ticketId
-                );
+            // 🔧 修改：簡化的狀態文字對應
+            const getStatusText = (status) => {
+                const statusTexts = {
+                    0: '待換票',
+                    2: '已完成',
+                    3: '已取消'
+                };
+                return statusTexts[status] || '未知狀態';
             };
 
-            //  票券狀態檢查方法
-            const getTicketStatus = (ticketId) => {
-                if (isTicketUsedInPost(ticketId)) {
-                    return { status: '已發布換票', class: 'ticket-status-posted' };
-                }
-                if (isTicketUsedInComment(ticketId)) {
-                    return { status: '換票留言中', class: 'ticket-status-commenting' };
-                }
-                return { status: '可用於換票', class: 'ticket-status-available' };
+            // 獲取狀態CSS類別
+            const getStatusClass = (status) => {
+                const statusClasses = {
+                    0: 'status-pending',
+                    2: 'status-completed',
+                    3: 'status-cancelled'
+                };
+                return statusClasses[status] || '';
             };
 
-            const isTicketUsedInPost = (ticketId) => {
-                return swapPosts.value.some(post =>
-                    post.ticket && post.ticket.ticketId === ticketId
-                );
-            };
-
-            const isTicketUsedInComment = (ticketId) => {
-                return swapPosts.value.some(post =>
-                    post.comments && post.comments.some(comment =>
-                        comment.ticket && comment.ticket.ticketId === ticketId
-                    )
-                );
-            };
             // ==================== 生命週期鉤子 ====================
 
             // 組件掛載時執行
@@ -895,7 +1035,7 @@ function initTicketExchangeVueApp() {
                 }
             });
 
-            // ==================== 返回模板所需的所有內容 ====================
+            // ==================== 🔧 修改：返回模板所需的所有內容 ====================
             return {
                 // 響應式數據
                 eventId,
@@ -910,22 +1050,35 @@ function initTicketExchangeVueApp() {
                 isSubmitting,
                 swapForm,
 
-                // 方法
+                // 初始化方法
                 initPage,
                 checkLoginStatus,
                 fetchEventInfo,
                 fetchSwapPosts,
                 fetchUserTickets,
+
+                // 貼文操作方法
                 submitSwapPost,
+                deletePost,
+
+                // 留言操作方法
                 showCommentForm,
                 hideCommentForm,
                 submitComment,
                 loadComments,
                 toggleComments,
-                updateCommentStatus,
-                deletePost,
+
+                // 🔧 修改：簡化的狀態操作方法
+                acceptAndCompleteExchange, // 🔧 新增：接受並完成交換
+                cancelSwapRequest,         // 保留：取消請求
+
+                // 🔧 修改：簡化的權限判斷方法
+                canAcceptAndComplete,      // 🔧 新增：是否可以接受並完成
+                canCancel,                 // 修改：簡化的取消權限判斷
 
                 // 輔助方法
+                updateLocalCommentStatusReactive, // 🔧 新增
+                refreshAllData,                   // 🔧 新增
                 getMemberNickName,
                 getMemberPhotoUrl,
                 getRelativeTime,
@@ -940,7 +1093,6 @@ function initTicketExchangeVueApp() {
                 validateCommentForm,
                 resetSwapForm,
                 isMyPost,
-                canUpdateCommentStatus,
                 getStatusClass,
                 getStatusText,
                 extractWantedTicketType,
@@ -952,10 +1104,7 @@ function initTicketExchangeVueApp() {
                 goBackToEvent,
                 goToEventInfo,
                 formatTicketDisplay,
-                isTicketUsedInExchange,
-                getTicketStatus,
-                isTicketUsedInPost,
-                isTicketUsedInComment
+                isTicketUsedInActiveExchange
             };
         }
     });

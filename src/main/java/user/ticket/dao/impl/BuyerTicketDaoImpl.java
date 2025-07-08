@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import user.ticket.dao.BuyerTicketDao;
 import user.ticket.vo.BuyerTicketVO;
@@ -52,19 +51,19 @@ public class BuyerTicketDaoImpl implements BuyerTicketDao {
     }
 
     @Override
-    @Transactional
     public boolean updateTicketOwner(Integer ticketId, Integer newOwnerId) {
-        try {
-            String hql = "UPDATE BuyerTicketVO bt SET bt.currentHolderMemberId = :newOwnerId, bt.updateTime = :updateTime WHERE bt.ticketId = :ticketId";
-            int updatedRows = session.createQuery(hql)
-                    .setParameter("newOwnerId", newOwnerId)
-                    .setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
-                    .setParameter("ticketId", ticketId)
-                    .executeUpdate();
-            return updatedRows > 0;
-        } catch (Exception e) {
-            return false;
+        
+        String hql = "UPDATE BuyerTicketVO bt SET bt.currentHolderMemberId = :newOwnerId, bt.updateTime = :updateTime WHERE bt.ticketId = :ticketId";
+        int updatedRows = session.createQuery(hql)
+        		.setParameter("newOwnerId", newOwnerId)
+                .setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
+                .setParameter("ticketId", ticketId)
+                .executeUpdate();
+        if (updatedRows == 0) {
+            throw new RuntimeException("票券 " + ticketId + " 更新失敗，可能票券不存在或已被修改");
         }
+        
+        return true;
     }
 
     @Override

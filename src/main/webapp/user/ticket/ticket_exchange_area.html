@@ -46,7 +46,7 @@
                 </div>
 
                 <!-- 錯誤訊息 -->
-                <div v-if="errorMessage  && !isLoading" class="error-message">
+                <div v-if="errorMessage && !isLoading" class="error-message">
                     <p>{{ errorMessage }}</p>
                     <button @click="initPage" class="retry-button">重試</button>
                 </div>
@@ -86,7 +86,7 @@
                 </div>
 
                 <!-- 未登入提示 -->
-                <div v-if="!isLoading  && !errorMessage && !isLoggedIn" class="login-prompt">
+                <div v-if="!isLoading && !errorMessage && !isLoggedIn" class="login-prompt">
                     <p>請先登入才能發表轉票貼文</p>
                     <button @click="goToLogin" class="submit-button">前往登入</button>
                 </div>
@@ -184,13 +184,12 @@
                                 </button>
                             </div>
 
-                            <!-- 留言區塊 -->
+                            <!-- 🔧 修改：留言區塊 - 簡化為3狀態操作按鈕 -->
                             <div v-if="post.showComments" class="comments-section">
                                 <div v-if="post.comments && post.comments.length > 0">
                                     <div v-for="comment in post.comments" :key="comment.commentId" class="comment-item">
                                         <div class="comment-user">
                                             <div class="user-avatar small">
-                                                <!-- ✅ 修正：使用 getMemberPhotoUrl 方法和正確的錯誤處理 -->
                                                 <img v-if="comment.member && getMemberPhotoUrl(comment.member)"
                                                     :src="getMemberPhotoUrl(comment.member)"
                                                     :alt="comment.member.nickName"
@@ -217,16 +216,49 @@
                                                 formatPrice(getCommentTicketPrice(comment)) }})
                                             </div>
                                         </div>
-                                        <div v-if="canUpdateCommentStatus(post, comment)" class="comment-actions">
-                                            <button v-if="comment.swappedStatus === 0"
-                                                @click="updateCommentStatus(comment.commentId, 1)"
-                                                class="status-button accept">接受</button>
-                                            <button v-if="comment.swappedStatus === 1"
-                                                @click="updateCommentStatus(comment.commentId, 2)"
-                                                class="status-button complete">完成交換</button>
-                                            <button v-if="comment.swappedStatus < 2"
-                                                @click="updateCommentStatus(comment.commentId, 3)"
-                                                class="status-button cancel">取消</button>
+                                        
+                                        <!-- 🔧 修改：簡化為3狀態的操作按鈕 -->
+                                        <div v-if="isLoggedIn" class="comment-actions">
+                                            <!-- 狀態0：待換票 -->
+                                            <template v-if="comment.swappedStatus === 0">
+                                                <!-- 🔧 修改：貼文發起方直接完成交換按鈕 -->
+                                                <button v-if="canAcceptAndComplete(post, comment)"
+                                                        @click="acceptAndCompleteExchange(comment.commentId)"
+                                                        class="status-button accept">
+                                                    接受請求
+                                                </button>
+                                                
+                                                <!-- 雙方：取消按鈕 -->
+                                                <button v-if="canCancel(post, comment)"
+                                                        @click="cancelSwapRequest(comment.commentId)"
+                                                        class="status-button cancel">
+                                                    取消
+                                                </button>
+                                            </template>
+                                            
+                                            <!-- 🔧 移除：狀態1的處理（不再使用） -->
+                                            
+                                            <!-- 狀態2：已完成 - 無操作按鈕 -->
+                                            <template v-if="comment.swappedStatus === 2">
+                                                <div class="status-info completed">
+                                                    <i class="status-icon">✓</i>
+                                                    <span>交換已完成</span>
+                                                </div>
+                                            </template>
+                                            
+                                            <!-- 狀態3：已取消 - 無操作按鈕 -->
+                                            <template v-if="comment.swappedStatus === 3">
+                                                <div class="status-info cancelled">
+                                                    <i class="status-icon">✕</i>
+                                                    <span>已取消</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        
+                                        <!-- 🔧 修改：未登入用戶的提示 -->
+                                        <div v-else-if="comment.swappedStatus === 0" 
+                                             class="comment-actions">
+                                            <button @click="goToLogin" class="status-button login">登入後操作</button>
                                         </div>
                                     </div>
                                 </div>
@@ -246,11 +278,8 @@
         <!-- footer.html 內容將由 footer.js 動態載入 -->
     </footer>
 
-
     <!-- jQuery -->
     <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
-    <!-- is.js 函式庫 -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/is_js/0.9.0/is.min.js"></script> -->
     <!-- 引入自定義JavaScript -->
     <script type="module" src="./js/ticket_exchange_area.js"></script>
 </body>

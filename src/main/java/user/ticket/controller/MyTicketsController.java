@@ -130,8 +130,8 @@ public class MyTicketsController {
         }
         
         Object memberObj = session.getAttribute("member");
-        if (memberObj instanceof user.member.vo.Member) {
-            user.member.vo.Member member = (user.member.vo.Member) memberObj;
+        if (memberObj instanceof Member) {  
+            Member member = (Member) memberObj;
             return member.getMemberId();
         }
         
@@ -147,8 +147,8 @@ public class MyTicketsController {
         }
         
         Object memberObj = session.getAttribute("member");
-        if (memberObj instanceof user.member.vo.Member) {
-            user.member.vo.Member member = (user.member.vo.Member) memberObj;
+        if (memberObj instanceof Member) {  
+            Member member = (Member) memberObj;
             return member.getNickName();
         }
         
