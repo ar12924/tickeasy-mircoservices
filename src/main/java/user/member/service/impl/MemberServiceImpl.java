@@ -2,7 +2,6 @@ package user.member.service.impl;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +27,26 @@ public class MemberServiceImpl implements MemberService {
 	@Autowired
 	private MailService mailService;
 
-//	public MemberServiceImpl() {
-//		memberDao = new MemberDaoImpl();
-//		verifyDao = new VerificationDaoImpl();
-//		mailService = new MailServiceImpl();
-//	}
+	// 共用：產生驗證/重設 token
+	private VerificationToken createToken(Member member, String type, long expireMillis) {
+		String tokenName = UUID.randomUUID().toString();
+		VerificationToken token = new VerificationToken();
+		token.setTokenName(tokenName);
+		token.setTokenType(type);
+		token.setExpiredTime(new Timestamp(System.currentTimeMillis() + expireMillis));
+		token.setMember(member);
+		verifyDao.insert(token);
+		return token;
+	}
+
+	// 共用：寄送信件
+	private void sendMail(Member member, String type, String tokenName) {
+		if ("EMAIL_VERIFY".equals(type)) {
+			mailService.sendActivationNotification(member.getEmail(), member.getUserName(), tokenName);
+		} else if ("RESET_PASSWORD".equals(type)) {
+			mailService.sendPasswordResetNotification(member.getEmail(), member.getNickName(), tokenName);
+		}
+	}
 
 	@Transactional
 	@Override
@@ -89,6 +103,13 @@ public class MemberServiceImpl implements MemberService {
 			member.setSuccessful(false);
 			return member;
 		}
+		// 新增：檢查 email 是否重複
+		String email = member.getEmail();
+		if (email != null && memberDao.findByEmail(email) != null) {
+			member.setMessage("此 email 已被註冊");
+			member.setSuccessful(false);
+			return member;
+		}
 
 		String unicode = member.getUnicode();
 		if (unicode != null && !unicode.trim().isEmpty() && !unicode.matches(UNICODE_PATTERN)) {
@@ -104,7 +125,6 @@ public class MemberServiceImpl implements MemberService {
 			return member;
 		}
 
-		String email = member.getEmail();
 		if (email != null && !email.trim().isEmpty() && !email.matches(EMAIL_PATTERN)) {
 			member.setMessage("電子郵件格式錯誤");
 			member.setSuccessful(false);
@@ -128,20 +148,17 @@ public class MemberServiceImpl implements MemberService {
 		try {
 			memberDao.insert(member);
 			
-			// 2. 產生 token驗證、與Member關聯
-			String tokenName = UUID.randomUUID().toString();
-			VerificationToken token = new VerificationToken();
-			token.setTokenName(tokenName);
-			token.setTokenType("EMAIL_VERIFY");
-			token.setExpiredTime(new Timestamp(System.currentTimeMillis() + TOKEN_EXPIRATION));
-			token.setMember(member); // 關聯 Member
-			verifyDao.insert(token);
-
-			// 3. 寄認證信，如果產生例外，觸發rollback
-			mailService.sendActivationNotification(member.getEmail(), member.getUserName(), tokenName);
-
-			member.setSuccessful(true);
-			member.setMessage("註冊成功！請查收驗證信以開通會員");
+			// 重新從資料庫獲取 member 以確保有正確的 ID
+			Member savedMember = memberDao.findByUserName(member.getUserName());
+			if (savedMember == null) {
+				throw new RuntimeException("會員插入後無法找到");
+			}
+			
+			VerificationToken token = createToken(savedMember, "EMAIL_VERIFY", TOKEN_EXPIRATION);
+			sendMail(savedMember, "EMAIL_VERIFY", token.getTokenName());
+			savedMember.setSuccessful(true);
+			savedMember.setMessage("註冊成功！請查收驗證信以開通會員");
+			return savedMember;
 
 		} catch (Exception e) {
 			// DAO失敗rollback交易、mailService失敗也rollback資料
@@ -311,38 +328,101 @@ public class MemberServiceImpl implements MemberService {
 		return true;
 	}
 
-	@Transactional
 	@Override
-	public boolean requestPasswordReset(Integer memberId) {
-		Member member = memberDao.findById(memberId); 
-    if (member == null) {
-        return false;
-    }
-	String tokenName = UUID.randomUUID().toString();
-    VerificationToken verificationToken = new VerificationToken();
-    verificationToken.setMember(member);
-    verificationToken.setTokenName(tokenName);
-    verificationToken.setTokenType("RESET_PASSWORD");
-    verificationToken.setExpiredTime(new Timestamp(System.currentTimeMillis() + 3600 * 1000)); 
+	public Member requestPasswordResetByEmail(String email) {
+		Member member = getByEmail(email);
+		if (member == null) {
+			member = new Member();
+			member.setSuccessful(false);
+			member.setMessage("找不到此 email 對應的會員帳號");
+			return member;
+		}
+		try {
+			VerificationToken token = createToken(member, "RESET_PASSWORD", 3600 * 1000);
+			sendMail(member, "RESET_PASSWORD", token.getTokenName());
+			member.setSuccessful(true);
+			member.setMessage("密碼重置郵件已發送，請檢查您的信箱");
+		} catch (Exception e) {
+			member.setSuccessful(false);
+			member.setMessage("密碼重置郵件發送失敗：" + e.getMessage());
+		}
+		return member;
+	}
 
-    verifyDao.insert(verificationToken);
+	@Override
+	public Member resetPasswordByToken(String token, String newPassword) {
+		Member member = new Member();
+		try {
+			VerificationToken resetToken = verifyDao.findByToken(token);
+			if (resetToken == null ||
+				resetToken.getExpiredTime().before(new Timestamp(System.currentTimeMillis())) ||
+				!"RESET_PASSWORD".equals(resetToken.getTokenType())) {
+				member.setSuccessful(false);
+				member.setMessage("無效或已過期的重置連結");
+				return member;
+			}
+			member = resetToken.getMember();
+			member.setPassword(newPassword);
+			Member updated = editMember(member);
+			if (updated.isSuccessful()) {
+				verifyDao.deleteById(resetToken.getTokenId());
+				member.setSuccessful(true);
+				member.setMessage("密碼重置成功");
+			} else {
+				member.setSuccessful(false);
+				member.setMessage("密碼重置失敗");
+			}
+			return member;
+		} catch (Exception e) {
+			member.setSuccessful(false);
+			member.setMessage("密碼重置失敗：" + e.getMessage());
+			return member;
+		}
+	}
 
-    try {
-        mailService.sendPasswordResetNotification(member.getEmail(), member.getNickName(), tokenName);
-        return true;
-    } catch (RuntimeException e) {
-      
-        e.printStackTrace();
-        return false;
-    }
-}
+	@Override
+	public Member resendVerificationMail(String email) {
+		Member member = getByEmail(email);
+		if (member == null) {
+			member = new Member();
+			member.setSuccessful(false);
+			member.setMessage("找不到此 email 對應的會員帳號");
+			return member;
+		}
+		if (member.getRoleLevel() > 0) {
+			member.setSuccessful(false);
+			member.setMessage("此帳號已經驗證過了");
+			return member;
+		}
+		try {
+			VerificationToken token = createToken(member, "EMAIL_VERIFY", 24 * 60 * 60 * 1000);
+			sendMail(member, "EMAIL_VERIFY", token.getTokenName());
+			member.setSuccessful(true);
+			member.setMessage("驗證信已重新發送，請檢查您的信箱");
+		} catch (Exception e) {
+			member.setSuccessful(false);
+			member.setMessage("重新發送驗證信失敗：" + e.getMessage());
+		}
+		return member;
+	}
+
+	@Override
+	public Member sendVerificationMail(Member member) {
+		try {
+			VerificationToken token = createToken(member, "EMAIL_VERIFY", 24 * 60 * 60 * 1000);
+			sendMail(member, "EMAIL_VERIFY", token.getTokenName());
+			member.setSuccessful(true);
+			member.setMessage("驗證信已發送，請至信箱收信");
+		} catch (Exception e) {
+			member.setSuccessful(false);
+			member.setMessage("發送失敗：" + e.getMessage());
+		}
+		return member;
+	}
 
 	// 提供給控制器使用的方法
 	public VerificationDao getVerificationDao() {
 		return verifyDao;
 	}
-	
-	public MailService getMailService() {
-		return mailService;
-	}
+
 }

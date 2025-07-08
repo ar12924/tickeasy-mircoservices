@@ -40,6 +40,7 @@ public class VerificationDaoImpl implements VerificationDao {
 	@Override
 	public boolean insert(VerificationToken token) {
 		session.save(token);
+		session.flush();
 		return true;
 	}
 

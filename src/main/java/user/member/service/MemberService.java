@@ -3,7 +3,6 @@ package user.member.service;
 import java.util.List;
 
 import common.service.CommonService;
-import user.member.dao.VerificationDao;
 import user.member.vo.Member;
 
 public interface MemberService extends CommonService {
@@ -25,10 +24,15 @@ public interface MemberService extends CommonService {
 
 	boolean activateMemberByToken(String tokenStr);
 
-	boolean requestPasswordReset(Integer memberId);
-	
-	// 提供給控制器使用的方法
-	VerificationDao getVerificationDao();
-	
-	MailService getMailService();
+	// 以 email 請求密碼重置
+	Member requestPasswordResetByEmail(String email);
+
+	// 以 token 重設密碼
+	Member resetPasswordByToken(String token, String newPassword);
+
+	// 新增：重送驗證信
+	Member resendVerificationMail(String email);
+
+	// 新增：發送驗證信
+	Member sendVerificationMail(Member member);
 }
