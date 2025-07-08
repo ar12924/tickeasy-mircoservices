@@ -268,7 +268,14 @@ div.ntf_empty_text{
 .modal_confirm.hidden {
   display: none;
 }
-
+.confirm_button{
+	width:50px;
+	background-color: #EC4899;
+	color:white;
+	border-radius:5px;
+	text-align: center;
+	height:30px;
+}
 
 
 

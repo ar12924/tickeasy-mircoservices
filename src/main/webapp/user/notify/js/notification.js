@@ -763,7 +763,7 @@ const tabValue = activeNav?.querySelector(".ntf_tab")?.dataset.tab;
 const tabIndex = Number(tabValue?.split("_")[1]);
 
 ntf_clear_el.addEventListener("click", async () => {
-	const result=await customConfirm("確定要刪除所有通知嗎？@@");
+	const result=await customConfirm("確定要刪除所有通知嗎？");
 	  if (result) {
 		console.log("開始刪除通知...");
 		await notification_clear();
