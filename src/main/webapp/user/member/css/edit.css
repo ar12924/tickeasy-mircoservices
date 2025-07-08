@@ -56,17 +56,13 @@
 }
 
 .photo-group #photoPreview {
-  display: none;
+  display: block;
   width: 120px;
   height: 120px;
   border-radius: 50%;
   margin: 0 auto 16px;
   border: 2px solid #e5e7eb;
   object-fit: cover;
-}
-
-.photo-group #photoPreview.show {
-  display: block;
 }
 
 .photo-group input[type="file"] {
@@ -192,4 +188,11 @@ button.secondary-button:hover {
 
 .password-change-content {
   padding: 16px;
+}
+
+/* 讓編輯會員資料標題與 login.html 的 TickEasy 樣式一致 */
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4a4a4a;
 }

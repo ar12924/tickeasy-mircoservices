@@ -27,13 +27,11 @@
             <!-- 活動導航區塊 -->
             <div class="event-navigation">
                 <div class="event-back">
-                    <a href="#"><span class="arrow-back">‹</span> {{ event ? event.eventName : '載入中...' }}</a>
+                    <a href="./index.html"><span class="arrow-back">‹</span> {{ event ? event.eventName : '載入中...' }}</a>
                 </div>
                 <div class="event-tabs">
-                    <a href="#info" class="tab-link">活動資訊</a>
-                    <a href="#price" class="tab-link">票價資訊</a>
+                    <a href="#" @click.prevent="goToEventInfo" class="tab-link active">活動資訊</a>
                     <a href="#" @click.prevent="goToTicketExchange" class="tab-link">轉票專區</a>
-                    <a href="#discussion" class="tab-link">討論區</a>
                 </div>
             </div>
             <!-- 讀取中狀態 -->

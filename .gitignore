@@ -26,3 +26,9 @@ buildNumber.properties
 .gitkeep
 /bin/
 src/main/webapp/manager/participant-test.html
+src/main/resources/application.properties
+
+# 環境變數和敏感設定檔
+.env
+application.properties
+*.env

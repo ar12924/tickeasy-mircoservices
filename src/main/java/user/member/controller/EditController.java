@@ -15,16 +15,19 @@ import user.member.dao.VerificationDao;
 import user.member.vo.VerificationToken;
 import user.member.service.MailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("user/member/edit")
 public class EditController {
 	@Autowired
 	private MemberService service;
+	
 	@Autowired
 	private VerificationDao verifyDao;
-	@Autowired
-	private MailService mailService;
 
 	// 查詢會員資料
 	@GetMapping
@@ -93,27 +96,116 @@ public class EditController {
 
 	// 驗證信 API
 	@PostMapping("send-verify-mail")
-	public Core<Void> sendVerifyMail(@SessionAttribute Member member) {
-		Core<Void> core = new Core<>();
+	public Core<Member> sendVerifyMail(@SessionAttribute Member member) {
+		Core<Member> core = new Core<>();
 		try {
-			// 產生新 token
-			String tokenName = UUID.randomUUID().toString();
-			VerificationToken token = new VerificationToken();
-			token.setTokenName(tokenName);
-			token.setTokenType("EMAIL_VERIFY");
-			token.setExpiredTime(new Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000)); // 24小時
-			token.setMember(member);
-			verifyDao.insert(token);
-
-			// 寄信
-			mailService.sendActivationNotification(member.getEmail(), member.getUserName(), tokenName);
-
-			core.setSuccessful(true);
-			core.setMessage("驗證信已發送，請至信箱收信");
+			Member result = service.sendVerificationMail(member);
+			if (result.isSuccessful()) {
+				core.setSuccessful(true);
+				core.setMessage("驗證信已發送，請至信箱收信");
+			} else {
+				core.setSuccessful(false);
+				core.setMessage(result.getMessage());
+			}
 		} catch (Exception e) {
 			core.setSuccessful(false);
-			core.setMessage("發送失敗：" + e.getMessage());
+			core.setMessage(e.getMessage());
 		}
 		return core;
+	}
+
+	// 發送密碼更新認證信 API
+	@PostMapping("send-password-update-mail")
+	public Core<Member> sendPasswordUpdateMail(@RequestParam String newPassword, @SessionAttribute Member member) {
+		Core<Member> core = new Core<>();
+		try {
+			// 驗證密碼長度
+			if (newPassword == null || newPassword.length() < 6) {
+				core.setSuccessful(false);
+				core.setMessage("密碼長度至少需要6個字元");
+				return core;
+			}
+			// 發送密碼更新認證信（新密碼直接傳給 service）
+			Member result = service.sendPasswordUpdateMail(member, newPassword);
+			if (result.isSuccessful()) {
+				core.setSuccessful(true);
+				core.setMessage("密碼更新認證信已發送，請至信箱收信確認");
+			} else {
+				core.setSuccessful(false);
+				core.setMessage(result.getMessage());
+			}
+		} catch (Exception e) {
+			core.setSuccessful(false);
+			core.setMessage("發送認證信失敗：" + e.getMessage());
+		}
+		return core;
+	}
+
+	// 處理密碼更新認證
+	@GetMapping("verify-password-update")
+	@Transactional
+	public void verifyPasswordUpdate(@RequestParam String token, HttpSession session, HttpServletResponse response) throws IOException {
+		try {
+			System.out.println("開始處理密碼更新認證，token: " + token);
+
+			// 用 token 前綴查詢 VerificationToken
+			VerificationToken verificationToken = verifyDao.findByTokenPrefix(token);
+			if (verificationToken == null) {
+				System.err.println("找不到對應的 token: " + token);
+				response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=invalid_token");
+				return;
+			}
+
+			if (verificationToken.getExpiredTime().before(new Timestamp(System.currentTimeMillis()))) {
+				System.err.println("Token 已過期: " + verificationToken.getExpiredTime());
+				response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=expired_token");
+				return;
+			}
+
+			if (!"PASSWORD_UPDATE".equals(verificationToken.getTokenType())) {
+				System.err.println("Token 類型不正確: " + verificationToken.getTokenType());
+				response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=invalid_token_type");
+				return;
+			}
+
+			// 檢查 member 是否存在
+			Member member = verificationToken.getMember();
+			if (member == null) {
+				System.err.println("Token 對應的會員為 null");
+				response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=member_not_found");
+				return;
+			}
+
+			System.out.println("找到會員: " + member.getMemberId() + ", " + member.getUserName());
+
+			// 解析 tokenName，取得加密密碼
+			String tokenName = verificationToken.getTokenName();
+			String[] parts = tokenName.split("\\|");
+			if (parts.length != 2) {
+				System.err.println("Token 格式錯誤");
+				response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=token_format");
+				return;
+			}
+			String encryptedPassword = parts[1];
+
+			System.out.println("準備更新會員密碼，會員ID: " + member.getMemberId());
+
+			// 更新會員密碼並刪除token（事務性操作）
+			Member result = service.updatePasswordAndDeleteToken(member, encryptedPassword, verificationToken.getTokenId());
+
+			if (result.isSuccessful()) {
+				System.out.println("密碼更新成功");
+				// 更新 session 中的會員資料
+				session.setAttribute("member", result);
+				response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?success=password_updated");
+			} else {
+				System.err.println("密碼更新失敗: " + result.getMessage());
+				response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=update_failed");
+			}
+		} catch (Exception e) {
+			System.err.println("密碼更新認證錯誤: " + e.getMessage());
+			e.printStackTrace();
+			response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=system_error");
+		}
 	}
 }

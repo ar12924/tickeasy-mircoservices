@@ -5,7 +5,7 @@ package user.ticket.vo;
  * 創建日期: 2025-05-26
  */
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 @Entity
 @Table(name = "swap_comment")
 public class SwapCommentVO {
@@ -27,16 +27,16 @@ public class SwapCommentVO {
     private Integer swappedStatus;
     
     @Column(name = "swapped_time")
-    private LocalDateTime swappedTime;
+    private Timestamp swappedTime;
     
     @Column(name = "post_id")
     private Integer postId;
     
     @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
+    private Timestamp createTime;
     
     @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
 	public Integer getCommentId() {
 		return commentId;
@@ -78,11 +78,11 @@ public class SwapCommentVO {
 		this.swappedStatus = swappedStatus;
 	}
 
-	public LocalDateTime getSwappedTime() {
+	public Timestamp getSwappedTime() {
 		return swappedTime;
 	}
 
-	public void setSwappedTime(LocalDateTime swappedTime) {
+	public void setSwappedTime(Timestamp swappedTime) {
 		this.swappedTime = swappedTime;
 	}
 
@@ -94,19 +94,19 @@ public class SwapCommentVO {
 		this.postId = postId;
 	}
 
-	public LocalDateTime getCreateTime() {
+	public Timestamp getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(LocalDateTime createTime) {
+	public void setCreateTime(Timestamp createTime) {
 		this.createTime = createTime;
 	}
 
-	public LocalDateTime getUpdateTime() {
+	public Timestamp getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(LocalDateTime updateTime) {
+	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
 	}
 }

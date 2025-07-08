@@ -1,5 +1,6 @@
 package user.ticket.dao.impl;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -7,7 +8,6 @@ import javax.persistence.PersistenceContext;
 
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import user.ticket.dao.BuyerTicketDao;
 import user.ticket.vo.BuyerTicketVO;
@@ -51,19 +51,19 @@ public class BuyerTicketDaoImpl implements BuyerTicketDao {
     }
 
     @Override
-    @Transactional
     public boolean updateTicketOwner(Integer ticketId, Integer newOwnerId) {
-        try {
-            String hql = "UPDATE BuyerTicketVO bt SET bt.currentHolderMemberId = :newOwnerId, bt.updateTime = :updateTime WHERE bt.ticketId = :ticketId";
-            int updatedRows = session.createQuery(hql)
-                    .setParameter("newOwnerId", newOwnerId)
-                    .setParameter("updateTime", LocalDateTime.now())
-                    .setParameter("ticketId", ticketId)
-                    .executeUpdate();
-            return updatedRows > 0;
-        } catch (Exception e) {
-            return false;
+        
+        String hql = "UPDATE BuyerTicketVO bt SET bt.currentHolderMemberId = :newOwnerId, bt.updateTime = :updateTime WHERE bt.ticketId = :ticketId";
+        int updatedRows = session.createQuery(hql)
+        		.setParameter("newOwnerId", newOwnerId)
+                .setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
+                .setParameter("ticketId", ticketId)
+                .executeUpdate();
+        if (updatedRows == 0) {
+            throw new RuntimeException("票券 " + ticketId + " 更新失敗，可能票券不存在或已被修改");
         }
+        
+        return true;
     }
 
     @Override
@@ -88,5 +88,20 @@ public class BuyerTicketDaoImpl implements BuyerTicketDao {
                 .setParameter("ticketId", ticketId)
                 .getResultList();
         return results.isEmpty() ? null : results.get(0);
+    }
+    
+    @Override
+    public List<BuyerTicketVO> getTicketsByMemberIdAndEventId(Integer memberId, Integer eventId) {
+    	String sql = "SELECT bt.* FROM buyer_ticket bt " +
+                "JOIN buyer_order bo ON bt.order_id = bo.order_id " +
+                "WHERE bt.current_holder_member_id = ? " +
+                "AND bo.event_id = ? " +
+                "AND bt.is_used = 0 " +
+                "ORDER BY bt.ticket_id DESC";
+    
+    	return session.createNativeQuery(sql, BuyerTicketVO.class)
+            .setParameter(1, memberId)
+            .setParameter(2, eventId)
+            .getResultList();
     }
 }

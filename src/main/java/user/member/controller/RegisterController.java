@@ -26,106 +26,68 @@ public class RegisterController {
 
     @PostMapping(value = "", consumes = {"multipart/form-data"})
     public Core<Member> register(
-            @RequestParam("userName") String userName,
-            @RequestParam("nickName") String nickName,
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
-            @RequestParam("rePassword") String rePassword,
-            @RequestParam("birthDate") String birthDate,
-            @RequestParam("phone") String phone,
-            @RequestParam("gender") String gender,
-            @RequestParam("idCard") String idCard,
-            @RequestParam(value = "unicode", required = false) String unicode,
-            @RequestParam("agree") String agree,
-            @RequestParam(value = "hostApply", required = false) String hostApply,
+            @RequestParam String userName,
+            @RequestParam String nickName,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String rePassword,
+            @RequestParam String birthDate,
+            @RequestParam String phone,
+            @RequestParam String gender,
+            @RequestParam String idCard,
+            @RequestParam(required = false) String unicode,
+            @RequestParam(defaultValue = "false") Boolean agree,
+            @RequestParam(defaultValue = "false") Boolean hostApply,
             @RequestParam(value = "photo", required = false) MultipartFile photo) {
-
         Core<Member> core = new Core<>();
-        Date sqlBirthDate = null;
+        
         try {
-            LocalDate localDate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            sqlBirthDate = Date.valueOf(localDate);
-        } catch (DateTimeParseException e) {
-            core.setSuccessful(false);
-            core.setMessage("出生日期格式錯誤，請使用 YYYY-MM-DD 格式");
-            return core;
-        }
-
-        Member member = new Member();
-        member.setUserName(userName);
-        member.setNickName(nickName);
-        member.setEmail(email);
-        member.setPassword(password);
-        member.setRePassword(rePassword);
-        member.setBirthDate(sqlBirthDate);
-        member.setPhone(phone);
-        member.setGender(gender);
-        member.setIdCard(idCard);
-        if (unicode != null && !unicode.trim().isEmpty()) {
+            Member member = new Member();
+            member.setUserName(userName);
+            member.setNickName(nickName);
+            member.setEmail(email);
+            member.setPassword(password);
+            member.setRePassword(rePassword);
+            member.setBirthDate(Date.valueOf(birthDate));
+            member.setPhone(phone);
+            member.setGender(gender);
+            member.setIdCard(idCard);
             member.setUnicode(unicode);
-        }
-        member.setAgree("true".equals(agree));
-        member.setHostApply(hostApply != null && "true".equals(hostApply));
-
-        try {
+            member.setAgree(agree);
+            member.setHostApply(hostApply != null && hostApply);
+            
             if (photo != null && !photo.isEmpty()) {
                 member.setPhoto(photo.getBytes());
             }
+            
+            Member result = service.register(member);
+            if (result.isSuccessful()) {
+                core.setSuccessful(true);
+                core.setMessage("註冊成功");
+                core.setData(result);
+            } else {
+                core.setSuccessful(false);
+                core.setMessage(result.getMessage());
+            }
         } catch (Exception e) {
             core.setSuccessful(false);
-            core.setMessage("照片上傳失敗");
-            return core;
-        }
-
-        Member result = service.register(member);
-        if (result.isSuccessful()) {
-            core.setSuccessful(true);
-            core.setMessage("註冊成功");
-            core.setData(result);
-        } else {
-            core.setSuccessful(false);
-            core.setMessage(result.getMessage());
+            core.setMessage("註冊失敗：" + e.getMessage());
         }
         return core;
     }
 
     @PostMapping("resend-verification")
-    public Core<Void> resendVerification(@RequestParam String email) {
-        Core<Void> core = new Core<>();
-
-        try {
-            Member member = service.getByEmail(email);
-            if (member == null) {
-                core.setSuccessful(false);
-                core.setMessage("找不到此 email 對應的會員帳號");
-                return core;
-            }
-
-            if (member.getRoleLevel() > 0) {
-                core.setSuccessful(false);
-                core.setMessage("此帳號已經驗證過了");
-                return core;
-            }
-
-            String tokenName = UUID.randomUUID().toString();
-            VerificationToken token = new VerificationToken();
-            token.setTokenName(tokenName);
-            token.setTokenType("EMAIL_VERIFY");
-            token.setExpiredTime(new Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000)); // 24小時
-            token.setMember(member);
-
-            service.getVerificationDao().insert(token);
-
-            service.getMailService().sendActivationNotification(member.getEmail(), member.getUserName(), tokenName);
-
+    public Core<Member> resendVerification(@RequestParam String email) {
+        Core<Member> core = new Core<>();
+        Member member = service.resendVerificationMail(email);
+        if (member.isSuccessful()) {
             core.setSuccessful(true);
-            core.setMessage("驗證信已重新發送，請檢查您的信箱");
-
-        } catch (Exception e) {
+            core.setMessage(member.getMessage());
+            core.setData(member);
+        } else {
             core.setSuccessful(false);
-            core.setMessage("重新發送驗證信失敗：" + e.getMessage());
+            core.setMessage(member.getMessage());
         }
-
         return core;
     }
 }
