@@ -24,8 +24,10 @@ public interface BookService {
 	public Member getMember(String userName);
 
 	public Core<String> verifyMemberIdCard(Attendee reqAttendee);
-	
+
 	public Core<String> saveBookConfirm(BookDto book);
-	
+
 	public Core<String> saveOrderAndTicket(BookDto book);
+
+	public Core<Long> getTicketSoldByEventAndTypeId(Integer eventId, Integer typeId);
 }

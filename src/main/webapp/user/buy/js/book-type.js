@@ -142,7 +142,7 @@ const initBookTypeJSEvents = (book) => {
   // ====== 資料儲存變數區 ======
   const book = {
     // 活動 id
-    eventId: -1,
+    eventId: getUrlParam("eventId"),
     // 活動名
     eventName: null,
     // 購票人帳號
@@ -178,14 +178,6 @@ const initBookTypeJSEvents = (book) => {
   // ====== type-box 部分 ======
   const ticketType = await fetchTicketType(eventId);
   const typeBoxTemplate = await fetchTypeBoxTemplate();
-  // 將票種資訊，暫存入 book 變數中
-  ticketType.forEach(({ typeId, categoryName }) => {
-    book.eventId = eventId;
-    book.selected.push({
-      typeId,
-      categoryName,
-    });
-  });
   // 輸出 type-box.html 模板
   renderTypeBox(ticketType, typeBoxTemplate);
   // 監聽事件

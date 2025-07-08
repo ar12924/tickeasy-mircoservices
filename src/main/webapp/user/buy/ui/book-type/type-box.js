@@ -5,7 +5,7 @@ import { getContextPath } from "../../../common/utils.js";
 // 這些函數負責與後端 API 進行互動。
 
 /**
- * 從後端 api 獲取特定 event 的 type 數據。
+ * 從後端取得某個 event 的 type 數據。
  * @param {number} eventId - 活動 id。
  * @returns {Promise<Array<Object>>} 活動 id 之下的 type 數據的陣列。
  */
@@ -15,6 +15,10 @@ export const fetchTicketType = async (eventId) => {
   );
   return await resp.json();
 };
+
+/**
+ * 從後端取得某個
+ */
 
 // ==================== 2. UI 渲染層 (UI Rendering Layer) ====================
 // 這些函數負責動態生成或更新 HTML 內容。
