@@ -58,11 +58,11 @@ public class SearchDaoImpl implements SearchDao {
 
 		return query.getResultList();
 	}
-	
+
 	/**
 	 * 活動資料查詢筆數。(配合 selectEventInfo() 的方法)
 	 *
-	 * @param {String}  searchTerm - 輸入關鍵字。
+	 * @param {String} searchTerm - 輸入關鍵字。
 	 * @return {Long} 查詢筆數。
 	 */
 	@Override
@@ -130,7 +130,7 @@ public class SearchDaoImpl implements SearchDao {
 
 	/*
 	 * 抓著 eventId 移除至我的關注中對應的資料。 (必須先有 session.member)
-	 *
+	 * 
 	 * @param {Integer} eventId - 活動 id。
 	 * 
 	 * @param {Integer} memberId - 會員 id。
@@ -144,6 +144,30 @@ public class SearchDaoImpl implements SearchDao {
 		// 2. 執行刪除 by (memberId, eventId)
 		return session.createQuery(hql).setParameter("eventId", eventId).setParameter("memberId", memberId)
 				.executeUpdate();
+	}
+
+	/*
+	 * 抓著 eventId 停用至我的關注中對應的資料。 (必須先有 session.member)
+	 * 
+	 * @param {Integer} eventId - 活動 id。
+	 * 
+	 * @param {Integer} memberId - 會員 id。
+	 * 
+	 * @return {Integer} 更變實體物件某欄位筆數。
+	 */
+	@Override
+	public Integer updateFavorite(Integer eventId, Integer memberId, boolean isFollowed) {
+		// HQL 語句
+		var hqlTmp = new StringBuilder("UPDATE Favorite f ").append("SET isFollowed = :isFollowed ")
+				.append("WHERE f.eventId = :eventId ").append("AND f.memberId = :memberId");
+		var hql = hqlTmp.toString();
+
+		// 執行刪除 by (memberId, eventId)
+		Query<?> query = session.createQuery(hql).setParameter("eventId", eventId).setParameter("memberId", memberId);
+		if (isFollowed == false) {
+			query.setParameter("isFollowed", 1);
+		}
+		return query.executeUpdate();
 	}
 
 	/**
@@ -220,4 +244,5 @@ public class SearchDaoImpl implements SearchDao {
 		// 4. 回傳總筆數
 		return queryCount.uniqueResult();
 	}
+
 }

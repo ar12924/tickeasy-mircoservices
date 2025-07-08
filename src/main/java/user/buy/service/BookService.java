@@ -29,5 +29,5 @@ public interface BookService {
 
 	public Core<String> saveOrderAndTicket(BookDto book);
 
-	public Core<Long> getTicketSoldByEventAndTypeId(Integer eventId, Integer typeId);
+	public Core<Long> getRemainingTicketsByEventAndTypeId(Integer eventId, Integer typeId);
 }

@@ -83,8 +83,8 @@ public class BookTypeController {
 	 * @param {Integer} typeId - 票種 id。
 	 * @return {Core<long>} 數量查詢結果。
 	 */
-	@GetMapping("event/{eventId}/type/{typeId}")
-	public Core<Long> getTicketSoldByEventAndTypeId(@PathVariable Integer eventId, @PathVariable Integer typeId) {
-		return service.getTicketSoldByEventAndTypeId(eventId, typeId);
+	@GetMapping("event/{eventId}/event-ticket-type/{typeId}")
+	public Core<Long> getRemainingTicketsByEventAndTypeId(@PathVariable Integer eventId, @PathVariable Integer typeId) {
+		return service.getRemainingTicketsByEventAndTypeId(eventId, typeId);
 	}
 }

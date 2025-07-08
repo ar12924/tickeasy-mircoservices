@@ -19,6 +19,8 @@ public interface SearchDao extends CommonDao {
 	
 	public Integer removeFavorite(Integer eventId, Integer memberId);
 	
+	public Integer updateFavorite(Integer eventId, Integer memberId, boolean isFollowed);
+	
 	public KeywordCategory selectKeywordByKeywordId(Integer keywordId);
 	
 	public List<EventInfo> selectEventByKeywordWithPages(String keyword, Integer pageNumber, Integer pageSize);
