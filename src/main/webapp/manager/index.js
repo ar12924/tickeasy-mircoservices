@@ -33,9 +33,9 @@ function init() {
           return `
             <div class="d-grid gap-2">
               <a href="#" class="btn btn-warning text-danger">訂票列票</a>
-              <a href="./ticket_sales.html" class="btn btn-warning text-danger">票券銷售情形</a>
-              <a href="#" class="btn btn-warning text-danger">報名人列表</a>
-              <a href="#" class="btn btn-warning text-danger">換票分票紀錄</a>
+              <a href="eventdetail/dashboard.html" class="btn btn-warning text-danger">票券銷售情形</a>
+              <a href="eventdetail/participant-list.html" class="btn btn-warning text-danger">報名人列表</a>
+              <a href="eventDetail/ticket_exchange.html" class="btn btn-warning text-danger">換票分票紀錄</a>
             </div>
           `;
         }
