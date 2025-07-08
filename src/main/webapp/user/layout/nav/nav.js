@@ -43,30 +43,19 @@ export const renderNav = async (templateHTML) => {
     .attr("href", `${getContextPath()}/user/member/edit.html`);
 
   // 判斷會員是否登入？(且 roleLevel == 1)
-  const identifyCore = await fetchMemberFromSession();
-  const isLoggedIn = identifyCore.successful;
-  if (isLoggedIn) {
-    const sessionMember = identifyCore.data;
-    if (sessionMember.roleLevel === 1) {
-      // 已登入
-      $registerBtn.addClass("is-hidden");
-      $loginBtn.addClass("is-hidden");
-      $orderBtn.removeClass("is-hidden");
-      $concernBtn.removeClass("is-hidden");
-      $ticketBtn.removeClass("is-hidden");
-      $notifyBtn.removeClass("is-hidden");
-      $userBtn.removeClass("is-hidden");
-      $userBtn.find(".user-name").text(sessionMember.nickName); // 添加 userName
-    } else {
-      // 非使用者權限
-      $registerBtn.removeClass("is-hidden");
-      $loginBtn.removeClass("is-hidden");
-      $orderBtn.addClass("is-hidden");
-      $concernBtn.addClass("is-hidden");
-      $ticketBtn.addClass("is-hidden");
-      $notifyBtn.addClass("is-hidden");
-      $userBtn.addClass("is-hidden");
-    }
+  const authenticateCore = await fetchMemberFromSession();
+  const isLoggedIn = authenticateCore.successful;
+  const memberData = authenticateCore.data;
+  if (isLoggedIn && memberData && memberData.roleLevel === 1) {
+    // 已登入
+    $registerBtn.addClass("is-hidden");
+    $loginBtn.addClass("is-hidden");
+    $orderBtn.removeClass("is-hidden");
+    $concernBtn.removeClass("is-hidden");
+    $ticketBtn.removeClass("is-hidden");
+    $notifyBtn.removeClass("is-hidden");
+    $userBtn.removeClass("is-hidden");
+    $userBtn.find(".user-name").text(memberData.nickName); // 添加 userName
   } else {
     // 未登入
     $registerBtn.removeClass("is-hidden");

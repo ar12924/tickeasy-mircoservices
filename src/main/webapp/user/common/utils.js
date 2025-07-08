@@ -37,6 +37,6 @@ export const validateIdCard = (idCard) => {
  * @return {Object} member 和驗證結果。
  */
 export const fetchMemberFromSession = async () => {
-  const resp = await fetch(`${getContextPath()}/common/identify`);
+  const resp = await fetch(`${getContextPath()}/common/authenticate`);
   return await resp.json();
 };
