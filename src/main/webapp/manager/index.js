@@ -1,7 +1,7 @@
 function init() {
   $('#eventList').DataTable({
     ajax: {
-      url: 'http://localhost:8080/maven-tickeasy-v1/manager/show-event',
+      url: '/maven-tickeasy-v1/manager/show-event',
       dataSrc: ''
     },
     columns: [
