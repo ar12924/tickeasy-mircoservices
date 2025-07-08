@@ -6,6 +6,22 @@ const remember = document.querySelector("#rememberMe"); // 「記住我」checkb
 const msg = document.querySelector("#msg");
 const loginBtn = document.querySelector("#loginBtn");
 
+// 檢查 URL 參數，顯示驗證結果訊息
+const urlParams = new URLSearchParams(window.location.search);
+const verified = urlParams.get("verified");
+
+if (verified === "true") {
+  msg.style.color = "green";
+  msg.textContent = "驗證成功！請接續登入";
+  // 清除 URL 參數，避免重新整理時重複顯示
+  window.history.replaceState({}, document.title, window.location.pathname);
+} else if (verified === "false") {
+  msg.style.color = "red";
+  msg.textContent = "驗證失敗，請確認連結是否有效";
+  // 清除 URL 參數，避免重新整理時重複顯示
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
 const saved = localStorage.getItem("savedUsername");
 if (saved) {
   username.value = saved;
