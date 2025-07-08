@@ -48,6 +48,54 @@
           </div>
           <button type="button" id="loginBtn">登入帳號</button>
           <div id="msg"></div>
+
+          <!-- 重新發送驗證信區域 -->
+          <div
+            id="resendVerificationSection"
+            style="
+              display: none;
+              margin-top: 15px;
+              padding: 15px;
+              background-color: #f8f9fa;
+              border-radius: 5px;
+            "
+          >
+            <p style="margin-bottom: 10px; color: #6c757d">
+              您的帳號尚未驗證，請檢查信箱或重新發送驗證信
+            </p>
+            <div class="form-group">
+              <label for="resendEmail">Email 地址</label>
+              <input
+                type="email"
+                id="resendEmail"
+                placeholder="請輸入您的 Email"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  margin-bottom: 10px;
+                "
+              />
+            </div>
+            <button
+              type="button"
+              id="resendBtn"
+              style="
+                width: 100%;
+                padding: 8px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+              "
+            >
+              重新發送驗證信
+            </button>
+            <div id="resendMsg" style="margin-top: 10px"></div>
+          </div>
+
           <div class="form-links">
             <a href="reset-password.html">忘記密碼？</a>
           </div>
