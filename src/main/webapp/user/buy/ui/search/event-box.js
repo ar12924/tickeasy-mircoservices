@@ -258,7 +258,7 @@ export const showPage = async (currentPage, eventResponse) => {
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
 export const initEventBoxJSEvents = () => {
-  $(".favorite-btn").on("click", async (e) => {
+  $(".event-container").on("click", ".favorite-btn", async (e) => {
     let result;
     const favorCard = $(e.target).closest(".event-card");
     const eventId = favorCard.attr("data-event-id");
