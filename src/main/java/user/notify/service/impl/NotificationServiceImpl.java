@@ -258,4 +258,9 @@ public class NotificationServiceImpl implements NotificationService {
 	 * redisTemplate.opsForValue().get("hello"); System.out.println("Redis 測試結果：" +
 	 * result); }
 	 */
+	@Transactional
+	@Override
+	public Integer notificationListClearUpdate(int memberId) {
+		return notificationDao.updateListClear(memberId);
+	}
 }

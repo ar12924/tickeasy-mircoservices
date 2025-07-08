@@ -9,6 +9,8 @@ public interface NotificationService {
 	List<Notification> notificationList(int memberId);
 	Integer notificationRead(int memberId,int memberNotificationId);
 	Integer notificationVisibleUpdate(int memberNotificationId);
+	Integer notificationListClearUpdate(int memberId);
+	
 	void sendReminderNotificationForTomorrow();
 	void sendFavoriteSellReminderNotificationForTomorrow();
 	void sendFavoriteSoldOutReminderNotification();

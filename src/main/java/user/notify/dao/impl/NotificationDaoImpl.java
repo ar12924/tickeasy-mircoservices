@@ -302,6 +302,23 @@ public class NotificationDaoImpl implements NotificationDao {
 				.getSingleResult();
 	}
 
+	@Override
+	public Integer updateListClear(int memberId) {
+		String hql = "UPDATE Notification SET IS_VISIBLE= :isVisible,UPDATE_TIME =:updateTime WHERE MEMBER_ID=:memberId";
+		int result = session.createQuery(hql)
+				.setParameter("isVisible", 0)
+				.setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
+				.setParameter("memberId", memberId)
+				.executeUpdate();
+
+		if (result > 0) {
+			logger.info("更新所有通知隱藏資料筆數：" + result);
+			return result;
+		} else {
+			return null;
+		}
+	}
+
 	
 
 }

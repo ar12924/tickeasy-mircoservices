@@ -14,6 +14,7 @@ public interface NotificationDao {
 	List<Notification> selectAllByMemberId(int memberId);
 	Integer updateIsRead(int memberId, int memberNotificationId);
 	Integer updateUnvisible(int memberNotificationId);
+	Integer updateListClear(int memberId);
 	//活動提醒
 	List<Object[]> sendReminderNotificationForTomorrowList();
 	int sendReminderNotification(int memberId, int eventId, String eventName, Timestamp eventDate);

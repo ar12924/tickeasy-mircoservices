@@ -24,6 +24,23 @@ div#notification_nav{
 	height:150px; 
 }
 }
+
+
+ div#notification_clear{
+	width:90px;
+	background-color: #EC4899;
+	color:white;
+	margin-left: 1180px;
+	border-radius:5px;
+	text-align: center;
+	margin-top:20px;
+	height:30px;
+	display: flex;
+	align-items: center;       /* 垂直置中 */
+	justify-content: center;   /* 水平置中 */
+	cursor: pointer;
+	
+}
 div.ntf_nav{
     display: inline-block;
     width:100px;
@@ -104,7 +121,7 @@ div#notification{
     width:70%;
     min-height:530px;
     max-height:600px;
-    margin: 50px auto 50px auto;
+    margin: 20px auto 50px auto;
     /* position:relative;
     left:50%;
     top:50px;
