@@ -133,7 +133,7 @@ function notification_loaded(category) {
 					let displayTimeCount = time_count(notification.sendTime);
 
 					notification_el.insertAdjacentHTML("afterbegin", `
-						<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+						<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 						    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 								<div class="ntf_region ntf_left">
 						            <div class="ntf_title">${notification.title}</div>
@@ -204,7 +204,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-												<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+												<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 												    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 														<div class="ntf_region ntf_left">
 												            <div class="ntf_title">${notification.title}</div>
@@ -270,7 +270,7 @@ function notification_loaded(category) {
 					if (notification.notificationId == 2) {
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-															<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+															<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 															    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																	<div class="ntf_region ntf_left">
 															            <div class="ntf_title">${notification.title}</div>
@@ -338,7 +338,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-																			<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+																			<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 																			    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																					<div class="ntf_region ntf_left">
 																			            <div class="ntf_title">${notification.title}</div>
@@ -413,7 +413,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-																							<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+																							<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 																							    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																									<div class="ntf_region ntf_left">
 																							            <div class="ntf_title">${notification.title}</div>
@@ -754,13 +754,16 @@ function reconnectWebSocket() {
 //清空所有的通知
 async function ntf_clear(){
 const ntf_clear_el = document.getElementById("notification_clear");
+const activeNav = document.querySelector('.ntf_nav.-on');
+const tabValue = activeNav?.querySelector(".ntf_tab")?.dataset.tab;
+const tabIndex = Number(tabValue?.split("_")[1]);
 
 ntf_clear_el.addEventListener("click", async () => {
 	if(confirm("確定要將所有種類的通知都刪除嗎?")){
 		console.log("開始刪除通知...");
 		await notification_clear();
 		category_count();
-		notification_loaded(1);
+		notification_loaded(tabIndex);
 	}else{
 		console.log("取消刪除通知...");
 	}
