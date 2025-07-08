@@ -36,7 +36,7 @@ export const renderNav = async (templateHTML) => {
   $loginBtn.attr("href", `${getContextPath()}/user/member/login.html`);
   $orderBtn.attr("href", `${getContextPath()}/111`);
   $concernBtn.attr("href", `${getContextPath()}/222`);
-  $ticketBtn.attr("href", `${getContextPath()}/333`);
+  $ticketBtn.attr("href", `${getContextPath()}/user/ticket/ticket.html`);
   $notifyBtn.attr("href", `${getContextPath()}/user/notify/notification.html`);
   $userBtn
     .find(".member")

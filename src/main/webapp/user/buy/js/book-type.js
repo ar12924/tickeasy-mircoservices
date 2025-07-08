@@ -50,7 +50,7 @@ const saveBook = async (book) => {
     return;
   }
 
-  // 將 book 傳遞至後端
+  // 將 book 傳遞至後端並儲存至 Redis
   const resp = await fetch(`${getContextPath()}/book-type`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -67,7 +67,7 @@ const saveBook = async (book) => {
     return;
   }
 
-  // 儲存至 Redis 並跳轉下一頁(book-info.html)
+  // 跳轉下一頁(book-info.html)
   sessionStorage.setItem("core-message", message);
   sessionStorage.setItem("core-successful", successful);
   location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
@@ -83,17 +83,17 @@ const saveBook = async (book) => {
 const addTicketTypeToSelected = (book) => {
   const $typeBoxList = $(".type-box");
 
-  // selected 中加上 quantity 屬性值
-  $typeBoxList.each((i, typeBox) => {
+  // 抓取票種資料
+  const typeSelected = $typeBoxList.map((index, typeBox) => {
     const $typeBox = $(typeBox);
-    const $typeName = $typeBox.find(".type-name");
-    const $typeQuantity = $typeBox.find(".type-quantity");
-    book.selected.forEach((selectedItem) => {
-      if (selectedItem.categoryName === $typeName.text()) {
-        selectedItem["quantity"] = $typeQuantity.val();
-      }
-    });
+    const typeId = $typeBox.data("typeId");
+    const categoryName = $typeBox.find(".type-name").text();
+    const quantity = $typeBox.find(".type-quantity").val();
+    return { typeId, categoryName, quantity };
   });
+
+  // 將票種資料存入 book 當中
+  book.selected = typeSelected.get();
 };
 
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
