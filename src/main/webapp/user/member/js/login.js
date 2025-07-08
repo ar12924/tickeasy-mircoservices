@@ -35,103 +35,106 @@ if (saved) {
 }
 
 // 重新發送驗證信功能
-resendBtn.addEventListener("click", () => {
-  const email = resendEmail.value.trim();
-  if (!email) {
-    resendMsg.textContent = "請輸入 Email 地址";
-    resendMsg.style.color = "red";
-    return;
-  }
+if (resendBtn) {
+  resendBtn.addEventListener("click", () => {
+    const email = resendEmail.value.trim();
+    if (!email) {
+      resendMsg.textContent = "請輸入 Email 地址";
+      resendMsg.style.color = "red";
+      return;
+    }
 
-  resendBtn.disabled = true;
-  resendBtn.textContent = "發送中...";
-  resendMsg.textContent = "";
+    resendBtn.disabled = true;
+    resendBtn.textContent = "發送中...";
+    resendMsg.textContent = "";
 
-  fetch(`${getContextPath()}/user/member/register/resend-verification`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: `email=${encodeURIComponent(email)}`,
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.successful) {
-        resendMsg.textContent = data.message;
-        resendMsg.style.color = "green";
-        resendBtn.textContent = "發送成功";
-      } else {
-        resendMsg.textContent = data.message;
+    fetch(`${getContextPath()}/user/member/register/resend-verification`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `email=${encodeURIComponent(email)}`,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.successful) {
+          resendMsg.textContent = data.message;
+          resendMsg.style.color = "green";
+          resendBtn.textContent = "發送成功";
+        } else {
+          resendMsg.textContent = data.message;
+          resendMsg.style.color = "red";
+          resendBtn.disabled = false;
+          resendBtn.textContent = "重新發送驗證信";
+        }
+      })
+      .catch((err) => {
+        resendMsg.textContent = "發送失敗，請稍後再試";
         resendMsg.style.color = "red";
         resendBtn.disabled = false;
         resendBtn.textContent = "重新發送驗證信";
-      }
-    })
-    .catch((err) => {
-      resendMsg.textContent = "發送失敗，請稍後再試";
-      resendMsg.style.color = "red";
-      resendBtn.disabled = false;
-      resendBtn.textContent = "重新發送驗證信";
-    });
-});
+      });
+  });
+}
 
-loginBtn.addEventListener("click", () => {
-  msg.textContent = "";
-  msg.style.color = "red";
+if (loginBtn) {
+  loginBtn.addEventListener("click", () => {
+    msg.textContent = "";
+    msg.style.color = "red";
 
-  if (!username.value.trim() || !password.value) {
-    msg.textContent = "請輸入帳號與密碼";
-    return;
-  }
+    if (!username.value.trim() || !password.value) {
+      msg.textContent = "請輸入帳號與密碼";
+      return;
+    }
 
-  // 僅用 GET 方式
-  fetch(
-    `${getContextPath()}/user/member/login/${username.value}/${password.value}`
-  )
-    .then((resp) => resp.json())
-    .then((body) => {
-      if (body.successful) {
-        msg.style.color = "green";
-        const memberData = body.data; // 從 Core<T> 中提取資料
-        sessionStorage.setItem("loggedInNickname", memberData.nickName || "");
-        sessionStorage.setItem("memberId", memberData.memberId || "");
-        sessionStorage.setItem("roleLevel", memberData.roleLevel || "");
-        if (remember && remember.checked) {
-          localStorage.setItem("savedUsername", username.value.trim());
-        } else {
-          localStorage.removeItem("savedUsername");
-        }
-        // 分角色導向前，顯示會員頭像預覽
-
-        // 分角色導向
-        const role = memberData.roleLevel;
-        if (parseInt(role) === 2 || parseInt(role) === 3) {
-          // 移除 alert，直接跳轉
-          window.location.href = `${getContextPath()}/manager/eventdetail/dashboard.html`;
-        } else {
-          // 移除 alert，直接跳轉
-          window.location.href = `${getContextPath()}/user/buy/index.html`;
-        }
-      } else {
-        // 檢查是否為未驗證帳號
-        if (body.message && body.message.includes("帳號尚未驗證")) {
-          resendSection.style.display = "block";
-          resendEmail.value = ""; // 清空 email 欄位
-        } else {
-          resendSection.style.display = "none";
-          // 新增：查無會員時導向註冊
-          if (body.message && body.message.includes("使用者名稱或密碼錯誤")) {
-            if (confirm("查無此會員，是否前往註冊？")) {
-              window.location.href = `${getContextPath()}/user/member/register.html`;
-              return;
-            }
+    fetch(
+      `${getContextPath()}/user/member/login/${username.value}/${
+        password.value
+      }`
+    )
+      .then((resp) => resp.json())
+      .then((body) => {
+        if (body.successful) {
+          msg.style.color = "green";
+          const memberData = body.data; // 從 Core<T> 中提取資料
+          sessionStorage.setItem("loggedInNickname", memberData.nickName || "");
+          sessionStorage.setItem("memberId", memberData.memberId || "");
+          sessionStorage.setItem("roleLevel", memberData.roleLevel || "");
+          if (remember && remember.checked) {
+            localStorage.setItem("savedUsername", username.value.trim());
+          } else {
+            localStorage.removeItem("savedUsername");
           }
-          alert(body.message || "登入失敗");
+          // 分角色導向前，顯示會員頭像預覽
+
+          // 分角色導向
+          const role = memberData.roleLevel;
+          if (parseInt(role) === 2 || parseInt(role) === 3) {
+            window.location.href = `${getContextPath()}/manager/eventdetail/dashboard.html`;
+          } else {
+            window.location.href = `${getContextPath()}/user/buy/index.html`;
+          }
+        } else {
+          // 檢查是否為未驗證帳號
+          if (body.message && body.message.includes("帳號尚未驗證")) {
+            resendSection.style.display = "block";
+            resendEmail.value = ""; // 清空 email 欄位
+          } else {
+            resendSection.style.display = "none";
+            // 新增：查無會員時導向註冊
+            if (body.message && body.message.includes("使用者名稱或密碼錯誤")) {
+              if (confirm("查無此會員，是否前往註冊？")) {
+                window.location.href = `${getContextPath()}/user/member/register.html`;
+                return;
+              }
+            }
+            alert(body.message || "登入失敗");
+          }
         }
-      }
-    })
-    .catch((error) => {
-      console.error("登入請求失敗:", error);
-      alert("登入請求失敗，請稍後再試");
-    });
-});
+      })
+      .catch((error) => {
+        console.error("登入請求失敗:", error);
+        alert("登入請求失敗，請稍後再試");
+      });
+  });
+}
