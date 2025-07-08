@@ -113,4 +113,14 @@ public interface SwapCommentDao {
      * 獲取使用該票券的所有留言
      */
     List<SwapCommentVO> findCommentsByTicketId(Integer ticketId);
+    
+    /**
+     * 查詢獲取貼文的留言
+     */
+    List<Map<String, Object>> listSwapCommentsWithDetailsByPostId(Integer postId);
+
+    /**
+     * 查詢獲取會員的留言
+     */
+    List<Map<String, Object>> listSwapCommentsWithDetailsByMemberId(Integer memberId);
 }

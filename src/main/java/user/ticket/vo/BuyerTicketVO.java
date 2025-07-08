@@ -6,7 +6,7 @@ package user.ticket.vo;
  */
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 @Entity
 @Table(name = "buyer_ticket")
 public class BuyerTicketVO {
@@ -52,10 +52,10 @@ public class BuyerTicketVO {
     private Integer queueId;
     
     @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
+    private Timestamp  createTime;
     
     @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
+    private Timestamp  updateTime;
 
 	public Integer getTicketId() {
 		return ticketId;
@@ -161,19 +161,19 @@ public class BuyerTicketVO {
 		this.queueId = queueId;
 	}
 
-	public LocalDateTime getCreateTime() {
+	public Timestamp  getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(LocalDateTime createTime) {
+	public void setCreateTime(Timestamp  createTime) {
 		this.createTime = createTime;
 	}
 
-	public LocalDateTime getUpdateTime() {
+	public Timestamp  getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(LocalDateTime updateTime) {
+	public void setUpdateTime(Timestamp  updateTime) {
 		this.updateTime = updateTime;
 	}
 }

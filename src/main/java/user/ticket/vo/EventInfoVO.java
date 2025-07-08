@@ -5,7 +5,7 @@ package user.ticket.vo;
  * 創建日期: 2025-05-26
  */
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 @Entity
 @Table(name = "event_info")
 public class EventInfoVO {
@@ -18,10 +18,10 @@ public class EventInfoVO {
     private String eventName;
     
     @Column(name = "event_from_date", nullable = false)
-    private LocalDateTime eventFromDate;
+    private Timestamp  eventFromDate;
     
     @Column(name = "event_to_date", nullable = false)
-    private LocalDateTime eventToDate;
+    private Timestamp  eventToDate;
     
     @Column(name = "event_host", nullable = false, length = 200)
     private String eventHost;
@@ -56,10 +56,10 @@ public class EventInfoVO {
     private Integer memberId;
     
     @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
+    private Timestamp  createTime;
     
     @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
+    private Timestamp  updateTime;
 
 	public Integer getEventId() {
 		return eventId;
@@ -77,19 +77,19 @@ public class EventInfoVO {
 		this.eventName = eventName;
 	}
 
-	public LocalDateTime getEventFromDate() {
+	public Timestamp  getEventFromDate() {
 		return eventFromDate;
 	}
 
-	public void setEventFromDate(LocalDateTime eventFromDate) {
+	public void setEventFromDate(Timestamp  eventFromDate) {
 		this.eventFromDate = eventFromDate;
 	}
 
-	public LocalDateTime getEventToDate() {
+	public Timestamp  getEventToDate() {
 		return eventToDate;
 	}
 
-	public void setEventToDate(LocalDateTime eventToDate) {
+	public void setEventToDate(Timestamp  eventToDate) {
 		this.eventToDate = eventToDate;
 	}
 
@@ -173,19 +173,19 @@ public class EventInfoVO {
 		this.memberId = memberId;
 	}
 
-	public LocalDateTime getCreateTime() {
+	public Timestamp  getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(LocalDateTime createTime) {
+	public void setCreateTime(Timestamp  createTime) {
 		this.createTime = createTime;
 	}
 
-	public LocalDateTime getUpdateTime() {
+	public Timestamp  getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(LocalDateTime updateTime) {
+	public void setUpdateTime(Timestamp  updateTime) {
 		this.updateTime = updateTime;
 	}
 }

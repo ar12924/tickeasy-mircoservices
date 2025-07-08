@@ -1,105 +1,113 @@
-/* 重置及基本設定 */
+/* ==================== 基礎樣式 ==================== */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
-hr {
-    border: none;
-    border-top: 1px solid #e5e7eb;
-    margin-top: 0.3rem;
-}
-
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8fafc;
+    color: #334155;
     line-height: 1.6;
-    color: #374151;
-    background-color: #f9fafb;
 }
 
-/* 主內容區塊樣式 */
 .main-content {
+    min-height: calc(100vh - 120px);
+    padding: 0;
+}
+
+/* ==================== 活動導航區塊 ==================== */
+.event-navigation {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.event-back {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem;
-}
-
-/* 活動導航區塊樣式 */
-.event-navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 0 1rem;
+    margin-bottom: 1rem;
 }
 
 .event-back a {
-    display: flex;
-    align-items: center;
-    color: #374151;
+    color: #3b82f6;
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.event-back a:hover {
+    color: #2563eb;
 }
 
 .arrow-back {
-    font-size: 1.2rem;
-    margin-right: 0.3rem;
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
 .event-tabs {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .tab-link {
-    color: #6b7280;
+    color: #64748b;
     text-decoration: none;
-    font-size: 0.9rem;
-    position: relative;
+    padding: 0.75rem 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-weight: 500;
 }
 
 .tab-link:hover {
-    color: #111827;
+    color: #3b82f6;
 }
 
 .tab-link.active {
-    color: #ec4899;
-    font-weight: 600;
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
 }
 
-/* 轉票專區樣式 */
+/* ==================== 轉票專區內容 ==================== */
 .exchange-area {
-    max-width: 850px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 1rem;
 }
 
 .exchange-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-    color: #111827;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2rem;
+    text-align: center;
 }
 
-/* 載入中樣式 */
+/* ==================== 載入和錯誤狀態 ==================== */
 .loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
+    text-align: center;
+    padding: 3rem 1rem;
 }
 
 .loading-spinner {
     border: 4px solid #f3f4f6;
-    border-top: 4px solid #ec4899;
+    border-top: 4px solid #3b82f6;
     border-radius: 50%;
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem;
 }
 
 @keyframes spin {
@@ -107,96 +115,50 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* 錯誤訊息樣式 */
 .error-message {
-    background-color: #fee2e2;
-    color: #b91c1c;
-    padding: 1rem;
-    border-radius: 8px;
     text-align: center;
+    padding: 2rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
     margin: 2rem 0;
 }
 
+.error-message p {
+    color: #dc2626;
+    margin-bottom: 1rem;
+}
+
 .retry-button {
-    background-color: #b91c1c;
+    background: #dc2626;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
-    margin-top: 1rem;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
-/* 登入提示樣式 */
-.login-prompt {
-    background-color: #f0f9ff;
-    border: 1px solid #0ea5e9;
-    border-radius: 8px;
-    padding: 2rem;
-    text-align: center;
-    margin-bottom: 2rem;
+.retry-button:hover {
+    background: #b91c1c;
 }
 
-.login-prompt p {
-    margin-bottom: 1rem;
-    color: #0369a1;
-}
-
-/* 無貼文樣式 */
-.no-posts {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: #6b7280;
-    font-style: italic;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* 發表轉票表單樣式 */
+/* ==================== 表單樣式 ==================== */
 .ticket-form {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    margin-bottom: 3rem;
+    border: 1px solid #e2e8f0;
 }
 
 .form-title {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #111827;
+    font-size: 1.5rem;
     font-weight: 600;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    color: #6b7280;
-    font-weight: 500;
-}
-
-.form-control {
-    width: 100%;
-    padding: 0.7rem;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    font-size: 0.9rem;
-}
-
-.form-control.form-input {
-    background-color: #f9fafb;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: #ec4899;
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    text-align: center;
 }
 
 .form-row {
@@ -206,603 +168,666 @@ body {
     margin-bottom: 1rem;
 }
 
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-control,
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus,
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
 .form-buttons {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
+    text-align: center;
+    margin-top: 1.5rem;
 }
 
 .submit-button {
-    background-color: #ec4899;
+    background: #3b82f6;
     color: white;
     border: none;
-    padding: 0.7rem 1.5rem;
-    border-radius: 4px;
-    font-weight: bold;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    min-width: 120px;
 }
 
-.submit-button:hover {
-    background-color: #db2777;
+.submit-button:hover:not(:disabled) {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .submit-button:disabled {
-    background-color: #9ca3af;
+    background: #9ca3af;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
-/* 轉票列表樣式 */
+.login-prompt {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    margin-bottom: 3rem;
+}
+
+.login-prompt p {
+    font-size: 1.1rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+/* ==================== 無貼文狀態 ==================== */
+.no-posts {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.no-posts p {
+    font-size: 1.1rem;
+    color: #64748b;
+}
+
+/* ==================== 票券列表樣式 ==================== */
 .ticket-listing {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 12px;
     padding: 1.5rem;
-    margin-bottom: 1rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2rem;
-    align-items: start;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
 }
 
-/* 票券交換區塊 - 跨越整個寬度 */
-.ticket-exchange-section {
-    grid-column: 1 / -1;
-    background-color: #f3f4f6;
-    padding: 1rem;
-    border-radius: 6px;
-    margin-top: 0.5rem;
+.ticket-listing:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
-/* 左側標籤區域 */
-.ticket-exchange-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-}
-
-
-
-/* 左側用戶內容區域 */
 .user-content {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.75rem;
 }
 
 .user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background-color: #e5e7eb;
-    flex-shrink: 0;
     overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.user-avatar.small {
+    width: 36px;
+    height: 36px;
 }
 
 .user-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
-    /* 確保圖片可見 */
-    display: block !important;
 }
 
 .avatar-placeholder {
     width: 100%;
     height: 100%;
-    display: none; /* 預設隱藏，只在圖片載入失敗時顯示 */
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #ec4899;
     color: white;
-    font-weight: bold;
-    font-size: 0.8rem;
-    border-radius: 50%;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.user-avatar.small .avatar-placeholder {
+    font-size: 1rem;
 }
 
 .user-details {
-    display: flex;
-    flex-direction: column;
+    flex: 1;
 }
 
 .user-name {
-    font-weight: bold;
-    font-size: 0.95rem;
-    color: #111827;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
 }
 
 .user-role {
-    font-size: 0.8rem;
-    color: #6b7280;
+    font-size: 0.875rem;
+    color: #64748b;
 }
 
-.ticket-comment {
-    font-size: 0.9rem;
-    color: #4b5563;
-    line-height: 1.5;
-    grid-column: 1 / -1;
-    margin-top: 0.5rem;
-}
-
-.contact-button-section {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-/* 右側票券資訊區域 */
 .ticket-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.8rem;
-    min-width: 200px;
-}
-
-.ticket-label {
-    display: inline-block;
-    padding: 0.3rem 0.8rem;
-    background-color: #fef3c7;
-    color: #92400e;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.ticket-unavailable {
-    background-color: #dcfce7;
-    color: #166534;
-}
-
-.contact-button {
-    display: inline-block;
-    text-align: center;
-    padding: 0.6rem 1.2rem;
-    background-color: #f3f4f6;
-    color: #374151;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    white-space: nowrap;
-    border: 1px solid #e5e7eb;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.contact-button:hover {
-    background-color: #e5e7eb;
-}
-
-.contact-button:disabled {
-    background-color: #f9fafb;
-    color: #9ca3af;
-    cursor: not-allowed;
-    border-color: #e5e7eb;
-}
-
-/* 刪除按鈕樣式 */
-.delete-button {
-    background-color: #dc2626 !important;
-    color: white !important;
-    border-color: #dc2626 !important;
-}
-
-.delete-button:hover {
-    background-color: #b91c1c !important;
-    border-color: #b91c1c !important;
-}
-
-/* 取消按鈕樣式 */
-.cancel-button {
-    background-color: #6b7280 !important;
-    color: white !important;
-    border-color: #6b7280 !important;
-}
-
-.cancel-button:hover {
-    background-color: #4b5563 !important;
-    border-color: #4b5563 !important;
-}
-
-/* 留言表單區塊樣式 */
-.comment-form-section {
-    grid-column: 1 / -1;
-    margin-top: 1rem;
-    padding: 1.5rem;
-    background-color: #f8fafc;
-    border-radius: 8px;
-    border: 2px solid #e2e8f0;
-}
-
-.comment-form-section h4 {
-    margin-bottom: 1rem;
-    color: #2d3748;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.comment-form-section .form-group {
-    margin-bottom: 1rem;
-}
-
-.comment-form-section label {
-    display: block;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    color: #4a5568;
-    font-weight: 500;
-}
-
-.comment-form-section .form-control {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #cbd5e0;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    background-color: white;
-    transition: border-color 0.2s ease;
-}
-
-.comment-form-section .form-control:focus {
-    outline: none;
-    border-color: #ec4899;
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
-}
-
-.comment-form-section .form-buttons {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
-}
-
-/* 票券交換資訊樣式 */
-.exchange-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-}
-
-.exchange-label {
-    color: #6b7280;
-    font-weight: 500;
-    min-width: 80px;
     flex-shrink: 0;
 }
 
-.exchange-value {
-    color: #111827;
-    font-weight: 600;
-    flex: 1;
-    line-height: 1.4;
+.ticket-label {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
 }
 
-/* 留言區域樣式 */
+.ticket-label.ticket-unavailable {
+    background: #f3f4f6;
+    color: #64748b;
+}
+
+.ticket-exchange-section {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+}
+
+.ticket-exchange-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.exchange-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.exchange-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.exchange-value {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.ticket-comment {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    color: #374151;
+    line-height: 1.6;
+    border: 1px solid #e5e7eb;
+}
+
+/* ==================== 操作按鈕區域 ==================== */
+.contact-button-section {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.contact-button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+    min-width: 120px;
+}
+
+.contact-button:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.contact-button.delete-button {
+    background: #ef4444;
+}
+
+.contact-button.delete-button:hover {
+    background: #dc2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.contact-button.cancel-button {
+    background: #6b7280;
+}
+
+.contact-button.cancel-button:hover {
+    background: #4b5563;
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+/* ==================== 留言表單 ==================== */
+.comment-form-section {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.comment-form-section h4 {
+    color: #1e293b;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.help-text {
+    font-size: 0.875rem;
+    color: #ef4444;
+    margin-top: 0.5rem;
+}
+
+/* ==================== 留言切換按鈕 ==================== */
 .comments-toggle {
-    grid-column: 1 / -1;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.toggle-comments-button {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggle-comments-button:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+/* ==================== 留言區域 ==================== */
+.comments-section {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #e5e7eb;
 }
 
-.toggle-comments-button {
-    background: none;
-    border: none;
-    color: #6b7280;
-    font-size: 0.9rem;
-    cursor: pointer;
-    text-decoration: underline;
-    transition: color 0.2s;
-}
-
-.toggle-comments-button:hover {
-    color: #374151;
-}
-
-.comments-section {
-    grid-column: 1 / -1;
-    margin-top: 1rem;
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
-}
-
 .comment-item {
+    background: #f9fafb;
+    border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1rem;
-    background-color: white;
-    border-radius: 6px;
     border: 1px solid #e5e7eb;
+    transition: all 0.2s;
 }
 
-.comment-item:last-child {
-    margin-bottom: 0;
+.comment-item:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
 }
 
 .comment-user {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 0.8rem;
-}
-
-.user-avatar.small {
-    width: 32px;
-    height: 32px;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
 }
 
 .comment-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
+    flex: 1;
 }
 
 .comment-user-name {
     font-weight: 600;
-    font-size: 0.9rem;
-    color: #111827;
+    color: #1e293b;
+    margin-right: 0.75rem;
 }
 
 .comment-time {
-    font-size: 0.8rem;
-    color: #6b7280;
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-right: 0.75rem;
 }
 
 .comment-status {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 12px;
     font-weight: 500;
 }
 
+/* ==================== 🔧 新增：4狀態樣式 ==================== */
 .status-pending {
-    background-color: #fef3c7;
+    background: #fef3c7;
     color: #92400e;
 }
 
-.status-waiting {
-    background-color: #dbeafe;
+.status-accepted {
+    background: #dbeafe;
     color: #1e40af;
 }
 
 .status-completed {
-    background-color: #dcfce7;
+    background: #dcfce7;
     color: #166534;
 }
 
 .status-cancelled {
-    background-color: #fee2e2;
-    color: #dc2626;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.comment-content {
+    margin-bottom: 1rem;
 }
 
 .comment-content p {
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    color: #374151;
+    line-height: 1.6;
 }
 
 .comment-ticket-info {
-    font-size: 0.8rem;
+    font-size: 0.875rem;
     color: #6b7280;
-    background-color: #f3f4f6;
-    padding: 0.5rem;
-    border-radius: 4px;
+    background: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
 }
 
+/* ==================== 🔧 新增：操作按鈕樣式 ==================== */
 .comment-actions {
-    margin-top: 0.8rem;
     display: flex;
     gap: 0.5rem;
+    margin-top: 1rem;
     flex-wrap: wrap;
 }
 
 .status-button {
-    padding: 0.4rem 0.8rem;
+    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 4px;
-    font-size: 0.8rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 90px;
+    justify-content: center;
 }
 
+/* 接受請求按鈕 */
 .status-button.accept {
-    background-color: #10b981;
+    background: #3b82f6;
     color: white;
 }
 
 .status-button.accept:hover {
-    background-color: #059669;
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+/* 完成交換按鈕 */
 .status-button.complete {
-    background-color: #3b82f6;
+    background: #10b981;
     color: white;
 }
 
 .status-button.complete:hover {
-    background-color: #2563eb;
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
+/* 取消按鈕 */
 .status-button.cancel {
-    background-color: #ef4444;
+    background: #ef4444;
     color: white;
 }
 
 .status-button.cancel:hover {
-    background-color: #dc2626;
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
+/* 登入按鈕 */
+.status-button.login {
+    background: #6b7280;
+    color: white;
+}
+
+.status-button.login:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+/* ==================== 🔧 新增：狀態資訊顯示 ==================== */
+.status-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-info.completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-info.cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-icon {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* ==================== 無留言狀態 ==================== */
 .no-comments {
     text-align: center;
     padding: 2rem;
-    color: #9ca3af;
+    color: #64748b;
     font-style: italic;
 }
 
-/* 票券狀態指示樣式 */
-.ticket-status-available {
-    color: #10b981;
-    font-weight: 500;
-}
-
-.ticket-status-posted {
-    color: #f59e0b;
-    font-weight: 500;
-}
-
-.ticket-status-commenting {
-    color: #3b82f6;
-    font-weight: 500;
-}
-
-/* 票券選擇優化 */
-.form-control option {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-}
-
-/* 幫助文字樣式 */
-.help-text {
-    font-size: 0.8rem;
-    color: #6b7280;
-    margin-top: 0.5rem;
-    font-style: italic;
-}
-
-/* RWD 響應式設計 */
+/* ==================== 響應式設計 ==================== */
 @media (max-width: 768px) {
-    .event-navigation {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+    .exchange-area {
+        padding: 0 0.5rem;
     }
-
-    .event-tabs {
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
+    
     .form-row {
         grid-template-columns: 1fr;
-        gap: 0;
     }
-
-    .form-buttons {
-        justify-content: stretch;
-    }
-
-    .submit-button {
-        width: 100%;
-    }
-
-    .ticket-listing {
+    
+    .ticket-exchange-info {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
     }
-
-    .ticket-info {
-        align-items: flex-start;
-        text-align: left;
-    }
-
+    
     .contact-button-section {
         flex-direction: column;
-        align-items: stretch;
     }
-
-    .contact-button,
-    .cancel-button {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .contact-button:last-child,
-    .cancel-button:last-child {
-        margin-bottom: 0;
-    }
-
-    .ticket-exchange-section {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
     
-    .comment-form-section {
-        padding: 1rem;
+    .contact-button {
+        flex: none;
     }
-
+    
     .comment-actions {
-        justify-content: center;
+        flex-direction: column;
     }
     
     .status-button {
-        flex: 1;
-        min-width: 80px;
-    }
-
-    .form-control option {
-        font-size: 0.85rem;
-        padding: 0.4rem;
+        min-width: auto;
+        width: 100%;
     }
     
-    .help-text {
-        font-size: 0.75rem;
+    .event-tabs {
+        padding: 0 0.5rem;
+        gap: 1rem;
+    }
+    
+    .event-back {
+        padding: 0 0.5rem;
     }
 }
 
 @media (max-width: 480px) {
-    .main-content {
-        padding: 1rem 0.5rem;
-    }
-
-    .ticket-form {
-        padding: 1rem;
-    }
-
-    .ticket-listing {
-        padding: 1rem;
-    }
-
     .exchange-title {
         font-size: 1.5rem;
     }
-
-    .user-avatar {
-        width: 35px;
-        height: 35px;
+    
+    .ticket-form {
+        padding: 1rem;
     }
     
-    .user-avatar.small {
-        width: 28px;
-        height: 28px;
+    .ticket-listing {
+        padding: 1rem;
     }
     
-    .comment-user {
+    .user-info {
         gap: 0.5rem;
     }
     
-    .comment-details {
-        font-size: 0.85rem;
-    }
-
-    .comment-form-section h4 {
-        font-size: 1rem;
+    .user-avatar {
+        width: 40px;
+        height: 40px;
     }
     
-    .comment-form-section .form-control {
-        padding: 0.6rem;
-        font-size: 0.85rem;
+    .user-avatar.small {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .comment-form-section {
+        padding: 1rem;
+    }
+}
+
+/* ==================== 動畫效果 ==================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ticket-listing {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.comment-item {
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* ==================== 無障礙優化 ==================== */
+.status-button:focus,
+.contact-button:focus,
+.submit-button:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.form-control:focus,
+.form-input:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: -1px;
+}
+
+/* ==================== 印刷樣式 ==================== */
+@media print {
+    .contact-button-section,
+    .comment-actions,
+    .comments-toggle,
+    .comment-form-section {
+        display: none;
+    }
+    
+    .ticket-listing {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
+
+/* ==================== 高對比模式支援 ==================== */
+@media (prefers-contrast: high) {
+    .status-button {
+        border: 2px solid currentColor;
+    }
+    
+    .ticket-label {
+        border: 1px solid currentColor;
+    }
+    
+    .comment-status {
+        border: 1px solid currentColor;
+    }
+}
+
+/* ==================== 減少動畫偏好 ==================== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .ticket-listing:hover,
+    .status-button:hover,
+    .contact-button:hover {
+        transform: none;
     }
 }
