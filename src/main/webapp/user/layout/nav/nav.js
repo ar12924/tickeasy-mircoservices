@@ -21,6 +21,7 @@ export const renderNav = async (templateHTML) => {
   const $template = $(templateHTML);
 
   // 抓取每個按鈕
+  const $homeBtn = $template.find(".go-home");
   const $registerBtn = $template.find(".register");
   const $loginBtn = $template.find(".login");
   const $orderBtn = $template.find(".order");
@@ -30,41 +31,31 @@ export const renderNav = async (templateHTML) => {
   const $userBtn = $template.find(".user");
 
   // 加入 URL 連結
+  $homeBtn.attr("href", `${getContextPath()}/user/buy/index.html`);
   $registerBtn.attr("href", `${getContextPath()}/user/member/register.html`);
   $loginBtn.attr("href", `${getContextPath()}/user/member/login.html`);
   $orderBtn.attr("href", `${getContextPath()}/111`);
   $concernBtn.attr("href", `${getContextPath()}/222`);
-  $ticketBtn.attr("href", `${getContextPath()}/333`);
+  $ticketBtn.attr("href", `${getContextPath()}/user/ticket/ticket.html`);
   $notifyBtn.attr("href", `${getContextPath()}/user/notify/notification.html`);
   $userBtn
     .find(".member")
     .attr("href", `${getContextPath()}/user/member/edit.html`);
 
   // 判斷會員是否登入？(且 roleLevel == 1)
-  const identifyCore = await fetchMemberFromSession();
-  const isLoggedIn = identifyCore.successful;
-  if (isLoggedIn) {
-    const sessionMember = identifyCore.data;
-    if (sessionMember.roleLevel === 1) {
-      // 已登入
-      $registerBtn.addClass("is-hidden");
-      $loginBtn.addClass("is-hidden");
-      $orderBtn.removeClass("is-hidden");
-      $concernBtn.removeClass("is-hidden");
-      $ticketBtn.removeClass("is-hidden");
-      $notifyBtn.removeClass("is-hidden");
-      $userBtn.removeClass("is-hidden");
-      $userBtn.find(".user-name").text(sessionMember.nickName); // 添加 userName
-    } else {
-      // 非使用者權限
-      $registerBtn.removeClass("is-hidden");
-      $loginBtn.removeClass("is-hidden");
-      $orderBtn.addClass("is-hidden");
-      $concernBtn.addClass("is-hidden");
-      $ticketBtn.addClass("is-hidden");
-      $notifyBtn.addClass("is-hidden");
-      $userBtn.addClass("is-hidden");
-    }
+  const authenticateCore = await fetchMemberFromSession();
+  const isLoggedIn = authenticateCore.successful;
+  const memberData = authenticateCore.data;
+  if (isLoggedIn && memberData && memberData.roleLevel === 1) {
+    // 已登入
+    $registerBtn.addClass("is-hidden");
+    $loginBtn.addClass("is-hidden");
+    $orderBtn.removeClass("is-hidden");
+    $concernBtn.removeClass("is-hidden");
+    $ticketBtn.removeClass("is-hidden");
+    $notifyBtn.removeClass("is-hidden");
+    $userBtn.removeClass("is-hidden");
+    $userBtn.find(".user-name").text(memberData.nickName); // 添加 userName
   } else {
     // 未登入
     $registerBtn.removeClass("is-hidden");
@@ -91,7 +82,6 @@ export const initNavJSEvents = () => {
 
   // "使用者名稱" 下拉選單
   $(".dropdown").on("click", () => {
-    console.log("hahahaha");
     $(".dropdown").toggleClass("is-active");
   });
 
@@ -99,10 +89,5 @@ export const initNavJSEvents = () => {
   $(".logout").on("click", async () => {
     const resp = await fetch(`${getContextPath()}/common/logout`);
     location.reload();
-  });
-
-  // "回首頁" 按鈕點擊
-  $(".go-home").on("click", () => {
-    location.href = `${getContextPath()}/user/buy/index.html`;
   });
 };

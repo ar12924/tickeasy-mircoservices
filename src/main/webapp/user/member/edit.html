@@ -1,119 +1,134 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>會員資料編輯</title>
-<link rel="stylesheet" href="css/indexM.css">
-<link rel="stylesheet" href="css/edit.css">
-</head>
-<body>
-	<div id="app">
-		<nav>
-			<div class="logo">
-				<a href="/maven-tickeasy-v1/user/buy/index.html">TickEasy</a>
-			</div>
-			<ul class="nav-links">
-				<li><a href="#tickets">我的訂單</a></li>
-				<li><a href="#favorites">我的關注</a></li>
-				<li><a href="#account">我的票券</a></li>
-				<li><a href="#notifications">通知中心</a></li>
-				<li><a href="#profile" class="cta-button">會員中心</a></li>
-			</ul>
-			<div class="user-info">
-				<span id="loggedInNickname">您好，</span>
-				<button id="logoutButton">登出</button>
-			</div>
-		</nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>會員資料編輯</title>
+    <link
+      rel="stylesheet"
+      href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
+    <link rel="stylesheet" href="../layout/nav/nav.css" />
+    <link rel="stylesheet" href="css/edit.css" />
+    <link rel="stylesheet" href="../layout/footer/footer.css" />
+    <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
 
-		<main class="my-tickets">
-			<h2>編輯會員資料</h2>
+    <main class="my-tickets">
+      <h2 class="logo-text">編輯會員資料</h2>
 
-			<form id="editForm" action="/maven-tickeasy-v1/user/member/edit"
-				method="post" enctype="multipart/form-data">
+      <form
+        id="editForm"
+        action="/maven-tickeasy-v1/user/member/edit"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <div class="form-group photo-group">
+          <i
+            id="defaultIcon"
+            class="fa-solid fa-image"
+            style="font-size: 120px; color: #ccc"
+          ></i>
+          <img
+            id="photoPreview"
+            src=""
+            alt="大頭貼預覽"
+            style="display: none"
+          />
+          <input type="file" id="photoInput" name="photo" accept="image/*" />
+          <span class="error" id="photoError"></span>
+        </div>
 
-				<div class="form-group photo-group">
-					<label for="photo"><i class="fa-regular fa-image"></i> 個人照片</label>
-					<!-- 預設圖示 icon -->
-					<i id="defaultIcon" class="fa-solid fa-image"
-						style="display: none; font-size: 80px; color: #ccc;"></i> <img
-						id="photoPreview" src="" alt="大頭貼預覽"> <input type="file"
-						id="photoInput" name="photo" accept="image/*">
-				</div>
+        <div class="form-group">
+          <label for="username">使用者帳號</label>
+          <input type="text" id="username" disabled />
+        </div>
+        <!-- 密碼變更按鈕 -->
+        <div class="form-group">
+          <button type="button" id="changePasswordBtn" class="secondary-button">
+            變更密碼
+          </button>
+        </div>
 
-				<div class="form-group">
+        <!-- 密碼變更區域 (預設隱藏，支援滑動效果) -->
+        <div id="passwordChangeArea" class="password-change-container">
+          <div class="password-change-content">
+            <!-- 密碼更新狀態指示器 -->
+            <div
+              id="passwordUpdateStatus"
+              style="
+                display: none;
+                margin-bottom: 15px;
+                padding: 10px;
+                border-radius: 5px;
+                background-color: #e7f3ff;
+                border: 1px solid #b3d9ff;
+              "
+            >
+              <i
+                class="fas fa-info-circle"
+                style="color: #0066cc; margin-right: 5px"
+              ></i>
+              <span id="passwordUpdateStatusText"
+                >密碼更新認證信已發送，請至信箱收信確認</span
+              >
+            </div>
+            <div class="form-group">
+              <label for="password">新密碼</label>
+              <input type="password" id="password" />
+            </div>
+            <div class="form-group">
+              <label for="cPassword">確認新密碼</label>
+              <input type="password" id="cPassword" />
+            </div>
+            <div class="form-group">
+              <button
+                type="button"
+                id="sendVerificationBtn"
+                class="secondary-button"
+              >
+                發送密碼更新認證信
+              </button>
+              <div id="verificationMsg"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="nickname">暱稱</label> <input type="text" id="nickname" />
+        </div>
+        <div class="form-group">
+          <label for="email">電子信箱</label> <input type="email" id="email" />
+        </div>
+        <div class="form-group">
+          <label for="unicode">統一編號</label>
+          <input type="text" id="unicode" />
+        </div>
+        <div class="form-group">
+          <label for="phone">手機號碼</label>
+          <input type="text" id="phone" name="phone" maxlength="20" />
+        </div>
+        <div class="form-group">
+          <label for="birthDate">生日</label>
+          <input type="date" id="birthDate" name="birthDate" />
+        </div>
+        <div class="form-group">
+          <label for="gender">性別</label>
+          <select id="gender" name="gender">
+            <option value="">請選擇</option>
+            <option value="M">男</option>
+            <option value="F">女</option>
+          </select>
+        </div>
+        <button id="saveButton" class="join-button">儲存變更</button>
+        <div id="msg"></div>
+      </form>
+    </main>
 
-					<label for="username">使用者帳號</label> <input type="text"
-						id="username" disabled>
-				</div>
-				<!-- 密碼變更按鈕 -->
-				<div class="form-group">
-					<button type="button" id="changePasswordBtn"
-						class="secondary-button">變更密碼</button>
-				</div>
-
-				<!-- 密碼變更區域 (預設隱藏) -->
-				<div id="passwordChangeArea" style="display: none;">
-					<div class="form-group">
-						<label for="password">新密碼</label> <input type="password"
-							id="password">
-					</div>
-					<div class="form-group">
-						<label for="cPassword">確認新密碼</label> <input type="password"
-							id="cPassword">
-					</div>
-					<div class="form-group">
-						<button type="button" id="sendVerificationBtn"
-							class="secondary-button">發送驗證信件</button>
-						<div id="verificationMsg"></div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="nickname">暱稱</label> <input type="text" id="nickname">
-				</div>
-				<div class="form-group">
-					<label for="email">電子信箱</label> <input type="email" id="email">
-				</div>
-				<div class="form-group">
-					<label for="unicode">統一編號</label> <input type="text" id="unicode">
-				</div>
-				<button id="saveButton" class="join-button">儲存變更</button>
-				<div id="msg"></div>
-			</form>
-		</main>
-
-
-		<footer>
-			<div class="footer-content">
-				<div class="footer-section">
-					<h3>關於我們</h3>
-					<ul>
-						<li><a href="#about-us">票務通致力於提供優質的購票服務</a></li>
-					</ul>
-				</div>
-				<div class="footer-section">
-					<h3>客戶服務</h3>
-					<ul>
-						<li><a href="#faq">常見問題</a></li>
-						<li><a href="#contact">聯絡我們</a></li>
-					</ul>
-				</div>
-				<div class="footer-section">
-					<h3>售票須知</h3>
-					<ul>
-						<li><a href="#terms">購票說明</a></li>
-						<li><a href="#policy">退票政策</a></li>
-					</ul>
-				</div>
-				<div class="footer-section">
-					<h3>追蹤我們</h3>
-					<div class="social-links">
-						<a href="#facebook">Facebook</a> <a href="#instagram">Instagram</a>
-					</div>
-				</div>
-			</div>
-		</footer>
-	</div>
-	<script src="js/edit.js"></script>
-</body>
+    <footer></footer>
+    <script type="module" src="js/member-common.js"></script>
+    <script type="module" src="js/edit.js"></script>
+  </body>
 </html>

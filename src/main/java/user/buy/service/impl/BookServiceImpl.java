@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import common.vo.AuthStatus;
 import common.vo.Core;
 import common.vo.DataStatus;
 import user.buy.dao.BookDao;
@@ -171,7 +172,7 @@ public class BookServiceImpl implements BookService {
 
 		// 確保資料中的 userName 與當前會員為同一人
 		if (!Objects.equals(bookDto.getUserName(), userName)) {
-			core.setDataStatus(DataStatus.FORBIDDEN);
+			core.setAuthStatus(AuthStatus.FORBIDDEN);
 			core.setMessage("資料存取權限不足");
 			core.setSuccessful(false);
 			return core;

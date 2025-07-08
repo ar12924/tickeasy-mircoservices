@@ -69,39 +69,21 @@ public class TicketSalesServiceImpl implements TicketSalesService {
         result.put("soldCount", soldCount);
         result.put("unsold", unsold);
         result.put("salesRate", salesRate);
-        return result;
-    }
-    
-    @Transactional
-    @Override
-    public Map<String, Object> getTicketTypeDetail(Integer typeId) {
-        Map<String, Object> result = new HashMap<>();
         
-        // 獲取票種信息
-        EventTicketType ticketType = null;
-        List<EventTicketType> ticketTypes = ticketSalesDao.getEventTicketTypes(null);
-        for (EventTicketType type : ticketTypes) {
-            if (type.getTypeId().equals(typeId)) {
-                ticketType = type;
-                break;
+        // 添加圓餅圖數據
+        List<Map<String, Object>> chartData = new ArrayList<>();
+        for (EventTicketType ticketType : ticketTypes) {
+            Integer typeSoldCount = ticketSalesDao.getSoldTicketCount(ticketType.getTypeId());
+            typeSoldCount = typeSoldCount != null ? typeSoldCount : 0;
+            if (typeSoldCount > 0) {  // 只顯示有銷售的票種
+                Map<String, Object> chartItem = new HashMap<>();
+                chartItem.put("name", ticketType.getCategoryName());
+                chartItem.put("value", typeSoldCount);
+                chartItem.put("revenue", typeSoldCount * ticketType.getPrice().doubleValue());
+                chartData.add(chartItem);
             }
         }
-        
-        if (ticketType == null) {
-            return result;
-        }
-        
-        result.put("ticketType", ticketType);
-        
-        // 獲取銷售統計數據
-        Integer soldCount = ticketSalesDao.getSoldTicketCount(typeId);
-        Integer usedCount = ticketSalesDao.getUsedTicketCount(typeId);
-        Integer capacity = ticketType.getCapacity();
-        
-        result.put("soldCount", soldCount);
-        result.put("usedCount", usedCount);
-        result.put("remainingCount", capacity - soldCount);
-        result.put("soldPercentage", capacity > 0 ? (double) soldCount / capacity * 100 : 0);
+        result.put("chartData", chartData);
         
         return result;
     }

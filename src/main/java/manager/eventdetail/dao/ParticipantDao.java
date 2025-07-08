@@ -26,6 +26,4 @@ public interface ParticipantDao extends CommonDao {
     String getEventNameById(Integer eventId);
 
     Map<String, Object> getParticipants(Integer eventId, int page, int pageSize);
-
-    List<EventTicketType> getTicketTypesByEventId(Integer eventId);
 }

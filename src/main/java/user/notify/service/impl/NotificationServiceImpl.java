@@ -1,11 +1,9 @@
 package user.notify.service.impl;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import user.notify.dao.NotificationDao;
 import user.notify.service.NotificationService;
 import user.notify.vo.Notification;
+import user.notify.websocket.NotifyWebSocketHandler;
 
 
 @Service
@@ -24,6 +23,9 @@ public class NotificationServiceImpl implements NotificationService {
 	private final static Logger logger = LogManager.getLogger(NotificationServiceImpl.class);
 	@Autowired
 	private NotificationDao notificationDao;
+	
+	@Autowired
+    private NotifyWebSocketHandler notifyWebSocketHandler;
 	
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
@@ -51,29 +53,30 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendReminderNotificationForTomorrow() {
 		List<Object[]> resultList = notificationDao.sendReminderNotificationForTomorrowList();
 
-		// TODO ????
+		
 		logger.info("Reminder排程動");
 
 		if (resultList.isEmpty()) {
-			System.out.println("⚠️ 查無符合條件的活動資料（明天沒有活動）");
+			logger.info("⚠️ 查無符合條件的活動資料（明天沒有活動）");
 			return;
 		}
-		System.out.println("✅ 查到資料筆數：" + resultList.size());
+		logger.info("✅ 查到資料筆數：" + resultList.size());
 
 		for (Object[] row : resultList) {
-			System.out.println("🔁 處理 row: " + Arrays.toString(row));
+			logger.info("🔁 處理 row: " + Arrays.toString(row));
 			Integer memberId = ((Number) row[0]).intValue();
 			Integer eventId = ((Number) row[1]).intValue();
 			String eventName = (String) row[2];
 			Timestamp eventDate = (Timestamp) row[3];
 
-			System.out.println("有查到資料,要跑方法了");
+			/* System.out.println("有查到資料,要跑方法了"); */
 			int result = notificationDao.sendReminderNotification(memberId, eventId, eventName, eventDate);
 
 			if (result > 0) {
-				System.out.println("✅ 活動提醒通知已成功透過 Hibernate SQL 插入！");
+				logger.info("✅ 活動提醒通知已成功透過 Hibernate SQL 插入！");
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "活動提醒通知已送達通知中心,請查看");
 			} else {
-				System.out.println("⚠️ 活動提醒通知插入失敗！");
+				logger.info("⚠️ 活動提醒通知插入失敗！");
 			}
 		}
 	}
@@ -87,17 +90,17 @@ public class NotificationServiceImpl implements NotificationService {
 		
 		List<Object[]> resultList = notificationDao.sendFavoriteSellReminderNotificationForTomorrowList();
 
-		// TODO ????
-		logger.info("Reminder排程動");
+		
+		logger.info("FavoriteSellReminder排程動");
 
 		if (resultList.isEmpty()) {
-			System.out.println("⚠️ 查無符合條件的活動資料（明天沒有活動）");
+			logger.info("⚠️ 查無符合條件的活動資料（明天沒有活動）");
 			return;
 		}
-		System.out.println("✅ 查到資料筆數：" + resultList.size());
+		logger.info("✅ 查到資料筆數：" + resultList.size());
 
 		for (Object[] row : resultList) {
-			System.out.println("🔁 處理 row: " + Arrays.toString(row));
+			logger.info("🔁 處理 row: " + Arrays.toString(row));
 			Integer memberId = ((Number) row[0]).intValue();
 			Integer eventId = ((Number) row[1]).intValue();
 			String eventName = (String) row[2];
@@ -106,13 +109,14 @@ public class NotificationServiceImpl implements NotificationService {
 			String categoryName=(String) row[5];
 			
 
-			System.out.println("有查到資料,要跑方法了");
+			/* System.out.println("有查到資料,要跑方法了"); */
 			int result = notificationDao.sendFavoriteSellReminderNotification(memberId, eventId, eventName, eventSellFromTime, eventSellToTime, categoryName);
 
 			if (result > 0) {
-				System.out.println("✅ 關注開賣通知已成功透過 Hibernate SQL 插入！");
+				logger.info("✅ 關注開賣通知已成功透過 Hibernate SQL 插入！");
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "關注開賣通知已送達通知中心,請查看");
 			} else {
-				System.out.println("⚠️ 關注開賣通知插入失敗！");
+				logger.info("⚠️ 關注開賣通知插入失敗！");
 			}
 		}
 	}
@@ -122,30 +126,31 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendFavoriteSoldOutReminderNotification() {
 		List<Object[]> resultList = notificationDao.sendFavoriteSoldOutReminderList();
 
-		// TODO ????
-		logger.info("Reminder排程動");
+	
+		logger.info("FavoriteSoldOutReminder排程動");
 
 		if (resultList.isEmpty()) {
-			System.out.println("⚠️ 查無符合條件的我的關注資料");
+			logger.info("⚠️ 查無符合條件的我的關注資料");
 			return;
 		}
-		System.out.println("✅ 查到資料筆數：" + resultList.size());
+		logger.info("✅ 查到資料筆數：" + resultList.size());
 
 		for (Object[] row : resultList) {
-			System.out.println("🔁 處理 row: " + Arrays.toString(row));
+			logger.info("🔁 處理 row: " + Arrays.toString(row));
 			Integer memberId = ((Number) row[0]).intValue();
 			String userName= (String)row[1];
 			Integer eventId = ((Number) row[2]).intValue();
 			String eventName = (String) row[3];
 			Timestamp eventToDate = (Timestamp) row[4];
 
-			System.out.println("有查到資料,要跑方法了");
+			/* System.out.println("有查到資料,要跑方法了"); */
 			int result = notificationDao.sendFavoriteSoldOutReminderNotification(memberId,userName, eventId, eventName, eventToDate);
 
 			if (result > 0) {
-				System.out.println("✅ 售票截止提醒通知已成功透過 Hibernate SQL 插入！");
+				logger.info("✅ 售票截止提醒通知已成功透過 Hibernate SQL 插入！");
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "售票截止提醒已送達通知中心,請查看");
 			} else {
-				System.out.println("⚠️ 售票截止提醒通知插入失敗！");
+				logger.info("⚠️ 售票截止提醒通知插入失敗！");
 			}
 		}
 		
@@ -157,11 +162,11 @@ public class NotificationServiceImpl implements NotificationService {
 		List<Object[]> resultList = notificationDao.sendFavoriteLeftPercentReminderList();
 		
 
-		// TODO ????
-		logger.info("Reminder排程動");
+	
+		logger.info("FavoriteLeftPercentReminder排程動");
 
 		if (resultList.isEmpty()) {
-			System.out.println("⚠️ 查無符合條件的我的關注資料");
+			logger.info("⚠️ 查無符合條件的我的關注資料");
 			return;
 		}
 		
@@ -173,9 +178,9 @@ public class NotificationServiceImpl implements NotificationService {
 			Double eventPercent= (double)eventCount/eventCapcity;
 			Double percentLeft=1-eventPercent;
 
-			System.out.println("設定一下多少%要寄通知");
+			/* System.out.println("設定一下多少%要寄通知"); */
 			if(0.2< percentLeft && percentLeft <0.6) {
-				System.out.println("有60%");
+				/* System.out.println("有60%"); */
 				List<Object[]> resultMem=notificationDao.sendFavoriteLeftPercentReminderMemList(eventId);
 			
 			for (Object[] row1 : resultMem) {
@@ -186,22 +191,23 @@ public class NotificationServiceImpl implements NotificationService {
 				
 				String notifyType="SOLD_40";
 				 if (isAlreadyNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType)) {
-	                    System.out.printf("🚫 已通知過SOLD_40 memberId=%d, eventId=%d，略過\n", memberId, eventId1);
+					 logger.info("🚫 已通知過SOLD_40 memberId=%d, eventId=%d，略過\n", memberId, eventId1);
 	                    continue;
 	                }
-			System.out.println("跑到這裡了");
+					/* System.out.println("跑到這裡了"); */
 			int result = notificationDao.sendFavoriteLeftPercentReminderNotification(memberId,userName, eventId1, eventName,40);
 			
 			if (result > 0) {
-				System.out.println("✅ 剩餘票券60%提醒通知已成功透過 Hibernate SQL 插入！");
+				logger.info("✅ 剩餘票券60%提醒通知已成功透過 Hibernate SQL 插入！");
 				markAsNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType); // ➤ 寫入 Redis
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "關注活動的剩餘票券60%提醒通知已送達通知中心,請查看");
 			} else {
-				System.out.println("⚠️ 剩餘票券60%提醒通知插入失敗！");
+				logger.info("⚠️ 剩餘票券60%提醒通知插入失敗！");
 			}
 			}
 			}
 			if(percentLeft <0.2) {
-				System.out.println("有80%");
+				/* System.out.println("有80%"); */
 				List<Object[]> resultMem=notificationDao.sendFavoriteLeftPercentReminderMemList(eventId);
 			
 			for (Object[] row1 : resultMem) {
@@ -212,18 +218,19 @@ public class NotificationServiceImpl implements NotificationService {
 				
 				String notifyType="SOLD_80";
 				 if (isAlreadyNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType)) {
-	                    System.out.printf("🚫 已通知SOLD_80 memberId=%d, eventId=%d，略過\n", memberId, eventId1);
+					 logger.info("🚫 已通知SOLD_80 memberId=%d, eventId=%d，略過\n", memberId, eventId1);
 	                    continue;
 	                }
 				
-			System.out.println("跑到這裡了");
+					/* System.out.println("跑到這裡了"); */
 			int result = notificationDao.sendFavoriteLeftPercentReminderNotification(memberId,userName, eventId1, eventName,80);
 			
 			if (result > 0) {
-				System.out.println("✅ 剩餘票券20%提醒通知已成功透過 Hibernate SQL 插入！");
+				logger.info("✅ 剩餘票券20%提醒通知已成功透過 Hibernate SQL 插入！");
 				markAsNotifiedFavoriteLeftPercent(eventId1, memberId, notifyType); // ➤ 寫入 Redis
+				notifyWebSocketHandler.sendNotificationToMember(memberId, "關注活動的剩餘票券20%提醒通知已送達通知中心,請查看");
 			} else {
-				System.out.println("⚠️ 剩餘票券20%提醒通知插入失敗！");
+				logger.info("⚠️ 剩餘票券20%提醒通知插入失敗！");
 			}
 			}
 			}
@@ -251,4 +258,9 @@ public class NotificationServiceImpl implements NotificationService {
 	 * redisTemplate.opsForValue().get("hello"); System.out.println("Redis 測試結果：" +
 	 * result); }
 	 */
+	@Transactional
+	@Override
+	public Integer notificationListClearUpdate(int memberId) {
+		return notificationDao.updateListClear(memberId);
+	}
 }

@@ -1,13 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("Participant List 頁面開始載入...");
-
   // 檢查用戶權限
   const roleLevel = sessionStorage.getItem("roleLevel");
   const memberId = sessionStorage.getItem("memberId");
 
-  console.log("權限檢查:", { roleLevel, memberId });
-
-  if (!roleLevel || roleLevel !== "2") {
+  if (!roleLevel || (roleLevel !== "2" && roleLevel !== "3")) {
     alert("您沒有權限訪問此頁面");
     window.location.href = "/maven-tickeasy-v1/user/member/login.html";
     return;
@@ -26,14 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const loadingEl = document.querySelector("#loading");
   const noDataEl = document.querySelector("#no-data");
 
-  console.log("DOM 元素檢查:", {
-    eventSelectEl: !!eventSelectEl,
-    participantTableEl: !!participantTableEl,
-    participantCountEl: !!participantCountEl,
-    loadingEl: !!loadingEl,
-    noDataEl: !!noDataEl,
-  });
-
   // 全域變數
   let events = [];
   let currentEventId = null;
@@ -44,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initPage();
 
   function initPage() {
-    console.log("初始化頁面...");
     loadEvents();
     setupEventListeners();
   }
@@ -54,7 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
       eventSelectEl.addEventListener("change", function () {
         currentEventId = this.value;
         currentPage = 1; // 切換活動時，重置回第一頁
-        console.log("選擇活動:", currentEventId);
         if (currentEventId) {
           loadParticipants(currentEventId);
         } else {
@@ -98,39 +84,22 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function loadEvents() {
-    console.log("開始載入活動列表");
-
     // 從 sessionStorage 獲取 memberId
     const memberId = sessionStorage.getItem("memberId");
     if (!memberId) {
-      console.error("無法獲取 memberId");
       showMessage("無法獲取用戶信息，請重新登入", "error");
       return;
     }
 
-    console.log("使用 memberId:", memberId);
-
-    // 獲取應用程序的上下文路徑
-    const currentPath = window.location.pathname;
-    const pathParts = currentPath.split("/");
-    const contextPath = pathParts.slice(0, 2).join("/"); // 取前2段: /maven-tickeasy-v1
-    const apiUrl = `${contextPath}/manager/eventdetail/participants?memberId=${memberId}`;
-
-    console.log("API URL:", apiUrl);
-
-    fetch(apiUrl, {
+    fetch(`../eventdetail/participants?memberId=${memberId}`, {
       credentials: "include",
     })
       .then((response) => {
-        console.log("活動列表響應狀態:", response.status);
         return response.json();
       })
       .then((data) => {
-        console.log("活動列表響應數據:", data);
-
         if (data.successful) {
           const events = data.data || [];
-          console.log("解析到的活動列表:", events);
 
           if (eventSelectEl) {
             // 清空下拉選單
@@ -143,28 +112,21 @@ document.addEventListener("DOMContentLoaded", function () {
               option.textContent = event.eventName;
               eventSelectEl.appendChild(option);
             });
-            console.log("活動下拉選單已更新，共", events.length, "個活動");
-          } else {
-            console.error("找不到 #event-select 元素");
           }
         } else {
-          console.error("載入活動列表失敗:", data.message);
           showMessage("載入活動列表失敗: " + data.message, "error");
         }
       })
       .catch((error) => {
-        console.error("載入活動列表時發生錯誤:", error);
         showMessage("載入活動列表時發生錯誤", "error");
       });
   }
 
   function loadParticipants(eventId, page = 1) {
-    console.log(`開始載入參與者列表，eventId: ${eventId}, page: ${page}`);
     currentEventId = eventId;
     currentPage = page;
 
     if (!currentEventId) {
-      console.log("eventId 為空，清空參與者列表");
       clearParticipantTable();
       return;
     }
@@ -175,34 +137,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const ticketTypeFilter =
       document.querySelector("#ticket-type-select")?.value || "";
 
-    console.log("篩選條件:", {
-      name: nameFilter,
-      email: emailFilter,
-      ticketType: ticketTypeFilter,
-    });
-
-    // 獲取應用程序的上下文路徑
-    const currentPath = window.location.pathname;
-    const pathParts = currentPath.split("/");
-    const contextPath = pathParts.slice(0, 2).join("/");
-
-    let apiUrl = `${contextPath}/manager/eventdetail/participants?eventId=${currentEventId}&pageNumber=${currentPage}&pageSize=${pageSize}`;
-    if (nameFilter) apiUrl += `&participantName=${nameFilter}`;
-    if (emailFilter) apiUrl += `&email=${emailFilter}`;
-    if (ticketTypeFilter) apiUrl += `&ticketTypeId=${ticketTypeFilter}`;
-
-    console.log("API URL:", apiUrl);
-
-    fetch(apiUrl, {
-      credentials: "include",
-    })
+    fetch(
+      `../eventdetail/participants?eventId=${currentEventId}&pageNumber=${currentPage}&pageSize=${pageSize}` +
+        (nameFilter ? `&participantName=${nameFilter}` : "") +
+        (emailFilter ? `&email=${emailFilter}` : "") +
+        (ticketTypeFilter ? `&ticketTypeId=${ticketTypeFilter}` : ""),
+      {
+        credentials: "include",
+      }
+    )
       .then((response) => {
-        console.log("參與者列表響應狀態:", response.status);
         return response.json();
       })
       .then((data) => {
-        console.log("參與者列表響應數據:", data);
-
         if (data.successful) {
           const result = data.data;
           if (result && result.participants) {
@@ -219,18 +166,15 @@ document.addEventListener("DOMContentLoaded", function () {
             // 呼叫 updatePagination
             updatePagination(result.total, currentPage, pageSize);
           } else {
-            console.log("沒有參與者數據");
             clearParticipantTable();
             showMessage("該活動目前沒有參與者", "info");
           }
         } else {
-          console.error("載入參與者列表失敗:", data.message);
           showMessage("載入參與者列表失敗: " + data.message, "error");
           clearParticipantTable();
         }
       })
       .catch((error) => {
-        console.error("載入參與者列表時發生錯誤:", error);
         showMessage("載入參與者列表時發生錯誤", "error");
         clearParticipantTable();
       });
@@ -240,6 +184,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!participantTableEl) return;
 
     if (!participants || participants.length === 0) {
+      // 先清空表格
+      participantTableEl.innerHTML = "";
+
       // 根據篩選條件顯示不同的訊息
       let message = "該活動暫無參與者";
 
@@ -378,15 +325,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 全域函數，供 HTML 調用
   window.viewParticipantDetail = function (ticketId) {
-    console.log("查看參與者詳情，ticketId:", ticketId);
     // 跳轉到參與者詳情頁面
     window.location.href = `/maven-tickeasy-v1/manager/eventdetail/participant-detail.html?ticketId=${ticketId}`;
   };
 
   // 顯示消息函數
   function showMessage(message, type = "info") {
-    console.log(`${type.toUpperCase()}: ${message}`);
-
     // 創建消息元素
     const messageEl = document.createElement("div");
     messageEl.className = `alert alert-${

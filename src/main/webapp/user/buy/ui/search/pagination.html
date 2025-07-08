@@ -1,0 +1,38 @@
+<div class="pagination is-rounded" role="navigation" aria-label="pagination">
+  <a href="#" class="pagination-previous">上一頁</a>
+  <a href="#" class="pagination-next">下一頁</a>
+  <ul class="pagination-list">
+    <!-- 第一頁 + "..." -->
+    <!-- eq(0)  -->
+    <li class="is-hidden">
+      <a href="#" class="pagination-link" aria-label="Goto page 1">1</a>
+    </li>
+    <!-- eq(1) -->
+    <li class="is-hidden"><span class="pagination-ellipsis">&hellip;</span></li>
+    <!-- 當前頁面附近(i-1, i+1) -->
+    <!-- eq(2) -->
+    <li>
+      <a href="#" class="pagination-link" aria-label="Goto page 45">45</a>
+    </li>
+    <!-- eq(3) -->
+    <li>
+      <a
+        class="pagination-link is-current"
+        aria-label="Page 46"
+        aria-current="page"
+        >46</a
+      >
+    </li>
+    <!-- eq(4) -->
+    <li>
+      <a href="#" class="pagination-link" aria-label="Goto page 47">47</a>
+    </li>
+    <!-- "..." + 最後一頁 -->
+    <!-- eq(5) -->
+    <li class="is-hidden"><span class="pagination-ellipsis">&hellip;</span></li>
+    <!-- eq(6) -->
+    <li class="is-hidden">
+      <a href="#" class="pagination-link" aria-label="Goto page 86">86</a>
+    </li>
+  </ul>
+</div>

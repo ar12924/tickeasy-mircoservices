@@ -31,21 +31,20 @@ export const fetchTypeBoxTemplate = async () => {
 };
 
 /**
- * 根據提供的票種數據，動態生成並插入單個票種區塊的 HTML。
+ * 根據提供的票種數據，動態生成票種區塊的 HTML。
  * @param {Array<Object>} ticketType - 票種資訊，包含票種名和單價。
  * @param {string} templateHTML - HTML 模板。
  */
 export const renderTypeBox = (ticketType, templateHTML) => {
   $(".type-container").empty(); // 清空子元素
 
-  ticketType.forEach(({ categoryName, price }) => {
-    const templateJQuery = $(templateHTML);
+  ticketType.forEach(({ typeId, categoryName, price }) => {
+    const $template = $(templateHTML);
 
-    templateJQuery.find(".type-name").text(categoryName); // 顯示票種名
-    templateJQuery
-      .find(".type-price")
-      .text(`NT$ ${price.toLocaleString("en-US")}`); // 顯示單價(含千分位)
-    $(".type-container").append(templateJQuery); // 插入票種區塊
+    $template.find(".type-box").attr("data-type-id", typeId); // 標記票種 id
+    $template.find(".type-name").text(categoryName); // 顯示票種名
+    $template.find(".type-price").text(`NT$ ${price.toLocaleString("en-US")}`); // 顯示單價(含千分位)
+    $(".type-container").append($template); // 插入票種區塊
   });
 };
 

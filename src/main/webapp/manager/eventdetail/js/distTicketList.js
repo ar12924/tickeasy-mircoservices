@@ -79,63 +79,106 @@ document.getElementById('datatable_search').addEventListener('input', function (
   //設定一開始load一個月內的資料
 
   window.addEventListener("DOMContentLoaded",async function () {
-	await EventListBar_loaded();
+	// 檢查用戶權限
+	const roleLevel = sessionStorage.getItem("roleLevel");
+	const memberId = sessionStorage.getItem("memberId");
+
+	if (!roleLevel || (roleLevel !== "2" && roleLevel !== "3")) {
+	  alert("您沒有權限訪問此頁面");
+	  window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+	  return;
+	}
+
+	if (!memberId) {
+	  alert("請先登入");
+	  window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+	  return;
+	}
+
+	fetch('/maven-tickeasy-v1/eventdetail/check-login')
+		    .then(response => response.json())
+		    .then(isLoggedIn => {
+		        if (isLoggedIn.successful != true) {
+					if(isLoggedIn.authStatus=="NOT_LOGGED_IN")
+						{
+					alert("請先登入");
+					window.location.href = "/maven-tickeasy-v1/user/member/login.html";  // 如果未登入，跳轉到登入頁
+					console.log("未登入");
+					
+				}
+					
+					else if(isLoggedIn.authStatus=="FORBIDDEN"){
+						alert("您沒有權限訪問此頁面");
+						  window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+						  
+					}
+					return;
+		        } else {
+					(async () => {
+						
+						await EventListBar_loaded();
+						const startInput = document.getElementById("start");
+						   const endInput = document.getElementById("end");
+
+						   const today = new Date();
+						   const oneMonthAgo = new Date();
+						   oneMonthAgo.setMonth(today.getMonth() - 1); // 減一個月
+
+						   // 補0轉成 yyyy-MM-dd 格式
+						   const formatDate = (date) => {
+						     const y = date.getFullYear();
+						     const m = String(date.getMonth() + 1).padStart(2, '0');
+						     const d = String(date.getDate()).padStart(2, '0');
+						     return `${y}-${m}-${d}`;
+						   };
+
+						   startInput.value = formatDate(oneMonthAgo);
+						   endInput.value = formatDate(today);
+						   
+
+						//初始化
+						   const sIV=startInput.value;
+						const eIV=endInput.value;
+						   const selectValue=select_el.value;
+						   distTicketList_loaded(sIV,eIV,1);
+
+
+
+						//selectChange
+						select_el.addEventListener("change", function () {
+						  const sIV=startInput.value;
+						  const eIV=endInput.value;
+						  const selectedId = this.value;
+						  
+						  distTicketList_loaded(sIV,eIV,selectedId);
+						  
+						});
+
+
+						//監聽時間變化
+						[start_el, end_el].forEach(input => {
+						    input.addEventListener("change", () => {
+							const start_el = document.getElementById("start");
+							const end_el = document.getElementById("end");
+						  	const start = start_el.value;
+						  	const end= end_el.value;
+							const selectValue=select_el.value;
+
+							
+						      // 如果兩者都有值再發送請求
+						      if (start && end) {
+						  		
+						  		distTicketList_loaded(start,end,selectValue)
+						  		}
+						  		})
+						  		});
+					})();
+	
   	
-    const startInput = document.getElementById("start");
-    const endInput = document.getElementById("end");
-
-    const today = new Date();
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(today.getMonth() - 1); // 減一個月
-
-    // 補0轉成 yyyy-MM-dd 格式
-    const formatDate = (date) => {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, '0');
-      const d = String(date.getDate()).padStart(2, '0');
-      return `${y}-${m}-${d}`;
-    };
-
-    startInput.value = formatDate(oneMonthAgo);
-    endInput.value = formatDate(today);
-    
-	
-	//初始化
-    const sIV=startInput.value;
-	const eIV=endInput.value;
-    const selectValue=select_el.value;
-    distTicketList_loaded(sIV,eIV,1);
-	
-	
-	
-	//selectChange
-	select_el.addEventListener("change", function () {
-	  const sIV=startInput.value;
-	  const eIV=endInput.value;
-	  const selectedId = this.value;
-	  
-	  distTicketList_loaded(sIV,eIV,selectedId);
-	  
-	});
-	
-	
-	//監聽時間變化
-	[start_el, end_el].forEach(input => {
-	    input.addEventListener("change", () => {
-		const start_el = document.getElementById("start");
-		const end_el = document.getElementById("end");
-	  	const start = start_el.value;
-	  	const end= end_el.value;
-		const selectValue=select_el.value;
-
-		
-	      // 如果兩者都有值再發送請求
-	      if (start && end) {
-	  		
-	  		distTicketList_loaded(start,end,selectValue)
-	  		}
-	  		})
-	  		});
+   
+			}
+			})
+			
   });
   
   

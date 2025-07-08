@@ -15,31 +15,29 @@ import static common.util.CommonUtilNora.*;
 import static common.util.CommonUtil.getBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import common.vo.Core;
-
-@RestController
-@RequestMapping("member/verify")
+@Controller
+@RequestMapping("user/member/verify")
 public class VerifyController {
 
 	@Autowired
 	private MemberService memberService;
 
 	@GetMapping
-	public Core<Void> verify(@RequestParam("token") String token) {
-		Core<Void> core = new Core<>();
+	@Transactional
+	public String verify(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
 		boolean result = memberService.activateMemberByToken(token);
 		if (result) {
-			core.setSuccessful(true);
-			core.setMessage("驗證成功");
+			// 驗證成功，重定向到登入頁面並帶上成功訊息
+			return "redirect:/user/member/login.html?verified=true";
 		} else {
-			core.setSuccessful(false);
-			core.setMessage("驗證失敗，請確認連結是否有效");
+			// 驗證失敗，重定向到登入頁面並帶上失敗訊息
+			return "redirect:/user/member/login.html?verified=false";
 		}
-		return core;
 	}
 }

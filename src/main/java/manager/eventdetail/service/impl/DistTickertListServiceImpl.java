@@ -1,10 +1,7 @@
 package manager.eventdetail.service.impl;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.naming.NamingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import manager.eventdetail.dao.DistTicketListDao;
 import manager.eventdetail.service.DistTicketListService;
 import manager.eventdetail.vo.DistTicket;
-import user.notify.dao.NotificationDao;
-import user.notify.dao.impl.NotificationDaoImpl;
-import user.notify.vo.Notification;
 
 
 @Service

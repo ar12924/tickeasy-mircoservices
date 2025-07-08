@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import common.vo.Core;
 import common.vo.DataStatus;
+import common.vo.Order;
 import user.buy.dao.SearchDao;
 import user.buy.service.SearchService;
 import user.buy.vo.EventInfo;
@@ -21,15 +22,46 @@ public class SearchServiceImpl implements SearchService {
 	private SearchDao dao;
 
 	/**
-	 * 查詢近期 n 筆活動資料。
+	 * 查詢活動資料。
 	 * 
-	 * @param {Integer} n - 指定查詢筆數。
-	 * @return {EventInfo} 回應近期活動資料。
+	 * @param {String}  searchTerm - 輸入關鍵字。
+	 * @param {Integer} page - 第幾頁。
+	 * @param {Order}   order - 排序方法(DESC/ASC)。
+	 * @param {Integer} pageSize - 每頁 item 數量。
+	 * @return {Core<List<EventInfo>>} 查詢活動結果。
 	 */
 	@Transactional
 	@Override
-	public List<EventInfo> getRecentEventInfo(Integer n) {
-		return dao.selectRecentEventInfo(n);
+	public Core<List<EventInfo>> getEventInfo(String searchTerm, Integer page, Order order, Integer pageSize) {
+		var core = new Core<List<EventInfo>>();
+
+		// 參數驗證
+		if (page <= 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("頁數必須大於 0");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 呼叫 dao 層操作查詢
+		List<EventInfo> eventList = dao.selectEventInfo(searchTerm, page, order, pageSize);
+		Long eventCount = dao.countEventInfo(searchTerm);
+		if (eventList.isEmpty()) {
+			core.setDataStatus(DataStatus.NOT_FOUND);
+			core.setMessage("查無資料");
+			core.setSuccessful(true);
+			core.setData(eventList);
+			core.setCount(eventCount);
+			core.setPageSize(pageSize);
+			return core;
+		}
+		core.setDataStatus(DataStatus.FOUND);
+		core.setMessage("查詢成功");
+		core.setSuccessful(true);
+		core.setData(eventList);
+		core.setCount(eventCount);
+		core.setPageSize(pageSize);
+		return core;
 	}
 
 	/**
@@ -40,16 +72,16 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	@Transactional
 	@Override
-	public Core<List<Favorite>> getFavorite(Member member) {
+	public Core<List<Favorite>> getAllFavorite(Member member) {
 		var core = new Core<List<Favorite>>();
 		var memberId = member.getMemberId();
-		
-		List<Favorite> favarite = dao.selectFavoriteByMemberId(memberId);
+
+		List<Favorite> favarite = dao.selectAllFavoriteByMemberId(memberId);
 		// 如果查不到資料，回傳空的 List
-		if(favarite.isEmpty()) {
+		if (favarite.isEmpty()) {
 			core.setDataStatus(DataStatus.NOT_FOUND);
 			core.setMessage("沒有任何關注活動");
-			core.setSuccessful(false);
+			core.setSuccessful(true);
 			return core;
 		}
 		// 查到資料，回傳有資料的 List
@@ -57,6 +89,78 @@ public class SearchServiceImpl implements SearchService {
 		core.setData(favarite);
 		core.setMessage("有關注活動");
 		core.setSuccessful(true);
+		return core;
+	}
+
+	/**
+	 * 儲存會員的我的關注資料。
+	 * 
+	 * @param{Member} member - session.member 會員資料。
+	 * @param{Integer} eventId - 活動 id。
+	 * @return{Core<Integer>} 儲存資料的識別 id 和操作結果。
+	 */
+	@Transactional
+	@Override
+	public Core<Integer> saveFavorite(Member member, Integer eventId) {
+		var core = new Core<Integer>();
+		var memberId = member.getMemberId();
+
+		// 檢查 eventId 不為0或 < 0
+		if (eventId == null || eventId < 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("資料不合法");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 插入1筆新關注名單
+		final var newId = dao.insertFavorite(eventId, memberId);
+		if (newId == null || newId <= 0) {
+			core.setDataStatus(DataStatus.EXECUTION_FAILED);
+			core.setMessage("操作失敗");
+			core.setSuccessful(false);
+			return core;
+		}
+		core.setDataStatus(DataStatus.EXECUTION_PASSED);
+		core.setMessage("操作成功");
+		core.setSuccessful(true);
+		core.setData(newId);
+		return core;
+	}
+
+	/**
+	 * 刪除會員的我的關注資料 by (memberId, eventId)。
+	 * 
+	 * @param{Member} member - session.member 會員資料。
+	 * @param{Integer} eventId - 活動 id。
+	 * @return{Core<Integer>}
+	 */
+	@Transactional
+	@Override
+	public Core<Integer> deleteFavorite(Member member, Integer eventId) {
+		var core = new Core<Integer>();
+		var memberId = member.getMemberId();
+
+		// 檢查 eventId 不為0或 < 0
+		if (eventId == null || eventId < 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("資料不合法");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 刪除1筆關注名單
+		final var deleteCount = dao.removeFavorite(eventId, memberId);
+		if (deleteCount == null || deleteCount <= 0) {
+			core.setDataStatus(DataStatus.EXECUTION_FAILED);
+			core.setMessage("操作失敗");
+			core.setSuccessful(false);
+			return core;
+		}
+		core.setDataStatus(DataStatus.EXECUTION_PASSED);
+		core.setMessage("操作成功");
+		core.setSuccessful(true);
+		core.setData(deleteCount);
 		return core;
 	}
 
@@ -90,7 +194,7 @@ public class SearchServiceImpl implements SearchService {
 		count = dao.selectEventCountByKeyword(keyword);
 		eventCore.setCount(count);
 		if (count <= 0) {
-			eventCore.setSuccessful(false);
+			eventCore.setSuccessful(true);
 			eventCore.setMessage("查無資料");
 		} else {
 			eventCore.setSuccessful(true);

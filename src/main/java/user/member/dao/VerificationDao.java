@@ -13,4 +13,6 @@ public interface VerificationDao extends CommonDao{
 	boolean update(VerificationToken token);
 
 	boolean deleteById(Integer tokenId);
+
+	VerificationToken findByTokenPrefix(String tokenPrefix);
 }

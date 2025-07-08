@@ -4,22 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>我的票券</title>
+<link rel="stylesheet" href="../notify/css/notifyPush.css" />
+<link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
 <link rel="stylesheet" href="../../common/index.css" />
 <link rel="stylesheet" href="./css/ticket.css" />
+<link rel="stylesheet" href="../layout/nav/nav.css" />
+<link rel="stylesheet" href="../layout/footer/footer.css" />
 </head>
 <body>
-	<nav>
+<!-- 	<nav>
 		<div class="logo">
 			<a href="/">TickEasy</a>
 		</div>
 		<ul class="nav-links">
 			<li><a href="#tickets">我的訂單</a></li>
 			<li><a href="#favorites">我的關注</a></li>
-			<li><a href="#account">我的票券</a></li>
-			<li><a href="#notifications">通知中心</a></li>
-			<li><a href="#profile" class="cta-button">會員中心</a></li>
+			<li><a href="./ticket.html">我的票券</a></li>
+			<li><a href="../notify/notification.html">通知中心</a></li>
+			<li><a href="../member/edit.html" class="cta-button">會員中心</a></li>
 		</ul>
-	</nav>
+	</nav>  -->
+<!-- 	<nav id="nav-container"></nav>-->
+ <nav class="navbar" role="navigation" aria-label="main navigation"></nav> 
 
 	<main>
 		<div id="title">
@@ -310,7 +316,7 @@
 			</div>
 	</main>
 
-	<footer>
+<!-- 	<footer>
 		<div class="footer-content">
 			<div class="footer-section">
 				<h3>關於我們</h3>
@@ -339,7 +345,9 @@
 				</div>
 			</div>
 		</div>
-	</footer>
+	</footer> -->
+	<!-- <footer id="footer-container"></footer> -->
+	 <footer></footer>
 	<!--  <script>
         // document.getElementById("nav").innerHTML = fetch("header.html").then(res => res.text()).then(data => {
         // document.getElementById("nav").innerHTML = data;
@@ -350,7 +358,30 @@
         // });
 
     </script> -->
+	<script src="../notify/js/notifyPush.js"></script> 
 	<script src="./js/ticket.js"></script> 
-
+	<script src="../../common/vendors/jquery-3.7.1.min.js"></script>
+	<script type="module" src="../buy/js/index.js"></script>
+<!-- <script>
+		    fetch('../layout/nav/nav.html')
+		    .then(response => response.text())
+		    .then(data => {
+		        document.getElementById('nav-container').innerHTML = data;
+		    })
+		    .catch(error => console.error('加載 header 失敗:', error));
+		
+		// 用 fetch 來加載 footer.html 並插入到 footer-container
+		fetch('../layout/footer/footer.html')
+		    .then(response => response.text())
+		    .then(data => {
+		        document.getElementById('footer-container').innerHTML = data;
+		    })
+		    .catch(error => console.error('加載 footer 失敗:', error));
+    </script> 
+-->
+ <!-- <script type="module" src="../layout/nav/nav.js"></script>
+   <script type="module" src="../layout/footer/footer.js"></script>
+	
+-->
 </body>
 </html>
