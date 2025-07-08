@@ -7,7 +7,10 @@
 	display:inline-block;
 }
 .event_change{
-	margin-left:650px;
+	margin-left:600px;
+}
+.title_card{
+	margin-left:50px;
 }
 .list_button{
     display:inline-block;

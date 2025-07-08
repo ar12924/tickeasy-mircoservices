@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tickeasy!!!</title>
+  <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
+  <link rel="stylesheet" href="../../common/vendors/fontawesome-free-6.7.2-web/css/all.min.css" />
+  <link rel="stylesheet" href="./css/order.css" class="main-css" />
+  <link rel="stylesheet" href="../layout/nav/nav.css" />
+  <link rel="stylesheet" href="../layout/footer/footer.css" />
+</head>
+
+<body>
+  <!-- nav 導覽列(元件化) -->
+  <nav class="navbar" role="navigation" aria-label="main navigation"></nav>
+
+  <!-- header 麵包屑 & 進度條 -->
+  <header>
+    <span class="icon-text">
+      <span class="icon">
+        <i class="fa-solid fa-angle-left"></i>
+      </span>
+      <span class="bread">我的訂單</span>
+    </span>
+    <hr>
+    <div class="columns">
+      <button class="column is-2">
+        <span>尚未付款</span>
+        <div class="circle"><span id="unpay">1</span></div>
+      </button>
+      <button class="column is-2">
+        <span class="passing-step">已付款</span>
+        <div class="circle passing-circle"><span id="paid">2</span></div>
+      </button>
+    </div>
+    <!-- <div class="tab-custom py-2">
+      <button class="button is-active">
+        尚未付款
+        <span class="tag is-danger is-rounded ml-2" style="background:#ff43ac;color:#fff;">1</span>
+      </button>
+      <button class="button">
+        已付款
+        <span class="tag is-light is-rounded ml-2" style="border:1px solid #eee;color:#8e8e8e;">3</span>
+      </button>
+    </div> -->
+  </header>
+
+  <!-- section 主內容 -->
+  <!-- 訂單卡片 -->
+  <section class="section py-5 my-5">
+    <div class="container">
+      <div class="order-card box">
+        <div class="columns is-vcentered is-mobile">
+          <!-- 活動圖片 -->
+          <div class="column is-narrow">
+            <figure class="image is-96x96 mr-4">
+              <img
+                src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=facearea&w=128&h=128&q=80"
+                alt="活動圖片">
+            </figure>
+          </div>
+          <!-- 活動資訊 -->
+          <div class="column">
+            <p class="title is-5 mb-1">2024 春季音樂節</p>
+            <div class="columns is-gapless is-mobile">
+              <div class="column is-narrow has-text-grey-dark">
+                <p class="mb-1 mr-5"><b>活動時間</b></p>
+                <p class="mb-1 mr-5"><b>活動地點</b></p>
+                <p class="mb-1 mr-5"><b>訂單編號</b></p>
+                <p class="mb-1 mr-5"><b>訂單成立</b></p>
+                <p class="mb-1 mr-5"><b>訂單總額</b></p>
+              </div>
+              <div class="column pl-2">
+                <p class="mb-1">2024/03/15</p>
+                <p class="mb-1">台北市信義區｜台北流行音樂中心</p>
+                <p class="mb-1">#T_1123</p>
+                <p class="mb-1">2024/02/01 00:00</p>
+                <p class="mb-1">$3,900</p>
+              </div>
+            </div>
+          </div>
+          <!-- 狀態、倒數 -->
+          <div class="column is-narrow has-text-centered">
+            <span class="tag is-warning is-medium">未付款</span>
+            <br>
+            <span class="text-red" style="font-weight:700;display:block;margin-top:1rem;">剩餘付款時間 12:15</span>
+          </div>
+        </div>
+        <!-- 票券明細表格 -->
+        <table class="table is-fullwidth mt-4">
+          <thead>
+            <tr>
+              <th>票號</th>
+              <th>票種</th>
+              <th>序號</th>
+              <th>金額</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#123456781</td>
+              <td>一般區</td>
+              <td>1</td>
+              <td>1,100</td>
+            </tr>
+            <tr>
+              <td>#123456782</td>
+              <td>搖滾區</td>
+              <td>2</td>
+              <td>2,800</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3" class="has-text-right">合計</th>
+              <th>3,900</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+
+
+      <div class="order-card box">
+        <div class="columns is-vcentered is-mobile">
+          <!-- 活動圖片 -->
+          <div class="column is-narrow">
+            <figure class="image is-96x96 mr-4">
+              <img
+                src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=facearea&w=128&h=128&q=80"
+                alt="活動圖片">
+            </figure>
+          </div>
+          <!-- 活動資訊 -->
+          <div class="column">
+            <p class="title is-5 mb-1">2024 春季音樂節</p>
+            <div class="columns is-gapless is-mobile">
+              <div class="column is-narrow has-text-grey-dark">
+                <p class="mb-1 mr-5"><b>活動時間</b></p>
+                <p class="mb-1 mr-5"><b>活動地點</b></p>
+                <p class="mb-1 mr-5"><b>訂單編號</b></p>
+                <p class="mb-1 mr-5"><b>訂單成立</b></p>
+                <p class="mb-1 mr-5"><b>訂單總額</b></p>
+              </div>
+              <div class="column pl-2">
+                <p class="mb-1">2024/03/15</p>
+                <p class="mb-1">台北市信義區｜台北流行音樂中心</p>
+                <p class="mb-1">#T_1123</p>
+                <p class="mb-1">2024/02/01 00:00</p>
+                <p class="mb-1">$3,900</p>
+              </div>
+            </div>
+          </div>
+          <!-- 狀態、倒數 -->
+          <div class="column is-narrow has-text-centered">
+            <span class="tag is-warning is-medium">未付款</span>
+            <br>
+            <span class="text-red" style="font-weight:700;display:block;margin-top:1rem;">剩餘付款時間 12:15</span>
+          </div>
+        </div>
+        <!-- 票券明細表格 -->
+        <table class="table is-fullwidth mt-4">
+          <thead>
+            <tr>
+              <th>票號</th>
+              <th>票種</th>
+              <th>序號</th>
+              <th>金額</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#123456781</td>
+              <td>一般區</td>
+              <td>1</td>
+              <td>1,100</td>
+            </tr>
+            <tr>
+              <td>#123456782</td>
+              <td>搖滾區</td>
+              <td>2</td>
+              <td>2,800</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3" class="has-text-right">合計</th>
+              <th>3,900</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+
+
+    </div>
+  </section>
+  <!-- footer 頁底列(元件化) -->
+  <footer class="pt-12"></footer>
+</body>
+
+<script src="../../common/vendors/jquery-3.7.1.min.js"></script>
+<script type="module" src="./js/order.js"></script>
+
+</html>

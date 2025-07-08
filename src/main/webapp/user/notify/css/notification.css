@@ -24,6 +24,23 @@ div#notification_nav{
 	height:150px; 
 }
 }
+
+
+ div#notification_clear{
+	width:90px;
+	background-color: #EC4899;
+	color:white;
+	margin-left: 1180px;
+	border-radius:5px;
+	text-align: center;
+	margin-top:20px;
+	height:30px;
+	display: flex;
+	align-items: center;       /* 垂直置中 */
+	justify-content: center;   /* 水平置中 */
+	cursor: pointer;
+	
+}
 div.ntf_nav{
     display: inline-block;
     width:100px;
@@ -104,7 +121,7 @@ div#notification{
     width:70%;
     min-height:530px;
     max-height:600px;
-    margin: 50px auto 50px auto;
+    margin: 20px auto 50px auto;
     /* position:relative;
     left:50%;
     top:50px;
@@ -209,6 +226,7 @@ div.ntf_empty{
     color:#D9D9D9;
     border-radius: 10px; 
     position: relative;
+   /*  width:600px; */
    /*  text-align:center;
     vertical-align:middle; */
 }
@@ -221,6 +239,43 @@ div.ntf_empty_text{
 }
 
 
+
+.modal_confirm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal_confirm_content {
+  background-color: white;
+  width:300px;
+  height:150px;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  text-align: center;
+  /* vertical-align:middle; */
+  /* margin-top:50px; */
+}
+
+.modal_confirm.hidden {
+  display: none;
+}
+.confirm_button{
+	width:50px;
+	background-color: #EC4899;
+	color:white;
+	border-radius:5px;
+	text-align: center;
+	height:30px;
+}
 
 
 

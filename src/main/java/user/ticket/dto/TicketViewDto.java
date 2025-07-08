@@ -2,6 +2,8 @@ package user.ticket.dto;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+
 public class TicketViewDto {
 	private Integer ticketId;
 	private Integer orderId;
@@ -24,9 +26,51 @@ public class TicketViewDto {
 	private String isUsedText;
 	private String statusText;
 	private Integer viewCategoryType; // isUpcoming=1 isExpired=2 isTransferred=3;
+	private Integer currentHolderChangeMemberId;
+	private String currentHolderChangeUserName;
+	private String currentHolderChangeNickName;
+	private String currentHolderChangeEmail;
+	private String currentHolderChangePhone;
+	private String currentHolderChangeIdCard;
 	
 	
 
+	public String getCurrentHolderChangeUserName() {
+		return currentHolderChangeUserName;
+	}
+	public void setCurrentHolderChangeUserName(String currentHolderChangeUserName) {
+		this.currentHolderChangeUserName = currentHolderChangeUserName;
+	}
+	public String getCurrentHolderChangeNickName() {
+		return currentHolderChangeNickName;
+	}
+	public void setCurrentHolderChangeNickName(String currentHolderChangeNickName) {
+		this.currentHolderChangeNickName = currentHolderChangeNickName;
+	}
+	public Integer getCurrentHolderChangeMemberId() {
+		return currentHolderChangeMemberId;
+	}
+	public void setCurrentHolderChangeMemberId(Integer currentHolderChangeMemberId) {
+		this.currentHolderChangeMemberId = currentHolderChangeMemberId;
+	}
+	public String getCurrentHolderChangeEmail() {
+		return currentHolderChangeEmail;
+	}
+	public void setCurrentHolderChangeEmail(String currentHolderChangeEmail) {
+		this.currentHolderChangeEmail = currentHolderChangeEmail;
+	}
+	public String getCurrentHolderChangePhone() {
+		return currentHolderChangePhone;
+	}
+	public void setCurrentHolderChangePhone(String currentHolderChangePhone) {
+		this.currentHolderChangePhone = currentHolderChangePhone;
+	}
+	public String getCurrentHolderChangeIdCard() {
+		return currentHolderChangeIdCard;
+	}
+	public void setCurrentHolderChangeIdCard(String currentHolderChangeIdCard) {
+		this.currentHolderChangeIdCard = currentHolderChangeIdCard;
+	}
 	public Integer getViewCategoryType() {
 		return viewCategoryType;
 	}

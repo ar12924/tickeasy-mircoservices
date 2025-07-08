@@ -78,8 +78,19 @@
           </div>
         </div>
       </div>
-
+		
       <div id="main_ntf">
+      	
+      	<!-- 自訂 confirm 視窗 -->
+		<div id="custom_confirm_clear" class="modal_confirm hidden">
+  			<div class="modal_confirm_content">
+  			  <p id="confirm_message_clear">你確定要刪除所有通知嗎？</p>
+  			  <hr>
+   			 <button id="confirm_yes_clear" class="confirm_button">確定</button>
+   			 <button id="confirm_no_clear" class="confirm_button">取消</button>
+ 			 </div>
+		</div>
+		<div id="notification_clear">一鍵清空</div>
         <div id="notification">
           <!-- 
 	                    <div class="ntf -unread">
@@ -188,6 +199,7 @@
 	            	
 	            	</div>-->
       </div>
+      
 
       <div id="notification_container" class="notification_container">
         <!-- 通知將顯示在這裡 -->
