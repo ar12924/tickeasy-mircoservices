@@ -231,19 +231,19 @@ function ticket_loaded(category) {
 																			</div>
 																			<div class="tk_content_set">
 																				<div class="tk_content_title">姓名</div>
-																				<div class="tk_content_text tk_content_name">${ticketView.participantName}</div>
+																				<div class="tk_content_text tk_content_name">${ticketView.currentHolderChangeNickName}</div>
 																			</div>
 																			<div class="tk_content_set">
 																				<div class="tk_content_title">手機號碼</div>
-																				<div class="tk_content_text tk_content_phone">${ticketView.phone}</div>
+																				<div class="tk_content_text tk_content_phone">${ticketView.currentHolderChangePhone}</div>
 																			</div>
 																			<div class="tk_content_set">
 																				<div class="tk_content_title">電子郵件</div>
-																				<div class="tk_content_text tk_content_email">${ticketView.email}</div>
+																				<div class="tk_content_text tk_content_email">${ticketView.currentHolderChangeEmail}</div>
 																			</div>
 																			<div class="tk_content_set">
 																				<div class="tk_content_title">身份證字號</div>
-																				<div class="tk_content_text tk_content_id">${ticketView.idCard}</div>
+																				<div class="tk_content_text tk_content_id">${ticketView.currentHolderChangeIdCard}</div>
 																			</div>
 																		</div>
 																	</div>

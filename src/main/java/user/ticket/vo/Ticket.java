@@ -62,6 +62,8 @@ public class Ticket {
 	@OneToOne
 	@JoinColumn(name="type_id", insertable = false, updatable = false)
 	private EventTicketTypeTicketVer eventTicketTypeTicketVer;
-	
+	@OneToOne
+	@JoinColumn( name = "current_holder_member_id",referencedColumnName = "member_id", insertable = false, updatable = false)
+	private MemberTicketVer memberTicketVer;
 
 }

@@ -36,6 +36,7 @@ public class TicketDaoImpl implements TicketDao {
 		String hql = "SELECT tt FROM Ticket tt JOIN FETCH tt.buyerOrderTicketVer botv\r\n"
 				+ "JOIN FETCH botv.eventInfoTicketVer\r\n"
 				+ "JOIN FETCH tt.eventTicketTypeTicketVer\r\n"
+				+ "JOIN FETCH tt.memberTicketVer\r\n"
 				+ "WHERE tt.currentHolderMemberId=:memberId";
 				
 				/*+ "SELECt bt.ticket_id,bt.order_id,bt.email,bt.phone,"

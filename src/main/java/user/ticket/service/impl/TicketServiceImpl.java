@@ -54,6 +54,12 @@ public class TicketServiceImpl implements TicketService{
 			dto.setPlace(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getPlace());
 			dto.setCreateTime(ticket.getCreateTime());
 			dto.setUpdateTime(ticket.getUpdateTime());
+			dto.setCurrentHolderChangeMemberId(ticket.getMemberTicketVer().getCurrentHolderChangeMemberId());
+			dto.setCurrentHolderChangeUserName(ticket.getMemberTicketVer().getCurrentHolderChangeUserName());
+			dto.setCurrentHolderChangeNickName(ticket.getMemberTicketVer().getCurrentHolderChangeNickName());
+			dto.setCurrentHolderChangeEmail(ticket.getMemberTicketVer().getCurrentHolderChangeEmail());
+			dto.setCurrentHolderChangePhone(ticket.getMemberTicketVer().getCurrentHolderChangePhone());
+			dto.setCurrentHolderChangeIdCard(ticket.getMemberTicketVer().getCurrentHolderChangeIdCard());
 			
 			
 			//狀態轉換邏輯
