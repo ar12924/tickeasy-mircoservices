@@ -149,11 +149,6 @@ const initSearchJSEvents = () => {
 // 確保 DOM 加載完成後再執行初始化邏輯
 
 (async () => {
-  // ====== 資料儲存變數區 ======
-  const searchTerm = getUrlParam("searchTerm");
-  const eventResponse = await searchEventInfo({ searchTerm });
-  console.log(eventResponse); // ok!!
-
   // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
   await renderNav(navTemplate);
@@ -164,15 +159,13 @@ const initSearchJSEvents = () => {
 
   // ====== event-box 部分 ======
   // 預設載入第1頁
-  await showPage(1, 9, eventResponse);
+  const searchTerm = getUrlParam("searchTerm");
+  const eventResponse = await searchEventInfo({ searchTerm });
+  console.log(eventResponse); // ok!!
+  await showPage(1, eventResponse);
 
-  // const eventTemplate = await fetchEventInfoTemplate();
-  // await renderEventInfoBox(eventTemplate, eventResponse);
-  initEventBoxJSEvents(eventResponse);
-
-  // ====== 分頁(panigation)部分 ======
-  // const paginationTemplate = await fetchPaginationTemplate();
-  // await renderPagination(paginationTemplate, eventResponse.count, 1, 9); // pageSize = 9 (比照後端寫死!!)
+  // ====== panigation 部分 (分頁按鈕點擊事件) ======
+  initEventBoxJSEvents();
 
   // ====== index 部分 ======
   initSearchJSEvents(); // 載入 index 主要事件

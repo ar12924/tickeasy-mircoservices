@@ -2,12 +2,14 @@
 import {
   fetchMemberFromSession,
   getContextPath,
+  getUrlParam,
 } from "../../../common/utils.js";
 import {
   deleteFavorite,
   fetchFavorite,
   fetchKeyword,
   saveFavorite,
+  searchEventInfo,
 } from "../../js/search.js";
 
 // ==================== 1. UI 渲染層 (UI Rendering Layer) ====================
@@ -228,14 +230,10 @@ export const renderPagination = (
 /**
  * 顯示指定頁面(含主內容、pagination)
  * @param {number} currentPage - 當前頁數。
- * @param {number} itemsPerPage - 每頁活動框之個數。
  * @param {Object} eventResponse - 查詢活動結果。
+ * (含 data, PageSize, count)
  */
-export const showPage = async (
-  currentPage,
-  itemsPerPage = 9,
-  eventResponse
-) => {
+export const showPage = async (currentPage, eventResponse) => {
   const eventTemplate = await fetchEventInfoTemplate();
   // 資料已在後端 eventResponse
   await renderEventInfoBox(eventTemplate, eventResponse);
@@ -244,8 +242,8 @@ export const showPage = async (
     paginationTemplate,
     eventResponse.count,
     currentPage,
-    itemsPerPage
-  ); // itemPerPage 固定為 9 (同後端寫死!!)
+    eventResponse.pageSize
+  ); // pageSize 固定為 9 (同後端寫死!!)
 
   // 滾動到頂部
   $("html, body").animate(
@@ -259,7 +257,7 @@ export const showPage = async (
 // ==================== 2. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
-export const initEventBoxJSEvents = (eventResponse) => {
+export const initEventBoxJSEvents = () => {
   $(".favorite-btn").on("click", async (e) => {
     let result;
     const favorCard = $(e.target).closest(".event-card");
@@ -306,17 +304,25 @@ export const initEventBoxJSEvents = (eventResponse) => {
   $(document).on(
     "click",
     ".pagination-link, .pagination-previous, .pagination-next",
-    (e) => {
+    async (e) => {
       e.preventDefault();
       const currentPage = parseInt($(e.currentTarget).data("page"));
       console.log(currentPage);
+      // 載入點擊頁(再打一次 API)
+      const searchTerm = getUrlParam("searchTerm");
+      const eventResponse = await searchEventInfo({
+        searchTerm,
+        page: currentPage,
+      });
+      console.log(eventResponse); // ok!!
       if (
         currentPage &&
         currentPage >= 1 &&
-        currentPage <= Math.ceil(eventResponse.count / 9) &&
+        currentPage <=
+          Math.ceil(eventResponse.count / eventResponse.pageSize) &&
         !$(e.currentTarget).hasClass("is-disabled")
       ) {
-        showPage(currentPage, 9, eventResponse);
+        await showPage(currentPage, eventResponse);
       }
     }
   );

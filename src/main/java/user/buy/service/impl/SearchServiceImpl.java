@@ -52,6 +52,7 @@ public class SearchServiceImpl implements SearchService {
 			core.setSuccessful(true);
 			core.setData(eventList);
 			core.setCount(eventCount);
+			core.setPageSize(pageSize);
 			return core;
 		}
 		core.setDataStatus(DataStatus.FOUND);
@@ -59,6 +60,7 @@ public class SearchServiceImpl implements SearchService {
 		core.setSuccessful(true);
 		core.setData(eventList);
 		core.setCount(eventCount);
+		core.setPageSize(pageSize);
 		return core;
 	}
 

@@ -31,8 +31,7 @@ public class SearchEventController {
 	private SearchService service;
 
 	/**
-	 * 查詢活動資料。 api 範例： GET
-	 * /api/events?keyword={keyword}&page={page}&size={size}&sort={sort}&order={order}
+	 * 查詢活動資料。
 	 * 
 	 * @param {String}  searchTerm - 輸入關鍵字。
 	 * @param {Integer} page - 第幾頁。
