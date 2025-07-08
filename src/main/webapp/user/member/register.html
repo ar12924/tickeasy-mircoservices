@@ -25,13 +25,17 @@
         enctype="multipart/form-data"
       >
         <div class="form-group">
-          <label for="userName">帳號（5~50字元）</label>
+          <label for="userName"
+            >帳號（5~50字元）<span style="color: red">*</span></label
+          >
           <input id="userName" name="userName" type="text" required />
           <span class="error" id="userNameError"></span>
         </div>
 
         <div class="form-group">
-          <label for="nickName">暱稱（1~20字元）</label>
+          <label for="nickName"
+            >暱稱（1~20字元）<span style="color: red">*</span></label
+          >
           <input id="nickName" name="nickName" type="text" />
           <span class="error" id="nickNameError"></span>
         </div>
@@ -54,7 +58,7 @@
         </div>
 
         <div class="form-group">
-          <label for="email">電子信箱</label>
+          <label for="email">電子信箱<span style="color: red">*</span></label>
           <input id="email" name="email" type="text" required />
           <select id="domainSelect" name="domainSelect" required>
             <option value="@gmail.com">@gmail.com</option>
@@ -73,24 +77,32 @@
         </div>
 
         <div class="form-group">
-          <label for="password">密碼（至少6字元）</label>
+          <label for="password"
+            >密碼（至少6字元）<span style="color: red">*</span></label
+          >
           <input id="password" name="password" type="password" required />
           <span class="error" id="passwordError"></span>
         </div>
 
         <div class="form-group">
-          <label for="rePassword">確認密碼</label>
+          <label for="rePassword"
+            >確認密碼<span style="color: red">*</span></label
+          >
           <input id="rePassword" name="rePassword" type="password" required />
           <span class="error" id="rePasswordError"></span>
         </div>
 
         <div class="form-group">
-          <label for="birthDate">出生年月日</label>
+          <label for="birthDate"
+            >出生年月日<span style="color: red">*</span></label
+          >
           <input id="birthDate" name="birthDate" type="date" required />
         </div>
 
         <div class="form-group">
-          <label for="phone">手機號碼（09開頭，共10碼）</label>
+          <label for="phone"
+            >手機號碼（09開頭，共10碼）<span style="color: red">*</span></label
+          >
           <input
             id="phone"
             name="phone"
@@ -102,7 +114,7 @@
         </div>
 
         <div class="form-group">
-          <label for="gender">性別</label>
+          <label for="gender">性別<span style="color: red">*</span></label>
           <select id="gender" name="gender" required>
             <option value="">請選擇</option>
             <option value="M">男性</option>
@@ -111,7 +123,9 @@
         </div>
 
         <div class="form-group">
-          <label for="idCard">身分證號（開頭為英文字母）</label>
+          <label for="idCard"
+            >身分證號（開頭為英文字母）<span style="color: red">*</span></label
+          >
           <input
             id="idCard"
             name="idCard"
@@ -131,7 +145,7 @@
         <div class="checkbox-group">
           <label for="agree">
             <input id="agree" name="agree" type="checkbox" required />
-            我同意服務條款
+            我同意服務條款<span style="color: red">*</span>
           </label>
           <span class="error" id="agreeError"></span>
         </div>

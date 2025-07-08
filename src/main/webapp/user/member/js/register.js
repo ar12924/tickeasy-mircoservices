@@ -163,7 +163,6 @@ photoInput.addEventListener("change", function (e) {
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   msg.textContent = "";
-
   // 逐一再執行一次各欄位檢驗
   validateEmail();
   username.dispatchEvent(new Event("input"));
@@ -220,7 +219,6 @@ form.addEventListener("submit", function (e) {
   fd.append("hostApply", hostApply.checked.toString());
   if (photoInput.files[0]) fd.append("photo", photoInput.files[0]);
 
-  // 使用 getContextPath() 替代硬編碼路徑
   fetch(`${getContextPath()}/user/member/register`, {
     method: "POST",
     body: fd,
@@ -229,9 +227,12 @@ form.addEventListener("submit", function (e) {
     .then((resp) => resp.json())
     .then((body) => {
       msg.style.color = body.successful ? "green" : "red";
-      msg.textContent = body.message;
-      if (body.successful)
-        setTimeout(() => (window.location.href = "login.html"), 2000);
+      if (body.successful) {
+        msg.textContent = "註冊成功，請至註冊信箱收取認證信";
+        setTimeout(() => (window.location.href = "login.html"), 3000);
+      } else {
+        msg.textContent = body.message;
+      }
     })
     .catch((err) => {
       console.error(err);
