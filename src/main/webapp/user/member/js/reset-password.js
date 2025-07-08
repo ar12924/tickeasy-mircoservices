@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     verifyToken(token);
   }
 
-  // 請求密碼重置
+  // 請求密碼重設
   requestBtn.addEventListener("click", () => {
     const emailValue = email.value.trim();
     if (!emailValue) {

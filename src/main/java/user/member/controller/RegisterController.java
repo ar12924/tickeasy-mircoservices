@@ -42,68 +42,6 @@ public class RegisterController {
         Core<Member> core = new Core<>();
         
         try {
-            // 手動驗證
-            if (userName == null || userName.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("使用者名稱不可為空");
-                return core;
-            }
-            
-            if (nickName == null || nickName.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("暱稱不可為空");
-                return core;
-            }
-            
-            if (email == null || email.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("Email 不可為空");
-                return core;
-            }
-            
-            if (password == null || password.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("密碼不可為空");
-                return core;
-            }
-            
-            if (rePassword == null || rePassword.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("請再次輸入密碼");
-                return core;
-            }
-            
-            if (birthDate == null || birthDate.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("出生日期不可為空");
-                return core;
-            }
-            
-            if (phone == null || phone.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("手機號碼不可為空");
-                return core;
-            }
-            
-            if (gender == null || gender.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("性別不可為空");
-                return core;
-            }
-            
-            if (idCard == null || idCard.trim().isEmpty()) {
-                core.setSuccessful(false);
-                core.setMessage("身分證不可為空");
-                return core;
-            }
-            
-            if (agree == null || !agree) {
-                core.setSuccessful(false);
-                core.setMessage("請同意服務條款");
-                return core;
-            }
-            
-            // 創建 Member 物件
             Member member = new Member();
             member.setUserName(userName);
             member.setNickName(nickName);
