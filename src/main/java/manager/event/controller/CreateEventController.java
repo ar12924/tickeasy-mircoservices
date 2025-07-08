@@ -1,6 +1,7 @@
 package manager.event.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,14 +12,16 @@ import manager.event.service.EventService;
 import manager.event.vo.MngEventInfo;
 
 @RestController
-@RequestMapping("manager/create-event")
+@RequestMapping("manager")
+@CrossOrigin(origins = { "http://127.0.0.1:5500", "http://127.0.0.1:5501" })
 public class CreateEventController {
 	@Autowired
 	private EventService service;
 
 
-	@PostMapping
+	@PostMapping("create-event")
 	public Core<Integer> createEvent(@RequestBody(required = false) MngEventInfo mngEventInfo) {
+		System.out.println("Received: " + mngEventInfo);
 		Core<Integer> core = new Core<>();
 		if (mngEventInfo == null) {
 			core.setSuccessful(false);

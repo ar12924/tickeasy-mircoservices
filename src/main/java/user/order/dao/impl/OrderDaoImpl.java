@@ -7,17 +7,18 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
-import user.order.dao.ShowOrderDao;
+import user.order.dao.OrderDao;
 import user.order.vo.BuyerOrderDC;
 
 @Repository
-public class ShowOrderDaoImpl implements ShowOrderDao {
+public class OrderDaoImpl implements OrderDao {
 
 	@PersistenceContext
 	private Session session;
 
-	public List<BuyerOrderDC> findAllOrders() {
-		String hql = "FROM buyer_order ORDER BY order_id DESC";
+	@Override
+	public List<BuyerOrderDC> findAllOrders(Integer memberId) {
+		String hql = "FROM BuyerOrderDC WHERE memberId = :memberId ORDER BY order_id DESC";
 		return session.createQuery(hql, user.order.vo.BuyerOrderDC.class).getResultList();
 	}
 }

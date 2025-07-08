@@ -1,5 +1,6 @@
 package manager.event.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class ShowEventController {
 	    List<MngEventInfo> events = eventService.findAllEvents();
 
 	    if (events == null || events.isEmpty()) {
-	        return events;
+	        return (List<MngEventInfo>) Collections.singletonMap("data", events);
 	    } else {
 	        return events;
 	    }

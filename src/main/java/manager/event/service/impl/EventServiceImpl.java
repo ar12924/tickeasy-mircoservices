@@ -17,6 +17,8 @@ public class EventServiceImpl implements EventService {
 
 	@Autowired
 	private EventDao eventDao;
+	
+	@Autowired
 	private KeywordCategoryDao keywordDao;
 
 	@Override
@@ -29,16 +31,20 @@ public class EventServiceImpl implements EventService {
 		return eventDao.findById(eventId);
 	}
 
-	@Override
 	@Transactional
+	@Override
 	public Integer createKeywordCategory(MngKeywordCategory kCategory) {
 		return keywordDao.createKeywordCategory(kCategory);
 	}
 
+//	@Override
+//	@Transactional
+//	public int createEvent(MngEventInfo eventInfo) {
+//		return eventDao.createEvent(eventInfo);
+//	}
 	@Override
-	@Transactional
-	public int createEvent(MngEventInfo eventInfo) {
-		return eventDao.createEvent(eventInfo);
+	public boolean createEvent(MngEventInfo eventInfo) {
+	    return eventDao.insertEvent(eventInfo); // ✅ 確保這個方法會 insert
 	}
 
 }

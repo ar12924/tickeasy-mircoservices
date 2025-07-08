@@ -5,8 +5,8 @@ import java.util.List;
 import common.dao.CommonDao;
 import user.order.vo.BuyerOrderDC;
 
-public interface ShowOrderDao extends CommonDao {
+public interface OrderDao extends CommonDao {
 
-	List<BuyerOrderDC> findAllOrders();
+	public List<BuyerOrderDC> findAllOrders(Integer memberId);
 
 }

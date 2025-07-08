@@ -5,14 +5,19 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import manager.event.vo.MngEventInfo;
 
 @Entity(name = "BuyerOrderDC")
 @Data
@@ -48,4 +53,14 @@ public class BuyerOrderDC {
 
 	@Column(name = "update_time", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
 	private Timestamp updateTime;
+
+	@Transient
+	private boolean successful;
+
+	@Transient
+	private String message;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "event_id", insertable = false, updatable = false)
+	private MngEventInfo mngEventInfo;
 }

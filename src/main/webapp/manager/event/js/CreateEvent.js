@@ -71,13 +71,15 @@
 	const eventNameInput = document.querySelector('#event_name');
 	const eventFromInput = document.querySelector('#event_from_date');
 	const eventToDate = document.querySelector('#event_to_date');
+	const total_capacity = document.querySelector('#total_capacity');
 	const placeInput = document.querySelector('#place');
-	//   const summaryInput = document.querySelector('#summary');
-	const summaryInput = document.querySelector('#summernote');
+	const summaryInput = document.querySelector('#summary');
+	const summernoteEditor = document.querySelector('#summernote');
 	const imageInput = document.querySelector('#event_image');
-	//   const summernoteEditor = $('#summernote');
 	const categoryCheckboxes = document.querySelectorAll('input.category-checkbox');
 	const saveBtn = document.querySelector('#btnSaveEvent');
+
+
 	const category_name = document.querySelector('#category_name');
 	const sell_from_time = document.querySelector('#sell_from_time');
 	const sell_to_time = document.querySelector('#sell_to_time');
@@ -197,16 +199,25 @@
 		}
 		msg.textContent = '';
 
+		//第一次fetch，取得KeywordId
+		const mCategory = {
+			categories: Array.from(categoryCheckboxes)
+				.filter(cb => cb.checked)
+				.map(cb => cb.value),
+		}
+
 		try {
-			const res1 = await fetch('/api/first-endpoint', {
+			const res1 = await fetch('http://localhost:8080/maven-tickeasy-v1/manager/eventkeyword', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name })
+				body: JSON.stringify(mCategory)
 			});
 			// 2.1. 解析伺服器回傳的 JSON
 			const data1 = await res1.json();
 			// 2.2. 若伺服器端告知「失敗」，丟出錯誤進入 catch
 			if (!data1.successful) throw new Error(data1.message);
+
+			console.log(data1);
 
 			// 3. 根據第一支請求的結果，組出第二支 fetch 的參數
 			//    例如：data1.data[0] 是剛新增分類的主鍵
@@ -234,31 +245,30 @@
 			msg.textContent = '送出失敗：' + err.message;
 			msg.className = 'error';
 		}
-
-
+		function appendSeconds(t) {
+			return t.length === 16 ? t + ':00' : t;
+		}
 
 		// 準備好要送的 payload
 		const payload = {
 			eventName: eventNameInput.value.trim(),
-			eventFromDate: eventFromInput.value,
-			eventToDate: eventToDate.value,
+			eventFromDate: appendSeconds(eventFromInput.value),
+			eventToDate: appendSeconds(eventToDate.value),
 			eventHost: "Tibame",
-			totalCapacity: capacity.value.trim(),
+			totalCapacity: parseInt(total_capacity.value, 10),
 			place: placeInput.value.trim(),
 			summary: summaryInput.value.trim(),
-			// image:
-			detail: summaryInput.summernote('code'),
-			keywordId: 2,
+			detail: summernoteEditor.summernote('code'),
+			keywordId: parseInt(data1.data[0], 10),
 			memberId: 8,
 
-			//      categories: Array.from(categoryCheckboxes)
-			//        .filter(cb => cb.checked)
-			//        .map(cb => cb.value),
+			// 		categoryName: category_name.value,
 			//      sellFromTime: sell_from_time.value,
 			//      sellToTime: sell_to_time.value,
 			//      price: price.value.trim(),
+			//		capacity: capacity.value,
 		};
-
+		delete payload.categories;
 		const upload = () => {
 			fetch('/manager/create-event', {
 				method: 'POST',
@@ -269,8 +279,8 @@
 				.then(body => {
 					if (body.successful) {
 						// 成功後鎖掉所有輸入
-						inputs.forEach(i => i.disabled = true);
-						saveBtn.disabled = true;
+						[eventNameInput, eventFromInput, eventToDate, total_capacity, placeInput, summaryInput, imageInput, saveBtn]
+							.forEach(i => i.disabled = true);
 						msg.className = 'info';
 						msg.textContent = '活動建立成功';
 					} else {
