@@ -12,7 +12,8 @@ import {
 } from "../../layout/footer/footer.js";
 import {
   fetchEventInfoTemplate,
-  renderRecentEventBox,
+  renderEventInfoBox,
+  initEventBoxJSEvents,
 } from "../ui/index/event-box.js";
 
 // ==================== 1. API 服務層 (API Service Layer) ====================
@@ -23,8 +24,8 @@ import {
  *
  * @return {Object} 近期9筆活動資料。
  */
-export const fetchRecentEventInfo = async () => {
-  const resp = await fetch(`${getContextPath()}/search-event/recent`);
+export const fetchEventInfo = async () => {
+  const resp = await fetch(`${getContextPath()}/search-event`);
   return await resp.json();
 };
 
@@ -37,6 +38,42 @@ export const fetchKeyword = async (keywordId) => {
   const resp = await fetch(
     `${getContextPath()}/search-event/keyword/${keywordId}`
   );
+  return await resp.json();
+};
+
+/** 透過 session.member 查詢我的關注資料。
+ *
+ * @return {Array<Object>} 我的關注資料。
+ */
+export const fetchFavorite = async () => {
+  const resp = await fetch(`${getContextPath()}/search-event/like`);
+  return await resp.json();
+};
+
+/** 點擊頁面愛心按鈕新增關注時，將關注資料存入 Favorite 表。
+ *
+ * @param {number} eventId - 欲新增關注資料(僅一個欄位)。
+ * @return {Object} 關注資料儲存後操作結果。
+ */
+export const saveFavorite = async (eventId) => {
+  const favoriteDto = { eventId }; // 將關注資料包裝成 Dto
+  const resp = await fetch(`${getContextPath()}/search-event/like`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(favoriteDto),
+  }); // 傳至後端儲存至 Favorite 表
+  return await resp.json();
+};
+
+/** 再次點擊移除頁面愛心按鈕關注時，從 Favorite 表移除對應的一筆關注。
+ *
+ * @param {number} eventId - 欲刪除關注資料。
+ * @return {Object} 關注資料刪除後操作結果。
+ */
+export const deleteFavorite = async (eventId) => {
+  const resp = await fetch(`${getContextPath()}/search-event/like/${eventId}`, {
+    method: "DELETE",
+  }); // 傳至後端移除 Favorite 表中一筆資料
   return await resp.json();
 };
 
@@ -53,30 +90,24 @@ export const fetchKeyword = async (keywordId) => {
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
 const initIndexJSEvents = () => {
-  // 愛心按鈕點擊效果
-  $(".favorite-btn").each((i, btn) => {
-    const $btn = $(btn);
-    $btn.on("click", (e) => {
-      const $icon = $btn.find("i");
-      if ($icon.hasClass("far")) {
-        $icon.removeClass("far");
-        $icon.addClass("fas");
-        $btn.css("background", "#ff6b9d");
-        $btn.css("color", "white");
-      } else {
-        $icon.removeClass("fas");
-        $icon.addClass("far");
-        $btn.css("background", "white");
-        $btn.css("color", "#333");
-      }
-    });
-  });
-
   // 搜尋功能
   $(".search-btn").on("click", () => {
+    // 去輸入空白
     const $searchInput = $(".search-input");
-    if ($searchInput.val().trim()) {
-      alert("搜尋功能：" + $searchInput.val());
+    const searchTerm = $searchInput.val().trim();
+
+    // 建立查詢參數物件
+    const params = new URLSearchParams();
+    params.append("searchTerm", searchTerm);
+
+    // 將搜尋字串傳遞至 URL 後方並跳轉
+    location.href = `${getContextPath()}/user/buy/search.html?${params.toString()}`;
+  });
+
+  // 支援 Enter 鍵搜尋(e.which 為 13)
+  $(".search-input").on("keypress", (e) => {
+    if (e.which === 13) {
+      $(".search-btn").click();
     }
   });
 };
@@ -86,17 +117,18 @@ const initIndexJSEvents = () => {
 
 (async () => {
   // ====== 資料儲存變數區 ======
-  const recentEvent = await fetchRecentEventInfo();
-  console.log(recentEvent); // ok!!!
+  const eventResponse = await fetchEventInfo();
+  console.log(eventResponse); // ok!!!
 
   // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
   await renderNav(navTemplate);
   initNavJSEvents();
 
-  // ====== 熱門活動部分 ======
+  // ====== event-box 部分 ======
   const eventTemplate = await fetchEventInfoTemplate();
-  await renderRecentEventBox(eventTemplate, recentEvent);
+  await renderEventInfoBox(eventTemplate, eventResponse);
+  initEventBoxJSEvents();
 
   // ====== index 部分 ======
   initIndexJSEvents(); // 載入 index 主要事件

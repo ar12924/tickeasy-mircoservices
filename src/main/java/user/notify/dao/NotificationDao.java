@@ -1,12 +1,10 @@
 package user.notify.dao;
 
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
 import org.hibernate.Session;
-
 
 import common.util.HibernateUtil5;
 import user.notify.vo.Notification;
@@ -16,6 +14,7 @@ public interface NotificationDao {
 	List<Notification> selectAllByMemberId(int memberId);
 	Integer updateIsRead(int memberId, int memberNotificationId);
 	Integer updateUnvisible(int memberNotificationId);
+	Integer updateListClear(int memberId);
 	//活動提醒
 	List<Object[]> sendReminderNotificationForTomorrowList();
 	int sendReminderNotification(int memberId, int eventId, String eventName, Timestamp eventDate);

@@ -10,6 +10,7 @@ const ntf_nav_span_eventMind_el = document.querySelector(".eventMind_ntf");
 const ntf_nav_span_sold_el = document.querySelector(".sold_ntf");
 const ntf_nav_span_swap_el = document.querySelector(".swap_ntf");
 const ntf_nav_span_change_el = document.querySelector(".change_ntf");
+const ntf_clear_el = document.getElementById("notification_clear");
 const now = new Date();
 
 
@@ -19,7 +20,7 @@ function category_count() {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			memberId: 5,
+			/*memberId: 5,*/
 
 
 		})
@@ -72,7 +73,7 @@ function notification_loaded(category) {
 		method: `POST`,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			memberId: 5
+			/*memberId: 5*/
 		})
 	})
 		.then(resp => resp.json())
@@ -132,7 +133,7 @@ function notification_loaded(category) {
 					let displayTimeCount = time_count(notification.sendTime);
 
 					notification_el.insertAdjacentHTML("afterbegin", `
-						<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+						<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 						    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 								<div class="ntf_region ntf_left">
 						            <div class="ntf_title">${notification.title}</div>
@@ -163,7 +164,7 @@ function notification_loaded(category) {
 								method: `POST`,
 								headers: { 'Content-Type': 'application/json' },
 								body: JSON.stringify({
-									memberId: 5,
+									/*memberId: 5,*/
 									memberNotificationId: notification.memberNotificationId
 
 
@@ -174,7 +175,8 @@ function notification_loaded(category) {
 									if (notificationRead.success) {
 										/*let ntf_id_el=document.querySelector(`[data-ntf-id="${notification.memberNotificationId}"]`);*/
 										// location.href='edit.html';
-										alert("訊息已閱讀");
+										console.log("訊息已閱讀");
+										/*alert("訊息已閱讀");*/
 										ntf_el.classList.remove("-unread");
 
 									} else {
@@ -202,7 +204,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-												<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+												<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 												    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 														<div class="ntf_region ntf_left">
 												            <div class="ntf_title">${notification.title}</div>
@@ -233,7 +235,7 @@ function notification_loaded(category) {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
-										memberId: 5,
+									/*	memberId: 5,*/
 										memberNotificationId: notification.memberNotificationId
 
 
@@ -243,7 +245,8 @@ function notification_loaded(category) {
 									.then(notificationRead => {
 										if (notificationRead.success) {
 											// location.href='edit.html';
-											alert("訊息已閱讀");
+											console.log("訊息已閱讀");
+											/*alert("訊息已閱讀");*/
 											ntf_el.classList.remove("-unread");
 										} else {
 											alert("訊息閱讀更新錯誤");
@@ -267,7 +270,7 @@ function notification_loaded(category) {
 					if (notification.notificationId == 2) {
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-															<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+															<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 															    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																	<div class="ntf_region ntf_left">
 															            <div class="ntf_title">${notification.title}</div>
@@ -299,7 +302,7 @@ function notification_loaded(category) {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
-										memberId: 5,
+										/*memberId: 5,*/
 										memberNotificationId: notification.memberNotificationId
 
 
@@ -309,7 +312,8 @@ function notification_loaded(category) {
 									.then(notificationRead => {
 										if (notificationRead.success) {
 											// location.href='edit.html';
-											alert("訊息已閱讀");
+											console.log("訊息已閱讀");
+											/*alert("訊息已閱讀");*/
 											ntf_el.classList.remove("-unread");
 										} else {
 											alert("訊息閱讀更新錯誤");
@@ -334,7 +338,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-																			<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+																			<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 																			    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																					<div class="ntf_region ntf_left">
 																			            <div class="ntf_title">${notification.title}</div>
@@ -365,7 +369,7 @@ function notification_loaded(category) {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
-										memberId: 5,
+										/*memberId: 5,*/
 										memberNotificationId: notification.memberNotificationId
 
 
@@ -375,7 +379,8 @@ function notification_loaded(category) {
 									.then(notificationRead => {
 										if (notificationRead.success) {
 											// location.href='edit.html';
-											alert("訊息已閱讀");
+											console.log("訊息已閱讀");
+											/*alert("訊息已閱讀");*/
 											ntf_el.classList.remove("-unread");
 										} else {
 											alert("訊息閱讀更新錯誤");
@@ -408,7 +413,7 @@ function notification_loaded(category) {
 
 						let displayTimeCount = time_count(notification.sendTime);
 						notification_el.insertAdjacentHTML("afterbegin", `
-																							<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="blank" >
+																							<a href="http://localhost:8080/maven-tickeasy-v1${notification.linkURL}" class="ntf_link" target="_blank" >
 																							    <div class="ntf -unread" data-ntf-id="${notification.memberNotificationId}">
 																									<div class="ntf_region ntf_left">
 																							            <div class="ntf_title">${notification.title}</div>
@@ -440,7 +445,7 @@ function notification_loaded(category) {
 									method: `POST`,
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({
-										memberId: 5,
+										/*memberId: 5,*/
 										memberNotificationId: notification.memberNotificationId
 
 
@@ -450,7 +455,8 @@ function notification_loaded(category) {
 									.then(notificationRead => {
 										if (notificationRead.success) {
 											// location.href='edit.html';
-											alert("訊息已閱讀");
+											console.log("訊息已閱讀");
+											/*alert("訊息已閱讀");*/
 											ntf_el.classList.remove("-unread");
 										} else {
 											alert("訊息閱讀更新錯誤");
@@ -540,9 +546,14 @@ document.addEventListener("DOMContentLoaded", function() {
 				notification_el.innerHTML = '';
 				category_count();
 				notification_loaded(1);
+				ntf_clear();
+				/*if (ntf_clear_el) {
+				  console.error("找到 notification_clear 元素！");
+				  return;
+				}*/
 				/*showNotification("歡迎來到此頁");*/
 				
-				createWebSocket();
+				/*createWebSocket();*/
 				/*testPush();*/
 	        }
 	    });
@@ -585,7 +596,8 @@ document.addEventListener("click", function(e) {
 			.then(body => {
 				if (body.success) {
 					// location.href='edit.html';
-					alert("訊息已改成隱藏");
+					console.log("訊息已改成隱藏");
+					/*alert("訊息已改成隱藏");*/
 					category_count();
 					let ntf_nav_get = document.querySelector(".ntf_nav.-on");
 					/*console.log(ntf_nav_get);*/
@@ -596,6 +608,7 @@ document.addEventListener("click", function(e) {
 					notification_loaded(notificationCategory_get);
 
 				} else {
+					/*console.log("訊息隱藏更新錯誤");*/
 					alert("訊息隱藏更新錯誤");
 				}
 			})
@@ -741,3 +754,82 @@ function reconnectWebSocket() {
 			       createWebSocket();  // 重新創建 WebSocket 連接
 			   }, 5000);  // 5秒後重試
 		}*/
+		
+//清空所有的通知
+async function ntf_clear(){
+const ntf_clear_el = document.getElementById("notification_clear");
+const activeNav = document.querySelector('.ntf_nav.-on');
+const tabValue = activeNav?.querySelector(".ntf_tab")?.dataset.tab;
+const tabIndex = Number(tabValue?.split("_")[1]);
+
+ntf_clear_el.addEventListener("click", async () => {
+	const result=await customConfirm("確定要刪除所有通知嗎？");
+	  if (result) {
+		console.log("開始刪除通知...");
+		await notification_clear();
+		category_count();
+		notification_loaded(tabIndex);
+	}else{
+		console.log("取消刪除通知...");
+	}
+	
+})
+}
+async function notification_clear() {
+	try {
+		const resp = await fetch('/maven-tickeasy-v1/notify/notification-clear-all', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({})
+		});
+		const clearStatus = await resp.json();
+		
+		console.log(clearStatus.message);
+		return clearStatus; 
+	} catch (error) {
+		console.error('刪除通知時發生錯誤:', error);
+	}
+}
+
+/*
+function notification_clear() {
+	fetch('/maven-tickeasy-v1/notify/notification-clear-all', {
+		method: `POST`,
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			
+
+		})
+	})
+		.then(resp => resp.json())
+		.then(clearStatus => {
+			if(clearStatus.successful==true){
+				console.log(clearStatus.message);
+			}else{
+				console.log(clearStatus.message);
+			}
+			
+		})
+}
+*/
+function customConfirm(message) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('custom_confirm_clear');
+    const msgEl = document.getElementById('confirm_message_clear');
+    const yesBtn = document.getElementById('confirm_yes_clear');
+    const noBtn = document.getElementById('confirm_no_clear');
+
+    msgEl.textContent = message;
+    modal.classList.remove('hidden');
+
+    yesBtn.onclick = () => {
+      modal.classList.add('hidden');
+      resolve(true);
+    };
+
+    noBtn.onclick = () => {
+      modal.classList.add('hidden');
+      resolve(false);
+    };
+  });
+}
