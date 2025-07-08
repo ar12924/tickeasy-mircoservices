@@ -10,7 +10,7 @@ const ntf_nav_span_eventMind_el = document.querySelector(".eventMind_ntf");
 const ntf_nav_span_sold_el = document.querySelector(".sold_ntf");
 const ntf_nav_span_swap_el = document.querySelector(".swap_ntf");
 const ntf_nav_span_change_el = document.querySelector(".change_ntf");
-
+const ntf_clear_el = document.getElementById("notification_clear");
 const now = new Date();
 
 
@@ -547,6 +547,10 @@ document.addEventListener("DOMContentLoaded", function() {
 				category_count();
 				notification_loaded(1);
 				ntf_clear();
+				/*if (ntf_clear_el) {
+				  console.error("找到 notification_clear 元素！");
+				  return;
+				}*/
 				/*showNotification("歡迎來到此頁");*/
 				
 				/*createWebSocket();*/
@@ -759,7 +763,8 @@ const tabValue = activeNav?.querySelector(".ntf_tab")?.dataset.tab;
 const tabIndex = Number(tabValue?.split("_")[1]);
 
 ntf_clear_el.addEventListener("click", async () => {
-	if(confirm("確定要將所有種類的通知都刪除嗎?")){
+	const result=await customConfirm("確定要刪除所有通知嗎？@@");
+	  if (result) {
 		console.log("開始刪除通知...");
 		await notification_clear();
 		category_count();
@@ -807,3 +812,24 @@ function notification_clear() {
 		})
 }
 */
+function customConfirm(message) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('custom_confirm_clear');
+    const msgEl = document.getElementById('confirm_message_clear');
+    const yesBtn = document.getElementById('confirm_yes_clear');
+    const noBtn = document.getElementById('confirm_no_clear');
+
+    msgEl.textContent = message;
+    modal.classList.remove('hidden');
+
+    yesBtn.onclick = () => {
+      modal.classList.add('hidden');
+      resolve(true);
+    };
+
+    noBtn.onclick = () => {
+      modal.classList.add('hidden');
+      resolve(false);
+    };
+  });
+}
