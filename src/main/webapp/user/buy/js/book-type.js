@@ -115,22 +115,41 @@ const initBookTypeJSEvents = (book) => {
   });
 
   $(".update").on("click", async (e) => {
-    //
-    const $update = $(e.target).closest(".update");
+    // 取得票種、eventId
     const eventId = getUrlParam("eventId");
     const typeIdArr = await fetchTicketType(eventId);
 
-    // 更新剩餘票數
+    // 更新所有票種的剩餘票數
+    const remainingTicketCountArr = [];
     for (const type of typeIdArr) {
       const { typeId } = type;
-      const remainCountResult = await fetchRemainingTicketCount(
+      const { count, message, successful } = await fetchRemainingTicketCount(
         eventId,
         typeId
       );
-      $(`[data-type-id='${typeId}']`)
-        .find("span.tag")
-        .text(`剩餘 ${remainCountResult.count}`);
+      $(`[data-type-id='${typeId}']`).find("span.tag").text(`剩餘 ${count}`);
+      remainingTicketCountArr.push({ count, message, successful });
     }
+
+    // 完成剩餘票數更新，顯示成功訊息
+    let checkCountRetrieved = true;
+    remainingTicketCountArr.forEach(({ successful, message }) => {
+      if (!successful) {
+        $(".book-type-message").text(message);
+        $(".book-type-message")
+          .closest("#error-message")
+          .removeClass("is-hidden");
+      }
+      $(".book-type-message").text(message);
+      $(".book-type-message")
+        .closest("#error-message")
+        .removeClass("is-hidden");
+    });
+  });
+  // ====== "更新票券" 按鈕 blur 事件 ======
+  $(".update").on("blur", () => {
+    $(".book-type-message").text("");
+    $(".book-type-message").closest("#error-message").addClass("is-hidden");
   });
 
   // ====== "上一步" 按鈕點擊事件 ======
