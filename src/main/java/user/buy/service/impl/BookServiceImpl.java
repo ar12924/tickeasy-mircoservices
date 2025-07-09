@@ -82,9 +82,9 @@ public class BookServiceImpl implements BookService {
 			core.setSuccessful(false);
 			return core;
 		}
-
+		
 		// 以 key = userName 將 book 存入 Redis 當中
-		template.opsForValue().set(book.getUserName(), book, timeoutMinutes, TimeUnit.MINUTES);
+		template.opsForValue().set(book.getUserName(), book, timeoutMinutes, TimeUnit.SECONDS);
 		core.setDataStatus(DataStatus.VALID);
 		core.setMessage("選擇票種儲存成功");
 		core.setSuccessful(true);
@@ -109,10 +109,10 @@ public class BookServiceImpl implements BookService {
 		}
 
 		// 先取得當前的 TTL
-		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.MINUTES);
+		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.SECONDS);
 
 		// 以 key = userName 將 book 存入 Redis 當中
-		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.MINUTES);
+		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.SECONDS);
 		core.setDataStatus(DataStatus.FOUND);
 		core.setMessage("填寫資料儲存成功");
 		core.setSuccessful(true);
@@ -138,10 +138,10 @@ public class BookServiceImpl implements BookService {
 		}
 
 		// 先取得當前的 TTL
-		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.MINUTES);
-
+		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.SECONDS);
+		
 		// 以 key = userName 將 book 存入 Redis 當中
-		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.MINUTES);
+		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.SECONDS);
 		core.setDataStatus(DataStatus.FOUND);
 		core.setMessage("資料儲存成功");
 		core.setSuccessful(true);
@@ -161,6 +161,9 @@ public class BookServiceImpl implements BookService {
 		Core<BookDto> core = new Core<>();
 		// 以 key = userName 從 Redis 中查詢 book 物件
 		var bookDto = (BookDto) template.opsForValue().get(userName);
+		
+		// 再以 key = userName 查詢 book 物件的 TTL
+		var bookTTL = template.getExpire(userName);
 
 		// 檢查有無資料(因 Redis TTL 時間到會移除)
 		if (bookDto == null) {
@@ -183,6 +186,7 @@ public class BookServiceImpl implements BookService {
 		core.setDataStatus(DataStatus.FOUND);
 		core.setMessage("取得訂購資料");
 		core.setSuccessful(true);
+		core.setRemainingTime(bookTTL);
 		return core;
 	}
 

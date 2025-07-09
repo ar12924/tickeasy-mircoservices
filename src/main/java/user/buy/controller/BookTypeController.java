@@ -72,8 +72,9 @@ public class BookTypeController {
 
 		// 將 userName 存入 book 物件
 		book.setUserName(member.getUserName());
-		// 存入 book 物件至 Redis 並設定 TTL 15分鐘
-		return service.saveBookType(book, 15);
+		// 存入 book 物件至 Redis 並設定 TTL 15 分鐘(900 秒)
+		long timeToCount = 900;
+		return service.saveBookType(book, timeToCount);
 	}
 
 	/**
