@@ -1,17 +1,17 @@
 package user.member.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import common.vo.AuthStatus;
+import common.vo.Core;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
-
 import user.member.service.MemberService;
 import user.member.vo.Member;
-import common.vo.Core;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("user/member/login")
@@ -26,6 +26,7 @@ public class LoginController {
 		if (username == null || password == null) {
 			core.setMessage("無會員資訊");
 			core.setSuccessful(false);
+			core.setAuthStatus(AuthStatus.NOT_LOGGED_IN);
 			return core;
 		}
 		
@@ -45,9 +46,11 @@ public class LoginController {
 			core.setSuccessful(true);
 			core.setMessage("登入成功");
 			core.setData(member);
+			core.setAuthStatus(AuthStatus.LOGGED_IN);
 		} else {
 			core.setSuccessful(false);
 			core.setMessage(member.getMessage());
+			core.setAuthStatus(AuthStatus.NOT_LOGGED_IN);
 		}
 		return core;
 	}
