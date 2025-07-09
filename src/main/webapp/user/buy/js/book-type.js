@@ -16,6 +16,7 @@ import {
   fetchTypeBoxTemplate,
   renderTypeBox,
   initTypeBoxJSEvents,
+  fetchRemainingTicketCount,
 } from "../ui/book-type/type-box.js";
 import {
   fetchFooterTemplate,
@@ -109,13 +110,33 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== "更新票券" 按鈕點擊事件 ======
   $(".update").on("mouseenter mouseleave", (e) => {
+    // hover 藍色框效果
     $(e.target).closest(".update").toggleClass("is-focused");
+  });
+
+  $(".update").on("click", async (e) => {
+    //
+    const $update = $(e.target).closest(".update");
+    const eventId = getUrlParam("eventId");
+    const typeIdArr = await fetchTicketType(eventId);
+
+    // 更新剩餘票數
+    for (const type of typeIdArr) {
+      const { typeId } = type;
+      const remainCountResult = await fetchRemainingTicketCount(
+        eventId,
+        typeId
+      );
+      $(`[data-type-id='${typeId}']`)
+        .find("span.tag")
+        .text(`剩餘 ${remainCountResult.count}`);
+    }
   });
 
   // ====== "上一步" 按鈕點擊事件 ======
   $(".back").on("click", () => {
     // 回到活動頁面
-    location.href = "https://www.google.com";
+    location.href = `${getContextPath()}/user/buy/event_ticket_purchase.html?eventId=${eventId}`;
   });
 
   // ====== "下一步" 按鈕點擊事件 ======
@@ -142,7 +163,7 @@ const initBookTypeJSEvents = (book) => {
   // ====== 資料儲存變數區 ======
   const book = {
     // 活動 id
-    eventId: -1,
+    eventId: null,
     // 活動名
     eventName: null,
     // 購票人帳號
@@ -164,28 +185,18 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== header 部分 ======
   const eventId = getUrlParam("eventId");
+  // 存入 eventId
+  book.eventId = eventId;
   const headerTemplate = await fetchHeaderTemplate();
   const eventInfo = await fetchTicketEvent(eventId);
-  if (!eventInfo) {
-    alert("載入活動名稱失敗!!");
-  } else {
-    // 存入 book 變數中，儲存 eventName
-    book.eventName = eventInfo.eventName;
-    // 輸出 header.html 模板(顯示對應進度條、活動名稱)
-    renderHeader(eventInfo, book, headerTemplate);
-  }
+  // 存入 book 變數中，儲存 eventName
+  book.eventName = eventInfo.eventName;
+  // 輸出 header.html 模板(顯示對應進度條、活動名稱)
+  renderHeader(eventInfo, book, headerTemplate);
 
   // ====== type-box 部分 ======
   const ticketType = await fetchTicketType(eventId);
   const typeBoxTemplate = await fetchTypeBoxTemplate();
-  // 將票種資訊，暫存入 book 變數中
-  ticketType.forEach(({ typeId, categoryName }) => {
-    book.eventId = eventId;
-    book.selected.push({
-      typeId,
-      categoryName,
-    });
-  });
   // 輸出 type-box.html 模板
   renderTypeBox(ticketType, typeBoxTemplate);
   // 監聽事件

@@ -303,4 +303,66 @@ public class BookServiceImpl implements BookService {
 		core.setSuccessful(true);
 		return core;
 	}
+
+	/**
+	 * 透過活動 id 查詢剩餘票券資料。
+	 * 
+	 * @param {Integer} eventId - 活動 id。
+	 * @return {Core<Long>} 剩餘票券數量。
+	 */
+	@Transactional
+	@Override
+	public Core<Long> getRemainingTicketsByEventAndTypeId(Integer eventId, Integer typeId) {
+		var core = new Core<Long>();
+
+		// 驗證參數
+		if (eventId == null || eventId <= 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("活動 id 未指定");
+			core.setSuccessful(false);
+			return core;
+		}
+		if (typeId == null || eventId <= 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("票種 id 未指定");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 查詢 (eventId, typeId) 已銷售票券數量
+		var eventInfo = dao.selectEventById(eventId);
+		var eventName = eventInfo.getEventName();
+		var soldCount = dao.countBuyerTicketByEventNameAndTypeId(eventName, typeId);
+		if (soldCount < 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("銷售數量為負");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 查詢 (eventId, typeId) 票券總數量
+		var totalCount = dao.selectTypeById(eventId, typeId).getCapacity();
+		if (totalCount < 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("票種總數量為負");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 已售出數量大於票券總數量(異常)
+		if (soldCount > totalCount) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("銷售數量超過總容量，資料異常");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 計算 (eventId, typeId) 剩餘票數
+		var remainedCount = totalCount - soldCount;
+		core.setDataStatus(DataStatus.FOUND);
+		core.setCount(remainedCount);
+		core.setMessage("票種剩餘票數查詢成功");
+		core.setSuccessful(true);
+		return core;
+	}
 }

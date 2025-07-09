@@ -26,3 +26,11 @@ nav {
   }
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+@media (max-width: 1023px) {
+  .dropdown.is-right .dropdown-menu {
+    left: 0;
+    right: auto;
+    /* 或其他需要重置的樣式 */
+  }
+}
