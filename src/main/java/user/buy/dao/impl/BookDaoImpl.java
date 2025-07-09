@@ -70,10 +70,10 @@ public class BookDaoImpl implements BookDao {
 	}
 
 	/**
-	 * 透過活動 id，查詢活動資訊。
+	 * 透過活動 id，查詢活動資料。
 	 * 
 	 * @param {Integer} eventId - 活動 id。
-	 * @return {BookEventDto} 活動 id 下的活動資訊。
+	 * @return {BookEventDto} 活動 id 下的活動資料。
 	 */
 	@Override
 	public EventInfo selectEventById(Integer eventId) {
@@ -183,6 +183,26 @@ public class BookDaoImpl implements BookDao {
 
 		// 4. 取得自動生成的 id
 		return ticket.getTicketId();
+	}
+
+	/**
+	 * 計算某活動某票種之下，銷售幾張票券。
+	 * 
+	 * @param {eventName} - 活動名稱。
+	 * @return {Long} 已銷售張數。
+	 */
+	@Override
+	public Long countBuyerTicketByEventNameAndTypeId(String eventName, Integer typeId) {
+		// hql語句建構
+		var hqlTmp = new StringBuilder("SELECT COUNT(bt) FROM BuyerTicket bt ");
+		hqlTmp.append("WHERE bt.eventName = :eventName AND bt.typeId = :typeId");
+		var hql = hqlTmp.toString();
+
+		// 執行查詢
+		Query<Long> query = session.createQuery(hql, Long.class)
+						.setParameter("eventName", eventName)
+						.setParameter("typeId", typeId);
+		return query.uniqueResult();
 	}
 
 }

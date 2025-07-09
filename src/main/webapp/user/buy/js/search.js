@@ -83,10 +83,10 @@ export const fetchFavorite = async () => {
   return await resp.json();
 };
 
-/** 點擊頁面愛心按鈕新增關注時，將關注資料存入 Favorite 表。
+/** 點開頁面愛心按鈕，加入關注。
  *
- * @param {number} eventId - 欲新增關注資料(僅一個欄位)。
- * @return {Object} 關注資料儲存後操作結果。
+ * @param {number} eventId - 新增關注 eventId。
+ * @return {Object} 加入關注操作結果。
  */
 export const saveFavorite = async (eventId) => {
   const favoriteDto = { eventId }; // 將關注資料包裝成 Dto
@@ -94,19 +94,19 @@ export const saveFavorite = async (eventId) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(favoriteDto),
-  }); // 傳至後端儲存至 Favorite 表
+  }); // 傳至後端新增或加入關注
   return await resp.json();
 };
 
-/** 再次點擊移除頁面愛心按鈕關注時，從 Favorite 表移除對應的一筆關注。
+/** 再次點開頁面愛心按鈕，移除關注。
  *
  * @param {number} eventId - 欲刪除關注資料。
- * @return {Object} 關注資料刪除後操作結果。
+ * @return {Object} 移除關注操作結果。
  */
 export const deleteFavorite = async (eventId) => {
   const resp = await fetch(`${getContextPath()}/search-event/like/${eventId}`, {
     method: "DELETE",
-  }); // 傳至後端移除 Favorite 表中一筆資料
+  }); // 傳至後端移除關注
   return await resp.json();
 };
 
