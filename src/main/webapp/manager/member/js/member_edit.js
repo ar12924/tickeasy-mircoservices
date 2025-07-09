@@ -3,6 +3,22 @@ let currentMemberId = null;
 
 // 頁面載入完成後執行
 document.addEventListener('DOMContentLoaded', function () {
+    // 檢查用戶權限
+    const roleLevel = sessionStorage.getItem("roleLevel");
+    const memberId = sessionStorage.getItem("memberId");
+
+    if (!roleLevel || (roleLevel !== "2" && roleLevel !== "3")) {
+        alert("您沒有權限訪問此頁面");
+        window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+        return;
+    }
+
+    if (!memberId) {
+        alert("請先登入");
+        window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+        return;
+    }
+    
     // 初始化編輯頁面
     initEditPage();
 });
