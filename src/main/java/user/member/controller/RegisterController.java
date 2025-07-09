@@ -1,21 +1,16 @@
 package user.member.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import common.vo.Core;
-import user.member.vo.Member;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import user.member.service.MemberService;
+import user.member.vo.Member;
 
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.UUID;
-import java.sql.Timestamp;
-
-import user.member.vo.VerificationToken;
 
 @RestController
 @RequestMapping("user/member/register")
@@ -25,22 +20,9 @@ public class RegisterController {
     private MemberService service;
 
     @PostMapping(value = "", consumes = {"multipart/form-data"})
-    public Core<Member> register(
-            @RequestParam String userName,
-            @RequestParam String nickName,
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String rePassword,
-            @RequestParam String birthDate,
-            @RequestParam String phone,
-            @RequestParam String gender,
-            @RequestParam String idCard,
-            @RequestParam(required = false) String unicode,
-            @RequestParam(defaultValue = "false") Boolean agree,
-            @RequestParam(defaultValue = "false") Boolean hostApply,
-            @RequestParam(value = "photo", required = false) MultipartFile photo) {
+    public Core<Member> register(@RequestParam String userName, @RequestParam String nickName, @RequestParam String email, @RequestParam String password, @RequestParam String rePassword, @RequestParam String birthDate, @RequestParam String phone, @RequestParam String gender, @RequestParam String idCard, @RequestParam(required = false) String unicode, @RequestParam(defaultValue = "false") Boolean agree, @RequestParam(defaultValue = "false") Boolean hostApply, @RequestParam(value = "photo", required = false) MultipartFile photo) {
         Core<Member> core = new Core<>();
-        
+
         try {
             Member member = new Member();
             member.setUserName(userName);
@@ -55,11 +37,11 @@ public class RegisterController {
             member.setUnicode(unicode);
             member.setAgree(agree);
             member.setHostApply(hostApply != null && hostApply);
-            
+
             if (photo != null && !photo.isEmpty()) {
                 member.setPhoto(photo.getBytes());
             }
-            
+
             Member result = service.register(member);
             if (result.isSuccessful()) {
                 core.setSuccessful(true);

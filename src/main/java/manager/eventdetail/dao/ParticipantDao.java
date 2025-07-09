@@ -1,11 +1,12 @@
 package manager.eventdetail.dao;
 
-import java.util.List;
-import java.util.Map;
 import common.dao.CommonDao;
 import manager.eventdetail.vo.BuyerOrderEventVer;
 import manager.eventdetail.vo.BuyerTicketEventVer;
 import manager.eventdetail.vo.EventTicketType;
+
+import java.util.List;
+import java.util.Map;
 
 public interface ParticipantDao extends CommonDao {
 
