@@ -88,20 +88,40 @@ public class SearchDaoImpl implements SearchDao {
 	}
 
 	/**
-	 * 透過 memberId 查詢我的關注。
+	 * 透過 memberId 查詢多筆關注。
 	 *
 	 * @param {Integer} memberId - 會員 id。
-	 * @return List<Favorite> n 筆活動資料。
+	 * @return List<Favorite> 多筆關注資料。
 	 */
 	@Override
 	public List<Favorite> selectAllFavoriteByMemberId(Integer memberId) {
 		// 1. HQL 語句
-		var hql = "FROM Favorite WHERE memberId = :memberId";
+		var hql = "FROM Favorite WHERE memberId = :memberId AND isFollowed = :isFollowed";
 
-		// 2. 查詢
+		// 2. 查詢(限制只能查 isFollowed = 1)
 		Query<Favorite> query = session.createQuery(hql, Favorite.class);
 		query.setParameter("memberId", memberId);
+		query.setParameter("isFollowed", 1);
 		return query.getResultList();
+	}
+
+	/**
+	 * 透過 (memberId, eventId) 查詢單筆的關注。
+	 *
+	 * @param {Integer} memberId - 會員 id。
+	 * @return {Favorite} 單筆關注資料。
+	 */
+	@Override
+	public Favorite selectFavoriteByMemberIdAndEventId(Integer memberId, Integer eventId) {
+		// hql 語句
+		var hqlTmp = new StringBuilder("FROM Favorite WHERE memberId = :memberId AND eventId = :eventId");
+		var hql = hqlTmp.toString();
+
+		// 查詢
+		Query<Favorite> query = session.createQuery(hql, Favorite.class);
+		query.setParameter("memberId", memberId);
+		query.setParameter("eventId", eventId);
+		return query.uniqueResult();
 	}
 
 	/**
@@ -115,16 +135,16 @@ public class SearchDaoImpl implements SearchDao {
 	public Integer insertFavorite(Integer eventId, Integer memberId) {
 		var favorite = new Favorite();
 
-		// 1. 建立資料實體物件
+		// 建立資料實體物件
 		favorite.setEventId(eventId);
 		favorite.setMemberId(memberId);
 		favorite.setIsFollowed(1);
 
-		// 2. 查詢
+		// 插入資料
 		session.persist(favorite);
 		session.flush(); // 強制執行 SQL，生成 id
 
-		// 3. 取得自動生成的 id
+		// 取得自動生成的 id
 		return favorite.getFavoriteId();
 	}
 
@@ -147,26 +167,32 @@ public class SearchDaoImpl implements SearchDao {
 	}
 
 	/*
-	 * 抓著 eventId 停用至我的關注中對應的資料。 (必須先有 session.member)
+	 * 抓著 (eventId, memberId) 停用/啟用關注。
 	 * 
 	 * @param {Integer} eventId - 活動 id。
 	 * 
 	 * @param {Integer} memberId - 會員 id。
 	 * 
-	 * @return {Integer} 更變實體物件某欄位筆數。
+	 * @param {boolean} follow - 關注與否？
+	 * 
+	 * @return {Integer} 被更新實體筆數。
 	 */
 	@Override
-	public Integer updateFavorite(Integer eventId, Integer memberId, boolean isFollowed) {
+	public Integer updateFavorite(Integer eventId, Integer memberId, boolean follow) {
 		// HQL 語句
 		var hqlTmp = new StringBuilder("UPDATE Favorite f ").append("SET isFollowed = :isFollowed ")
 				.append("WHERE f.eventId = :eventId ").append("AND f.memberId = :memberId");
 		var hql = hqlTmp.toString();
 
-		// 執行刪除 by (memberId, eventId)
+		// 判斷啟用還停用，建立操作物件
 		Query<?> query = session.createQuery(hql).setParameter("eventId", eventId).setParameter("memberId", memberId);
-		if (isFollowed == false) {
+		if (follow == true) {
 			query.setParameter("isFollowed", 1);
+		}else {
+			query.setParameter("isFollowed", 0);
 		}
+		
+		// 執行操作
 		return query.executeUpdate();
 	}
 

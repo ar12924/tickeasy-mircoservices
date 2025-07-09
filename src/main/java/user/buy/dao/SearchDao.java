@@ -15,6 +15,8 @@ public interface SearchDao extends CommonDao {
 	
 	public List<Favorite> selectAllFavoriteByMemberId(Integer memberId);
 
+	public Favorite selectFavoriteByMemberIdAndEventId(Integer memberId, Integer eventId);
+	
 	public Integer insertFavorite(Integer eventId, Integer memberId);
 	
 	public Integer removeFavorite(Integer eventId, Integer memberId);
