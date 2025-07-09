@@ -27,8 +27,10 @@ public class EventDaoImpl implements EventDao {
 	}
 
 	@Override
-	public List<MngEventInfo> findAll() {
-		String hql = "FROM MngEventInfo ORDER BY event_id DESC";
-		return session.createQuery(hql, manager.event.vo.MngEventInfo.class).getResultList();
+	public List<MngEventInfo> findAll(Integer memberId) {
+		String hql = "FROM MngEventInfo WHERE memberId = :memberId ORDER BY eventId DESC";
+		return session.createQuery(hql, manager.event.vo.MngEventInfo.class)
+				.setParameter("memberId", memberId)
+				.getResultList();
 	}
 }
