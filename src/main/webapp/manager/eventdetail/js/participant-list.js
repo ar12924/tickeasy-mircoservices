@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", function () {
           participant.buyerOrder ? participant.buyerOrder.orderTime : null
         )}</td>
         <td>
-          <button class="btn btn-sm btn-info" onclick="viewParticipantDetail(${
+          <button class="info-btn" onclick="viewParticipantDetail(${
             participant.ticketId
           })">
             查看詳情
