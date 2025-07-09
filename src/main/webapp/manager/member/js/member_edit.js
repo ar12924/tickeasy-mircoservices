@@ -97,17 +97,27 @@ function updateSystemInfo(member) {
 function loadMemberPhoto(memberId) {
     const photoUrl = `/maven-tickeasy-v1/api/manager/member/photo/${memberId}`;
     const photoImg = document.querySelector('.card-body img');
+    const defaultPhoto = '../common/assets/img/user2-128x128.png';
+    // 先設定預設圖片
+    photoImg.src = defaultPhoto;
+    photoImg.alt = '預設照片';
 
-    // 嘗試載入照片
-    const img = new Image();
-    img.onload = function () {
-        photoImg.src = photoUrl + '?t=' + new Date().getTime(); // 加時間戳避免快取
+    // 嘗試載入實際照片
+    const testImg = new Image();
+    
+    testImg.onload = function() {
+        // 載入成功才更換為實際照片
+        photoImg.src = photoUrl + '?t=' + new Date().getTime();
+        photoImg.alt = '會員照片';
     };
-    img.onerror = function () {
-        // 照片載入失敗，使用預設圖片
-        photoImg.src = '../common/assets/img/user2-128x128.png';
+    
+    testImg.onerror = function() {
+        // 載入失敗保持預設圖片
+        console.log('會員照片不存在，使用預設圖片');
     };
-    img.src = photoUrl;
+    
+    // 開始載入，加上時間戳避免快取問題
+    testImg.src = photoUrl + '?timestamp=' + new Date().getTime();
 }
 
 // 綁定事件
