@@ -40,7 +40,18 @@
     />
     <!--Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="../common/css/adminlte.css" />
-    <link rel="stylesheet" href="css/participant-list.css" />
+    <!-- apexcharts -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+      integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
+      crossorigin="anonymous"
+    />
+    <!--Summernote-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
@@ -84,7 +95,9 @@
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />
-                <span class="d-none d-md-inline">Alexander Pierce</span>
+                <span class="d-none d-md-inline" id="sidebar-username"
+                  >Alexander Pierce</span
+                >
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <li class="user-header text-bg-primary">
@@ -154,13 +167,7 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="dashboard.html" class="nav-link">
-                      <i class="nav-icon bi bi-speedometer2"></i>
-                      <p>儀表板</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="participant-list.html" class="nav-link active">
+                    <a href="../index.html" class="nav-link">
                       <i class="nav-icon bi bi-list-task"></i>
                       <p>活動列表</p>
                     </a>
@@ -179,79 +186,6 @@
                       <p>會員設定</p>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-shield-lock-fill"></i>
-                      <p>會員密碼</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-header">平台方</li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-gear-wide-connected"></i>
-                  <p>活動管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-calendar3-range-fill"></i>
-                      <p>活動列表</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-ticket-perforated-fill"></i>
-                      <p>票券列表</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi bi-people-fill"></i>
-                  <p>會員管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-person-lines-fill"></i>
-                      <p>會員列表</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-person-heart"></i>
-                      <p>購票者</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-bookmark-check-fill"></i>
-                      <p>活動方</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-cone-striped"></i>
-                  <p>平台管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-check2-square"></i>
-                      <p>活動單位審核</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-backspace-reverse-fill"></i>
-                      <p>平台帳號管理</p>
-                    </a>
-                  </li>
                 </ul>
               </li>
             </ul>
@@ -264,90 +198,195 @@
         <div class="app-content-header">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <h3 class="mb-0">報名人列表</h3>
-              </div>
-              <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-end">
-                  <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                  <li class="breadcrumb-item">
-                    <a href="index.html">活動列表</a>
-                  </li>
-                  <li class="breadcrumb-item active" aria-current="page">
-                    報名人列表
-                  </li>
-                </ol>
               </div>
             </div>
           </div>
         </div>
+
         <div class="app-content">
           <div class="container-fluid">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title" id="event-name-title">請選擇一個活動</h3>
-              </div>
-              <div class="card-body">
-                <div class="row mb-3">
-                  <div class="col-md-4">
-                    <label for="event-select" class="form-label"
-                      >選擇活動</label
+            <!-- 標籤頁導航 -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="../index.html">訂單列表</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="./dashboard.html">票券銷售情形</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link active" href="./participant-list.html"
+                      >報名人列表</a
                     >
-                    <select id="event-select" class="form-select"></select>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 標籤頁內容 -->
+            <div class="tab-content" id="myTabContent">
+              <!-- 報名人列表 -->
+              <div
+                class="tab-pane fade show active"
+                id="participant"
+                role="tabpanel"
+                aria-labelledby="participant-tab"
+              >
+                <div class="card">
+                  <div class="card-header">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <h3 class="card-title">報名人列表</h3>
+                      </div>
+                      <div class="col-md-6 text-end">
+                        <div
+                          class="d-flex justify-content-end align-items-center"
+                        >
+                          <label class="me-2 mb-0">目前檢視活動</label>
+                          <select
+                            class="form-select"
+                            id="event-select"
+                            style="width: auto"
+                          >
+                            <option value="">請選擇活動</option>
+                            <!-- 選項將由 JavaScript 動態載入 -->
+                          </select>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <!-- 新增篩選條件區塊 -->
-                  <div class="col-md-8">
-                    <label class="form-label">篩選條件</label>
-                    <div class="input-group">
-                      <select
-                        id="ticket-type-select"
-                        class="form-select"
-                        style="flex: 1"
+                  <div class="card-body">
+                    <!-- 搜尋區域 -->
+                    <form class="mb-4" id="searchForm">
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <div class="input-group">
+                            <span class="input-group-text">姓名搜尋</span>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="name-filter"
+                              placeholder="請輸入姓名"
+                            />
+                            <button
+                              class="btn btn-outline-secondary"
+                              type="button"
+                              id="searchBtn"
+                            >
+                              <i class="bi bi-search"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="input-group">
+                            <span class="input-group-text">Email搜尋</span>
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="email-filter"
+                              placeholder="請輸入Email"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="row g-2">
+                            <div class="col-auto">
+                              <label class="col-form-label">票種篩選：</label>
+                            </div>
+                            <div class="col">
+                              <select
+                                class="form-select"
+                                id="ticket-type-select"
+                              >
+                                <option value="">所有票種</option>
+                                <!-- 選項將由 JavaScript 動態載入 -->
+                              </select>
+                            </div>
+                            <div class="col-auto">
+                              <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                id="resetBtn"
+                              >
+                                <i class="bi bi-arrow-clockwise"></i> 重置
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+
+                    <!-- 載入和無資料提示 -->
+                    <div
+                      id="loading"
+                      style="display: none; text-align: center; padding: 20px"
+                    >
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">載入中...</span>
+                      </div>
+                      <p class="mt-2">載入中...</p>
+                    </div>
+                    <div
+                      id="no-data"
+                      style="display: none; text-align: center; padding: 20px"
+                    >
+                      <i class="bi bi-inbox fs-1 text-muted"></i>
+                      <p class="mt-2">該活動暫無參與者</p>
+                    </div>
+
+                    <!-- 表格區域 -->
+                    <div class="table-responsive" id="tableContainer">
+                      <table
+                        class="table table-bordered table-striped"
+                        style="text-align: center"
                       >
-                        <option value="">所有票種</option>
-                      </select>
-                      <input
-                        type="text"
-                        id="name-filter"
-                        class="form-control"
-                        placeholder="依姓名搜尋..."
-                        style="flex: 1"
-                      />
-                      <input
-                        type="text"
-                        id="email-filter"
-                        class="form-control"
-                        placeholder="依Email搜尋..."
-                        style="flex: 1"
-                      />
-                      <button
-                        id="filter-btn"
-                        class="btn btn-primary"
-                        style="flex: 0 0 auto"
-                      >
-                        搜尋
-                      </button>
+                        <thead>
+                          <tr>
+                            <th style="text-align: center">參與者ID</th>
+                            <th style="text-align: center">姓名</th>
+                            <th style="text-align: center">Email</th>
+                            <th style="text-align: center">票種</th>
+                            <th style="text-align: center">報名時間</th>
+                            <th style="text-align: center">狀態</th>
+                          </tr>
+                        </thead>
+                        <tbody id="participant-table">
+                          <!-- 資料將由JavaScript動態載入 -->
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <!-- 分頁 -->
+                    <div class="row">
+                      <div class="col-12">
+                        <nav>
+                          <ul
+                            class="pagination justify-content-center"
+                            id="pagination-container"
+                          >
+                            <!-- 分頁將由JavaScript動態生成 -->
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+
+                    <!-- 返回按鈕 -->
+                    <div class="row mt-3">
+                      <div class="col-12 text-end">
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          id="backBtn"
+                        >
+                          回到活動列表
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div id="loading" style="display: none">載入中...</div>
-                <div class="table-responsive">
-                  <table class="table table-bordered" id="participant-table">
-                    <!-- 表格內容將由 JS 動態生成 -->
-                  </table>
-                </div>
-                <div id="no-data" class="text-center p-3" style="display: none">
-                  該活動暫無參與者
-                </div>
-                <!-- 新增分頁容器 -->
-                <nav>
-                  <ul
-                    class="pagination justify-content-center"
-                    id="pagination-container"
-                  >
-                    <!-- 分頁按鈕將由 JS 動態生成 -->
-                  </ul>
-                </nav>
               </div>
             </div>
           </div>
@@ -370,22 +409,73 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script
       src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
       integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ="
       crossorigin="anonymous"
     ></script>
+    <!--end::Third Party Plugin(OverlayScrollbars)-->
+    <!--begin::Required Plugin(popperjs for Bootstrap 5)-->
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
       integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
       crossorigin="anonymous"
     ></script>
+    <!--end::Required Plugin(popperjs for Bootstrap 5)-->
+    <!--begin::Required Plugin(Bootstrap 5)-->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
       integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
       crossorigin="anonymous"
     ></script>
-    <script src="../common/js/adminlteNora.js"></script>
-    <script src="js/participant-list.js"></script>
+    <!--end::Required Plugin(Bootstrap 5)-->
+    <!--begin::Required Plugin(AdminLTE)-->
+    <script src="../common/js/adminlte.js"></script>
+    <!--end::Required Plugin(AdminLTE)-->
+    <!-- OPTIONAL SCRIPTS -->
+    <!--Summernote-->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+    <!-- apexcharts -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+      integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8="
+      crossorigin="anonymous"
+    ></script>
+
+    <!--begin::OverlayScrollbars Configure & 報名人列表管理功能-->
+    <script>
+      const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
+      const Default = {
+        scrollbarTheme: "os-theme-light",
+        scrollbarAutoHide: "leave",
+        scrollbarClickScroll: true,
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+        if (
+          sidebarWrapper &&
+          typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined"
+        ) {
+          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+            scrollbars: {
+              theme: Default.scrollbarTheme,
+              autoHide: Default.scrollbarAutoHide,
+              clickScroll: Default.scrollbarClickScroll,
+            },
+          });
+        }
+      });
+    </script>
+    <script>
+      // 動態帶入 nickname
+      document.addEventListener("DOMContentLoaded", function () {
+        var nickname = sessionStorage.getItem("loggedInNickname") || "使用者";
+        var el = document.getElementById("sidebar-username");
+        if (el) el.textContent = nickname;
+      });
+    </script>
+    <script src="./js/participant-list.js"></script>
   </body>
 </html>

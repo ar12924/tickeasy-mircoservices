@@ -1,3 +1,8 @@
+function getQueryParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // 檢查用戶權限
   const roleLevel = sessionStorage.getItem("roleLevel");
@@ -112,6 +117,11 @@ document.addEventListener("DOMContentLoaded", function () {
               option.textContent = event.eventName;
               eventSelectEl.appendChild(option);
             });
+          }
+          const eventId = getQueryParam("eventId");
+          if (eventId && eventSelectEl) {
+            eventSelectEl.value = eventId;
+            eventSelectEl.dispatchEvent(new Event("change"));
           }
         } else {
           showMessage("載入活動列表失敗: " + data.message, "error");
