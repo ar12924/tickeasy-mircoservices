@@ -37,15 +37,16 @@ public class EventServiceImpl implements EventService {
 		return keywordDao.createKeywordCategory(kCategory);
 	}
 
-//	@Override
-//	@Transactional
-//	public int createEvent(MngEventInfo eventInfo) {
-//		return eventDao.createEvent(eventInfo);
-//	}
 	@Transactional
 	@Override
 	public int createEvent(MngEventInfo eventInfo) {
-	    return eventDao.createEvent(eventInfo); // ✅ 確保這個方法會 insert
+	    return eventDao.createEvent(eventInfo); // 確保這個方法會insert
 	}
+	
+	@Transactional
+    @Override
+    public int updateEvent(MngEventInfo eventInfo) {
+        return eventDao.updateEvent(eventInfo);
+    }
 
 }
