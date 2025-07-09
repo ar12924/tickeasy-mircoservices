@@ -16,6 +16,7 @@ import {
   fetchTypeBoxTemplate,
   renderTypeBox,
   initTypeBoxJSEvents,
+  fetchRemainingTicketCount,
 } from "../ui/book-type/type-box.js";
 import {
   fetchFooterTemplate,
@@ -109,7 +110,27 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== "更新票券" 按鈕點擊事件 ======
   $(".update").on("mouseenter mouseleave", (e) => {
+    // hover 藍色框效果
     $(e.target).closest(".update").toggleClass("is-focused");
+  });
+
+  $(".update").on("click", async (e) => {
+    //
+    const $update = $(e.target).closest(".update");
+    const eventId = getUrlParam("eventId");
+    const typeIdArr = await fetchTicketType(eventId);
+
+    // 更新剩餘票數
+    for (const type of typeIdArr) {
+      const { typeId } = type;
+      const remainCountResult = await fetchRemainingTicketCount(
+        eventId,
+        typeId
+      );
+      $(`[data-type-id='${typeId}']`)
+        .find("span.tag")
+        .text(`剩餘 ${remainCountResult.count}`);
+    }
   });
 
   // ====== "上一步" 按鈕點擊事件 ======

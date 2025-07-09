@@ -122,21 +122,17 @@ export const renderEventInfoBox = async (templateHTML, eventResponse) => {
  * @param {string} templateHTML - HTML模板。
  * @param {number} totalItemCount - 查詢活動資料之個數。
  * @param {number} currentPage - 當前點擊頁數。
- * @param {number} itemPerPage - 每頁活動框之個數。
+ * @param {number} PageSize - 每頁活動框之個數。
  */
 export const renderPagination = (
   templateHTML,
   totalItemCount,
   currentPage,
-  itemPerPage
+  PageSize
 ) => {
-  // 強制轉換為數字，避免字串比較問題
-  currentPage = Number(currentPage);
-  totalItemCount = Number(totalItemCount);
-  itemPerPage = Number(itemPerPage);
-
-  const totalPage = Math.ceil(totalItemCount / itemPerPage);
+  const totalPage = Math.ceil(totalItemCount / PageSize);
   if (totalPage <= 1) {
+    // 只有一頁，不顯示分頁條
     $(".pagination-container").html("");
     return;
   }
@@ -157,61 +153,56 @@ export const renderPagination = (
   }
   $nextBtn.attr("data-page", currentPage + 1);
 
-  // 頁碼列表(不需修改)
+  // 頁碼列表(所有 li 的父元素)
   const $paginationList = $template.find(".pagination-list li");
 
   // 第一頁
-  if (currentPage > 3) {
+  if (currentPage > 2) {
     $paginationList
       .eq(0)
       .removeClass("is-hidden")
       .find(".pagination-link")
       .attr("data-page", 1)
+      .attr("aria-label", `Goto page ${1}`)
       .text(`${1}`);
-    if (currentPage > 4) {
+    if (currentPage > 3) {
       $paginationList.eq(1).removeClass("is-hidden");
     }
-  } else {
-    $paginationList.eq(0).addClass("is-hidden");
-    $paginationList.eq(1).addClass("is-hidden");
   }
 
-  // 當前頁面附近的頁碼(介於 currentPage - 1 到 currentPage + 1 之間)
-  // ex. (curr - 1, curr, curr + 1)
+  // 當前頁面附近的頁碼(currentPage - 1, cuurentPage, currentPage + 1)
   for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-    const listIndex = 2 + (i - (currentPage - 1));
+    const listIndex = i - currentPage + 3;
 
+    // 無效頁碼，隱藏
     if (i < 1 || i > totalPage) {
-      // 無效頁碼，隱藏
       $paginationList.eq(listIndex).addClass("is-hidden");
       continue;
-    } else {
-      // 有效頁碼，顯示並設定內容
-      $paginationList
-        .eq(listIndex)
-        .removeClass("is-hidden")
-        .find(".pagination-link")
-        .attr("data-page", i)
-        .text(`${i}`);
     }
+
+    // 有效頁碼，顯示並設定內容
+    $paginationList
+      .eq(listIndex)
+      .removeClass("is-hidden")
+      .find(".pagination-link")
+      .attr("data-page", i)
+      .attr("aria-label", `Goto page ${i}`)
+      .text(`${i}`);
 
     // 如果是當前頁，加上 is-current 類別
     if (i === currentPage) {
       $paginationList
         .eq(listIndex)
         .find(".pagination-link")
+        .attr("data-page", i)
+        .attr("aria-label", `Page ${i}`)
         .addClass("is-current");
-    } else {
-      $paginationList
-        .eq(listIndex)
-        .find(".pagination-link")
-        .removeClass("is-current");
     }
   }
 
   // 最後一頁
-  if (currentPage < totalPage - 2) {
-    if (currentPage < totalPage - 3) {
+  if (currentPage < totalPage - 1) {
+    if (currentPage < totalPage - 2) {
       $paginationList.eq(5).removeClass("is-hidden");
     }
     $paginationList
@@ -219,12 +210,11 @@ export const renderPagination = (
       .removeClass("is-hidden")
       .find(".pagination-link")
       .attr("data-page", totalPage)
+      .attr("aria-label", `Goto page ${totalPage}`)
       .text(`${totalPage}`);
-  } else {
-    $paginationList.eq(5).addClass("is-hidden");
-    $paginationList.eq(6).addClass("is-hidden");
   }
 
+  // 插入 DOM 當中
   $(".pagination-container").html($template);
 };
 

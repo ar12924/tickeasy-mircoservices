@@ -1,5 +1,6 @@
 package user.buy.dao.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.PersistenceContext;
@@ -167,7 +168,7 @@ public class SearchDaoImpl implements SearchDao {
 	}
 
 	/*
-	 * 抓著 (eventId, memberId) 停用/啟用關注。
+	 * 抓著 (eventId, memberId) 加入/移除關注。
 	 * 
 	 * @param {Integer} eventId - 活動 id。
 	 * 
@@ -180,18 +181,20 @@ public class SearchDaoImpl implements SearchDao {
 	@Override
 	public Integer updateFavorite(Integer eventId, Integer memberId, boolean follow) {
 		// HQL 語句
-		var hqlTmp = new StringBuilder("UPDATE Favorite f ").append("SET isFollowed = :isFollowed ")
-				.append("WHERE f.eventId = :eventId ").append("AND f.memberId = :memberId");
+		var hqlTmp = new StringBuilder("UPDATE Favorite f ")
+				.append("SET f.isFollowed = :isFollowed, ")
+				.append("f.updateTime = :updateTime ")
+				.append("WHERE f.eventId = :eventId ")
+				.append("AND f.memberId = :memberId");
 		var hql = hqlTmp.toString();
 
 		// 判斷啟用還停用，建立操作物件
-		Query<?> query = session.createQuery(hql).setParameter("eventId", eventId).setParameter("memberId", memberId);
-		if (follow == true) {
-			query.setParameter("isFollowed", 1);
-		}else {
-			query.setParameter("isFollowed", 0);
-		}
-		
+		Query<?> query = session.createQuery(hql)
+				.setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
+				.setParameter("eventId", eventId)
+				.setParameter("memberId", memberId)
+				.setParameter("isFollowed", follow ? 1 : 0);
+
 		// 執行操作
 		return query.executeUpdate();
 	}
