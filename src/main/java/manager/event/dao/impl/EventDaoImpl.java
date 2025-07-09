@@ -33,4 +33,47 @@ public class EventDaoImpl implements EventDao {
 				.setParameter("memberId", memberId)
 				.getResultList();
 	}
+	
+	@Override
+    public int updateEvent(MngEventInfo eventInfo) {
+		try {
+            System.out.println("=== 開始更新活動 ===");
+            System.out.println("活動ID: " + eventInfo.getEventId());
+            System.out.println("活動名稱: " + eventInfo.getEventName());
+            
+            // 先檢查記錄是否存在
+            MngEventInfo existingEvent = session.get(MngEventInfo.class, eventInfo.getEventId());
+            if (existingEvent == null) {
+                System.err.println("找不到活動ID: " + eventInfo.getEventId());
+                return 0;
+            }
+            
+            // 更新非空欄位
+            existingEvent.setEventName(eventInfo.getEventName());
+            existingEvent.setEventFromDate(eventInfo.getEventFromDate());
+            existingEvent.setEventToDate(eventInfo.getEventToDate());
+            existingEvent.setEventHost(eventInfo.getEventHost());
+            existingEvent.setTotalCapacity(eventInfo.getTotalCapacity());
+            existingEvent.setPlace(eventInfo.getPlace());
+            existingEvent.setSummary(eventInfo.getSummary());
+            existingEvent.setDetail(eventInfo.getDetail());
+            
+            // 只在有新圖片時更新圖片
+            if (eventInfo.getImage() != null) {
+                existingEvent.setImage(eventInfo.getImage());
+            }
+            
+            // 使用 merge
+            session.merge(existingEvent);
+            session.flush(); // 立即執行 SQL
+            
+            System.out.println("✅ 活動更新成功");
+            return 1;
+            
+        } catch (Exception e) {
+            System.err.println("更新活動失敗: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }
