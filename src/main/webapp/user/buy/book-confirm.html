@@ -24,12 +24,26 @@
     <!-- section 主內容 -->
     <section class="columns is-centered mt-5 mb-5">
       <div class="column is-8">
+        <!-- 計時器顯示 -->
+        <div class="has-text-centered mb-4 counter-container">
+          <div
+            class="timer-display title is-4 is-family-monospace has-text-danger"
+            id="timer-display"
+          >
+            <span class="icon"><i class="fa-solid fa-clock"></i></span>
+            <span class="time-remaining">10:00</span>
+          </div>
+        </div>
+
         <!-- 付款提示區塊 -->
         <div class="notification is-warning is-light warning-box">
-          <span class="warning-icon">!</span>
-          <span class="has-text-weight-semibold is-size-4"
-            >您的訂單尚未付款</span
-          >
+          <!-- 提示文字 -->
+          <div class="warning-text">
+            <span class="warning-icon">!</span>
+            <span class="has-text-weight-semibold is-size-4"
+              >您的訂單尚未付款</span
+            >
+          </div>
         </div>
 
         <!-- 活動資訊(元件化) -->
