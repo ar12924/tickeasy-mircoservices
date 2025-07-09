@@ -8,7 +8,7 @@ import manager.event.vo.MngKeywordCategory;
 public interface EventService {
 
 	// index.html 顯示所有活動
-	public List<MngEventInfo> findAllEvents();
+	public List<MngEventInfo> findAllEvents(Integer memberId);
 
 	// 查詢活動
 	public MngEventInfo findEventById(Integer eventId);

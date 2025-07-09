@@ -22,8 +22,8 @@ public class EventServiceImpl implements EventService {
 	private KeywordCategoryDao keywordDao;
 
 	@Override
-	public List<MngEventInfo> findAllEvents() {
-		return eventDao.findAll();
+	public List<MngEventInfo> findAllEvents(Integer memberId) {
+		return eventDao.findAll(memberId);
 	}
 
 	@Override
@@ -42,6 +42,7 @@ public class EventServiceImpl implements EventService {
 //	public int createEvent(MngEventInfo eventInfo) {
 //		return eventDao.createEvent(eventInfo);
 //	}
+	@Transactional
 	@Override
 	public int createEvent(MngEventInfo eventInfo) {
 	    return eventDao.createEvent(eventInfo); // ✅ 確保這個方法會 insert
