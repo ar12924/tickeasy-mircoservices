@@ -32,9 +32,15 @@ public class TicketViewDto {
 	private String currentHolderChangeEmail;
 	private String currentHolderChangePhone;
 	private String currentHolderChangeIdCard;
-	
+	private String qrCodeHashCode;
 	
 
+	public String getQrCodeHashCode() {
+		return qrCodeHashCode;
+	}
+	public void setQrCodeHashCode(String qrCodeHashCode) {
+		this.qrCodeHashCode = qrCodeHashCode;
+	}
 	public String getCurrentHolderChangeUserName() {
 		return currentHolderChangeUserName;
 	}

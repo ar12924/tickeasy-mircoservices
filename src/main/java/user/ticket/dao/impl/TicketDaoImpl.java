@@ -1,5 +1,6 @@
 package user.ticket.dao.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,6 +133,40 @@ public class TicketDaoImpl implements TicketDao {
 		return ticketList;
 		
 	
+	}
+
+	@Override
+	public Ticket selectTicketByTicketId(int ticketId) {
+		Ticket ticket = new Ticket();
+
+		
+		String hql = "SELECT tt FROM Ticket tt JOIN FETCH tt.buyerOrderTicketVer botv\r\n"
+				+ "JOIN FETCH botv.eventInfoTicketVer\r\n"
+				+ "JOIN FETCH tt.eventTicketTypeTicketVer\r\n"
+				+ "JOIN FETCH tt.memberTicketVer\r\n"
+				+ "WHERE tt.ticketId=:ticketId";
+	
+		
+				ticket = session
+				.createQuery(hql, Ticket.class)
+				.setParameter("ticketId", ticketId)
+				.getSingleResult();
+		return ticket;
+	}
+
+	@Override
+	public Integer updateTicketStatus(int ticketId) {
+		Ticket ticket = new Ticket();
+		String hql = "UPDATE Ticket tt SET tt.isUsed = 1, tt.updateTime = :updateTime WHERE tt.ticketId = :ticketId";
+	
+		
+			
+		return session
+				.createQuery(hql)
+				.setParameter("ticketId", ticketId)
+				.setParameter("updateTime",java.sql.Timestamp.valueOf(LocalDateTime.now()))
+				.executeUpdate();
+		
 	}
 
 }
