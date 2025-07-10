@@ -588,6 +588,11 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = "/maven-tickeasy-v1/user/member/login.html";
         return;
     }
+
+    // 權限檢查通過後，初始化 header
+    if (typeof window.initHeader === 'function') {
+        window.initHeader();
+    }
     
     // 表單初始化
     initializeForm();

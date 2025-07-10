@@ -33,6 +33,12 @@ function checkUserPermission() {
         window.location.href = "/maven-tickeasy-v1/user/member/login.html";
         return false;
     }
+
+    // 權限檢查通過後，初始化 header
+    if (typeof window.initHeader === 'function') {
+        window.initHeader();
+    }
+    
     return true;
 }
 
