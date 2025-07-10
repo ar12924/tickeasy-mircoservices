@@ -105,12 +105,10 @@ if (loginBtn) {
           } else {
             localStorage.removeItem("savedUsername");
           }
-          // 分角色導向前，顯示會員頭像預覽
-
           // 分角色導向
           const role = memberData.roleLevel;
           if (parseInt(role) === 2 || parseInt(role) === 3) {
-            window.location.href = `${getContextPath()}/manager/eventdetail/dashboard.html`;
+            window.location.href = `${getContextPath()}/manager/index.html`;
           } else {
             window.location.href = `${getContextPath()}/user/buy/index.html`;
           }

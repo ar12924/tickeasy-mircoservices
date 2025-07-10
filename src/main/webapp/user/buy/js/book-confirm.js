@@ -1,5 +1,5 @@
 // ==================== 載入模組 (All Imports At Top) ====================
-import { getUrlParam, getContextPath } from "../../common/utils.js";
+import { getUrlParam, getContextPath, formatTime } from "../../common/utils.js";
 import { BOOKING_PROGRESS, ERROR_MESSAGES } from "../../common/constant.js";
 import {
   fetchNavTemplate,
@@ -29,6 +29,22 @@ import {
 
 // ==================== 1. API 服務層 (API Service Layer) ====================
 // 這些函數負責與後端 API 進行互動，處理請求的發送和響應的接收。
+
+/**
+ * 從 Redis 取得訂單資料(票種 + 個人資料)的 TTL。
+ *
+ * @return {Object} book 訂單填寫資訊。
+ */
+const findBookTTL = async () => {
+  // 從 Redis 抓資料
+  const resp = await fetch(`${getContextPath()}/book-info`);
+  const { message, successful, remainingTime } = await resp.json();
+
+  // 回傳 TTL 資料
+  sessionStorage.setItem("core-message", message);
+  sessionStorage.setItem("core-sucessful", successful);
+  return remainingTime;
+};
 
 /**
  * 從 Redis 取得訂單選擇結果資料。 (票種 + 個人資料)
@@ -171,7 +187,11 @@ const initBookConfirmJSEvents = async (book) => {
 
   // ====== "上一步" 按鈕點擊事件 ======
   $(".back").on("click", () => {
-    location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
+    const keepGoing = confirm("入場者資料會清空，要重新填寫?");
+    if (keepGoing) {
+      location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
+    }
+    return;
   });
   // ====== "下一步" 按鈕點擊事件 ======
   $(".next").on("mouseenter mouseleave", (e) => {
@@ -185,6 +205,34 @@ const initBookConfirmJSEvents = async (book) => {
   });
 };
 
+/**
+ * 傳入 TTL 定時倒數計時，每秒更新畫面的數字文字。
+ * @param {number} TTL - 訂單的 TTL。
+ * @param {function} renderTimer - 計時器渲染函數。
+ */
+const countDown = async (TTL, renderTimer) => {
+  const eventId = getUrlParam("eventId");
+  let remainingTime = TTL;
+
+  // 立即執行第1次
+  renderTimer(remainingTime);
+
+  // 定期重複執行(1000 ms)
+  const intervalId = setInterval(() => {
+    remainingTime--;
+    renderTimer(remainingTime); // 重新渲染
+
+    // 時間到停止
+    if (remainingTime <= 0) {
+      clearInterval(intervalId);
+      console.log("倒數結束!!");
+      alert("請重新選擇票種!!");
+      location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
+      return;
+    }
+  }, 1000);
+};
+
 // ==================== 4. UI 渲染層 (UI Rendering Layer) ====================
 // 這些函數負責動態生成或更新 HTML 內容。
 
@@ -195,6 +243,19 @@ const initBookConfirmJSEvents = async (book) => {
 const showBookTotalPrice = (totalPrice) => {
   $(".book-total-price").empty();
   $(".book-total-price").text(`NT$ ${totalPrice.toLocaleString("en-US")}`);
+};
+
+/**
+ * 渲染計時器
+ * @param {number} bookTTL - 訂單剩餘時間(秒)
+ */
+const renderTimer = (bookTTL) => {
+  // 抓取元素
+  const $timeToShow = $(".counter-container").find(".time-remaining");
+
+  // 插入時間文字
+  const formattedTTL = formatTime(bookTTL);
+  $timeToShow.text(formattedTTL);
 };
 
 // ==================== 5. 頁面初始化 (Initialization) ====================
@@ -217,6 +278,10 @@ const showBookTotalPrice = (totalPrice) => {
   book.eventName = eventInfo.eventName;
   // 輸出 header.html 模板(顯示對應進度條、活動名稱)
   renderHeader(eventInfo, book, headerTemplate);
+
+  // ====== 計時器顯示部分 ======
+  const bookTTL = await findBookTTL(); // 一次性取得 TTL
+  await countDown(bookTTL, renderTimer); // 定期更新並渲染
 
   // ====== event-box 部分 ======
   const eventBoxTemplate = await fetchEventBoxTemplate();

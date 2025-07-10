@@ -1,19 +1,19 @@
 package manager.eventdetail.controller;
 
-import common.util.CommonUtil;
-import manager.eventdetail.service.TicketSalesService;
+import common.vo.Core;
 import manager.eventdetail.service.EventInfoVOService;
+import manager.eventdetail.service.TicketSalesService;
 import manager.eventdetail.vo.EventInfoEventVer;
-import user.member.vo.Member;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import user.member.vo.Member;
+
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
-
-import static common.util.CommonUtilNora.*;
-import common.vo.Core;
 
 @RestController
 @RequestMapping("/manager/eventdetail/dashboard")
@@ -55,6 +55,11 @@ public class DashboardController {
             core.setMessage("處理請求時發生錯誤：" + e.getMessage());
             return core;
         }
+    }
+
+    @GetMapping("/ticketTypeTrend")
+    public Map<String, Object> getTicketTypeTrend(@RequestParam Integer eventId) {
+        return ticketSalesService.getTicketTypeTrendData(eventId);
     }
 
     private Core<Object> handleEventsList(String memberIdStr, Integer loginMemberId) {

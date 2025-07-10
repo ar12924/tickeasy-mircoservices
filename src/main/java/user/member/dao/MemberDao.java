@@ -1,7 +1,5 @@
 package user.member.dao;
 
-import java.util.List;
-
 import common.dao.CommonDao;
 import user.member.vo.Member;
 

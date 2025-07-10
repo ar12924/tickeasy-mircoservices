@@ -82,9 +82,9 @@ public class BookServiceImpl implements BookService {
 			core.setSuccessful(false);
 			return core;
 		}
-
+		
 		// 以 key = userName 將 book 存入 Redis 當中
-		template.opsForValue().set(book.getUserName(), book, timeoutMinutes, TimeUnit.MINUTES);
+		template.opsForValue().set(book.getUserName(), book, timeoutMinutes, TimeUnit.SECONDS);
 		core.setDataStatus(DataStatus.VALID);
 		core.setMessage("選擇票種儲存成功");
 		core.setSuccessful(true);
@@ -109,10 +109,10 @@ public class BookServiceImpl implements BookService {
 		}
 
 		// 先取得當前的 TTL
-		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.MINUTES);
+		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.SECONDS);
 
 		// 以 key = userName 將 book 存入 Redis 當中
-		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.MINUTES);
+		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.SECONDS);
 		core.setDataStatus(DataStatus.FOUND);
 		core.setMessage("填寫資料儲存成功");
 		core.setSuccessful(true);
@@ -138,10 +138,10 @@ public class BookServiceImpl implements BookService {
 		}
 
 		// 先取得當前的 TTL
-		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.MINUTES);
-
+		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.SECONDS);
+		
 		// 以 key = userName 將 book 存入 Redis 當中
-		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.MINUTES);
+		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.SECONDS);
 		core.setDataStatus(DataStatus.FOUND);
 		core.setMessage("資料儲存成功");
 		core.setSuccessful(true);
@@ -161,6 +161,9 @@ public class BookServiceImpl implements BookService {
 		Core<BookDto> core = new Core<>();
 		// 以 key = userName 從 Redis 中查詢 book 物件
 		var bookDto = (BookDto) template.opsForValue().get(userName);
+		
+		// 再以 key = userName 查詢 book 物件的 TTL
+		var bookTTL = template.getExpire(userName);
 
 		// 檢查有無資料(因 Redis TTL 時間到會移除)
 		if (bookDto == null) {
@@ -183,6 +186,7 @@ public class BookServiceImpl implements BookService {
 		core.setDataStatus(DataStatus.FOUND);
 		core.setMessage("取得訂購資料");
 		core.setSuccessful(true);
+		core.setRemainingTime(bookTTL);
 		return core;
 	}
 
@@ -300,6 +304,68 @@ public class BookServiceImpl implements BookService {
 		// 4. 成功儲存後...
 		core.setMessage("成功儲存訂單!!");
 		core.setDataStatus(DataStatus.VALID);
+		core.setSuccessful(true);
+		return core;
+	}
+
+	/**
+	 * 透過活動 id 查詢剩餘票券資料。
+	 * 
+	 * @param {Integer} eventId - 活動 id。
+	 * @return {Core<Long>} 剩餘票券數量。
+	 */
+	@Transactional
+	@Override
+	public Core<Long> getRemainingTicketsByEventAndTypeId(Integer eventId, Integer typeId) {
+		var core = new Core<Long>();
+
+		// 驗證參數
+		if (eventId == null || eventId <= 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("活動 id 未指定");
+			core.setSuccessful(false);
+			return core;
+		}
+		if (typeId == null || eventId <= 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("票種 id 未指定");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 查詢 (eventId, typeId) 已銷售票券數量
+		var eventInfo = dao.selectEventById(eventId);
+		var eventName = eventInfo.getEventName();
+		var soldCount = dao.countBuyerTicketByEventNameAndTypeId(eventName, typeId);
+		if (soldCount < 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("銷售數量為負");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 查詢 (eventId, typeId) 票券總數量
+		var totalCount = dao.selectTypeById(eventId, typeId).getCapacity();
+		if (totalCount < 0) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("票種總數量為負");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 已售出數量大於票券總數量(異常)
+		if (soldCount > totalCount) {
+			core.setDataStatus(DataStatus.INVALID);
+			core.setMessage("銷售數量超過總容量，資料異常");
+			core.setSuccessful(false);
+			return core;
+		}
+
+		// 計算 (eventId, typeId) 剩餘票數
+		var remainedCount = totalCount - soldCount;
+		core.setDataStatus(DataStatus.FOUND);
+		core.setCount(remainedCount);
+		core.setMessage("票種剩餘票數查詢成功");
 		core.setSuccessful(true);
 		return core;
 	}

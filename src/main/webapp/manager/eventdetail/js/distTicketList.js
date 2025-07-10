@@ -46,16 +46,20 @@ document.getElementById('datatable_search').addEventListener('input', function (
    			if(!Array.isArray(eventListBars)){
    									distTicketLists = [];
    						}
-			let isFirst = true;
+			let selectedEventId =sessionStorage.getItem('eventId') 
+						    ? Number(sessionStorage.getItem('eventId')) // 如果存在且不為空，轉換為數字
+						    : 1; // 否則預設為 1 
+				
   			for (let eventListBar of eventListBars) {
+				const isSelected = eventListBar.eventId === selectedEventId;
 				/*if(isFirst){
 					const firstEventId=eventListBar.eventId}*/
   			
 						
   										select_el.insertAdjacentHTML("beforeend", `
-											<option ${isFirst ? "selected" : ""} value="${eventListBar.eventId}">${eventListBar.eventName}</option>
+											<option ${isSelected ? "selected" : ""} value="${eventListBar.eventId}">${eventListBar.eventName}</option>
   							                `)
-											isFirst = false;
+											/*isFirst = false;*/
 											
   									}
 									
@@ -70,8 +74,6 @@ document.getElementById('datatable_search').addEventListener('input', function (
 									})
 									}
   
-  
-
 
 
 
@@ -139,8 +141,10 @@ document.getElementById('datatable_search').addEventListener('input', function (
 						//初始化
 						   const sIV=startInput.value;
 						const eIV=endInput.value;
-						   const selectValue=select_el.value;
-						   distTicketList_loaded(sIV,eIV,1);
+						   const selectValue=sessionStorage.getItem('eventId') 
+										? Number(sessionStorage.getItem('eventId')) // 如果存在且不為空，轉換為數字
+										: 1; // 否則預設為 1 ;
+						   distTicketList_loaded(sIV,eIV,selectValue);
 
 
 

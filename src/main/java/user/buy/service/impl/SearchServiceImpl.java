@@ -65,7 +65,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	/**
-	 * 查詢會員的我的關注資料。
+	 * 查詢我的關注。(需有會員身份)
 	 * 
 	 * @param {Member} member - 會員物件。
 	 * @return {core<List<Favorite>>} 回應我的關注資料。
@@ -77,14 +77,15 @@ public class SearchServiceImpl implements SearchService {
 		var memberId = member.getMemberId();
 
 		List<Favorite> favarite = dao.selectAllFavoriteByMemberId(memberId);
-		// 如果查不到資料，回傳空的 List
+		// 如果查不到資料
 		if (favarite.isEmpty()) {
 			core.setDataStatus(DataStatus.NOT_FOUND);
+			core.setData(favarite); // 回傳空 List
 			core.setMessage("沒有任何關注活動");
 			core.setSuccessful(true);
 			return core;
 		}
-		// 查到資料，回傳有資料的 List
+		// 查到資料
 		core.setDataStatus(DataStatus.FOUND);
 		core.setData(favarite);
 		core.setMessage("有關注活動");
@@ -93,7 +94,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	/**
-	 * 儲存會員的我的關注資料。
+	 * 加入我的關注。(需有會員身份)
 	 * 
 	 * @param{Member} member - session.member 會員資料。
 	 * @param{Integer} eventId - 活動 id。
@@ -105,7 +106,7 @@ public class SearchServiceImpl implements SearchService {
 		var core = new Core<Integer>();
 		var memberId = member.getMemberId();
 
-		// 檢查 eventId 不為0或 < 0
+		// 檢查 eventId 不為 0 或小於 0
 		if (eventId == null || eventId < 0) {
 			core.setDataStatus(DataStatus.INVALID);
 			core.setMessage("資料不合法");
@@ -113,23 +114,38 @@ public class SearchServiceImpl implements SearchService {
 			return core;
 		}
 
-		// 插入1筆新關注名單
-		final var newId = dao.insertFavorite(eventId, memberId);
-		if (newId == null || newId <= 0) {
+		// 查詢關注是否已存在？
+		var favoriteResult = dao.selectFavoriteByMemberIdAndEventId(memberId, eventId);
+		if (favoriteResult == null) {
+			// 不存在，插入一筆新的關注
+			dao.insertFavorite(eventId, memberId);
+			core.setDataStatus(DataStatus.EXECUTION_PASSED);
+			core.setMessage("新增一筆關注");
+			core.setSuccessful(true);
+			core.setData(1);
+			return core;
+		}
+
+		// 存在，則判斷是否已關注？
+		var isFollowed = favoriteResult.getIsFollowed();
+		if (isFollowed == 1) {
+			// 已關注，停止操作
 			core.setDataStatus(DataStatus.EXECUTION_FAILED);
-			core.setMessage("操作失敗");
+			core.setMessage("重複加入關注");
 			core.setSuccessful(false);
 			return core;
 		}
+		// 仍未關注，繼續操作
+		var updateFavoriteCount = dao.updateFavorite(eventId, memberId, true);
 		core.setDataStatus(DataStatus.EXECUTION_PASSED);
-		core.setMessage("操作成功");
+		core.setMessage("加入關注");
 		core.setSuccessful(true);
-		core.setData(newId);
+		core.setData(updateFavoriteCount);
 		return core;
 	}
 
 	/**
-	 * 刪除會員的我的關注資料 by (memberId, eventId)。
+	 * 移除我的關注。(需有會員身份)
 	 * 
 	 * @param{Member} member - session.member 會員資料。
 	 * @param{Integer} eventId - 活動 id。
@@ -149,18 +165,31 @@ public class SearchServiceImpl implements SearchService {
 			return core;
 		}
 
-		// 刪除1筆關注名單
-		final var deleteCount = dao.removeFavorite(eventId, memberId);
-		if (deleteCount == null || deleteCount <= 0) {
+		// 查詢關注是否已存在？
+		var favoriteResult = dao.selectFavoriteByMemberIdAndEventId(memberId, eventId);
+		if (favoriteResult == null) {
+			// 不存在，結束操作
 			core.setDataStatus(DataStatus.EXECUTION_FAILED);
-			core.setMessage("操作失敗");
+			core.setMessage("已無關注可移除");
 			core.setSuccessful(false);
 			return core;
 		}
-		core.setDataStatus(DataStatus.EXECUTION_PASSED);
-		core.setMessage("操作成功");
-		core.setSuccessful(true);
-		core.setData(deleteCount);
+
+		// 存在，則判斷是否已關注？
+		var isFollowed = favoriteResult.getIsFollowed();
+		if (isFollowed == 1) {
+			// 已關注，執行移除關注
+			var updateFavoriteCount = dao.updateFavorite(eventId, memberId, false);
+			core.setDataStatus(DataStatus.EXECUTION_PASSED);
+			core.setMessage("移除關注");
+			core.setSuccessful(true);
+			core.setData(updateFavoriteCount);
+			return core;
+		}
+		// 仍未關注，結束操作
+		core.setDataStatus(DataStatus.EXECUTION_FAILED);
+		core.setMessage("尚未關注，無需移除");
+		core.setSuccessful(false);
 		return core;
 	}
 

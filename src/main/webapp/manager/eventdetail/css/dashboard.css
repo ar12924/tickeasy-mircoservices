@@ -2,3 +2,78 @@
 body {
   background-color: #f8f9fa;
 }
+.text-pink {
+  color: #fe6d73 !important;
+}
+.text-blue {
+  color: #48cae4 !important;
+}
+.text-green {
+  color: #17c3b2 !important;
+}
+.text-yellow {
+  color: #ffcb77 !important;
+}
+.small-box {
+  background: #fff !important;
+  color: #222 !important;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+.small-box .icon {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  font-size: 2.8rem;
+  line-height: 1;
+}
+.sales-bar-list {
+  margin-top: 1rem;
+}
+.sales-bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.ticket-type {
+  width: 80px;
+  font-weight: 500;
+}
+.progress-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  margin: 0 12px;
+  position: relative;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: #48cae4;
+  border-radius: 4px 0 0 4px;
+  transition: width 0.4s;
+}
+.percent {
+  width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.sold-unsold-table {
+  display: inline-table;
+  margin-left: 10px;
+  font-size: 0.97em;
+  vertical-align: middle;
+}
+.sold-unsold-table td {
+  padding: 0 4px;
+  color: #555;
+}
+.sold-unsold-table .sold {
+  color: #d94f4f;
+  font-weight: 500;
+}
+.sold-unsold-table .unsold {
+  color: #008e67;
+}

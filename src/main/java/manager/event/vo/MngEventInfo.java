@@ -24,17 +24,17 @@ import lombok.NoArgsConstructor;
 public class MngEventInfo{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "event_id", insertable = false)
-	private int eventId;
+	@Column(name = "event_id")
+	private Integer eventId;
 
 	@Column(name = "event_name")
 	private String eventName;
 
-	@Column(name = "event_from_date")
+	@Column(name = "event_from_date", nullable = false)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Timestamp eventFromDate;
 
-	@Column(name = "event_to_date")
+	@Column(name = "event_to_date", nullable = false)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Timestamp eventToDate;
 
@@ -42,7 +42,7 @@ public class MngEventInfo{
 	private String eventHost;
 
 	@Column(name = "total_capacity")
-	private int totalCapacity;
+	private Integer totalCapacity;
 
 	private String place;
 
@@ -50,8 +50,8 @@ public class MngEventInfo{
 
 	private String detail;
 
-	@Column(name = "is_posted", insertable = false)
-	private int isPosted;
+	@Column(name = "is_posted", insertable = false, updatable = false)
+	private Integer isPosted;
 
 	@Column(name = "image_dir")
 	private String imageDir;
@@ -60,16 +60,16 @@ public class MngEventInfo{
 	@Column(name = "image")
 	private byte[] image;
 
-	@Column(name = "keyword_id")
-	private int keywordId;
+	@Column(name = "keyword_id", nullable = false)
+	private Integer keywordId;
 
-	@Column(name = "member_id")
-	private int memberId;
+	@Column(name = "member_id", nullable = false)
+	private Integer memberId;
 
-	@Column(name = "create_time", insertable = false)
+	@Column(name = "create_time", insertable = false, updatable = false)
 	private Timestamp createTime;
 
-	@Column(name = "update_time", insertable = false)
+	@Column(name = "update_time", insertable = false, updatable = false)
 	private Timestamp updateTime;
 
 }
