@@ -34,7 +34,7 @@ function init() {
             <div class="d-grid gap-2">
               <a href="event/EditEvent.html?eventId=${data.eventId}" class="btn btn-warning text-danger">編輯活動</a>
               <a href="#" class="btn btn-warning text-danger">編輯報名表單</a>
-              <a href="#" class="btn btn-warning text-danger">編輯票種</a>
+              <a href="event/EditTicketType.html?eventId=${data.eventId}" class="btn btn-warning text-danger">編輯票種</a>
               <a href="#" class="btn btn-warning text-danger">粉絲交流管理</a>
               <a href="#" class="btn btn-secondary">上／下架活動</a>
             </div>
