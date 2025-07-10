@@ -14,4 +14,6 @@ public interface EventDao extends CommonDao {
 	public List<MngEventInfo> findAll(Integer memberId);
 
     public int updateEvent(MngEventInfo eventInfo);
+    
+    public int toggleEventStatus(Integer eventId, Integer isPosted);
 }
