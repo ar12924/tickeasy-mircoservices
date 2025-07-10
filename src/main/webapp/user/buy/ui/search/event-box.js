@@ -156,7 +156,7 @@ export const renderPagination = (
   // 頁碼列表(所有 li 的父元素)
   const $paginationList = $template.find(".pagination-list li");
 
-  // 第一頁
+  // 第一頁(1, 2, curr = 3)
   if (currentPage > 2) {
     $paginationList
       .eq(0)
@@ -200,7 +200,7 @@ export const renderPagination = (
     }
   }
 
-  // 最後一頁
+  // 最後一頁(curr = 8, 9, 10)
   if (currentPage < totalPage - 1) {
     if (currentPage < totalPage - 2) {
       $paginationList.eq(5).removeClass("is-hidden");

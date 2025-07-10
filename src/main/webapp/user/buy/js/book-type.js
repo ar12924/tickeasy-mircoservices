@@ -1,6 +1,10 @@
 // ==================== 載入模組 (All Imports At Top) ====================
 import { getUrlParam, getContextPath } from "../../common/utils.js";
-import { BOOKING_PROGRESS, ERROR_MESSAGES } from "../../common/constant.js";
+import {
+  BOOKING_PROGRESS,
+  ERROR_MESSAGES,
+  OTHER_CONSTS,
+} from "../../common/constant.js";
 import {
   fetchNavTemplate,
   renderNav,
@@ -113,12 +117,11 @@ const initBookTypeJSEvents = (book) => {
   const eventId = getUrlParam("eventId");
 
   // ====== "更新票券" 按鈕點擊事件 ======
-  $(".update").on("mouseenter mouseleave", (e) => {
-    // hover 藍色框效果
-    $(e.target).closest(".update").toggleClass("is-focused");
-  });
-
   $(".update").on("click", async (e) => {
+    // 改變按鈕樣式
+    $(".updating").removeClass("is-hidden");
+    $(".update").addClass("is-hidden");
+
     // 取得票種、eventId
     const eventId = getUrlParam("eventId");
     const typeIdArr = await fetchTicketType(eventId);
@@ -138,15 +141,21 @@ const initBookTypeJSEvents = (book) => {
     // 完成剩餘票數更新，判斷成功與否?
     for (const { successful, message } of remainingTicketCountArr) {
       if (!successful) {
-        // 顯示失敗訊息
-        $("#error-message").find(".book-type-message").text(message);
-        $("#error-message").removeClass("is-hidden");
-        break;
+        // 顯示失敗訊息，恢復按鈕樣式
+        setTimeout(() => {
+          $("#error-message").find(".book-type-message").text(message);
+          $("#error-message").removeClass("is-hidden");
+          $(".updating").addClass("is-hidden");
+          $(".update").removeClass("is-hidden");
+        }, OTHER_CONSTS.ANIMATION_TRANSITION);
+        return;
       }
-      // 顯示成功訊息
-      $("#success-message").find(".book-type-message").text(message);
-      $("#success-message").removeClass("is-hidden");
     }
+    // 成功，恢復按鈕樣式
+    setTimeout(() => {
+      $(".updating").addClass("is-hidden");
+      $(".update").removeClass("is-hidden");
+    }, OTHER_CONSTS.ANIMATION_TRANSITION);
   });
   // ====== "更新票券" 按鈕 blur 事件 ======
   $(".update").on("blur", () => {
