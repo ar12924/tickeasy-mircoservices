@@ -76,4 +76,27 @@ public class EventDaoImpl implements EventDao {
             return 0;
         }
     }
+
+	@Override
+	public int toggleEventStatus(Integer eventId, Integer isPosted) {
+		try {
+            System.out.println("=== 使用 HQL 更新活動狀態 ===");
+            System.out.println("活動ID: " + eventId + ", 新狀態: " + isPosted);
+            
+            // ✅ 使用 HQL 直接更新
+            String hql = "UPDATE MngEventInfo SET isPosted = :isPosted WHERE eventId = :eventId";
+            int result = session.createQuery(hql)
+                    .setParameter("isPosted", isPosted)
+                    .setParameter("eventId", eventId)
+                    .executeUpdate();
+            
+            System.out.println("✅ 更新影響的記錄數: " + result);
+            return result;
+            
+        } catch (Exception e) {
+            System.err.println("更新活動狀態失敗: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
+	}
 }

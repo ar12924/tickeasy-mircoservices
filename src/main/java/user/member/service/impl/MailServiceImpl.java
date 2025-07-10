@@ -9,6 +9,7 @@ import user.member.service.MailService;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 
 import java.io.UnsupportedEncodingException;
 
@@ -69,7 +70,7 @@ public class MailServiceImpl implements MailService {
 
             helper.setFrom(fromEmail, fromName);
             helper.setTo(toEmail);
-            helper.setSubject(subject);
+            helper.setSubject(MimeUtility.encodeText(subject, "UTF-8", "B"));
             helper.setText(htmlContent, true);
 
             mailSender.send(message);

@@ -18,6 +18,30 @@ const elements = {
     pagination: null
 };
 
+function checkUserPermission() {
+    const roleLevel = sessionStorage.getItem("roleLevel");
+    const memberId = sessionStorage.getItem("memberId");
+
+    if (!roleLevel || (roleLevel !== "2" && roleLevel !== "3")) {
+        alert("您沒有權限訪問此頁面");
+        window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+        return false;
+    }
+
+    if (!memberId) {
+        alert("請先登入");
+        window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+        return false;
+    }
+
+    // 權限檢查通過後，初始化 header
+    if (typeof window.initHeader === 'function') {
+        window.initHeader();
+    }
+    
+    return true;
+}
+
 /**
  * 初始化函數
  */
@@ -598,6 +622,11 @@ function resetSearch() {
  * 安全檢查並執行初始化
  */
 function safeInitialize() {
+    // 先檢查權限
+    if (!checkUserPermission()) {
+        return;
+    }
+
     if (typeof initTicketExchange === 'function') {
         initTicketExchange();
     } else {
