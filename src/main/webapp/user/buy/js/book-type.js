@@ -35,8 +35,10 @@ const saveBook = async (book) => {
 
   // 如果 eventId 缺少
   if (book.eventId <= 0) {
-    $(".book-type-message").text(ERROR_MESSAGES.MISSING_EVENT_ID);
-    $(".book-type-message").closest("#error-message").removeClass("is-hidden");
+    $("#error-message")
+      .find(".book-type-message")
+      .text(ERROR_MESSAGES.MISSING_EVENT_ID);
+    $("#error-message").removeClass("is-hidden");
     return;
   }
 
@@ -46,8 +48,10 @@ const saveBook = async (book) => {
     totalNum += ticketType.quantity;
   });
   if (totalNum <= 0) {
-    $(".book-type-message").text(ERROR_MESSAGES.NO_TICKETS_SELECTED);
-    $(".book-type-message").closest("#error-message").removeClass("is-hidden");
+    $("#error-message")
+      .find(".book-type-message")
+      .text(ERROR_MESSAGES.NO_TICKETS_SELECTED);
+    $("#error-message").removeClass("is-hidden");
     return;
   }
 
@@ -131,25 +135,24 @@ const initBookTypeJSEvents = (book) => {
       remainingTicketCountArr.push({ count, message, successful });
     }
 
-    // 完成剩餘票數更新，顯示成功訊息
-    let checkCountRetrieved = true;
-    remainingTicketCountArr.forEach(({ successful, message }) => {
+    // 完成剩餘票數更新，判斷成功與否?
+    for (const { successful, message } of remainingTicketCountArr) {
       if (!successful) {
-        $(".book-type-message").text(message);
-        $(".book-type-message")
-          .closest("#error-message")
-          .removeClass("is-hidden");
+        // 顯示失敗訊息
+        $("#error-message").find(".book-type-message").text(message);
+        $("#error-message").removeClass("is-hidden");
+        break;
       }
-      $(".book-type-message").text(message);
-      $(".book-type-message")
-        .closest("#error-message")
-        .removeClass("is-hidden");
-    });
+      // 顯示成功訊息
+      $("#success-message").find(".book-type-message").text(message);
+      $("#success-message").removeClass("is-hidden");
+    }
   });
   // ====== "更新票券" 按鈕 blur 事件 ======
   $(".update").on("blur", () => {
     $(".book-type-message").text("");
-    $(".book-type-message").closest("#error-message").addClass("is-hidden");
+    $("#error-message").addClass("is-hidden");
+    $("#success-message").addClass("is-hidden");
   });
 
   // ====== "上一步" 按鈕點擊事件 ======
@@ -170,8 +173,8 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== "下一步" 按鈕 blur 事件 ======
   $(".next").on("blur", () => {
-    $(".book-type-message").text("");
-    $(".book-type-message").closest("#error-message").addClass("is-hidden");
+    $("#error-message").find(".book-type-message").text("");
+    $("#error-message").addClass("is-hidden");
   });
 };
 
