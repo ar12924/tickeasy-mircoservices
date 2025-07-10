@@ -102,7 +102,7 @@ function ticket_loaded(category) {
 			
 			if(ticketView.viewCategoryType==category){
 				count++;
-				var qrData = "http://192.168.8.183:8080/maven-tickeasy-v1/ticket/use?Id=" + ticketView.ticketId + "&code=" + ticketView.qrCodeHashCode;
+				var qrData = "http://192.168.8.183:8080/maven-tickeasy-v1/ticket/use?Id=" + ticketView.ticketId + "&code=" + ticketView.qrCodeHashCode + "&now=" + sessionStorage.getItem("memberId");
 				// 對整個 URL 編碼
 				const encodedQrData = encodeURIComponent(qrData);
 				// 產生 QR Code 圖片網址

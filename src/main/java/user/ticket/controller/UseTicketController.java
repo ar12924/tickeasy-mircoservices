@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import user.member.vo.Member;
 import user.ticket.dto.TicketViewDto;
 import user.ticket.service.TicketService;
 import user.ticket.vo.Ticket;
@@ -25,9 +27,9 @@ public class UseTicketController {
 	private TicketService ticketService;
 	
 	@GetMapping("use")
-	public void useTicket(@RequestParam("Id") String ticketId,@RequestParam("code") String customCode,HttpServletResponse response) throws IOException {
+	public void useTicket(@RequestParam("Id") String ticketId,@RequestParam("code") String customCode,@RequestParam("now") Integer sessionMemberId, HttpServletResponse response) throws IOException {
 
-		
+	
 		 // 設置回應編碼為 UTF-8
         response.setContentType("text/plain;charset=UTF-8"); // 設置內容類型和編碼
         response.setCharacterEncoding("UTF-8"); // 設置字符編碼為 UTF-8
@@ -43,9 +45,9 @@ public class UseTicketController {
             return ;
         }
 
-        // 2. 驗證 code（通常是加密/雜湊）
-        if (!customCode.equals(ticket.getQrCodeHashCode())) {
-        	out.print("❌ 驗票失敗：驗証不成功;");
+        // 2. 驗證 code  Current Holder Id card和原ticket Id card對不上且連線memberId不等於Current Holder Member Id
+        if (!customCode.equals(ticket.getQrCodeHashCode())&& !sessionMemberId.equals(ticket.getCurrentHolderMemberId())) {
+        	out.print("❌ 驗票失敗：驗証不成功,此票已轉讓;");
             return ;
         }
 
