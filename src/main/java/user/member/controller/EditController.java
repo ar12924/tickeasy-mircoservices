@@ -61,7 +61,7 @@ public class EditController {
 
     // 修改會員資料（支援大頭貼上傳）
     @PostMapping(value = "update", consumes = {"multipart/form-data"})
-    public Core<Member> edit(@RequestParam("member") String memberJson, @RequestPart(value = "photo", required = false) MultipartFile photo, @SessionAttribute Member member) {
+    public Core<Member> edit(@RequestParam("member") String memberJson, @RequestPart(value = "photo", required = false) MultipartFile photo, @SessionAttribute Member member, HttpSession session) {
         Core<Member> core = new Core<>();
         try {
             // 使用 ObjectMapper 解析 JSON
@@ -77,9 +77,17 @@ public class EditController {
 
             Member updated = service.editMember(reqMember);
 
-            core.setSuccessful(true);
-            core.setMessage("會員資料已更新");
-            core.setData(updated);
+            if (updated.isSuccessful()) {
+                // 更新 SESSION 中的會員資料
+                session.setAttribute("member", updated);
+                
+                core.setSuccessful(true);
+                core.setMessage("會員資料已更新");
+                core.setData(updated);
+            } else {
+                core.setSuccessful(false);
+                core.setMessage(updated.getMessage());
+            }
         } catch (Exception e) {
             core.setSuccessful(false);
             core.setMessage("會員資料更新失敗：" + e.getMessage());
