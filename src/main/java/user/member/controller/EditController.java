@@ -117,7 +117,7 @@ public class EditController {
 
     // 發送密碼更新認證信 API
     @PostMapping("send-password-update-mail")
-    public Core<Member> sendPasswordUpdateMail(@RequestParam String newPassword, @SessionAttribute Member member) {
+    public Core<Member> sendPasswordUpdateMail(@RequestParam String newPassword, @SessionAttribute Member member, HttpSession session) {
         Core<Member> core = new Core<>();
         try {
             // 驗證密碼長度
@@ -126,7 +126,11 @@ public class EditController {
                 core.setMessage("密碼長度至少需要6個字元");
                 return core;
             }
-            // 發送密碼更新認證信（新密碼直接傳給 service）
+            
+            // 將新密碼暫時存儲在 session 中
+            session.setAttribute("pendingPassword", newPassword);
+            
+            // 發送密碼更新認證信
             Member result = service.sendPasswordUpdateMail(member, newPassword);
             if (result.isSuccessful()) {
                 core.setSuccessful(true);
@@ -149,8 +153,8 @@ public class EditController {
         try {
             System.out.println("開始處理密碼更新認證，token: " + token);
 
-            // 用 token 前綴查詢 VerificationToken
-            VerificationToken verificationToken = verifyDao.findByTokenPrefix(token);
+            // 用 token 查詢 VerificationToken
+            VerificationToken verificationToken = verifyDao.findByToken(token);
             if (verificationToken == null) {
                 System.err.println("找不到對應的 token: " + token);
                 response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=invalid_token");
@@ -179,23 +183,23 @@ public class EditController {
 
             System.out.println("找到會員: " + member.getMemberId() + ", " + member.getUserName());
 
-            // 解析 tokenName，取得加密密碼
-            String tokenName = verificationToken.getTokenName();
-            String[] parts = tokenName.split("\\|");
-            if (parts.length != 2) {
-                System.err.println("Token 格式錯誤");
-                response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=token_format");
+            // 從 session 中獲取新密碼（需要前端配合）
+            String newPassword = (String) session.getAttribute("pendingPassword");
+            if (newPassword == null) {
+                System.err.println("找不到待更新的密碼");
+                response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?error=no_password");
                 return;
             }
-            String encryptedPassword = parts[1];
 
             System.out.println("準備更新會員密碼，會員ID: " + member.getMemberId());
 
             // 更新會員密碼並刪除token（事務性操作）
-            Member result = service.updatePasswordAndDeleteToken(member, encryptedPassword, verificationToken.getTokenId());
+            Member result = service.updatePasswordAndDeleteToken(member, newPassword, verificationToken.getTokenId());
 
             if (result.isSuccessful()) {
                 System.out.println("密碼更新成功");
+                // 清除 session 中的待更新密碼
+                session.removeAttribute("pendingPassword");
                 // 更新 session 中的會員資料
                 session.setAttribute("member", result);
                 response.sendRedirect("/maven-tickeasy-v1/user/member/edit.html?success=password_updated");

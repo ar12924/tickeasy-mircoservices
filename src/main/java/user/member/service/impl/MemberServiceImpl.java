@@ -364,27 +364,36 @@ public class MemberServiceImpl implements MemberService {
 		Member found = memberDao.findByUserName(username);
 		if (found != null) {
 			String stored = found.getPassword();
+			boolean passwordValid = false;
+			
+			// 檢查密碼是否正確
 			if (password.equals(stored)) {
-				// 檢查帳號是否已驗證
-				if (found.getRoleLevel() == null || found.getRoleLevel() == 0) {
-					found.setSuccessful(false);
-					found.setMessage("帳號尚未驗證，請先驗證您的電子郵件");
-					return found;
-				}
-				String newHash = HashUtil.hashpw(password);
-				found.setPassword(newHash);
-				memberDao.update(found);
-				found.setSuccessful(true);
-				found.setMessage("登入成功");
-				return found;
+				passwordValid = true;
+			} else if (HashUtil.verify(password, stored)) {
+				passwordValid = true;
 			}
-			if (HashUtil.verify(password, stored)) {
+			
+			if (passwordValid) {
 				// 檢查帳號是否已驗證
 				if (found.getRoleLevel() == null || found.getRoleLevel() == 0) {
 					found.setSuccessful(false);
 					found.setMessage("帳號尚未驗證，請先驗證您的電子郵件");
 					return found;
 				}
+				// 檢查帳號是否已啟用
+				if (found.getIsActive() == null || found.getIsActive() == 0) {
+					found.setSuccessful(false);
+					found.setMessage("帳號已被停用，請聯絡管理員");
+					return found;
+				}
+				
+				// 明碼更新為雜湊格式
+				if (password.equals(stored)) {
+					String newHash = HashUtil.hashpw(password);
+					found.setPassword(newHash);
+					memberDao.update(found);
+				}
+				
 				found.setSuccessful(true);
 				found.setMessage("登入成功");
 				return found;
@@ -556,15 +565,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member sendPasswordUpdateMail(Member member, String newPassword) {
 		try {
-			// 產生 uuid
+			// 產生 uuid 作為 token
 			String uuid = UUID.randomUUID().toString();
-			// 密碼加密
-			String encryptedPassword = HashUtil.hashpw(newPassword);
-			// tokenName = uuid|加密密碼
-			String tokenName = uuid + "|" + encryptedPassword;
-			// 創建密碼更新認證 token
-			VerificationToken token = createToken(member, "PASSWORD_UPDATE", 3600 * 1000, tokenName);
-			// 發送密碼更新認證信（信件只帶 uuid）
+			// 創建密碼更新認證 token（只存儲 UUID，不存儲密碼）
+			VerificationToken token = createToken(member, "PASSWORD_UPDATE", 3600 * 1000, uuid);
+			// 發送密碼更新認證信
 			mailService.sendPasswordUpdateNotification(member.getEmail(), member.getNickName(), uuid);
 			member.setSuccessful(true);
 			member.setMessage("密碼更新認證信已發送");
@@ -578,12 +583,32 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional
 	@Override
 	public Member updatePasswordAndDeleteToken(Member member, String newPassword, Integer tokenId) {
-		member.setPassword(newPassword);
-		Member result = editMember(member);
-		if (result.isSuccessful()) {
-			verifyDao.deleteById(tokenId);
+		// 直接更新密碼，不經過 editMember 的二次加密
+		Member existingMember = memberDao.findById(member.getMemberId());
+		if (existingMember == null) {
+			member.setSuccessful(false);
+			member.setMessage("查無此會員");
+			return member;
 		}
-		return result;
+		
+		// 加密密碼並設置
+		existingMember.setPassword(HashUtil.hashpw(newPassword));
+		
+		try {
+			boolean updated = memberDao.update(existingMember);
+			if (updated) {
+				verifyDao.deleteById(tokenId);
+				existingMember.setSuccessful(true);
+				existingMember.setMessage("密碼更新成功");
+			} else {
+				existingMember.setSuccessful(false);
+				existingMember.setMessage("密碼更新失敗");
+			}
+		} catch (Exception e) {
+			existingMember.setSuccessful(false);
+			existingMember.setMessage("密碼更新失敗：" + e.getMessage());
+		}
+		return existingMember;
 	}
 
 	// 提供給控制器使用的方法
