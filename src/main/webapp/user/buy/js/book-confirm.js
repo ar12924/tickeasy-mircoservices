@@ -264,7 +264,9 @@ const renderTimer = (bookTTL) => {
  */
 const renderImage = ({ image }) => {
   const imageSrcLink = `data:image/jpeg;base64,${image}`;
-  $(".image").find("img").attr("src", imageSrcLink);
+  if (image) {
+    $(".image").find("img").attr("src", imageSrcLink);
+  }
 };
 
 // ==================== 5. 頁面初始化 (Initialization) ====================

@@ -196,7 +196,9 @@ const initBookTypeJSEvents = (book) => {
  */
 const renderImage = ({ image }) => {
   const imageSrcLink = `data:image/jpeg;base64,${image}`;
-  $(".card-image").find("img").attr("src", imageSrcLink);
+  if (image) {
+    $(".card-image").find("img").attr("src", imageSrcLink);
+  }
 };
 
 // ==================== 5. 頁面初始化 (Initialization) ====================
