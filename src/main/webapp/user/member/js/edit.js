@@ -28,6 +28,13 @@ const passwordUpdateStatusText = document.querySelector(
   "#passwordUpdateStatusText"
 );
 
+// 即時欄位驗證
+const nicknameError = document.querySelector("#nicknameError");
+const emailError = document.querySelector("#emailError");
+const phoneError = document.querySelector("#phoneError");
+const birthDateError = document.querySelector("#birthDateError");
+const genderError = document.querySelector("#genderError");
+
 // 檢查 URL 參數，顯示密碼更新結果
 const urlParams = new URLSearchParams(window.location.search);
 const success = urlParams.get("success");
@@ -181,6 +188,47 @@ if (photoInput) {
 } else {
   console.warn("#photoInput not found");
 }
+
+// 即時欄位驗證
+nickname.addEventListener("input", function () {
+  if (nickname.value.trim().length < 1 || nickname.value.trim().length > 20) {
+    nicknameError.textContent = "暱稱長度須介於 1～20 字元";
+  } else {
+    nicknameError.textContent = "";
+  }
+});
+
+email.addEventListener("input", function () {
+  if (!/^[\w.-]+@[\w.-]+\.[A-Za-z]{2,6}$/.test(email.value.trim())) {
+    emailError.textContent = "電子郵件格式錯誤";
+  } else {
+    emailError.textContent = "";
+  }
+});
+
+phone.addEventListener("input", function () {
+  if (!/^09\d{8}$/.test(phone.value.trim())) {
+    phoneError.textContent = "手機格式錯誤，需為台灣手機號碼 09 開頭共 10 碼";
+  } else {
+    phoneError.textContent = "";
+  }
+});
+
+birthDate.addEventListener("change", function () {
+  if (!birthDate.value) {
+    birthDateError.textContent = "出生日期不可為空";
+  } else {
+    birthDateError.textContent = "";
+  }
+});
+
+gender.addEventListener("change", function () {
+  if (!(gender.value === "M" || gender.value === "F")) {
+    genderError.textContent = "性別請選擇男 (M) 或 女 (F)";
+  } else {
+    genderError.textContent = "";
+  }
+});
 
 // 密碼區塊滑動展開/收合
 if (changePasswordBtn) {

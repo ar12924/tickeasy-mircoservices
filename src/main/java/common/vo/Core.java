@@ -20,6 +20,10 @@ public class Core<T> {
 	/** 當前頁面大小 */
 	private Integer pageSize;
 	
+	// === 時間資訊 ===
+	/** 剩餘時間 */
+	private Long remainingTime;
+	
 	// === 傳輸資料 ===
 	/** 核心資料內容 */
 	private T data;

@@ -37,6 +37,7 @@ export const renderEventInfoBox = async (templateHTML, eventResponse) => {
   let favoriteIdArr = [];
   const favoriteResult = await fetchFavorite();
   if (favoriteResult.successful) {
+    // 拆解 data 為一個陣列
     favoriteIdArr = favoriteResult.data.map((item) => item.eventId);
   }
 
@@ -64,7 +65,7 @@ export const renderEventInfoBox = async (templateHTML, eventResponse) => {
     // 自訂屬性標記活動 id
     $template.find(".event-card").attr("data-event-id", eventId);
 
-    // eventId === favorId 時，關注按鈕樣式會改變
+    // 檢查 favor 陣列，有 eventId 者，改變關注按鈕
     if (favoriteIdArr.includes(eventId)) {
       $template
         .find(".favorite-btn")
@@ -87,7 +88,7 @@ export const renderEventInfoBox = async (templateHTML, eventResponse) => {
 // 這是主要頁面邏輯的入口點，負責綁定事件和協調不同層級的函數。
 
 export const initEventBoxJSEvents = () => {
-  $(".favorite-btn").on("click", async (e) => {
+  $(".event-container").on("click", ".favorite-btn", async (e) => {
     let result;
     const favorCard = $(e.target).closest(".event-card");
     const eventId = favorCard.attr("data-event-id");
@@ -100,14 +101,14 @@ export const initEventBoxJSEvents = () => {
       return;
     }
 
-    // 有會員身份後，判斷儲存或刪除關注資料
+    // 有會員身份後，判斷加入或移除關注資料
     if (favorCard.hasClass("favor-active")) {
-      // 刪除關注資料
+      // 移除關注資料
       result = await deleteFavorite(eventId);
       console.log(result);
       favorCard.removeClass("favor-active");
     } else {
-      // 新增關注資料
+      // 加入關注資料
       result = await saveFavorite(eventId);
       console.log(result);
       favorCard.addClass("favor-active");

@@ -49,7 +49,7 @@ public class SearchEventController {
 	}
 
 	/**
-	 * 查詢會員的我的關注資料。
+	 * 查詢會員我的關注資料。
 	 * 
 	 * @param {Member} member - 會員物件。
 	 * @return {Favorite} 某會員的關注資料。
@@ -68,11 +68,11 @@ public class SearchEventController {
 	}
 
 	/**
-	 * 儲存會員的我的關注資料。
+	 * 加入會員的我的關注資料。
 	 * 
 	 * @param{Member} member - session.member 會員資料。
 	 * @param{FavoriteDto} favorite - 關注資料，只含 eventId 這一個唯一欄位。
-	 * @return{Core<Integer>} 儲存資料的識別 id 和操作結果。
+	 * @return{Core<Integer>} 加入關注操作結果。
 	 */
 	@PostMapping("like")
 	public Core<Integer> saveFavorite(@SessionAttribute(required = false) Member member,
@@ -87,7 +87,7 @@ public class SearchEventController {
 			return core;
 		}
 
-		// 執行儲存關注資料
+		// 加入關注
 		return service.saveFavorite(member, favorite.getEventId());
 	}
 
@@ -96,7 +96,7 @@ public class SearchEventController {
 	 * 
 	 * @param{Member} member - session.member 會員資料。
 	 * @param{FavoriteDto} favorite - 關注資料，只含 eventId 這一個唯一欄位。
-	 * @return{Core<Integer>} 儲存資料的識別 id 和操作結果。
+	 * @return{Core<Integer>} 移除關注操作結果。
 	 */
 	@DeleteMapping("like/{eventId}")
 	public Core<Integer> saveFavorite(@SessionAttribute(required = false) Member member,
@@ -111,7 +111,7 @@ public class SearchEventController {
 			return core;
 		}
 
-		// 執行刪除關注資料
+		// 移除關注
 		return service.deleteFavorite(member, eventId);
 	}
 

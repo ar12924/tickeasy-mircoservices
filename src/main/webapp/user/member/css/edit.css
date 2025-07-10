@@ -87,6 +87,12 @@
   display: block;
 }
 
+.error {
+  color: red;
+  font-size: 0.875em;
+  margin-left: 0.5em;
+}
+
 .checkbox-group {
   margin: 12px 0;
   font-size: 14px;

@@ -84,7 +84,9 @@
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />
-                <span class="d-none d-md-inline">Alexander Pierce</span>
+                <span class="d-none d-md-inline" id="sidebar-username"
+                  >Alexander Pierce</span
+                >
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <li class="user-header text-bg-primary">
@@ -121,6 +123,7 @@
           </ul>
         </div>
       </nav>
+      <!-- Sidebar -->
       <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
         <div class="sidebar-brand">
           <div class="brand-link">
@@ -152,13 +155,7 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="dashboard.html" class="nav-link">
-                      <i class="nav-icon bi bi-speedometer2"></i>
-                      <p>儀表板</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="participant-list.html" class="nav-link">
+                    <a href="../index.html" class="nav-link">
                       <i class="nav-icon bi bi-list-task"></i>
                       <p>活動列表</p>
                     </a>
@@ -177,79 +174,6 @@
                       <p>會員設定</p>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-shield-lock-fill"></i>
-                      <p>會員密碼</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-header">平台方</li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-gear-wide-connected"></i>
-                  <p>活動管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-calendar3-range-fill"></i>
-                      <p>活動列表</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-ticket-perforated-fill"></i>
-                      <p>票券列表</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi bi-people-fill"></i>
-                  <p>會員管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-person-lines-fill"></i>
-                      <p>會員列表</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-person-heart"></i>
-                      <p>購票者</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-bookmark-check-fill"></i>
-                      <p>活動方</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-cone-striped"></i>
-                  <p>平台管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-check2-square"></i>
-                      <p>活動單位審核</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-backspace-reverse-fill"></i>
-                      <p>平台帳號管理</p>
-                    </a>
-                  </li>
                 </ul>
               </li>
             </ul>
@@ -263,21 +187,8 @@
               <div class="col-sm-6">
                 <h1 class="m-0">報名人詳細資料</h1>
               </div>
-              <!-- /.col -->
-              <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item">
-                    <a href="participant-list.html">活動列表</a>
-                  </li>
-                  <li class="breadcrumb-item active">報名人詳細資料</li>
-                </ol>
-              </div>
-              <!-- /.col -->
             </div>
-            <!-- /.row -->
           </div>
-          <!-- /.container-fluid -->
         </div>
         <div class="app-content">
           <div class="container-fluid">
@@ -474,6 +385,14 @@
       });
     </script>
     <!--end::OverlayScrollbars Configure-->
+    <script>
+      // 動態帶入 nickname
+      document.addEventListener("DOMContentLoaded", function () {
+        var nickname = sessionStorage.getItem("loggedInNickname") || "使用者";
+        var el = document.getElementById("sidebar-username");
+        if (el) el.textContent = nickname;
+      });
+    </script>
     <script src="js/participant-detail.js"></script>
   </body>
 </html>

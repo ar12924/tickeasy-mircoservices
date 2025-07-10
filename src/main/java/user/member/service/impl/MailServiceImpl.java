@@ -3,19 +3,15 @@ package user.member.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import user.member.service.MailService;
 
 import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-
-import com.sun.mail.smtp.SMTPTransport;
+import javax.mail.internet.MimeUtility;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Properties;
 
 // 使用 JavaMail 實現 with OAuth 2.0
 @Service
@@ -74,7 +70,7 @@ public class MailServiceImpl implements MailService {
 
             helper.setFrom(fromEmail, fromName);
             helper.setTo(toEmail);
-            helper.setSubject(subject);
+            helper.setSubject(MimeUtility.encodeText(subject, "UTF-8", "B"));
             helper.setText(htmlContent, true);
 
             mailSender.send(message);

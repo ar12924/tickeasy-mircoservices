@@ -2,3 +2,98 @@
 .table-hover tbody tr:hover {
   cursor: pointer;
 }
+
+.table th,
+.table td {
+  vertical-align: middle !important;
+  text-align: center;
+  padding: 0.5rem 0.75rem !important;
+  font-size: 1.02em;
+}
+
+.table th {
+  background: #f5f6fa;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.table td {
+  background: #fff;
+  color: #444;
+}
+
+.table tr:hover td {
+  background: #f0f8ff;
+}
+
+.table th:first-child,
+.table td:first-child {
+  width: 60px;
+  min-width: 60px;
+}
+
+.table th:last-child,
+.table td:last-child {
+  width: 160px;
+  min-width: 120px;
+}
+
+.info-btn {
+  background: #04c4df !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 24px !important;
+  padding: 0.5em 1.7em !important;
+  font-size: 1.08em !important;
+  font-weight: 500 !important;
+  min-width: 90px !important;
+  transition: background 0.2s;
+  display: inline-block;
+  white-space: nowrap;
+}
+.info-btn:hover,
+.info-btn:focus {
+  background: #02b0c7 !important;
+  color: #fff !important;
+}
+
+.container-fluid,
+.row,
+.col-12,
+.card,
+.card-body,
+.table-responsive,
+#tableContainer,
+#tableContainer .table {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box;
+}
+
+.card-body {
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+.table-responsive,
+#tableContainer {
+  width: 100%;
+  margin: 0 auto;
+}
+
+#tableContainer .table {
+  width: 100%;
+}
+
+#tableContainer .table th,
+#tableContainer .table td {
+  padding: 0.75rem 1.2rem !important;
+  font-size: 1.08em !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  background: #fff;
+  color: #444;
+  border: 1px solid #e0e0e0;
+}

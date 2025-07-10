@@ -32,7 +32,11 @@ export const fetchHeaderTemplate = async () => {
  * @param {number} progress - 當前購票進度。
  * @param {string} templateHTML - HTML 模板。
  */
-export const renderHeader = ({ eventName }, { progress }, templateHTML) => {
+export const renderHeader = (
+  { eventName, eventId },
+  { progress },
+  templateHTML
+) => {
   const templateJQeury = $(templateHTML);
 
   // 當前步驟，加入 class = "passing-*"
@@ -57,7 +61,10 @@ export const renderHeader = ({ eventName }, { progress }, templateHTML) => {
   }
 
   // 插入整塊元素到父容器
-  templateJQeury.find(".event-name").text(eventName);
+  templateJQeury
+    .find(".event-name")
+    .text(eventName)
+    .attr("data-event-id", eventId);
   $("header").html(templateJQeury);
 };
 

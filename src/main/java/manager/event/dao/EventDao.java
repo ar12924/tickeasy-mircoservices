@@ -11,5 +11,7 @@ public interface EventDao extends CommonDao {
 
 	public MngEventInfo findById(Integer eventId);
 
-	public List<MngEventInfo> findAll();
+	public List<MngEventInfo> findAll(Integer memberId);
+
+    public int updateEvent(MngEventInfo eventInfo);
 }

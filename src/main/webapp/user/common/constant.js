@@ -28,3 +28,12 @@ export const ERROR_MESSAGES = Object.freeze({
   // 未選擇票券錯誤
   NO_TICKETS_SELECTED: "請至少選擇1種票券！",
 });
+
+/**
+ * 其他變數，如時間、金額...
+ * @readonly
+ */
+export const OTHER_CONSTS = Object.freeze({
+  // 動畫過場時間
+  ANIMATION_TRANSITION: 300,
+});
