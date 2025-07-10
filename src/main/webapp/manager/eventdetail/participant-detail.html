@@ -84,7 +84,9 @@
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />
-                <span class="d-none d-md-inline">Alexander Pierce</span>
+                <span class="d-none d-md-inline" id="sidebar-username"
+                  >Alexander Pierce</span
+                >
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <li class="user-header text-bg-primary">
@@ -474,6 +476,14 @@
       });
     </script>
     <!--end::OverlayScrollbars Configure-->
+    <script>
+      // 動態帶入 nickname
+      document.addEventListener("DOMContentLoaded", function () {
+        var nickname = sessionStorage.getItem("loggedInNickname") || "使用者";
+        var el = document.getElementById("sidebar-username");
+        if (el) el.textContent = nickname;
+      });
+    </script>
     <script src="js/participant-detail.js"></script>
   </body>
 </html>

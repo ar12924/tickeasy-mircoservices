@@ -13,9 +13,12 @@ public interface EventService {
 	// 查詢活動
 	public MngEventInfo findEventById(Integer eventId);
 
-	//建立keyword
+	// 建立keyword
 	public Integer createKeywordCategory(MngKeywordCategory kCategory);
 
 	// 建立活動
 	public int createEvent(MngEventInfo eventInfo);
+
+	// 更新活動
+	public int updateEvent(MngEventInfo eventInfo);
 }

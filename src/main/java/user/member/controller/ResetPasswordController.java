@@ -1,20 +1,13 @@
 package user.member.controller;
 
-import java.util.UUID;
-import java.sql.Timestamp;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
 import common.vo.Core;
-import user.member.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import user.member.service.MailService;
-import user.member.vo.Member;
-import user.member.vo.VerificationToken;
+import user.member.service.MemberService;
 import user.member.service.VerificationService;
+import user.member.vo.Member;
 
 @RestController
 @RequestMapping("user/member/reset-password")

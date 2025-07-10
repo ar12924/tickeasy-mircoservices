@@ -84,7 +84,9 @@
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />
-                <span class="d-none d-md-inline">Alexander Pierce</span>
+                <span class="d-none d-md-inline" id="sidebar-username"
+                  >Alexander Pierce</span
+                >
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <li class="user-header text-bg-primary">
@@ -154,13 +156,7 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="dashboard.html" class="nav-link active">
-                      <i class="nav-icon bi bi-speedometer2"></i>
-                      <p>儀表板</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="participant-list.html" class="nav-link">
+                    <a href="../index.html" class="nav-link">
                       <i class="nav-icon bi bi-list-task"></i>
                       <p>活動列表</p>
                     </a>
@@ -179,79 +175,6 @@
                       <p>會員設定</p>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-shield-lock-fill"></i>
-                      <p>會員密碼</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-header">平台方</li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-gear-wide-connected"></i>
-                  <p>活動管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-calendar3-range-fill"></i>
-                      <p>活動列表</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-ticket-perforated-fill"></i>
-                      <p>票券列表</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi bi-people-fill"></i>
-                  <p>會員管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-person-lines-fill"></i>
-                      <p>會員列表</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-person-heart"></i>
-                      <p>購票者</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-bookmark-check-fill"></i>
-                      <p>活動方</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-cone-striped"></i>
-                  <p>平台管理 <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-check2-square"></i>
-                      <p>活動單位審核</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="./index.html" class="nav-link">
-                      <i class="nav-icon bi bi-backspace-reverse-fill"></i>
-                      <p>平台帳號管理</p>
-                    </a>
-                  </li>
                 </ul>
               </li>
             </ul>
@@ -261,120 +184,219 @@
 
       <!-- Main Content -->
       <main class="app-main">
-        <div class="wrapper">
-          <div class="content-wrapper">
-            <section class="content">
-              <div class="container-fluid">
-                <!-- 活動選擇下拉選單 -->
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="event-select">選擇活動：</label>
-                      <select class="form-control" id="event-select">
-                        <option value="">載入中...</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-12">
+                <h3 class="mb-0">票券銷售情形</h3>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <!-- 儀表板內容容器 -->
-                <div id="dashboard-container">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="card">
-                        <div class="card-header">
-                          <h3 class="card-title" id="event-name">
-                            活動銷售儀表板
-                          </h3>
-                        </div>
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-lg-3 col-6">
-                              <div class="small-box bg-info">
-                                <div class="inner">
-                                  <h3 id="total-tickets">0</h3>
-                                  <p>總售票數</p>
-                                </div>
-                                <div class="icon">
-                                  <i class="bi bi-ticket-perforated"></i>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-lg-3 col-6">
-                              <div class="small-box bg-success">
-                                <div class="inner">
-                                  <h3 id="total-revenue">$0</h3>
-                                  <p>總收入</p>
-                                </div>
-                                <div class="icon">
-                                  <i class="bi bi-currency-dollar"></i>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-lg-3 col-6">
-                              <div class="small-box bg-warning">
-                                <div class="inner">
-                                  <h3 id="unsold-tickets">0</h3>
-                                  <p>未銷售票數</p>
-                                </div>
-                                <div class="icon">
-                                  <i class="bi bi-ticket-detailed"></i>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-lg-3 col-6">
-                              <div class="small-box bg-danger">
-                                <div class="inner">
-                                  <h3 id="sales-rate">0%</h3>
-                                  <p>銷售率</p>
-                                </div>
-                                <div class="icon">
-                                  <i class="bi bi-percent"></i>
-                                </div>
-                              </div>
+        <div class="app-content">
+          <div class="container-fluid">
+            <!-- 標籤頁導航 -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="../index.html">訂單列表</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link active" href="./dashboard.html"
+                      >票券銷售情形</a
+                    >
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="./participant-list.html"
+                      >報名人列表</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 標籤頁內容 -->
+            <div class="tab-content" id="myTabContent">
+              <!-- 票券銷售情形 -->
+              <div
+                class="tab-pane fade show active"
+                id="dashboard"
+                role="tabpanel"
+                aria-labelledby="dashboard-tab"
+              >
+                <div class="wrapper">
+                  <div class="content-wrapper">
+                    <section class="content">
+                      <div class="container-fluid">
+                        <!-- 活動選擇下拉選單 -->
+                        <div class="row mb-3">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="event-select">目前檢視活動：</label>
+                              <select class="form-control" id="event-select">
+                                <option value="">載入中...</option>
+                              </select>
                             </div>
                           </div>
+                        </div>
+
+                        <!-- 儀表板內容容器 -->
+                        <div id="dashboard-container">
                           <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-12">
                               <div class="card">
                                 <div class="card-header">
-                                  <h3 class="card-title">銷售數據</h3>
+                                  <h3 class="card-title" id="event-name">
+                                    請選擇活動
+                                  </h3>
                                 </div>
                                 <div class="card-body">
-                                  <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                      <thead>
-                                        <tr>
-                                          <th>票種名稱</th>
-                                          <th>已售出數量</th>
-                                          <th>票種收入</th>
-                                          <th>未銷售數量</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody id="sales-data-table"></tbody>
-                                    </table>
+                                  <div class="row">
+                                    <div class="col-lg-3 col-6">
+                                      <div class="small-box">
+                                        <div class="inner">
+                                          <h3
+                                            class="text-pink"
+                                            id="total-tickets"
+                                          >
+                                            0
+                                          </h3>
+                                          <p>總售票數</p>
+                                        </div>
+                                        <div class="icon text-pink">
+                                          <i
+                                            class="bi bi-ticket-perforated"
+                                          ></i>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-lg-3 col-6">
+                                      <div class="small-box">
+                                        <div class="inner">
+                                          <h3
+                                            class="text-blue"
+                                            id="total-revenue"
+                                          >
+                                            $0
+                                          </h3>
+                                          <p>總收入</p>
+                                        </div>
+                                        <div class="icon text-blue">
+                                          <i class="bi bi-currency-dollar"></i>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-lg-3 col-6">
+                                      <div class="small-box">
+                                        <div class="inner">
+                                          <h3
+                                            class="text-green"
+                                            id="unsold-tickets"
+                                          >
+                                            0
+                                          </h3>
+                                          <p>未銷售票數</p>
+                                        </div>
+                                        <div class="icon text-green">
+                                          <i class="bi bi-ticket-detailed"></i>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-lg-3 col-6">
+                                      <div class="small-box">
+                                        <div class="inner">
+                                          <h3
+                                            class="text-yellow"
+                                            id="sales-rate"
+                                          >
+                                            0%
+                                          </h3>
+                                          <p>銷售率</p>
+                                        </div>
+                                        <div class="icon text-yellow">
+                                          <i class="bi bi-percent"></i>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="card">
-                                <div class="card-header">
-                                  <h3 class="card-title">銷售分布</h3>
-                                </div>
-                                <div class="card-body">
-                                  <div id="sales-chart"></div>
+                                  <div class="row">
+                                    <!-- 銷售數據（橫向進度條） -->
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                        <div class="card-header">
+                                          <h3 class="card-title">銷售數據</h3>
+                                        </div>
+                                        <div class="card-body">
+                                          <div
+                                            class="sales-bar-list"
+                                            id="sales-bar-list"
+                                          ></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!-- 票種收入圓餅圖 -->
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                        <div class="card-header">
+                                          <h3 class="card-title">
+                                            票種收入分布
+                                          </h3>
+                                        </div>
+                                        <div class="card-body">
+                                          <div id="income-pie-chart"></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <!-- 加大分隔 -->
+                                  <div class="my-4" style="height: 32px"></div>
+                                  <!-- 銷售趨勢表 -->
+                                  <div class="row">
+                                    <div class="col-12">
+                                      <div class="card">
+                                        <div
+                                          class="card-header d-flex align-items-center justify-content-between"
+                                        >
+                                          <h3 class="card-title">銷售趨勢表</h3>
+                                          <div class="form-check form-switch">
+                                            <input
+                                              class="form-check-input"
+                                              type="checkbox"
+                                              id="toggle-type-trend"
+                                            />
+                                            <label
+                                              class="form-check-label"
+                                              for="toggle-type-trend"
+                                              >顯示各票種趨勢</label
+                                            >
+                                          </div>
+                                        </div>
+                                        <div class="card-body">
+                                          <div
+                                            id="sales-trend-chart"
+                                            style="height: 350px"
+                                          ></div>
+                                          <div
+                                            id="trend-type-detail"
+                                            class="mt-3"
+                                          ></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </section>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
           </div>
         </div>
       </main>
@@ -404,5 +426,13 @@
     <script src="../common/js/demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"></script>
     <script src="js/dashboard.js"></script>
+    <script>
+      // 動態帶入 nickname
+      document.addEventListener("DOMContentLoaded", function () {
+        var nickname = sessionStorage.getItem("loggedInNickname") || "使用者";
+        var el = document.getElementById("sidebar-username");
+        if (el) el.textContent = nickname;
+      });
+    </script>
   </body>
 </html>
