@@ -1,88 +1,429 @@
-/* header 麵包屑 & 進度條 */
-header {
-  & .icon-text {
-    padding: 1rem;
-    & .icon {
-      color: #6b7280;
-    }
-    & .bread {
-      font-weight: bold;
-      color: #000000;
-    }
-  }
-  & hr {
-    margin: 0;
-  }
-  & .column {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.7rem;
-    margin-top: 1rem;
-    & .circle {
-      width: 1.7rem;
-      height: 1.7rem;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #d3d3d3;
-      text-align: center;
-    }
-    & span {
-      color: #9e9d9d;
-      font-weight: bold;
-    }
-    & .passing-circle {
-      background-color: #ec4899;
-      & span {
-        color: white;
-      }
-    }
-    & .passing-step {
-      color: #ec4899;
-    }
-    & .passed-circle {
-      background-color: #16982b;
-      & span {
-        color: white;
-      }
-    }
-    & .passed-step {
-      color: #16892b;
-    }
-  }
+* {
+	box-sizing: border-box;
+}
+ :root {
+  --bulma-link-text: #EC4899 ;
+} 
+
+html {
+	 overflow-y: overlay;
 }
 
-/* section 主內容 */
-section.columns {
-  & .card {
-    & .box {
-      box-shadow: none;
-      border: 2px solid #dbdbdb;
-      & .level-item {
-        & .control {
-          input {
-            padding-bottom: 7px;
-          }
-        }
-      }
-    }
-    & .has-text-centered {
-      padding-bottom: 1.5rem;
-      & .button {
-        background-color: #ec4899;
-        & span {
-          font-weight: bold;
-          color: white;
-        }
-      }
-    }
-  }
-  & .buttons {
-    & .next {
-      background-color: #ec4899;
-      color: white;
-    }
-  }
+div#title {
+	margin-left: 200px;
+	margin-top: 20px;
+}
+
+div.title {
+	display: inline-block;
+}
+
+div.title_icon img {
+	width: 14px;
+}
+
+div#order_nav {
+	width: 100%;
+	height: 90px;
+}
+
+@media all and (max-width: 800px) {
+	div#order_nav {
+		height: 150px;
+	}
+}
+
+div.order_nav {
+	display: inline-block;
+	width: 100px;
+	margin-left: 50px;
+	margin-top: 30px;
+}
+
+div.order_nav_group {
+	display: inline-block;
+}
+
+div.order_nav_count {
+	margin-left: 10px;
+}
+
+span.badge {
+	display: inline-block;
+	padding-bottom: 2px;
+	width: 20px;
+	height: 20px;
+	background-color: #D9D9D9;
+	color: #6B7280;
+	border-radius: 50%;
+	text-align: center;
+	font-weight: bold;
+	font-size: 13px;
+}
+
+div.order_nav.-on div.order_nav_group {
+	color: #EC4899;
+	font-weight: bold;
+}
+
+div.order_nav.-on span.badge {
+	display: inline-block;
+	padding-bottom: 2px;
+	width: 20px;
+	height: 20px;
+	background-color: #EC48991A;
+	color: #EC4899;
+	border-radius: 50%;
+	text-align: center;
+	font-weight: bold;
+	font-size: 13px;
+}
+
+div#main_order {
+	background-color: #cbcbcb1a;
+	width: 100%;
+	height: 700px;
+	padding: 1px;
+}
+
+div#order {
+	background-color: #FFFFFF;
+	width: 70%; 
+	min-height: 530px;
+	max-height: 600px;
+	margin: 50px auto 50px auto;
+	box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+	padding: 20px;
+	overflow-y: scroll;
+}
+
+#order::-webkit-scrollbar {
+  width: 8px;
+  height: 0px;
+}
+
+#order::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}
+
+div.order_item {
+	background-color: #D9D9D93A;
+	width: 90%;
+	height: 250px;
+	margin: 20px auto 20px auto;
+	color: #6B7280;
+	border-radius: 10px;
+	transition: height 0.5s ease;
+}
+
+div.order_item .-view{
+	display: initial;
+}
+
+div.order_item .-unview{
+	display: none;
+}
+
+div.order_item.-on{
+	height: 400px;
+}
+
+div.order_item.-on .-view{
+	display: none;
+}
+
+div.order_item.-on .-unview{
+	display: initial;
+}
+
+@media all and (max-width:1440px) {
+	div.order_item {
+		height: 125px;
+	}
+}
+
+div.order_region {
+	display: inline-block;
+} 
+  
+div.order_left{
+	width: 150px;
+	height: 150px;
+	overflow: hidden;
+	display: flex; 
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	vertical-align: top;
+	margin: 30px;
+}
+
+div.order_left img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+div.order_center{
+	margin-top: 30px;
+	margin-left: 30px;
+	width: 50%;
+}
+
+div.order_title {
+	font-weight: bold;
+	font-size: 16px;
+	color: #000000;
+}
+
+div.order_content {
+	margin-top: 10px;
+}
+
+div.order_content_set{
+	display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
+
+div.order_content_title{
+	width: 100px;
+}
+
+div.order_right {
+	margin-left: 60px;
+	text-align: center;
+	margin-top: 5px;
+	vertical-align: top;
+	margin-top: 120px;
+}
+
+@media all and (max-width: 1440px) {
+	div.order_right {
+		display: none;
+	}
+}
+
+div.order_status{
+	border-radius: 10px;
+	width: 85px;
+	height: 27px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 27px;
+}
+
+div.order_status.pending{
+	background-color: #FEF3C7;
+	color: #D97706;
+}
+
+div.order_status.paid{
+	background-color: #DCFCE7;
+	color: #16982B;
+}
+
+div.order_status.cancelled{
+	background-color: #FEE2E2;
+	color: #DC2626;
+}
+
+div.order_more{
+	color: #EC4899;
+	margin-top: 10px;
+}
+
+a.order_more_ {
+    text-decoration: underline;
+}
+
+div.order_tab {
+	cursor: pointer;
+}
+
+div.order_empty {
+	background-color: #D9D9D93A;
+	width: 90%;
+	height: 500px;
+	margin: 20px auto 20px auto;
+	color: #D9D9D9;
+	border-radius: 10px;
+	position: relative;
+}
+
+div.order_empty_text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 40px;
+}
+
+div.order_region_open{
+	display: inline-block;
+}
+
+div.order_bottom_left{
+	margin-left: 245px;
+}
+
+div.order_bottom_right{
+	margin-left: 2px;
+	vertical-align: top;
+}
+
+div.inner_order_block {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  height: 0;
+  overflow: hidden;
+}
+
+div.inner_order_block.-on {
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+  transition: opacity 1.5s ease;
+}
+
+/* 訂單詳情樣式 */
+.order_detail_info {
+	margin: 20px;
+	background-color: #f8f9fa;
+	padding: 20px;
+	border-radius: 8px;
+}
+
+.order_detail_row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+}
+
+.order_detail_row:last-child {
+	margin-bottom: 0;
+}
+
+.order_detail_item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.order_detail_label {
+	color: #6B7280;
+	font-size: 14px;
+	min-width: 80px;
+}
+
+.order_detail_value {
+	color: #000000;
+	font-weight: 500;
+}
+
+.order_status_container {
+	margin-left: auto;
+}
+
+.order_status_badge {
+	padding: 5px 12px;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.order_status_badge.pending {
+	background-color: #FEF3C7;
+	color: #D97706;
+}
+
+.order_status_badge.paid {
+	background-color: #DCFCE7;
+	color: #16982B;
+}
+
+.order_status_badge.cancelled {
+	background-color: #FEE2E2;
+	color: #DC2626;
+}
+
+.countdown_label {
+	color: #DC2626 !important;
+}
+
+.countdown_value {
+	color: #DC2626 !important;
+	font-weight: bold;
+}
+
+/* 票券明細表格樣式 */
+.ticket_detail_table {
+	margin: 20px;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ticket_detail_table table {
+	width: 100%;
+	border-collapse: collapse;
+	background-color: white;
+}
+
+.ticket_detail_table thead {
+	background-color: #f3f4f6;
+}
+
+.ticket_detail_table th {
+	padding: 12px 16px;
+	text-align: left;
+	font-weight: 600;
+	color: #374151;
+	font-size: 14px;
+	border-bottom: 2px solid #e5e7eb;
+}
+
+.ticket_detail_table tbody tr {
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.ticket_detail_table tbody tr:hover {
+	background-color: #f9fafb;
+}
+
+.ticket_detail_table td {
+	padding: 12px 16px;
+	color: #374151;
+	font-size: 14px;
+}
+
+.ticket_detail_table tfoot {
+	background-color: #f9fafb;
+	border-top: 2px solid #e5e7eb;
+}
+
+.total_row td {
+	padding: 12px 16px;
+	font-weight: bold;
+}
+
+.total_label {
+	text-align: right;
+	color: #374151;
+}
+
+.total_amount {
+	color: #059669;
+	font-size: 16px;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
 }

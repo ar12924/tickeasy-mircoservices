@@ -165,9 +165,50 @@ public class ManagerMemberDaoImpl implements ManagerMemberDao {
 
     @Override
     public void deleteById(Integer memberId) {
-        Member member = findById(memberId);
-        if (member != null) {
-            getCurrentSession().delete(member);
+    	try {
+    		// 1. 刪除間接相關記錄（必須先刪除，避免外鍵約束）
+            String deleteSwapCommentsSQL = "DELETE FROM swap_comment WHERE comment_member_id = :memberId";
+            getCurrentSession().createNativeQuery(deleteSwapCommentsSQL)
+                    .setParameter("memberId", memberId).executeUpdate();
+            
+            // 2. 刪除直接相關記錄（會阻止會員刪除的記錄）
+            String deleteSwapPostsSQL = "DELETE FROM swap_post WHERE post_member_id = :memberId";
+            getCurrentSession().createNativeQuery(deleteSwapPostsSQL)
+                    .setParameter("memberId", memberId).executeUpdate();
+                    
+            String deleteDistTicketsSQL = "DELETE FROM dist_ticket WHERE received_member_id = :memberId";
+            getCurrentSession().createNativeQuery(deleteDistTicketsSQL)
+                    .setParameter("memberId", memberId).executeUpdate();
+                    
+            String deleteFavoritesSQL = "DELETE FROM favorite WHERE member_id = :memberId";
+            getCurrentSession().createNativeQuery(deleteFavoritesSQL)
+                    .setParameter("memberId", memberId).executeUpdate();
+                    
+            String deleteNotificationsSQL = "DELETE FROM member_notification WHERE member_id = :memberId";
+            getCurrentSession().createNativeQuery(deleteNotificationsSQL)
+                    .setParameter("memberId", memberId).executeUpdate();
+            
+            // 3. 更新業務相關記錄（保留記錄但解除關聯）
+            String updateOrdersSQL = "UPDATE buyer_order SET member_id = NULL WHERE member_id = :memberId";
+            getCurrentSession().createNativeQuery(updateOrdersSQL)
+                    .setParameter("memberId", memberId).executeUpdate();
+                    
+            String updateTicketsSQL = "UPDATE buyer_ticket SET current_holder_member_id = NULL WHERE current_holder_member_id = :memberId";
+            getCurrentSession().createNativeQuery(updateTicketsSQL)
+                    .setParameter("memberId", memberId).executeUpdate();
+                    
+            String updateEventsSQL = "UPDATE event_info SET member_id = NULL WHERE member_id = :memberId";
+            getCurrentSession().createNativeQuery(updateEventsSQL)
+                    .setParameter("memberId", memberId).executeUpdate();
+            
+            // 最後刪除會員記錄
+            Member member = findById(memberId);
+            if (member != null) {
+                getCurrentSession().delete(member);
+            }
+            
+        } catch (Exception e) {
+            throw new RuntimeException("刪除會員失敗：" + e.getMessage(), e);
         }
     }
 

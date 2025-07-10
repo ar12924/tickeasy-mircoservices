@@ -187,7 +187,21 @@ const initBookTypeJSEvents = (book) => {
   });
 };
 
-// ==================== 4. 頁面初始化 (Initialization) ====================
+// ==================== 4. UI 渲染層 (UI Rendering Layer) ====================
+// 這些函數負責動態生成或更新 HTML 內容。
+
+/**
+ * 將圖片插入 img 標籤中。
+ * @param {string} image - 圖片資料。
+ */
+const renderImage = ({ image }) => {
+  const imageSrcLink = `data:image/jpeg;base64,${image}`;
+  if (image) {
+    $(".card-image").find("img").attr("src", imageSrcLink);
+  }
+};
+
+// ==================== 5. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
 (async () => {
@@ -234,6 +248,7 @@ const initBookTypeJSEvents = (book) => {
   initTypeBoxJSEvents();
 
   // ====== book-type 部分 ======
+  renderImage(eventInfo);
   initBookTypeJSEvents(book); // book 傳入，接收購票人選擇的票數 quantity 並送到後端
 
   // ====== footer 部分 ======

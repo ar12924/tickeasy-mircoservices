@@ -258,6 +258,17 @@ const renderTimer = (bookTTL) => {
   $timeToShow.text(formattedTTL);
 };
 
+/**
+ * 將圖片插入 img 標籤中。
+ * @param {string} image - 圖片資料。
+ */
+const renderImage = ({ image }) => {
+  const imageSrcLink = `data:image/jpeg;base64,${image}`;
+  if (image) {
+    $(".image").find("img").attr("src", imageSrcLink);
+  }
+};
+
 // ==================== 5. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
@@ -295,6 +306,7 @@ const renderTimer = (bookTTL) => {
   initDetailBoxJSEvents();
 
   // ====== book-confirm 部分 ======
+  renderImage(eventInfo);
   const totalPrice = getBookTotalPrice();
   showBookTotalPrice(totalPrice);
   initBookConfirmJSEvents(book);

@@ -82,7 +82,7 @@ public class BookServiceImpl implements BookService {
 			core.setSuccessful(false);
 			return core;
 		}
-		
+
 		// 以 key = userName 將 book 存入 Redis 當中
 		template.opsForValue().set(book.getUserName(), book, timeoutMinutes, TimeUnit.SECONDS);
 		core.setDataStatus(DataStatus.VALID);
@@ -139,7 +139,7 @@ public class BookServiceImpl implements BookService {
 
 		// 先取得當前的 TTL
 		Long currentTTL = template.getExpire(book.getUserName(), TimeUnit.SECONDS);
-		
+
 		// 以 key = userName 將 book 存入 Redis 當中
 		template.opsForValue().set(book.getUserName(), book, currentTTL, TimeUnit.SECONDS);
 		core.setDataStatus(DataStatus.FOUND);
@@ -161,7 +161,7 @@ public class BookServiceImpl implements BookService {
 		Core<BookDto> core = new Core<>();
 		// 以 key = userName 從 Redis 中查詢 book 物件
 		var bookDto = (BookDto) template.opsForValue().get(userName);
-		
+
 		// 再以 key = userName 查詢 book 物件的 TTL
 		var bookTTL = template.getExpire(userName);
 
@@ -295,10 +295,10 @@ public class BookServiceImpl implements BookService {
 		// 3. 存入票券資料(主要為入場者資料)
 		var attendeeList = book.getAttendee();
 		attendeeList.forEach(attendeeOne -> {
-			Member member = dao.selectMemberByUserName(attendeeOne.getUserName()); // 查詢 userName 關聯欄位(某會員)
+			Member attendeeMember = dao.selectMemberByUserName(attendeeOne.getUserName()); // 查詢 userName 關聯欄位(某會員)
 			String eventName = book.getEventName(); // 抓取活動名稱
 			BookTypeDto bookTypeDto = dao.selectTypeById(eventId, attendeeOne.getTypeId()); // 查詢 typeId 關聯欄位(某票種)
-			dao.insertBuyerTicketAndGetId(newOrderId, member, eventName, bookTypeDto);
+			dao.insertBuyerTicketAndGetId(newOrderId, attendeeMember, memberId, eventName, bookTypeDto);
 		});
 
 		// 4. 成功儲存後...

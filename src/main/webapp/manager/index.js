@@ -19,6 +19,7 @@ function init() {
       }
     },
     columns: [
+
       { data: "eventName" },
       { data: "eventFromDate" },
       {
@@ -82,18 +83,22 @@ function init() {
   // 綁定按鈕點擊事件
   $(document).on("click", ".btn-order", function () {
     const eventId = $(this).data("event-id");
+    sessionStorage.setItem('eventId', eventId);
     window.location.href = `eventdetail/order-list.html?eventId=${eventId}`;
   });
   $(document).on("click", ".btn-dashboard", function () {
     const eventId = $(this).data("event-id");
+    sessionStorage.setItem('eventId', eventId);
     window.location.href = `eventdetail/dashboard.html?eventId=${eventId}`;
   });
   $(document).on("click", ".btn-participant", function () {
     const eventId = $(this).data("event-id");
+    sessionStorage.setItem('eventId', eventId);
     window.location.href = `eventdetail/participant-list.html?eventId=${eventId}`;
   });
   $(document).on("click", ".btn-exchange", function () {
     const eventId = $(this).data("event-id");
+    sessionStorage.setItem('eventId', eventId);
     window.location.href = `eventdetail/ticket_exchange.html?eventId=${eventId}`;
   });
 
@@ -109,6 +114,26 @@ function init() {
     }
 
     toggleEventStatus(eventId, newStatus, $(this));
+  });
+
+  // 為編輯活動連結加上點擊事件
+  $(document).on("click", "a[href*='EditEvent.html']", function () {
+    const urlParams = new URLSearchParams(this.href.split('?')[1]);
+    const eventId = urlParams.get('eventId');
+
+    if (eventId) {
+      sessionStorage.setItem('eventId', eventId);
+    }
+  });
+
+  // 為編輯票種連結加上點擊事件  
+  $(document).on("click", "a[href*='EditTicketType.html']", function () {
+    const urlParams = new URLSearchParams(this.href.split('?')[1]);
+    const eventId = urlParams.get('eventId');
+
+    if (eventId) {
+      sessionStorage.setItem('eventId', eventId);
+    }
   });
 }
 
