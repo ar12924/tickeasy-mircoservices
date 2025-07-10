@@ -21,4 +21,7 @@ public interface EventService {
 
 	// 更新活動
 	public int updateEvent(MngEventInfo eventInfo);
+	
+	// 切換活動狀態
+    public int toggleEventStatus(Integer eventId, Integer isPosted);
 }

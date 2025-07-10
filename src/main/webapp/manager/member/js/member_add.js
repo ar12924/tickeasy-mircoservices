@@ -573,6 +573,27 @@ function showErrorMessage(message) {
  * 頁面載入完成後初始化所有功能
  */
 document.addEventListener('DOMContentLoaded', function () {
+    // 檢查用戶權限
+    const roleLevel = sessionStorage.getItem("roleLevel");
+    const memberId = sessionStorage.getItem("memberId");
+
+    if (!roleLevel || (roleLevel !== "2" && roleLevel !== "3")) {
+        alert("您沒有權限訪問此頁面");
+        window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+        return;
+    }
+
+    if (!memberId) {
+        alert("請先登入");
+        window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+        return;
+    }
+
+    // 權限檢查通過後，初始化 header
+    if (typeof window.initHeader === 'function') {
+        window.initHeader();
+    }
+    
     // 表單初始化
     initializeForm();
     
