@@ -7,4 +7,5 @@ import manager.eventdetail.vo.EventInfoBarVer;
 public interface EventListBarService {
 
 	List<EventInfoBarVer> eventListBar();
+	List<EventInfoBarVer> eventListBarMember(int memberId);
 }
