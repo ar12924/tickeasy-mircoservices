@@ -46,8 +46,15 @@ export const renderEventInfoBox = async (templateHTML, eventResponse) => {
     const $template = $(templateHTML);
 
     // 解構需要的欄位
-    const { eventName, place, eventFromDate, eventHost, keywordId, eventId } =
-      eventOne;
+    const {
+      eventName,
+      place,
+      eventFromDate,
+      eventHost,
+      keywordId,
+      eventId,
+      image,
+    } = eventOne;
 
     // 將數據放入標籤
     $template.find(".event-title").text(eventName);
@@ -64,6 +71,12 @@ export const renderEventInfoBox = async (templateHTML, eventResponse) => {
       );
     // 自訂屬性標記活動 id
     $template.find(".event-card").attr("data-event-id", eventId);
+
+    // 處理圖片
+    if (image) {
+      const imageSrcLink = `data:image/jpeg;base64,${image}`;
+      $template.find(".event-image").attr("src", imageSrcLink);
+    }
 
     // 檢查 favor 陣列，有 eventId 者，改變關注按鈕
     if (favoriteIdArr.includes(eventId)) {

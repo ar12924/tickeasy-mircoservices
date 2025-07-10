@@ -197,6 +197,15 @@ const showBookTotalPrice = (totalPrice) => {
   $(".book-total-price").text(`NT$ ${totalPrice.toLocaleString("en-US")}`);
 };
 
+/**
+ * 將圖片插入 img 標籤中。
+ * @param {string} image - 圖片資料。
+ */
+const renderImage = ({ image }) => {
+  const imageSrcLink = `data:image/jpeg;base64,${image}`;
+  $(".image").find("img").attr("src", imageSrcLink);
+};
+
 // ==================== 5. 頁面初始化 (Initialization) ====================
 // 確保 DOM 加載完成後再執行初始化邏輯
 
@@ -230,6 +239,7 @@ const showBookTotalPrice = (totalPrice) => {
   initDetailBoxJSEvents();
 
   // ====== book-finished 部分 ======
+  renderImage(eventInfo);
   const totalPrice = getBookTotalPrice();
   showBookTotalPrice(totalPrice);
   initBookConfirmJSEvents(book);
