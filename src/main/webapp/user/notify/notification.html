@@ -1,90 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>通知中心</title>
+    <link rel="stylesheet" href="./css/notifyPush.css" />
     <link rel="stylesheet" href="../../common/index.css" />
     <link rel="stylesheet" href="./css/notification.css" />
-</head>
-<body>
-    <nav>
+    <link rel="stylesheet" href="../../common/vendors/bulma.1.0.4.min.css" />
+    <link rel="stylesheet" href="../layout/nav/nav.css" />
+    <link rel="stylesheet" href="../layout/footer/footer.css" />
+  </head>
+  <body>
+   <!--   <nav>
         <div class="logo">
           <a href="/">TickEasy</a>
         </div>
         <ul class="nav-links">
           <li><a href="#tickets">我的訂單</a></li>
           <li><a href="#favorites">我的關注</a></li>
-          <li><a href="#account">我的票券</a></li>
-          <li><a href="#notifications">通知中心</a></li>
-          <li><a href="#profile" class="cta-button">會員中心</a></li>
+          <li><a href="../ticket/ticket.html">我的票券</a></li>
+          <li><a href="./notification.html">通知中心</a></li>
+          <li><a href="../member/edit.html" class="cta-button">會員中心</a></li>
         </ul>
-      </nav>
-
+      </nav> --> 
+  <!--  <nav id="nav-container"></nav> -->
+  <nav class="navbar" role="navigation" aria-label="main navigation"></nav> 
+    
     <main>
-        <div id="title">
-            <div class="title title_icon"><img src="../../common/images/back.png" alt="icon"></div>
+      <div id="title">
+        <div class="title title_icon">
+          <img src="../../common/images/back.png" alt="icon" />
+        </div>
 
-            <div class="title title_content">通知中心</div>
+        <div class="title title_content">通知中心</div>
+      </div>
+      <hr />
+      <div id="notification_nav">
+        <div class="ntf_nav -on" id="all_ntf">
+          <div class="ntf_tab" data-tab="tab_1">
+            <div class="ntf_nav_group ntf_nav_title">所有通知</div>
+            <div class="ntf_nav_group ntf_nav_count">
+              <span class="badge all_ntf">0</span>
+            </div>
+          </div>
         </div>
-        <hr>
-        <div id="notification_nav">
-            <div class="ntf_nav -on" id="all_ntf">
-            	<div class="ntf_tab" data-tab="tab_1" >
-	                <div class="ntf_nav_group ntf_nav_title">
-	                    所有通知
-	                </div>
-	                <div class="ntf_nav_group ntf_nav_count">
-	                    <span class="badge all_ntf">1</span>
-	                </div>
-                </div>
+        <div class="ntf_nav" id="eventMind_ntf">
+          <div class="ntf_tab" data-tab="tab_2">
+            <div class="ntf_nav_group ntf_nav_title">活動提醒</div>
+            <div class="ntf_nav_group ntf_nav_count">
+              <span class="badge eventMind_ntf">0</span>
             </div>
-            <div class="ntf_nav" id="eventMind_ntf">
-            	<div class="ntf_tab" data-tab="tab_2">
-	                <div class="ntf_nav_group ntf_nav_title">
-	                    活動提醒
-	                </div>
-	                <div class="ntf_nav_group ntf_nav_count">
-	                    <span class="badge eventMind_ntf">1</span>
-	                </div>
-                </div>
-            </div>
-            <div class="ntf_nav" id="sold_ntf">
-            	<div class="ntf_tab" data-tab="tab_3">
-	                <div class="ntf_nav_group ntf_nav_title">
-	                    開賣提醒
-	                </div>
-	                <div class="ntf_nav_group ntf_nav_count">
-	                    <span class="badge sold_ntf">1</span>
-	                </div>
-	            </div>
-            </div>
-            <div class="ntf_nav" id="swap_ntf">
-           		<div class="ntf_tab" data-tab="tab_4">
-	                <div class="ntf_nav_group ntf_nav_title">
-	                    分票通知
-	                </div>
-	                <div class="ntf_nav_group ntf_nav_count">
-	                    <span class="badge swap_ntf">1</span>
-	                </div>
-	            </div>
-            </div>
-            <div class="ntf_nav" id="change_ntf">
-	            <div class="ntf_tab" data-tab="tab_5">
-	                <div class="ntf_nav_group ntf_nav_title">
-	                    轉票通知
-	                </div>
-	                <div class="ntf_nav_group ntf_nav_count">
-	                    <span class="badge change_ntf">1</span>
-	                </div>
-	            </div> 
-            </div>
+          </div>
         </div>
-        
-        <div id="main_ntf">
-	        
-	            <div id="notification">
-	                <!-- 
+        <div class="ntf_nav" id="sold_ntf">
+          <div class="ntf_tab" data-tab="tab_3">
+            <div class="ntf_nav_group ntf_nav_title">開賣提醒</div>
+            <div class="ntf_nav_group ntf_nav_count">
+              <span class="badge sold_ntf">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="ntf_nav" id="swap_ntf">
+          <div class="ntf_tab" data-tab="tab_4">
+            <div class="ntf_nav_group ntf_nav_title">分票通知</div>
+            <div class="ntf_nav_group ntf_nav_count">
+              <span class="badge swap_ntf">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="ntf_nav" id="change_ntf">
+          <div class="ntf_tab" data-tab="tab_5">
+            <div class="ntf_nav_group ntf_nav_title">轉票通知</div>
+            <div class="ntf_nav_group ntf_nav_count">
+              <span class="badge change_ntf">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+		
+      <div id="main_ntf">
+      	
+      	<!-- 自訂 confirm 視窗 -->
+		<div id="custom_confirm_clear" class="modal_confirm hidden">
+  			<div class="modal_confirm_content">
+  			  <p id="confirm_message_clear">你確定要刪除所有通知嗎？</p>
+  			  <hr>
+   			 <button id="confirm_yes_clear" class="confirm_button">確定</button>
+   			 <button id="confirm_no_clear" class="confirm_button">取消</button>
+ 			 </div>
+		</div>
+		<div id="notification_clear">一鍵清空</div>
+        <div id="notification">
+          <!-- 
 	                    <div class="ntf -unread">
 	                    	<a href="#" class="ntf_link">
 	                        <div class="ntf_region ntf_left">
@@ -185,18 +193,25 @@
 	                        
 	                </div>
 	 -->
-	            
-	        </div>
-	        	<!-- <div id="tab2" class="tab_content">
+        </div>
+        <!-- <div id="tab2" class="tab_content">
 	            	<div id="notification">
 	            	
 	            	</div>-->
-	        	</div> 
-       		 
-        
+      </div>
+      
+
+      <div id="notification_container" class="notification_container">
+        <!-- 通知將顯示在這裡 -->
+      </div>
+       <!--  <div id="notification_box" class="notification_box">
+       		 	<p id="notification_title">通知內容</p>
+		        <p id="notification_text">這是通知內容</p>
+		        <button onclick="hideNotification()">關閉</button>
+		    </div>  -->
     </main>
 
-    <footer>
+   <!--     <footer>
         <div class="footer-content">
           <div class="footer-section">
             <h3>關於我們</h3>
@@ -226,8 +241,10 @@
             </div>
           </div>
         </div>
-      </footer>
-   <!--  <script>
+      </footer>-->
+  <!--   <footer id="footer-container"></footer> -->
+    <footer></footer>
+    <!--  <script>
         // document.getElementById("nav").innerHTML = fetch("header.html").then(res => res.text()).then(data => {
         // document.getElementById("nav").innerHTML = data;
         // });
@@ -237,7 +254,29 @@
         // });
 
     </script> -->
+    <script src="./js/notifyPush.js"></script>
     <script src="./js/notification.js"></script>
-
-</body>
+    <script src="../../common/vendors/jquery-3.7.1.min.js"></script>
+    <script type="module" src="../buy/js/index.js"></script>
+   <!--     <script>
+		    fetch('../layout/nav/nav.html')
+		    .then(response => response.text())
+		    .then(data => {
+		        document.getElementById('nav-container').innerHTML = data;
+		    })
+		    .catch(error => console.error('加載 header 失敗:', error));
+		
+		// 用 fetch 來加載 footer.html 並插入到 footer-container
+		fetch('../layout/footer/footer.html')
+		    .then(response => response.text())
+		    .then(data => {
+		        document.getElementById('footer-container').innerHTML = data;
+		    })
+		    .catch(error => console.error('加載 footer 失敗:', error));
+    </script> -->
+   <!-- <script type="module" src="./js/notification_navFooterTest.js"></script>-->
+ <!--  <script type="module" src="../layout/nav/nav.js"></script>
+   <script type="module" src="../layout/footer/footer.js"></script>
+    -->
+  </body>
 </html>

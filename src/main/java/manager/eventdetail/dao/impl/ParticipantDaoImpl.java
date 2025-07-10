@@ -5,14 +5,13 @@ import manager.eventdetail.vo.BuyerOrderEventVer;
 import manager.eventdetail.vo.BuyerTicketEventVer;
 import manager.eventdetail.vo.EventTicketType;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.criteria.*;
 
 @Repository
 public class ParticipantDaoImpl implements ParticipantDao {
@@ -180,10 +179,5 @@ public class ParticipantDaoImpl implements ParticipantDao {
         searchParams.put("pageNumber", page);
         searchParams.put("pageSize", pageSize);
         return searchParticipants(eventId, searchParams);
-    }
-
-    @Override
-    public List<EventTicketType> getTicketTypesByEventId(Integer eventId) {
-        return getEventTicketTypes(eventId);
     }
 }

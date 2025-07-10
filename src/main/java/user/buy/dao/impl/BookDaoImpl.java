@@ -70,10 +70,10 @@ public class BookDaoImpl implements BookDao {
 	}
 
 	/**
-	 * 透過活動 id，查詢活動資訊。
+	 * 透過活動 id，查詢活動資料。
 	 * 
 	 * @param {Integer} eventId - 活動 id。
-	 * @return {BookEventDto} 活動 id 下的活動資訊。
+	 * @return {BookEventDto} 活動 id 下的活動資料。
 	 */
 	@Override
 	public EventInfo selectEventById(Integer eventId) {
@@ -127,7 +127,7 @@ public class BookDaoImpl implements BookDao {
 		order.setOrderStatus("已付款");
 		order.setOrderTime(new Timestamp(System.currentTimeMillis()));
 		order.setTotalAmount(totalAmount);
-		
+
 		// 2. 插入新的一筆訂單
 		session.persist(order);
 		session.flush(); // 強制執行 SQL，生成 id
@@ -174,6 +174,8 @@ public class BookDaoImpl implements BookDao {
 		ticket.setEventName(eventName);
 		ticket.setTypeId(typeId);
 		ticket.setPrice(price);
+		ticket.setStatus(1);
+		ticket.setQueneId(101);
 
 		// 4. 插入新的一筆訂單
 		session.persist(ticket);
@@ -181,6 +183,26 @@ public class BookDaoImpl implements BookDao {
 
 		// 4. 取得自動生成的 id
 		return ticket.getTicketId();
+	}
+
+	/**
+	 * 計算某活動某票種之下，銷售幾張票券。
+	 * 
+	 * @param {eventName} - 活動名稱。
+	 * @return {Long} 已銷售張數。
+	 */
+	@Override
+	public Long countBuyerTicketByEventNameAndTypeId(String eventName, Integer typeId) {
+		// hql語句建構
+		var hqlTmp = new StringBuilder("SELECT COUNT(bt) FROM BuyerTicket bt ");
+		hqlTmp.append("WHERE bt.eventName = :eventName AND bt.typeId = :typeId");
+		var hql = hqlTmp.toString();
+
+		// 執行查詢
+		Query<Long> query = session.createQuery(hql, Long.class)
+						.setParameter("eventName", eventName)
+						.setParameter("typeId", typeId);
+		return query.uniqueResult();
 	}
 
 }

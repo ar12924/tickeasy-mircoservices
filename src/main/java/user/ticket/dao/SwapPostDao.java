@@ -138,4 +138,14 @@ public interface SwapPostDao {
      * 獲取會員在特定活動的所有貼文
      */
     List<SwapPostVO> getMemberPostsByEvent(Integer memberId, Integer eventId);
+    
+    /**
+     * 查詢獲取完整的換票貼文資訊
+     */
+    List<Map<String, Object>> listSwapPostsWithDetailsByEventId(Integer eventId);
+
+    /**
+     * 查詢獲取會員的換票貼文
+     */
+    List<Map<String, Object>> listSwapPostsWithDetailsByMemberId(Integer memberId);
 }

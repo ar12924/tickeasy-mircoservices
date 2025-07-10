@@ -1,6 +1,7 @@
 package user.ticket.service;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 票券交換服務介面
  * 創建者: archchang
@@ -93,4 +94,11 @@ public interface TicketExchangeService {
     
     List<Map<String, Object>> getUserTickets(Integer memberId);
     
+    /**
+     * 獲取用戶在特定活動的票券
+     * @param memberId 會員ID
+     * @param eventId 活動ID
+     * @return 票券列表
+     */
+    List<Map<String, Object>> getUserTicketsByEvent(Integer memberId, Integer eventId);
 }

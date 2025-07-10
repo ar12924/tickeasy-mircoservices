@@ -16,7 +16,7 @@ public interface MemberService extends CommonService {
 
 	Member getByUsername(String username);
 
-	List<Member> getAll();
+	Member getByEmail(String email);
 
 	String getRoleById(Integer memberId);
 
@@ -24,6 +24,21 @@ public interface MemberService extends CommonService {
 
 	boolean activateMemberByToken(String tokenStr);
 
-	boolean requestPasswordReset(Integer memberId);
-	
+	// 以 email 請求密碼重設
+	Member requestPasswordResetByEmail(String email);
+
+	// 發送密碼更新認證信
+	Member sendPasswordUpdateMail(Member member, String newPassword);
+
+	// 以 token 重設密碼
+	Member resetPasswordByToken(String token, String newPassword);
+
+	// 新增：重送驗證信
+	Member resendVerificationMail(String email);
+
+	// 新增：發送驗證信
+	Member sendVerificationMail(Member member);
+
+	// 密碼變更並刪除token（事務性操作）
+	Member updatePasswordAndDeleteToken(Member member, String newPassword, Integer tokenId);
 }

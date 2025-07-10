@@ -69,40 +69,81 @@ public class TicketSalesServiceImpl implements TicketSalesService {
         result.put("soldCount", soldCount);
         result.put("unsold", unsold);
         result.put("salesRate", salesRate);
-        return result;
-    }
-    
-    @Transactional
-    @Override
-    public Map<String, Object> getTicketTypeDetail(Integer typeId) {
-        Map<String, Object> result = new HashMap<>();
         
-        // 獲取票種信息
-        EventTicketType ticketType = null;
-        List<EventTicketType> ticketTypes = ticketSalesDao.getEventTicketTypes(null);
-        for (EventTicketType type : ticketTypes) {
-            if (type.getTypeId().equals(typeId)) {
-                ticketType = type;
-                break;
+        // 添加圓餅圖數據
+        List<Map<String, Object>> chartData = new ArrayList<>();
+        for (EventTicketType ticketType : ticketTypes) {
+            Integer typeSoldCount = ticketSalesDao.getSoldTicketCount(ticketType.getTypeId());
+            typeSoldCount = typeSoldCount != null ? typeSoldCount : 0;
+            if (typeSoldCount > 0) {  // 只顯示有銷售的票種
+                Map<String, Object> chartItem = new HashMap<>();
+                chartItem.put("name", ticketType.getCategoryName());
+                chartItem.put("value", typeSoldCount);
+                chartItem.put("revenue", typeSoldCount * ticketType.getPrice().doubleValue());
+                chartData.add(chartItem);
             }
         }
+        result.put("chartData", chartData);
         
-        if (ticketType == null) {
-            return result;
+        // 加入銷售趨勢資料
+        List<Map<String, Object>> trendData = ticketSalesDao.getSalesTrend(eventId);
+        result.put("trendData", trendData);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getTicketTypeTrendData(Integer eventId) {
+        List<Object[]> raw = ticketSalesDao.findTicketTypeTrendByEventId(eventId);
+        // 1. 收集所有日期、票種
+        java.util.Set<String> dateSet = new java.util.TreeSet<>();
+        java.util.Set<String> typeSet = new java.util.LinkedHashSet<>();
+        Map<String, Map<String, Long>> dataMap = new HashMap<>();
+        Map<String, List<Map<String, Object>>> trendTypeDetail = new HashMap<>();
+        for (Object[] row : raw) {
+            String date = row[0].toString();
+            String type = (String) row[1];
+            Long count = (Long) row[2];
+            dateSet.add(date);
+            typeSet.add(type);
+            dataMap.computeIfAbsent(type, k -> new HashMap<>()).put(date, count);
+            // trendTypeDetail
+            trendTypeDetail.computeIfAbsent(date, k -> new java.util.ArrayList<>())
+                .add(new HashMap<String, Object>() {{
+                    put("type", type);
+                    put("count", count);
+                }});
         }
-        
-        result.put("ticketType", ticketType);
-        
-        // 獲取銷售統計數據
-        Integer soldCount = ticketSalesDao.getSoldTicketCount(typeId);
-        Integer usedCount = ticketSalesDao.getUsedTicketCount(typeId);
-        Integer capacity = ticketType.getCapacity();
-        
-        result.put("soldCount", soldCount);
-        result.put("usedCount", usedCount);
-        result.put("remainingCount", capacity - soldCount);
-        result.put("soldPercentage", capacity > 0 ? (double) soldCount / capacity * 100 : 0);
-        
+        // 2. 組裝多票種
+        List<String> categories = new ArrayList<>(dateSet);
+        List<Map<String, Object>> series = new ArrayList<>();
+        for (String type : typeSet) {
+            List<Long> counts = new ArrayList<>();
+            for (String date : categories) {
+                counts.add(dataMap.getOrDefault(type, java.util.Collections.emptyMap()).getOrDefault(date, 0L));
+            }
+            Map<String, Object> serie = new HashMap<>();
+            serie.put("name", type);
+            serie.put("data", counts);
+            series.add(serie);
+        }
+        // 3. 合併計算每日加總
+        List<Map<String, Object>> trendData = new ArrayList<>();
+        for (String date : categories) {
+            long sum = 0;
+            for (String type : typeSet) {
+                sum += dataMap.getOrDefault(type, java.util.Collections.emptyMap()).getOrDefault(date, 0L);
+            }
+            Map<String, Object> item = new HashMap<>();
+            item.put("date", date);
+            item.put("value", sum);
+            trendData.add(item);
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("categories", categories);
+        result.put("series", series); // 多票種序列
+        result.put("trendData", trendData); // 單線加總
+        result.put("trendTypeDetail", trendTypeDetail); // 日期對應票種明細
         return result;
     }
 }

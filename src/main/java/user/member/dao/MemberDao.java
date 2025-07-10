@@ -1,7 +1,5 @@
 package user.member.dao;
 
-import java.util.List;
-
 import common.dao.CommonDao;
 import user.member.vo.Member;
 
@@ -19,7 +17,5 @@ public interface MemberDao extends CommonDao{
 	Member findByEmail(String email);
 
 	Member findByPhone(String phone);
-
-	List<Member> listAll();
 
 }

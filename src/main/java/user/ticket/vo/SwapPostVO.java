@@ -5,7 +5,7 @@ package user.ticket.vo;
  * 創建日期: 2025-05-26
  */
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 @Entity
 @Table(name = "swap_post")
 public class SwapPostVO {
@@ -27,10 +27,10 @@ public class SwapPostVO {
     private Integer eventId;
     
     @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
+    private Timestamp createTime;
     
     @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
 	public Integer getPostId() {
 		return postId;
@@ -72,19 +72,19 @@ public class SwapPostVO {
 		this.eventId = eventId;
 	}
 
-	public LocalDateTime getCreateTime() {
+	public Timestamp getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(LocalDateTime createTime) {
+	public void setCreateTime(Timestamp createTime) {
 		this.createTime = createTime;
 	}
 
-	public LocalDateTime getUpdateTime() {
+	public Timestamp getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(LocalDateTime updateTime) {
+	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
 	}
 }

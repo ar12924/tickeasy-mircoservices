@@ -117,7 +117,26 @@ button:hover {
   font-size: 0.875em;
   margin-left: 0.5em;
 }
-input:error, select:error {
+input:error,
+select:error {
   border-color: red;
   background-color: #fff8f8;
+}
+
+/* 讓註冊 TickEasy 帳號標題與 TickEasy 標題一致 */
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+/* 必填欄位星號樣式 */
+.star,
+.required,
+.asterisk {
+  color: #ec4899;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-left: 2px;
+  vertical-align: middle;
 }

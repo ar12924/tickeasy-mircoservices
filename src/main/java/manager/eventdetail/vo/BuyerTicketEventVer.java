@@ -9,7 +9,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.io.Serializable;
 
 @Entity
@@ -79,7 +78,7 @@ public class BuyerTicketEventVer implements Serializable {
     private Integer ticketQuantity; // 票券數量（由 BuyerOrder 提供）
 
     @Transient
-    private LocalDateTime orderTime; // 訂單時間（由 BuyerOrder 提供）
+    private Timestamp orderTime; // 訂單時間（由 BuyerOrder 提供）
 
     @Transient
     private String qrCodeContent;

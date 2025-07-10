@@ -1,8 +1,7 @@
 package user.ticket.dao.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +12,11 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import user.member.vo.Member;
 import user.ticket.dao.SwapPostDao;
 import user.ticket.vo.BuyerTicketVO;
 import user.ticket.vo.EventInfoVO;
 import user.ticket.vo.EventTicketTypeVO;
-import user.member.vo.Member;
 import user.ticket.vo.SwapPostVO;
 /**
  * 換票貼文資料存取實作類
@@ -40,14 +39,13 @@ public class SwapPostDaoImpl implements SwapPostDao {
 
     @Override
     public SwapPostVO getSwapPostById(Integer postId) {
-        SwapPostVO post = session.get(SwapPostVO.class, postId);
-        return post;
+    	return session.get(SwapPostVO.class, postId);
     }
 
     @Override
     public SwapPostVO saveSwapPost(Integer memberId, Integer ticketId, String description, Integer eventId) {
         SwapPostVO swapPost = new SwapPostVO();
-        LocalDateTime now = LocalDateTime.now();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         swapPost.setPostMemberId(memberId);
         swapPost.setPostTicketId(ticketId);
         swapPost.setPostDescription(description);
@@ -56,6 +54,7 @@ public class SwapPostDaoImpl implements SwapPostDao {
         swapPost.setUpdateTime(now);
         
         session.persist(swapPost);
+        session.flush();
         return swapPost;
     }
 
@@ -64,8 +63,9 @@ public class SwapPostDaoImpl implements SwapPostDao {
         SwapPostVO swapPost = session.get(SwapPostVO.class, postId);
         if (swapPost != null) {
             swapPost.setPostDescription(description);
-            swapPost.setUpdateTime(LocalDateTime.now());
+            swapPost.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             session.merge(swapPost);
+            return swapPost;
         }
         return null;
     }
@@ -138,32 +138,17 @@ public class SwapPostDaoImpl implements SwapPostDao {
     
     @Override
     public EventInfoVO getEventInfoById(Integer eventId) {
-        String hql = "FROM EventInfoVO e WHERE e.eventId = :eventId";
-        List<EventInfoVO> results = session
-                .createQuery(hql, EventInfoVO.class)
-                .setParameter("eventId", eventId)
-                .getResultList();
-        return results.isEmpty() ? null : results.get(0);
+    	return session.get(EventInfoVO.class, eventId);
     }
 
     @Override
     public BuyerTicketVO getBuyerTicketById(Integer ticketId) {
-        String hql = "FROM BuyerTicketVO bt WHERE bt.ticketId = :ticketId";
-        List<BuyerTicketVO> results = session
-                .createQuery(hql, BuyerTicketVO.class)
-                .setParameter("ticketId", ticketId)
-                .getResultList();
-        return results.isEmpty() ? null : results.get(0);
+    	return session.get(BuyerTicketVO.class, ticketId);
     }
 
     @Override
     public EventTicketTypeVO getEventTicketTypeById(Integer typeId) {
-        String hql = "FROM EventTicketTypeVO ett WHERE ett.typeId = :typeId";
-        List<EventTicketTypeVO> results = session
-                .createQuery(hql, EventTicketTypeVO.class)
-                .setParameter("typeId", typeId)
-                .getResultList();
-        return results.isEmpty() ? null : results.get(0);
+    	return session.get(EventTicketTypeVO.class, typeId);
     }
     
     @Override
@@ -233,5 +218,233 @@ public class SwapPostDaoImpl implements SwapPostDao {
                 .setParameter("memberId", memberId)
                 .setParameter("eventId", eventId)
                 .getResultList();
+    }
+    
+    @Override
+    public List<Map<String, Object>> listSwapPostsWithDetailsByEventId(Integer eventId) {
+        // 第一階段：查詢貼文基本資訊 + 會員資訊 + 活動資訊 (3個表)
+        String sql1 = "SELECT " +
+                "sp.post_id, " +
+                "sp.post_description, " +
+                "sp.create_time, " +
+                "sp.update_time, " +
+                "sp.event_id, " +
+                "sp.post_ticket_id, " +
+                "sp.post_member_id, " +
+                "m.nick_name as member_nick_name, " +
+                "ei.event_name " +
+                "FROM swap_post sp " +
+                "LEFT JOIN member m ON sp.post_member_id = m.member_id " +
+                "LEFT JOIN event_info ei ON sp.event_id = ei.event_id " +
+                "WHERE sp.event_id = :eventId " +
+                "ORDER BY sp.create_time DESC";
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> basicResults = session.createNativeQuery(sql1)
+                .setParameter("eventId", eventId)
+                .getResultList();
+
+        if (basicResults.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 收集所有票券ID
+        List<Integer> ticketIds = new ArrayList<>();
+        for (Object[] row : basicResults) {
+            Integer ticketId = (Integer) row[5];
+            if (ticketId != null && !ticketIds.contains(ticketId)) {
+                ticketIds.add(ticketId);
+            }
+        }
+
+        // 第二階段：批量查詢票券資訊 + 票種資訊 (2個表)
+        Map<Integer, Map<String, Object>> ticketInfoMap = new HashMap<>();
+        if (!ticketIds.isEmpty()) {
+            String sql2 = "SELECT " +
+                    "bt.ticket_id, " +
+                    "bt.participant_name, " +
+                    "bt.price as ticket_price, " +
+                    "bt.type_id, " +
+                    "ett.category_name, " +
+                    "ett.price as type_price " +
+                    "FROM buyer_ticket bt " +
+                    "LEFT JOIN event_ticket_type ett ON bt.type_id = ett.type_id " +
+                    "WHERE bt.ticket_id IN (:ticketIds)";
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> ticketResults = session.createNativeQuery(sql2)
+                    .setParameter("ticketIds", ticketIds)
+                    .getResultList();
+
+            for (Object[] row : ticketResults) {
+                Integer ticketId = (Integer) row[0];
+                Map<String, Object> ticketInfo = new HashMap<>();
+                ticketInfo.put("ticketId", ticketId);
+                ticketInfo.put("participantName", row[1]);
+                ticketInfo.put("price", row[2]);
+                ticketInfo.put("typeId", row[3]);
+                ticketInfo.put("categoryName", row[4]);
+                ticketInfoMap.put(ticketId, ticketInfo);
+            }
+        }
+
+        // 組合最終結果
+        List<Map<String, Object>> swapPosts = new ArrayList<>();
+        for (Object[] row : basicResults) {
+            Map<String, Object> postInfo = new HashMap<>();
+            
+            // 貼文基本資訊
+            postInfo.put("postId", row[0]);
+            postInfo.put("postDescription", row[1]);
+            postInfo.put("createTime", row[2]);
+            postInfo.put("updateTime", row[3]);
+            
+            // 會員資訊
+            Map<String, Object> memberInfo = new HashMap<>();
+            memberInfo.put("memberId", row[6]);
+            memberInfo.put("nickName", row[7]);
+            memberInfo.put("photoUrl", "/api/member-photos/" + row[6]);
+            postInfo.put("member", memberInfo);
+            
+            // 活動資訊
+            Map<String, Object> eventInfo = new HashMap<>();
+            eventInfo.put("eventId", row[4]);
+            eventInfo.put("eventName", row[8]);
+            postInfo.put("event", eventInfo);
+            
+            // 票券資訊
+            Integer ticketId = (Integer) row[5];
+            Map<String, Object> ticketInfo = ticketInfoMap.getOrDefault(ticketId, new HashMap<>());
+            if (ticketInfo.isEmpty() && ticketId != null) {
+                // 如果沒找到票券資訊，建立預設值
+                ticketInfo.put("ticketId", ticketId);
+                ticketInfo.put("participantName", "未知");
+                ticketInfo.put("price", 0);
+                ticketInfo.put("categoryName", "未知票種");
+            }
+            // 確保 eventName 存在於票券資訊中
+            if (!ticketInfo.isEmpty()) {
+                ticketInfo.put("eventName", row[8]);
+            }
+            postInfo.put("ticket", ticketInfo);
+            
+            swapPosts.add(postInfo);
+        }
+
+        return swapPosts;
+    }
+
+    @Override
+    public List<Map<String, Object>> listSwapPostsWithDetailsByMemberId(Integer memberId) {
+        // 第一階段：查詢貼文基本資訊 + 會員資訊 + 活動資訊 (3個表)
+        String sql1 = "SELECT " +
+                "sp.post_id, " +
+                "sp.post_description, " +
+                "sp.create_time, " +
+                "sp.update_time, " +
+                "sp.event_id, " +
+                "sp.post_ticket_id, " +
+                "sp.post_member_id, " +
+                "m.nick_name as member_nick_name, " +
+                "ei.event_name " +
+                "FROM swap_post sp " +
+                "LEFT JOIN member m ON sp.post_member_id = m.member_id " +
+                "LEFT JOIN event_info ei ON sp.event_id = ei.event_id " +
+                "WHERE sp.post_member_id = :memberId " +
+                "ORDER BY sp.create_time DESC";
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> basicResults = session.createNativeQuery(sql1)
+                .setParameter("memberId", memberId)
+                .getResultList();
+
+        if (basicResults.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 收集所有票券ID
+        List<Integer> ticketIds = new ArrayList<>();
+        for (Object[] row : basicResults) {
+            Integer ticketId = (Integer) row[5];
+            if (ticketId != null && !ticketIds.contains(ticketId)) {
+                ticketIds.add(ticketId);
+            }
+        }
+
+        // 第二階段：批量查詢票券資訊 + 票種資訊 (2個表)
+        Map<Integer, Map<String, Object>> ticketInfoMap = new HashMap<>();
+        if (!ticketIds.isEmpty()) {
+            String sql2 = "SELECT " +
+                    "bt.ticket_id, " +
+                    "bt.participant_name, " +
+                    "bt.price as ticket_price, " +
+                    "bt.type_id, " +
+                    "ett.category_name, " +
+                    "ett.price as type_price " +
+                    "FROM buyer_ticket bt " +
+                    "LEFT JOIN event_ticket_type ett ON bt.type_id = ett.type_id " +
+                    "WHERE bt.ticket_id IN (:ticketIds)";
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> ticketResults = session.createNativeQuery(sql2)
+                    .setParameter("ticketIds", ticketIds)
+                    .getResultList();
+
+            for (Object[] row : ticketResults) {
+                Integer ticketId = (Integer) row[0];
+                Map<String, Object> ticketInfo = new HashMap<>();
+                ticketInfo.put("ticketId", ticketId);
+                ticketInfo.put("participantName", row[1]);
+                ticketInfo.put("price", row[2]);
+                ticketInfo.put("typeId", row[3]);
+                ticketInfo.put("categoryName", row[4]);
+                ticketInfoMap.put(ticketId, ticketInfo);
+            }
+        }
+
+        // 組合最終結果
+        List<Map<String, Object>> swapPosts = new ArrayList<>();
+        for (Object[] row : basicResults) {
+            Map<String, Object> postInfo = new HashMap<>();
+            
+            // 貼文基本資訊
+            postInfo.put("postId", row[0]);
+            postInfo.put("postDescription", row[1]);
+            postInfo.put("createTime", row[2]);
+            postInfo.put("updateTime", row[3]);
+            
+            // 會員資訊
+            Map<String, Object> memberInfo = new HashMap<>();
+            memberInfo.put("memberId", row[6]);
+            memberInfo.put("nickName", row[7]);
+            memberInfo.put("photoUrl", "/api/member-photos/" + row[6]);
+            postInfo.put("member", memberInfo);
+            
+            // 活動資訊
+            Map<String, Object> eventInfo = new HashMap<>();
+            eventInfo.put("eventId", row[4]);
+            eventInfo.put("eventName", row[8]);
+            postInfo.put("event", eventInfo);
+            
+            // 票券資訊
+            Integer ticketId = (Integer) row[5];
+            Map<String, Object> ticketInfo = ticketInfoMap.getOrDefault(ticketId, new HashMap<>());
+            if (ticketInfo.isEmpty() && ticketId != null) {
+                // 如果沒找到票券資訊，建立預設值
+                ticketInfo.put("ticketId", ticketId);
+                ticketInfo.put("participantName", "未知");
+                ticketInfo.put("price", 0);
+                ticketInfo.put("categoryName", "未知票種");
+            }
+            // 確保 eventName 存在於票券資訊中
+            if (!ticketInfo.isEmpty()) {
+                ticketInfo.put("eventName", row[8]);
+            }
+            postInfo.put("ticket", ticketInfo);
+            
+            swapPosts.add(postInfo);
+        }
+
+        return swapPosts;
     }
 }

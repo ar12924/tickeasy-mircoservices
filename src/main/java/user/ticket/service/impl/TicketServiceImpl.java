@@ -12,7 +12,6 @@ import user.ticket.dao.TicketDao;
 import user.ticket.dto.TicketViewDto;
 import user.ticket.service.TicketService;
 import user.ticket.vo.Ticket;
-import user.ticket.vo.TicketView;
 
 
 @Service
@@ -55,10 +54,16 @@ public class TicketServiceImpl implements TicketService{
 			dto.setPlace(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getPlace());
 			dto.setCreateTime(ticket.getCreateTime());
 			dto.setUpdateTime(ticket.getUpdateTime());
+			dto.setCurrentHolderChangeMemberId(ticket.getMemberTicketVer().getCurrentHolderChangeMemberId());
+			dto.setCurrentHolderChangeUserName(ticket.getMemberTicketVer().getCurrentHolderChangeUserName());
+			dto.setCurrentHolderChangeNickName(ticket.getMemberTicketVer().getCurrentHolderChangeNickName());
+			dto.setCurrentHolderChangeEmail(ticket.getMemberTicketVer().getCurrentHolderChangeEmail());
+			dto.setCurrentHolderChangePhone(ticket.getMemberTicketVer().getCurrentHolderChangePhone());
+			dto.setCurrentHolderChangeIdCard(ticket.getMemberTicketVer().getCurrentHolderChangeIdCard());
 			
 			
 			//狀態轉換邏輯
-			if(ticket.getStatus()==1) {
+			if(ticket.getStatus() != null && ticket.getStatus()==1) {
 				dto.setStatusText("已付款");
 			}else {
 				dto.setStatusText("未付款");
@@ -68,18 +73,79 @@ public class TicketServiceImpl implements TicketService{
 			}else {
 				dto.setIsUsedText("未使用");
 			}
-			result.add(dto);
+			
 			
 			Date now = new Date();
 			//前端頁面狀態分類
-			if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().before(now)) {
+			/*if(ticket.getBuyerOrderTicketVer().getMemberId()!=ticket.getCurrentHolderMemberId()) {
+				dto.setViewCategoryType(3);
+			}else*/ if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().before(now) /*&& ticket.getBuyerOrderTicketVer().getMemberId()==ticket.getCurrentHolderMemberId()*/) {
 				//歷史票
 				dto.setViewCategoryType(2);
-			}else {
+			}else if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().after(now) /*&& ticket.getBuyerOrderTicketVer().getMemberId()==ticket.getCurrentHolderMemberId()*/){
 				//即將到來
 				dto.setViewCategoryType(1);
 			}
 			
+			result.add(dto);
+			
+		}
+			
+			//已轉讓票種
+			
+			List<Ticket> changetickets = ticketDao.selectAllChangeByMemberId(memberId);
+			
+
+
+			for(Ticket changeticket:changetickets) {
+				TicketViewDto dtochange = new TicketViewDto();
+				
+				dtochange.setTicketId(changeticket.getTicketId());
+				dtochange.setOrderId(changeticket.getOrderId());
+				dtochange.setEmail(changeticket.getEmail());
+				dtochange.setPhone(changeticket.getPhone());
+				dtochange.setPrice(changeticket.getPrice());
+				dtochange.setStatus(changeticket.getStatus());
+				dtochange.setIdCard(changeticket.getIdCard());
+				dtochange.setCurrentHolderMemberId(changeticket.getCurrentHolderMemberId());
+				dtochange.setMemberId(changeticket.getBuyerOrderTicketVer().getMemberId());
+				dtochange.setIsUsed(changeticket.getIsUsed());
+				dtochange.setParticipantName(changeticket.getParticipantName());
+				dtochange.setEventName(changeticket.getEventName());
+				dtochange.setCategoryName(changeticket.getEventTicketTypeTicketVer().getCategoryName());
+				dtochange.setQueueId(changeticket.getQueueId());
+				dtochange.setEventFromDate(changeticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate());
+				dtochange.setPlace(changeticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getPlace());
+				dtochange.setCreateTime(changeticket.getCreateTime());
+				dtochange.setUpdateTime(changeticket.getUpdateTime());
+				
+				
+				//狀態轉換邏輯
+				if(changeticket.getStatus() != null && changeticket.getStatus()==1) {
+					dtochange.setStatusText("已付款");
+				}else {
+					dtochange.setStatusText("未付款");
+				}
+				if(changeticket.getIsUsed()==1) {
+					dtochange.setIsUsedText("已使用");
+				}else {
+					dtochange.setIsUsedText("未使用");
+				}
+				
+				
+				
+				//前端頁面狀態分類
+				if(changeticket.getBuyerOrderTicketVer().getMemberId()!=changeticket.getCurrentHolderMemberId()) {
+					dtochange.setViewCategoryType(3);
+				}/*else if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().before(now) && ticket.getBuyerOrderTicketVer().getMemberId()==ticket.getCurrentHolderMemberId()) {
+					//歷史票
+					dto.setViewCategoryType(2);
+				}else if(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getEventFromDate().after(now) && ticket.getBuyerOrderTicketVer().getMemberId()==ticket.getCurrentHolderMemberId()){
+					//即將到來
+					dto.setViewCategoryType(1);
+				}*/
+				
+				result.add(dtochange);
 		}
 		
 		
@@ -90,4 +156,5 @@ public class TicketServiceImpl implements TicketService{
 		
 	}
 
+	
 }

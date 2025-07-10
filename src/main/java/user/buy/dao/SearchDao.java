@@ -3,18 +3,29 @@ package user.buy.dao;
 import java.util.List;
 
 import common.dao.CommonDao;
+import common.vo.Order;
 import user.buy.vo.EventInfo;
 import user.buy.vo.Favorite;
 import user.buy.vo.KeywordCategory;
 
 public interface SearchDao extends CommonDao {
-	List<EventInfo> selectRecentEventInfo(Integer n);
+	public List<EventInfo> selectEventInfo(String keyword, Integer page, Order order, Integer pageSize);
 	
-	List<Favorite> selectFavoriteByMemberId(Integer memberId);
+	public Long countEventInfo(String searchTerm);
+	
+	public List<Favorite> selectAllFavoriteByMemberId(Integer memberId);
 
-	KeywordCategory selectKeywordByKeywordId(Integer keywordId);
+	public Favorite selectFavoriteByMemberIdAndEventId(Integer memberId, Integer eventId);
 	
-	List<EventInfo> selectEventByKeywordWithPages(String keyword, Integer pageNumber, Integer pageSize);
+	public Integer insertFavorite(Integer eventId, Integer memberId);
+	
+	public Integer removeFavorite(Integer eventId, Integer memberId);
+	
+	public Integer updateFavorite(Integer eventId, Integer memberId, boolean isFollowed);
+	
+	public KeywordCategory selectKeywordByKeywordId(Integer keywordId);
+	
+	public List<EventInfo> selectEventByKeywordWithPages(String keyword, Integer pageNumber, Integer pageSize);
 
 	public Long selectEventCountByKeyword(String keyword);
 

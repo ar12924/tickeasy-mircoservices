@@ -1,13 +1,15 @@
 package user.ticket.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import user.member.vo.Member;
 import user.ticket.dto.TicketViewDto;
@@ -24,11 +26,20 @@ public class TicketListController{
 	@Autowired
 	private TicketService ticketService;
 	
+	@GetMapping("check-login")
+    @ResponseBody
+    public boolean checkLoginStatus(@SessionAttribute(required = false) Member member) {
+        return member != null && member.getMemberId() != null;
+    }
+	
 	@PostMapping("ticket-list")
 	@ResponseBody
-	public List<TicketViewDto> notificationUnvisible(@RequestBody Member member) {
+	public List<TicketViewDto> ticketList(/* @RequestBody Member member */ @SessionAttribute  (required = false) Member member) {
 		
-
+    	if (member == null || member.getMemberId() == null) {
+            System.out.println("未登入");
+            return new ArrayList<>();
+            }
     	Integer memId=member.getMemberId();
 
 		

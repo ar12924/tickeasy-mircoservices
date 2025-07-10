@@ -34,9 +34,25 @@ export const validateIdCard = (idCard) => {
 
 /**
  * 從後端 Session 抓取會員資料。
- * @return {Object} 驗證結果(含會員資料)。
+ * @return {Object} member 和驗證結果。
  */
 export const fetchMemberFromSession = async () => {
-  const resp = await fetch(`${getContextPath()}/common/identify`);
+  const resp = await fetch(`${getContextPath()}/common/authenticate`);
   return await resp.json();
+};
+
+/**
+ * 秒數格式化為 mm:ss。
+ * @param {number} seconds - 秒數。
+ * @return {string} 轉換為 mm:ss 字串。
+ */
+export const formatTime = (seconds) => {
+  // 計算(分、秒)
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  // 回傳格式化時間(padStart() 來填充 0 開頭)
+  return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+    .toString()
+    .padStart(2, "0")}`;
 };

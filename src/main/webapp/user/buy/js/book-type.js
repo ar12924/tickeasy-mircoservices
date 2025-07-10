@@ -1,6 +1,10 @@
 // ==================== 載入模組 (All Imports At Top) ====================
 import { getUrlParam, getContextPath } from "../../common/utils.js";
-import { BOOKING_PROGRESS, ERROR_MESSAGES } from "../../common/constant.js";
+import {
+  BOOKING_PROGRESS,
+  ERROR_MESSAGES,
+  OTHER_CONSTS,
+} from "../../common/constant.js";
 import {
   fetchNavTemplate,
   renderNav,
@@ -16,6 +20,7 @@ import {
   fetchTypeBoxTemplate,
   renderTypeBox,
   initTypeBoxJSEvents,
+  fetchRemainingTicketCount,
 } from "../ui/book-type/type-box.js";
 import {
   fetchFooterTemplate,
@@ -34,8 +39,10 @@ const saveBook = async (book) => {
 
   // 如果 eventId 缺少
   if (book.eventId <= 0) {
-    $(".book-type-message").text(ERROR_MESSAGES.MISSING_EVENT_ID);
-    $(".book-type-message").closest("#error-message").removeClass("is-hidden");
+    $("#error-message")
+      .find(".book-type-message")
+      .text(ERROR_MESSAGES.MISSING_EVENT_ID);
+    $("#error-message").removeClass("is-hidden");
     return;
   }
 
@@ -45,12 +52,14 @@ const saveBook = async (book) => {
     totalNum += ticketType.quantity;
   });
   if (totalNum <= 0) {
-    $(".book-type-message").text(ERROR_MESSAGES.NO_TICKETS_SELECTED);
-    $(".book-type-message").closest("#error-message").removeClass("is-hidden");
+    $("#error-message")
+      .find(".book-type-message")
+      .text(ERROR_MESSAGES.NO_TICKETS_SELECTED);
+    $("#error-message").removeClass("is-hidden");
     return;
   }
 
-  // 將 book 傳遞至後端
+  // 將 book 傳遞至後端並儲存至 Redis
   const resp = await fetch(`${getContextPath()}/book-type`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -67,7 +76,7 @@ const saveBook = async (book) => {
     return;
   }
 
-  // 儲存至 Redis 並跳轉下一頁(book-info.html)
+  // 跳轉下一頁(book-info.html)
   sessionStorage.setItem("core-message", message);
   sessionStorage.setItem("core-successful", successful);
   location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
@@ -83,17 +92,17 @@ const saveBook = async (book) => {
 const addTicketTypeToSelected = (book) => {
   const $typeBoxList = $(".type-box");
 
-  // selected 中加上 quantity 屬性值
-  $typeBoxList.each((i, typeBox) => {
+  // 抓取票種資料
+  const typeSelected = $typeBoxList.map((index, typeBox) => {
     const $typeBox = $(typeBox);
-    const $typeName = $typeBox.find(".type-name");
-    const $typeQuantity = $typeBox.find(".type-quantity");
-    book.selected.forEach((selectedItem) => {
-      if (selectedItem.categoryName === $typeName.text()) {
-        selectedItem["quantity"] = $typeQuantity.val();
-      }
-    });
+    const typeId = $typeBox.data("typeId");
+    const categoryName = $typeBox.find(".type-name").text();
+    const quantity = $typeBox.find(".type-quantity").val();
+    return { typeId, categoryName, quantity };
   });
+
+  // 將票種資料存入 book 當中
+  book.selected = typeSelected.get();
 };
 
 // ==================== 3. DOM 事件處理與頁面邏輯 (DOM Events & Page Logic) ====================
@@ -108,14 +117,57 @@ const initBookTypeJSEvents = (book) => {
   const eventId = getUrlParam("eventId");
 
   // ====== "更新票券" 按鈕點擊事件 ======
-  $(".update").on("mouseenter mouseleave", (e) => {
-    $(e.target).closest(".update").toggleClass("is-focused");
+  $(".update").on("click", async (e) => {
+    // 改變按鈕樣式
+    $(".updating").removeClass("is-hidden");
+    $(".update").addClass("is-hidden");
+
+    // 取得票種、eventId
+    const eventId = getUrlParam("eventId");
+    const typeIdArr = await fetchTicketType(eventId);
+
+    // 更新所有票種的剩餘票數
+    const remainingTicketCountArr = [];
+    for (const type of typeIdArr) {
+      const { typeId } = type;
+      const { count, message, successful } = await fetchRemainingTicketCount(
+        eventId,
+        typeId
+      );
+      $(`[data-type-id='${typeId}']`).find("span.tag").text(`剩餘 ${count}`);
+      remainingTicketCountArr.push({ count, message, successful });
+    }
+
+    // 完成剩餘票數更新，判斷成功與否?
+    for (const { successful, message } of remainingTicketCountArr) {
+      if (!successful) {
+        // 顯示失敗訊息，恢復按鈕樣式
+        setTimeout(() => {
+          $("#error-message").find(".book-type-message").text(message);
+          $("#error-message").removeClass("is-hidden");
+          $(".updating").addClass("is-hidden");
+          $(".update").removeClass("is-hidden");
+        }, OTHER_CONSTS.ANIMATION_TRANSITION);
+        return;
+      }
+    }
+    // 成功，恢復按鈕樣式
+    setTimeout(() => {
+      $(".updating").addClass("is-hidden");
+      $(".update").removeClass("is-hidden");
+    }, OTHER_CONSTS.ANIMATION_TRANSITION);
+  });
+  // ====== "更新票券" 按鈕 blur 事件 ======
+  $(".update").on("blur", () => {
+    $(".book-type-message").text("");
+    $("#error-message").addClass("is-hidden");
+    $("#success-message").addClass("is-hidden");
   });
 
   // ====== "上一步" 按鈕點擊事件 ======
   $(".back").on("click", () => {
     // 回到活動頁面
-    location.href = "https://www.google.com";
+    location.href = `${getContextPath()}/user/buy/event_ticket_purchase.html?eventId=${eventId}`;
   });
 
   // ====== "下一步" 按鈕點擊事件 ======
@@ -130,8 +182,8 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== "下一步" 按鈕 blur 事件 ======
   $(".next").on("blur", () => {
-    $(".book-type-message").text("");
-    $(".book-type-message").closest("#error-message").addClass("is-hidden");
+    $("#error-message").find(".book-type-message").text("");
+    $("#error-message").addClass("is-hidden");
   });
 };
 
@@ -142,7 +194,7 @@ const initBookTypeJSEvents = (book) => {
   // ====== 資料儲存變數區 ======
   const book = {
     // 活動 id
-    eventId: -1,
+    eventId: null,
     // 活動名
     eventName: null,
     // 購票人帳號
@@ -159,33 +211,23 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== nav 部分 ======
   const navTemplate = await fetchNavTemplate();
-  renderNav(navTemplate);
+  await renderNav(navTemplate);
   initNavJSEvents();
 
   // ====== header 部分 ======
   const eventId = getUrlParam("eventId");
+  // 存入 eventId
+  book.eventId = eventId;
   const headerTemplate = await fetchHeaderTemplate();
   const eventInfo = await fetchTicketEvent(eventId);
-  if (!eventInfo) {
-    alert("載入活動名稱失敗!!");
-  } else {
-    // 存入 book 變數中，儲存 eventName
-    book.eventName = eventInfo.eventName;
-    // 輸出 header.html 模板(顯示對應進度條、活動名稱)
-    renderHeader(eventInfo, book, headerTemplate);
-  }
+  // 存入 book 變數中，儲存 eventName
+  book.eventName = eventInfo.eventName;
+  // 輸出 header.html 模板(顯示對應進度條、活動名稱)
+  renderHeader(eventInfo, book, headerTemplate);
 
   // ====== type-box 部分 ======
   const ticketType = await fetchTicketType(eventId);
   const typeBoxTemplate = await fetchTypeBoxTemplate();
-  // 將票種資訊，暫存入 book 變數中
-  ticketType.forEach(({ typeId, categoryName }) => {
-    book.eventId = eventId;
-    book.selected.push({
-      typeId,
-      categoryName,
-    });
-  });
   // 輸出 type-box.html 模板
   renderTypeBox(ticketType, typeBoxTemplate);
   // 監聽事件

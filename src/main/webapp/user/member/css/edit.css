@@ -2,137 +2,203 @@
 
 /* Container for edit page, similar to register-box */
 .my-tickets {
-	margin: 2rem auto;
-	max-width: 360px;
-	width: 100%;
-	padding: 40px 30px;
-	background: white;
-	border-radius: 10px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  max-width: 360px;
+  width: 100%;
+  padding: 40px 30px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .my-tickets h2 {
-	text-align: center;
-	color: #ec4899;
-	margin-bottom: 24px;
+  text-align: center;
+  color: #ec4899;
+  margin-bottom: 24px;
 }
 
 .form-group {
-	margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
-	display: block;
-	margin-bottom: 6px;
-	font-size: 14px;
-	font-weight: bold;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
-.my-tickets input, .my-tickets select {
-	width: 100%;
-	padding: 10px;
-	font-size: 14px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
+.my-tickets input,
+.my-tickets select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 /* Photo preview group */
 .photo-group {
-	text-align: center;
-	margin-bottom: 1.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.photo-group img {
-	display: block;
-	width: 80px;
-	height: 80px;
-	object-fit: cover;
-	border-radius: 50%;
-	margin: 0 auto 0.5rem;
+.photo-group #defaultIcon {
+  display: block;
+  font-size: 120px;
+  color: #ccc;
+  margin: 0 auto 16px;
+}
+
+.photo-group #defaultIcon.hide {
+  display: none;
+}
+
+.photo-group #photoPreview {
+  display: block;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  border: 2px solid #e5e7eb;
+  object-fit: cover;
+}
+
+.photo-group input[type="file"] {
+  padding: 8px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+}
+
+.photo-group input[type="file"]:hover {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+}
+
+.photo-group .error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.error {
+  color: red;
+  font-size: 0.875em;
+  margin-left: 0.5em;
 }
 
 .checkbox-group {
-	margin: 12px 0;
-	font-size: 14px;
+  margin: 12px 0;
+  font-size: 14px;
 }
 
 .checkbox-group label {
-	display: inline-flex;
-	align-items: center;
-	cursor: pointer;
-	user-select: none;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
 }
 
 .checkbox-group label input[type="checkbox"] {
-	margin-right: 0.5rem;
-	width: 1rem;
-	height: 1rem;
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 button.join-button {
-	width: 100%;
-	background-color: #ec4899;
-	color: white;
-	border: none;
-	padding: 12px;
-	font-size: 15px;
-	border-radius: 4px;
-	cursor: pointer;
+  width: 100%;
+  background-color: #ec4899;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 button.join-button:hover {
-	background-color: #c2185b;
+  background-color: #c2185b;
 }
 
 button.secondary-button {
-	width: 100%;
-	background-color: #f3f4f6;
-	color: #374151;
-	border: 1px solid #d1d5db;
-	padding: 10px;
-	font-size: 14px;
-	border-radius: 4px;
-	cursor: pointer;
-	transition: all 0.2s ease;
+  width: 100%;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 button.secondary-button:hover {
-	background-color: #e5e7eb;
+  background-color: #e5e7eb;
 }
 
 #verificationMsg {
-	color: #4f46e5;
-	font-size: 13px;
-	margin-top: 8px;
-	text-align: center;
+  color: #4f46e5;
+  font-size: 13px;
+  margin-top: 8px;
+  text-align: center;
 }
 
 #msg {
-	color: red;
-	text-align: center;
-	margin-top: 12px;
-	font-size: 14px;
+  color: red;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
 }
 
 .user-info {
-	display: inline-flex;
-	align-items: center;
-	margin-left: 1rem;
-	font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 1rem;
+  font-size: 0.9rem;
 }
 
 .user-info #loggedInNickname {
-	margin-right: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .user-info #logoutButton {
-	background: none;
-	border: none;
-	color: #ec4899;
-	cursor: pointer;
+  background: none;
+  border: none;
+  color: #ec4899;
+  cursor: pointer;
 }
 
 .user-info #logoutButton:hover {
-	text-decoration: underline;
+  text-decoration: underline;
+}
+
+/* 密碼變更區域滑動效果 */
+.password-change-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+  background-color: #f9fafb;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.password-change-container.show {
+  max-height: 300px; /* 根據內容調整高度 */
+}
+
+.password-change-content {
+  padding: 16px;
+}
+
+/* 讓編輯會員資料標題與 login.html 的 TickEasy 樣式一致 */
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4a4a4a;
 }

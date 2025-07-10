@@ -39,7 +39,7 @@
 					<li class="nav-item"><a class="nav-link" data-lte-toggle="sidebar" href="#" role="button"> <i
 								class="bi bi-list"></i>
 						</a></li>
-					<li class="nav-item d-none d-md-block"><a href="index.html" class="nav-link">Home</a></li>
+					<li class="nav-item d-none d-md-block"><a href="../index.html" class="nav-link">Home</a></li>
 				</ul>
 				<ul class="navbar-nav ms-auto">
 					<li class="nav-item"><a class="nav-link" href="#" data-lte-toggle="fullscreen"> <i
@@ -60,18 +60,12 @@
 										Nov. 2023</small>
 								</p>
 							</li>
-							<li class="user-body">
-								<div class="row">
-									<div class="col-6 text-center">
-										<a href="#">活動場次</a><br> <a href="#" class="fs-4">1000</a>
-									</div>
-									<div class="col-6 text-center">
-										<a href="#">Friends</a><br> <a href="#" class="fs-4">1000</a>
-									</div>
-								</div>
+							
+							<li class="user-footer">
+								<a href="/maven-tickeasy-v1/user/member/edit.html"
+                                    class="btn btn-default btn-flat">會員中心</a>
+                                <a href="#" class="btn btn-default btn-flat float-end" onclick="handleLogout()">登出</a>
 							</li>
-							<li class="user-footer"><a href="#" class="btn btn-default btn-flat">Profile</a> <a href="#"
-									class="btn btn-default btn-flat float-end">Sign out</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -89,104 +83,56 @@
 					<ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu"
 						data-accordion="false">
 						<li class="nav-header">活動方</li>
-						<li class="nav-item"><a href="./event_new.html" class="nav-link"> <i
+						<li class="nav-item"><a href="../event/CreateEvent.html" class="nav-link"> <i
 									class="nav-icon bi bi-patch-plus-fill"></i>
 								<p>建立活動</p>
 							</a></li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-									class="nav-icon bi bi-gear-wide-connected"></i>
+						<li class="nav-item">
+							<a href="#" class="nav-link"> <i class="nav-icon bi bi-gear-wide-connected"></i>
 								<p>
 									活動管理 <i class="nav-arrow bi bi-chevron-right"></i>
 								</p>
 							</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
+								<li class="nav-item">
+									<a href="./dashboard.html" class="nav-link">
+										<i class="nav-icon bi bi-speedometer2"></i>
+										<p>儀表板</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="./participant-list.html" class="nav-link"> <i
 											class="nav-icon bi bi-list-task"></i>
 										<p>活動列表</p>
-									</a></li>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="./ticket_exchange.html" class="nav-link active">
+										<i class="nav-icon bi bi-arrow-left-right"></i>
+										<p>換票列表</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="./distTicketList.html" class="nav-link">
+										<i class="nav-icon bi bi-share"></i>
+										<p>分票列表</p>
+									</a>
+								</li>
 							</ul>
 						</li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon bi bi bi-people-fill"></i>
+						<li class="nav-item">
+							<a href="#" class="nav-link"> <i class="nav-icon bi bi bi-people-fill"></i>
 								<p>
 									會員管理 <i class="nav-arrow bi bi-chevron-right"></i>
 								</p>
 							</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-person-fill-gear"></i>
-										<p>會員設定</p>
-									</a></li>
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-shield-lock-fill"></i>
-										<p>會員密碼</p>
-									</a></li>
-							</ul>
-						</li>
-						<li class="nav-header">平台方</li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-									class="nav-icon bi bi-gear-wide-connected"></i>
-								<p>
-									活動管理 <i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-calendar3-range-fill"></i>
-										<p>活動列表</p>
-									</a></li>
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-ticket-perforated-fill"></i>
-										<p>票券列表</p>
-									</a></li>
-							</ul>
-						</li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon bi bi bi-people-fill"></i>
-								<p>
-									會員管理 <i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-person-lines-fill"></i>
+								<li class="nav-item">
+									<a href="../member/member_list.html" class="nav-link">
+										<i class="nav-icon bi bi-person-fill-gear"></i>
 										<p>會員列表</p>
-									</a></li>
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-person-heart"></i>
-										<p>購票者</p>
-									</a></li>
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-bookmark-check-fill"></i>
-										<p>活動方</p>
-									</a></li>
-							</ul>
-						</li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i class="nav-icon bi bi-cone-striped"></i>
-								<p>
-									平台管理 <i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-check2-square"></i>
-										<p>活動單位審核</p>
-									</a></li>
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-backspace-reverse-fill"></i>
-										<p>平台帳號管理</p>
-									</a></li>
-							</ul>
-						</li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-									class="nav-icon bi bi bi-person-hearts"></i>
-								<p>
-									粉絲交流管理 <i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="./index.html" class="nav-link"> <i
-											class="nav-icon bi bi-list-task"></i>
-										<p>討論區列表</p>
-									</a></li>
+									</a>
+								</li>
 							</ul>
 						</li>
 					</ul>
@@ -198,14 +144,13 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-sm-6">
-							<h3 class="mb-0">檢視 Aespa演唱會</h3>
+							<h3 class="mb-0">活動管理 - 換票列表</h3>
 						</div>
 						<div class="col-sm-6">
 							<ol class="breadcrumb float-sm-end">
-								<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-								<li class="breadcrumb-item"><a href="index.html">活動列表</a></li>
-								<li class="breadcrumb-item active" aria-current="page">檢視
-									Aespa演唱會</li>
+								<li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+								<li class="breadcrumb-item"><a href="./dashboard.html">活動管理</a></li>
+								<li class="breadcrumb-item active" aria-current="page">換票列表</li>
 							</ol>
 						</div>
 					</div>
@@ -218,14 +163,10 @@
 						<div class="col-12">
 							<ul class="nav nav-tabs" id="myTab" role="tablist">
 								<li class="nav-item" role="presentation">
-									<button class="nav-link active" id="exchange-tab" data-bs-toggle="tab"
-										data-bs-target="#exchange" type="button" role="tab" aria-controls="exchange"
-										aria-selected="true" href="./ticket_exchange.html" >換票列表</button>
+									<a class="nav-link active" href="./ticket_exchange.html">換票列表</a>
 								</li>
 								<li class="nav-item" role="presentation">
-									<button class="nav-link" id="ticket-tab" data-bs-toggle="tab"
-										data-bs-target="#ticket" type="button" role="tab" aria-controls="ticket"
-										aria-selected="false" href="./distTicketList.html">分票列表</button>
+									<a class="nav-link" href="./distTicketList.html">分票列表</a>
 								</li>
 							</ul>
 						</div>
@@ -340,7 +281,9 @@
 									<!-- 返回按鈕 -->
 									<div class="row mt-3">
 										<div class="col-12 text-end">
-											<button type="button" class="btn btn-secondary" id="backBtn">回到活動列表</button>
+											<a href="../eventdetail/dashboard.html" class="btn btn-secondary">
+												<i class="bi bi-arrow-left"></i> 回到活動管理
+											</a>
 										</div>
 									</div>
 								</div>
@@ -376,14 +319,14 @@
 		integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
 	<!--end::Third Party Plugin(OverlayScrollbars)-->
 	<!--begin::Required Plugin(popperjs for Bootstrap 5)-->
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+	<!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
 		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-		crossorigin="anonymous"></script>
+		crossorigin="anonymous"></script> -->
 	<!--end::Required Plugin(popperjs for Bootstrap 5)-->
 	<!--begin::Required Plugin(Bootstrap 5)-->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+	<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
 		integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-		crossorigin="anonymous"></script>
+		crossorigin="anonymous"></script> -->
 	<!--end::Required Plugin(Bootstrap 5)-->
 	<!--begin::Required Plugin(AdminLTE)-->
 	<script src="../common/js/adminlte.js"></script>
@@ -394,32 +337,10 @@
 	<!-- apexcharts -->
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
 		integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
-
+	
+	<script src="../common/js/header.js"></script>
 	<!--begin::OverlayScrollbars Configure & 換票列表管理功能-->
-	<script>
-		const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
-		const Default = {
-			scrollbarTheme: "os-theme-light",
-			scrollbarAutoHide: "leave",
-			scrollbarClickScroll: true,
-		};
-
-		document.addEventListener("DOMContentLoaded", function () {
-			const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-			if (
-				sidebarWrapper &&
-				typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined"
-			) {
-				OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-					scrollbars: {
-						theme: Default.scrollbarTheme,
-						autoHide: Default.scrollbarAutoHide,
-						clickScroll: Default.scrollbarClickScroll,
-					},
-				});
-			}
-		});
-	</script>
+	<script src="../common/js/overlay_scrollbar_init.js"></script>
 	<script src="./js/ticket_exchange.js"></script>
 </body>
 

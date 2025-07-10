@@ -19,6 +19,7 @@ function init() {
       }
     },
     columns: [
+      
       { data: "eventName" },
       { data: "eventFromDate" },
       {
@@ -33,6 +34,7 @@ function init() {
           const isPosted = data.isPosted;
           const toggleButtonText = isPosted ? "下架活動" : "上架活動";
           const toggleButtonClass = isPosted ? "btn-warning" : "btn-success";
+          const eventId = sessionStorage.setItem(data.eventId);
           return `
             <div class="d-grid gap-2">
               <a href="event/EditEvent.html?eventId=${data.eventId}" class="btn btn-warning text-danger">編輯活動</a>

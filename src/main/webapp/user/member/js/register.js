@@ -1,3 +1,5 @@
+import { validateIdCard, getContextPath } from "../../common/utils.js";
+
 const form = document.querySelector("#registerForm");
 const username = document.querySelector("#userName");
 const nickname = document.querySelector("#nickName");
@@ -112,10 +114,10 @@ phone.addEventListener("input", function () {
   }
 });
 
-// 身分證
+// 身分證 - 使用 utils.js 的 validateIdCard 函數
 idCard.addEventListener("input", function () {
   clearError(idCard, idCardError);
-  if (!/^[A-Za-z]\d{9}$/.test(idCard.value.trim())) {
+  if (!validateIdCard(idCard.value.trim())) {
     showError(idCard, idCardError, "身分證格式錯誤，開頭英文字母＋9碼數字");
   }
 });
@@ -161,7 +163,6 @@ photoInput.addEventListener("change", function (e) {
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   msg.textContent = "";
-
   // 逐一再執行一次各欄位檢驗
   validateEmail();
   username.dispatchEvent(new Event("input"));
@@ -201,29 +202,24 @@ form.addEventListener("submit", function (e) {
     }
   }
 
-  const payload = {
-    userName: username.value,
-    nickName: nickname.value,
-    email: fullEmail,
-    password: password.value,
-    rePassword: cPassword.value,
-    birthDate: birthDate.value,
-    phone: phone.value,
-    gender: gender.value,
-    idCard: idCard.value,
-    unicode: unicode.value,
-    agree: agree.checked,
-    hostApply: hostApply.checked,
-  };
-
   const fd = new FormData();
-  fd.append(
-    "member",
-    new Blob([JSON.stringify(payload)], { type: "application/json" })
-  );
+  fd.append("userName", username.value);
+  fd.append("nickName", nickname.value);
+  fd.append("email", fullEmail);
+  fd.append("password", password.value);
+  fd.append("rePassword", cPassword.value);
+  fd.append("birthDate", birthDate.value);
+  fd.append("phone", phone.value);
+  fd.append("gender", gender.value);
+  fd.append("idCard", idCard.value);
+  if (unicode.value.trim()) {
+    fd.append("unicode", unicode.value);
+  }
+  fd.append("agree", agree.checked.toString());
+  fd.append("hostApply", hostApply.checked.toString());
   if (photoInput.files[0]) fd.append("photo", photoInput.files[0]);
 
-  fetch(form.action, {
+  fetch(`${getContextPath()}/user/member/register`, {
     method: "POST",
     body: fd,
     credentials: "include",
@@ -231,9 +227,12 @@ form.addEventListener("submit", function (e) {
     .then((resp) => resp.json())
     .then((body) => {
       msg.style.color = body.successful ? "green" : "red";
-      msg.textContent = body.message;
-      if (body.successful)
-        setTimeout(() => (window.location.href = "login.html"), 2000);
+      if (body.successful) {
+        msg.textContent = "註冊成功，請至註冊信箱收取認證信";
+        setTimeout(() => (window.location.href = "login.html"), 3000);
+      } else {
+        msg.textContent = body.message;
+      }
     })
     .catch((err) => {
       console.error(err);

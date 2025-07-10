@@ -1,27 +1,23 @@
 package user.notify.dao.impl;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import user.notify.dao.NotificationDao;
+import user.notify.service.impl.NotificationServiceImpl;
 import user.notify.vo.Notification;
 
 @Repository
 public class NotificationDaoImpl implements NotificationDao {
+	private final static Logger logger = LogManager.getLogger(NotificationServiceImpl.class);
 	@PersistenceContext
 	private Session session;
 	/*
@@ -53,7 +49,7 @@ public class NotificationDaoImpl implements NotificationDao {
 				.setParameter("memberId", memberId).setParameter("memberNotificationId", memberNotificationId)
 				.executeUpdate();
 		if (result > 0) {
-			System.out.println("更新資料筆數：" + result);
+			logger.info("更新資料筆數：" + result);
 			return result;
 		} else {
 			return null;
@@ -70,16 +66,17 @@ public class NotificationDaoImpl implements NotificationDao {
 				.executeUpdate();
 
 		if (result > 0) {
-			System.out.println("更新隱藏資料筆數：" + result);
+			logger.info("更新隱藏資料筆數：" + result);
 			return result;
 		} else {
 			return null;
 		}
 	}
 
+	//增加DISTINCT 讓多張票券只會發送一筆通知
 	@Override
 	public List<Object[]> sendReminderNotificationForTomorrowList() {
-		String sql = "SELECT\r\n" + "bt.current_holder_member_id,\r\n" + "bo.event_id,\r\n" + "ei.event_name,\r\n"
+		String sql = "SELECT DISTINCT\r\n" + "bt.current_holder_member_id,\r\n" + "bo.event_id,\r\n" + "ei.event_name,\r\n"
 				+ "ei.event_from_date\r\n" + "FROM buyer_order bo\r\n"
 				+ "JOIN buyer_ticket bt ON bo.order_id = bt.order_id\r\n"
 				+ "JOIN event_info ei ON bo.event_id = ei.event_id\r\n"
@@ -91,7 +88,7 @@ public class NotificationDaoImpl implements NotificationDao {
 	public int sendReminderNotification(int memberId, int eventId, String eventName, Timestamp eventDate) {
 //		session.persist(eventDate);
 		
-		System.out.println("📬 正在寫入通知給 memberId=" + memberId);
+		logger.info("📬 正在寫入通知給 memberId=" + memberId);
 		String sql = "INSERT INTO member_notification "
 				+ "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) "
 				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";
@@ -103,7 +100,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		 
 
 		int result = session.createNativeQuery(sql)
-				.setParameter("notificationId", 5) // 或自動遞增可以省略
+				.setParameter("notificationId", 5)
 				.setParameter("memberId", memberId)
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
@@ -116,7 +113,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		
 	}
 
-	
+	//由於不同category_name開賣時間可能不同,因此設計成依category發送通知
 	@Override
 	public List<Object[]> sendFavoriteSellReminderNotificationForTomorrowList() {
 		String sql = "SELECT f.member_id,f.event_id ,eiett.event_name,eiett.sell_from_time ,eiett.sell_to_time ,eiett.category_name \r\n"
@@ -138,19 +135,25 @@ public class NotificationDaoImpl implements NotificationDao {
 				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";	
 		
 		
-		
-		String message = String.format("親愛的會員，您關注的活動「%s」%s票種 將於 %s 開賣至 %s，請記得準備購買！", eventName,
-				categoryName, eventSellFromTime.toString(), eventSellToTime.toString());
-
+		String title_template= titleTemplateNotification(2).replace("{event_name}", eventName);
+		String message_template= messageTemplateNotification(2)
+				.replace("{event_name}", eventName)
+				.replace("{category_name}", categoryName)
+				.replace("{event_sell_from_time}", String.valueOf(eventSellFromTime))
+				.replace("{event_sell_to_time}", String.valueOf(eventSellToTime));
+		/*String message = String.format("親愛的會員，您關注的活動「%s」%s票種 將於 %s 開賣至 %s，請記得準備購買！", eventName,
+				categoryName, eventSellFromTime.toString(), eventSellToTime.toString());*/
+		/*親愛的會員，您關注的活動「{event_name}」{category_name}票種 將於 {event_sell_from_time} 開賣至 {event_sell_to_time}，請記得準備購買！*/
+		String link_template=linkTemplateNotification(2).replace("{event_id}", eventId+"");
 		int result = session.createNativeQuery(sql)
-				.setParameter("notificationId", 2) // 或自動遞增可以省略
+				.setParameter("notificationId", 2)
 				.setParameter("memberId", memberId)
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
 				.setParameter("status", 1)
-				.setParameter("title", "關注開賣提醒")
-				.setParameter("message", message)
-				.setParameter("linkUrl", "/event/" + eventId)
+				.setParameter("title", title_template)
+				.setParameter("message", message_template)
+				.setParameter("linkUrl", link_template)
 				.executeUpdate();
 		return result;
 		
@@ -177,19 +180,23 @@ public class NotificationDaoImpl implements NotificationDao {
 				+ "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) "
 				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";
 		
-		String message = String.format("您關注的活動「%s」售票將於24小時內結束，請把握最後機會！", eventName);
-		String message2= String.format("%s 售票即將結束",eventName);
+		String title_template= titleTemplateNotification(4).replace("{event_name}", eventName);
+		String message_template= messageTemplateNotification(4)	.replace("{event_name}", eventName);
+		String link_template=linkTemplateNotification(4).replace("{event_id}", eventId+"");
+		/*String message = String.format("您關注的活動「%s」售票將於24小時內結束，請把握最後機會！", eventName);*/
+		/* String message2= String.format("%s 售票即將結束",eventName); */
 	
-		
-		int result = session.createNativeQuery(sql)// 或自動遞增可以省略
-				.setParameter("notificationId", 4) // 或自動遞增可以省略
+		/*您關注的活動「{event_name}」售票將於24小時內結束，請把握最後機會！*/
+		int result = session.createNativeQuery(sql)
+				.setParameter("notificationId", 4) 
 				.setParameter("memberId", memberId)
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
 				.setParameter("status", 1)
-				.setParameter("title", message2)
-				.setParameter("message", message)
-				.setParameter("linkUrl", "/event/" + eventId)
+				.setParameter("title", title_template)
+				.setParameter("message", message_template)
+				.setParameter("linkUrl",link_template)
+				/*.setParameter("linkUrl", "/user/buy/event_ticket_purchase.html?eventId=" + eventId)*/
 				.executeUpdate();
 		return result;
 	}
@@ -222,19 +229,26 @@ public class NotificationDaoImpl implements NotificationDao {
 				+ "(notification_id, member_id, is_read, is_visible, notification_status, title, message, link_url, send_time, create_time, update_time) "
 				+ "VALUES (:notificationId, :memberId, :isRead, :isVisible, :status, :title, :message, :linkUrl, NOW(), NOW(), NOW())";
 
-		String message = "您關注的活動「" + eventName + "」票券已售出"+percent+"%，剩餘數量有限，請盡快購買！";
-		String message2 = eventName + "票券售出已達"+ percent+"%";
-	
+		String title_template= titleTemplateNotification(3)
+				.replace("{event_name}", eventName)
+				.replace("{percent}", String.valueOf(percent));
+		String message_template= messageTemplateNotification(3)
+				.replace("{event_name}", eventName)
+				.replace("{percent}", String.valueOf(percent));
+		String link_template=linkTemplateNotification(4).replace("{event_id}", eventId+"");
+		/*String message = "您關注的活動「" + eventName + "」票券已售出"+percent+"%，剩餘數量有限，請盡快購買！";*/
+		/* String message2 = eventName + "票券售出已達"+ percent+"%"; */
+		/*您關注的活動「{event_name}」票券已售出{percent}%，剩餘數量有限，請盡快購買！*/
 		
-		int result = session.createNativeQuery(sql)// 或自動遞增可以省略
-				.setParameter("notificationId", 3) // 或自動遞增可以省略
+		int result = session.createNativeQuery(sql)
+				.setParameter("notificationId", 3) 
 				.setParameter("memberId", memberId)
 				.setParameter("isRead", 0)
 				.setParameter("isVisible", 1)
 				.setParameter("status", 1)
-				.setParameter("title", message2)
-				.setParameter("message", message)
-				.setParameter("linkUrl", "/event/" + eventId)
+				.setParameter("title", title_template)
+				.setParameter("message", message_template)
+				.setParameter("linkUrl", link_template)
 				.executeUpdate();
 		return result;
 	}
@@ -286,6 +300,23 @@ public class NotificationDaoImpl implements NotificationDao {
 				.createNativeQuery(sql)
 				.setParameter("notificationId", notificationId)
 				.getSingleResult();
+	}
+
+	@Override
+	public Integer updateListClear(int memberId) {
+		String hql = "UPDATE Notification SET IS_VISIBLE= :isVisible,UPDATE_TIME =:updateTime WHERE MEMBER_ID=:memberId";
+		int result = session.createQuery(hql)
+				.setParameter("isVisible", 0)
+				.setParameter("updateTime", new Timestamp(System.currentTimeMillis()))
+				.setParameter("memberId", memberId)
+				.executeUpdate();
+
+		if (result > 0) {
+			logger.info("更新所有通知隱藏資料筆數：" + result);
+			return result;
+		} else {
+			return null;
+		}
 	}
 
 	
