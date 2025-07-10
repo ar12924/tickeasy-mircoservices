@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import common.vo.AuthStatus;
+import common.vo.Constants;
 import common.vo.Core;
 import user.buy.service.BookService;
 import user.buy.vo.BookDto;
@@ -73,7 +74,7 @@ public class BookTypeController {
 		// 將 userName 存入 book 物件
 		book.setUserName(member.getUserName());
 		// 存入 book 物件至 Redis 並設定 TTL 15 分鐘(900 秒)
-		long timeToCount = 900;
+		long timeToCount = Constants.TIME_TO_COUNT;
 		return service.saveBookType(book, timeToCount);
 	}
 
