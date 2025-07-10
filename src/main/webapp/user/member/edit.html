@@ -97,10 +97,14 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="nickname">暱稱</label> <input type="text" id="nickname" />
+          <label for="nickname">暱稱</label>
+          <input type="text" id="nickname" name="nickname" />
+          <span class="error" id="nicknameError"></span>
         </div>
         <div class="form-group">
-          <label for="email">電子信箱</label> <input type="email" id="email" />
+          <label for="email">電子信箱</label>
+          <input type="email" id="email" name="email" />
+          <span class="error" id="emailError"></span>
         </div>
         <div class="form-group">
           <label for="unicode">統一編號</label>
@@ -109,10 +113,12 @@
         <div class="form-group">
           <label for="phone">手機號碼</label>
           <input type="text" id="phone" name="phone" maxlength="20" />
+          <span class="error" id="phoneError"></span>
         </div>
         <div class="form-group">
           <label for="birthDate">生日</label>
           <input type="date" id="birthDate" name="birthDate" />
+          <span class="error" id="birthDateError"></span>
         </div>
         <div class="form-group">
           <label for="gender">性別</label>
@@ -121,6 +127,7 @@
             <option value="M">男</option>
             <option value="F">女</option>
           </select>
+          <span class="error" id="genderError"></span>
         </div>
         <button id="saveButton" class="join-button">儲存變更</button>
         <div id="msg"></div>
