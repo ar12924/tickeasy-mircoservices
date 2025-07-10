@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bulma Loading 動畫效果</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="./spinner.css" />
+  </head>
+  <body>
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title has-text-white has-text-centered mb-6">
+            Bulma Loading 動畫效果
+          </h1>
+
+          <div class="columns is-multiline">
+            <!-- 1. 經典旋轉圓圈 -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">經典旋轉圓圈</p>
+                </header>
+                <div class="card-content">
+                  <div class="spinner-bulma"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. 脈動圓點 -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">脈動圓點</p>
+                </header>
+                <div class="card-content">
+                  <div class="pulse-loader">
+                    <div class="pulse-dot"></div>
+                    <div class="pulse-dot"></div>
+                    <div class="pulse-dot"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. 波浪效果 -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">波浪效果</p>
+                </header>
+                <div class="card-content">
+                  <div class="wave-loader">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. 雙圓圈旋轉 -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">雙圓圈旋轉</p>
+                </header>
+                <div class="card-content">
+                  <div class="double-spinner"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. 彈跳球 -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">彈跳球</p>
+                </header>
+                <div class="card-content">
+                  <div class="bounce-loader">
+                    <div class="bounce-ball"></div>
+                    <div class="bounce-ball"></div>
+                    <div class="bounce-ball"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. 進度條 -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">進度條</p>
+                </header>
+                <div class="card-content">
+                  <div class="progress-loader">
+                    <div class="progress-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. 骨架屏效果 -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">骨架屏效果</p>
+                </header>
+                <div class="card-content">
+                  <div class="skeleton-loader">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 8. 心跳效果 -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">心跳效果</p>
+                </header>
+                <div class="card-content">
+                  <div class="heartbeat-loader"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 9. Bulma 原生 Button Loading -->
+            <div class="column is-one-third">
+              <div class="card loader-card">
+                <header class="card-header">
+                  <p class="card-header-title">Bulma Button Loading</p>
+                </header>
+                <div class="card-content">
+                  <button class="button is-danger is-loading">載入中</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 10. Notification Loading -->
+            <div class="column is-full">
+              <div class="notification notification-loader">
+                <div class="notification-spinner"></div>
+                <span>資料載入中，請稍候...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 示範如何在實際使用中整合 -->
+          <div
+            class="box mt-6"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+            "
+          >
+            <h2 class="title is-4 has-text-white">實際使用範例</h2>
+
+            <div class="columns">
+              <div class="column is-half">
+                <h3 class="subtitle is-5 has-text-white">Loading 按鈕</h3>
+                <div class="field is-grouped">
+                  <div class="control">
+                    <button class="button is-primary">一般按鈕</button>
+                  </div>
+                  <div class="control">
+                    <button class="button is-primary is-loading">載入中</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="column is-half">
+                <h3 class="subtitle is-5 has-text-white">Loading 進度條</h3>
+                <progress class="progress is-primary" value="60" max="100">
+                  60%
+                </progress>
+                <progress class="progress is-primary" max="100">
+                  載入中
+                </progress>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

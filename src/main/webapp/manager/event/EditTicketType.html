@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>TickEasy | 編輯票種</title>
+
+  <!--Primary Meta Tags-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="TickEasy | 編輯票種" />
+  <meta name="author" content="TIA203-G2" />
+  <meta name="description" content="編輯票種資訊" />
+  <meta name="keywords" content="TickEasy, ticket, concert, ticket admin dashboard" />
+  <link rel="icon" href="../common/assets/img/Member_icon.ico">
+
+  <!--Fonts-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+    integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+
+  <!--Bootstrap Icons-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+
+  <!--AdminLTE-->
+  <link rel="stylesheet" href="../common/css/adminlte.css">
+
+  <style>
+    sup {
+      color: red;
+    }
+
+    .app-content {
+      padding-bottom: 20px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      color: #666;
+    }
+
+    .ticket-type-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #f8f9fa;
+    }
+
+    .ticket-type-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .add-ticket-form {
+      border: 2px dashed #007bff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #f8f9fa;
+      display: none;
+    }
+
+    .add-ticket-form.show {
+      display: block;
+    }
+  </style>
+</head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block"><a href="../index.html" class="nav-link">Home</a></li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+          <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <img src="../common/assets/img/user2-128x128.png" class="user-image rounded-circle shadow"
+                alt="User Image" />
+              <span class="d-none d-md-inline" id="sidebar-username">Alexander Pierce</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+              <!--begin::User Image-->
+              <li class="user-header text-bg-primary">
+                <img src="../common/assets/img/user2-128x128.png" class="rounded-circle shadow" alt="User Image" />
+                <p id="block_username">
+                  Alexander Pierce - Web Developer
+                  <small>Member since Nov. 2023</small>
+                </p>
+              </li>
+              <li class="user-body">
+                <div class="row">
+                  <div class="col-6 text-center">
+                    <a href="#">活動場次</a><br />
+                    <a href="#" class="fs-4">1000</a>
+                  </div>
+                  <div class="col-6 text-center">
+                    <a href="#">Friends</a><br />
+                    <a href="#" class="fs-4">1000</a>
+                  </div>
+                </div>
+              </li>
+              <li class="user-footer">
+                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <div class="brand-link">
+          <a href="../index.html" class="brand-link">
+            <span class="brand-text fs-1">TickEasy</span>
+          </a>
+          <span class="brand-text fs-7">活動方</span>
+        </div>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <li class="nav-header">活動方</li>
+            <li class="nav-item">
+              <a href="./CreateEvent.html" class="nav-link">
+                <i class="nav-icon bi bi-patch-plus-fill"></i>
+                <p>建立活動</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-gear-wide-connected"></i>
+                <p>
+                  活動管理
+                  <i class="nav-arrow bi bi-chevron-right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="../index.html" class="nav-link active">
+                    <i class="nav-icon bi bi-list-task"></i>
+                    <p>活動列表</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-6">
+              <h2 class="mb-0">編輯票種</h2>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="../index.html">活動列表</a></li>
+                <li class="breadcrumb-item active" aria-current="page">編輯票種</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container">
+          <div id="loadingMessage" class="loading">
+            <i class="bi bi-hourglass-split"></i>
+            <p>載入票種資料中...</p>
+          </div>
+
+          <div id="ticketTypeContainer" style="display: none;">
+            <div id="msg" class="mb-3"></div>
+
+            <div class="mb-3">
+              <h4>目前票種列表</h4>
+              <p class="text-muted">點擊票種卡片進行編輯，或使用右下角按鈕新增票種</p>
+            </div>
+
+            <div id="ticketTypeList">
+              <!-- 票種列表會動態載入到這裡 -->
+            </div>
+
+            <!-- 新增票種表單 -->
+            <div class="add-ticket-form" id="addTicketForm">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">新增票種</h5>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnCancelAdd">
+                  <i class="bi bi-x"></i> 取消
+                </button>
+              </div>
+
+              <div id="addFormMsg" class="mb-3"></div>
+
+              <form id="addTicketTypeForm">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="add_category_name" class="form-label"><sup>*</sup>票種名稱</label>
+                      <input type="text" class="form-control" id="add_category_name" required>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label"><sup>*</sup>販售時間</label>
+                      <div class="row">
+                        <div class="col-5">
+                          <input type="datetime-local" class="form-control" id="add_sell_from_time" required>
+                        </div>
+                        <div class="col-2 text-center align-self-center">～</div>
+                        <div class="col-5">
+                          <input type="datetime-local" class="form-control" id="add_sell_to_time" required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="add_price" class="form-label"><sup>*</sup>票價</label>
+                      <div class="input-group">
+                        <span class="input-group-text">NT$</span>
+                        <input type="number" class="form-control" id="add_price" min="0" step="1" required>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="add_capacity" class="form-label"><sup>*</sup>票券數量</label>
+                      <input type="number" class="form-control" id="add_capacity" min="1" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-end">
+                  <button type="button" class="btn btn-secondary me-2" id="btnCancelAdd2">取消</button>
+                  <button type="button" class="btn btn-primary" id="btnSaveNewTicket">儲存票種</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- 新增按鈕 -->
+            <div class="text-center mb-3" id="addButtonContainer">
+              <button type="button" class="btn btn-outline-primary" id="btnShowAddForm">
+                <i class="bi bi-plus-circle"></i> 新增票種
+              </button>
+            </div>
+
+            <div class="text-center" id="emptyState" style="display: none;">
+              <i class="bi bi-ticket-perforated fs-1 text-muted"></i>
+              <p class="text-muted">目前沒有票種</p>
+              <button type="button" class="btn btn-primary" id="btnAddFirstTicket">
+                <i class="bi bi-plus-circle"></i> 新增第一個票種
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal for editing ticket type -->
+    <div class="modal fade" id="ticketTypeModal" tabindex="-1" aria-labelledby="ticketTypeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ticketTypeModalLabel">編輯票種</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="modalMsg" class="mb-3"></div>
+            <form id="ticketTypeForm">
+              <input type="hidden" id="modal_type_id" />
+              <input type="hidden" id="modal_event_id" />
+
+              <div class="mb-3 row">
+                <label for="modal_category_name" class="col-sm-3 col-form-label"><sup>*</sup>票種名稱</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="modal_category_name" required>
+                </div>
+              </div>
+
+              <div class="mb-3 row">
+                <label class="col-sm-3 col-form-label"><sup>*</sup>販售時間</label>
+                <div class="col-sm-4">
+                  <input type="datetime-local" class="form-control" id="modal_sell_from_time" required>
+                </div>
+                <div class="col-sm-1 text-center">～</div>
+                <div class="col-sm-4">
+                  <input type="datetime-local" class="form-control" id="modal_sell_to_time" required>
+                </div>
+              </div>
+
+              <div class="mb-3 row">
+                <label for="modal_price" class="col-sm-3 col-form-label"><sup>*</sup>票價</label>
+                <div class="col-sm-9">
+                  <div class="input-group">
+                    <span class="input-group-text">NT$</span>
+                    <input type="number" class="form-control" id="modal_price" min="0" step="1" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3 row">
+                <label for="modal_capacity" class="col-sm-3 col-form-label"><sup>*</sup>票券數量</label>
+                <div class="col-sm-9">
+                  <input type="number" class="form-control" id="modal_capacity" min="1" required>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-danger" id="btnDeleteTicket" style="display: none;">刪除票種</button>
+            <button type="button" class="btn btn-primary" id="btnSaveTicket">儲存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">TIA203-G2</div>
+      <strong>
+        Copyright &copy; 2025&nbsp;
+        <a href="https://gamma.app/docs/TickEasy-gd84wknpd0a0roz?mode=doc" class="text-decoration-none">TickEasy</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+  <script src="js/EditTicketType.js"></script>
+  <script>
+    const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
+    const Default = {
+      scrollbarTheme: "os-theme-light",
+      scrollbarAutoHide: "leave",
+      scrollbarClickScroll: true,
+    };
+    document.addEventListener("DOMContentLoaded", function () {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      if (
+        sidebarWrapper &&
+        typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined"
+      ) {
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (window.AdminLTE && window.AdminLTE.Treeview) {
+        window.AdminLTE.Treeview.activate(
+          document.querySelector('[data-lte-toggle="treeview"]')
+        );
+      }
+    });
+  </script>
+  <script>
+    // 動態帶入 nickname
+    document.addEventListener("DOMContentLoaded", function () {
+      var nickname = sessionStorage.getItem("loggedInNickname") || "使用者";
+      var el = document.getElementById("sidebar-username");
+      if (el) el.textContent = nickname;
+    });
+  </script>
+</body>
+
+</html>

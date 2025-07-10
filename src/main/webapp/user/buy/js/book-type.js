@@ -1,6 +1,10 @@
 // ==================== 載入模組 (All Imports At Top) ====================
 import { getUrlParam, getContextPath } from "../../common/utils.js";
-import { BOOKING_PROGRESS, ERROR_MESSAGES } from "../../common/constant.js";
+import {
+  BOOKING_PROGRESS,
+  ERROR_MESSAGES,
+  OTHER_CONSTS,
+} from "../../common/constant.js";
 import {
   fetchNavTemplate,
   renderNav,
@@ -35,8 +39,10 @@ const saveBook = async (book) => {
 
   // 如果 eventId 缺少
   if (book.eventId <= 0) {
-    $(".book-type-message").text(ERROR_MESSAGES.MISSING_EVENT_ID);
-    $(".book-type-message").closest("#error-message").removeClass("is-hidden");
+    $("#error-message")
+      .find(".book-type-message")
+      .text(ERROR_MESSAGES.MISSING_EVENT_ID);
+    $("#error-message").removeClass("is-hidden");
     return;
   }
 
@@ -46,8 +52,10 @@ const saveBook = async (book) => {
     totalNum += ticketType.quantity;
   });
   if (totalNum <= 0) {
-    $(".book-type-message").text(ERROR_MESSAGES.NO_TICKETS_SELECTED);
-    $(".book-type-message").closest("#error-message").removeClass("is-hidden");
+    $("#error-message")
+      .find(".book-type-message")
+      .text(ERROR_MESSAGES.NO_TICKETS_SELECTED);
+    $("#error-message").removeClass("is-hidden");
     return;
   }
 
@@ -109,28 +117,51 @@ const initBookTypeJSEvents = (book) => {
   const eventId = getUrlParam("eventId");
 
   // ====== "更新票券" 按鈕點擊事件 ======
-  $(".update").on("mouseenter mouseleave", (e) => {
-    // hover 藍色框效果
-    $(e.target).closest(".update").toggleClass("is-focused");
-  });
-
   $(".update").on("click", async (e) => {
-    //
-    const $update = $(e.target).closest(".update");
+    // 改變按鈕樣式
+    $(".updating").removeClass("is-hidden");
+    $(".update").addClass("is-hidden");
+
+    // 取得票種、eventId
     const eventId = getUrlParam("eventId");
     const typeIdArr = await fetchTicketType(eventId);
 
-    // 更新剩餘票數
+    // 更新所有票種的剩餘票數
+    const remainingTicketCountArr = [];
     for (const type of typeIdArr) {
       const { typeId } = type;
-      const remainCountResult = await fetchRemainingTicketCount(
+      const { count, message, successful } = await fetchRemainingTicketCount(
         eventId,
         typeId
       );
-      $(`[data-type-id='${typeId}']`)
-        .find("span.tag")
-        .text(`剩餘 ${remainCountResult.count}`);
+      $(`[data-type-id='${typeId}']`).find("span.tag").text(`剩餘 ${count}`);
+      remainingTicketCountArr.push({ count, message, successful });
     }
+
+    // 完成剩餘票數更新，判斷成功與否?
+    for (const { successful, message } of remainingTicketCountArr) {
+      if (!successful) {
+        // 顯示失敗訊息，恢復按鈕樣式
+        setTimeout(() => {
+          $("#error-message").find(".book-type-message").text(message);
+          $("#error-message").removeClass("is-hidden");
+          $(".updating").addClass("is-hidden");
+          $(".update").removeClass("is-hidden");
+        }, OTHER_CONSTS.ANIMATION_TRANSITION);
+        return;
+      }
+    }
+    // 成功，恢復按鈕樣式
+    setTimeout(() => {
+      $(".updating").addClass("is-hidden");
+      $(".update").removeClass("is-hidden");
+    }, OTHER_CONSTS.ANIMATION_TRANSITION);
+  });
+  // ====== "更新票券" 按鈕 blur 事件 ======
+  $(".update").on("blur", () => {
+    $(".book-type-message").text("");
+    $("#error-message").addClass("is-hidden");
+    $("#success-message").addClass("is-hidden");
   });
 
   // ====== "上一步" 按鈕點擊事件 ======
@@ -151,8 +182,8 @@ const initBookTypeJSEvents = (book) => {
 
   // ====== "下一步" 按鈕 blur 事件 ======
   $(".next").on("blur", () => {
-    $(".book-type-message").text("");
-    $(".book-type-message").closest("#error-message").addClass("is-hidden");
+    $("#error-message").find(".book-type-message").text("");
+    $("#error-message").addClass("is-hidden");
   });
 };
 

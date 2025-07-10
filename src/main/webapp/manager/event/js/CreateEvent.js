@@ -16,7 +16,7 @@
 	const imageInput = document.querySelector('#event_image');
 	const categoryCheckboxes = document.querySelectorAll('input.category-checkbox');
 	const saveBtn = document.querySelector('#btnSaveEvent');
-
+	const imagePreview = document.querySelector('#eventPreview');
 	const category_name = document.querySelector('#category_name');
 	const sell_from_time = document.querySelector('#sell_from_time');
 	const sell_to_time = document.querySelector('#sell_to_time');
@@ -28,8 +28,8 @@
 	$(document).ready(() => {
 		summernoteEditor.summernote();
 		// ✅ 新增：設定預覽圖片的初始狀態
-		imagePreview.style.display = 'none';
-		imagePreview.parentElement.innerHTML = `
+		const previewContainer = imagePreview.parentElement;
+		previewContainer.innerHTML = `
             <div class="text-center text-muted p-4">
                 <i class="bi bi-image fs-1"></i>
                 <div>請選擇圖片</div>
@@ -39,7 +39,7 @@
 	// ✅ 新增：圖片預覽功能
 	imageInput.addEventListener('change', function (e) {
 		const file = e.target.files[0];
-		const previewContainer = imagePreview.parentElement;
+		const previewContainer = imageInput.parentElement.parentElement.querySelector('.border.rounded.bg-light');
 
 		if (file && file.type.startsWith('image/')) {
 			const reader = new FileReader();

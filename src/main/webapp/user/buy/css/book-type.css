@@ -12,14 +12,11 @@ section.columns {
         }
       }
     }
-    & .has-text-centered {
+    & .update-container {
       padding-bottom: 1.5rem;
-      & .button {
-        background-color: #ec4899;
-        & span {
-          font-weight: bold;
-          color: white;
-        }
+      & .update {
+      }
+      & .updating::after {
       }
     }
   }

@@ -365,7 +365,7 @@ public class BookServiceImpl implements BookService {
 		var remainedCount = totalCount - soldCount;
 		core.setDataStatus(DataStatus.FOUND);
 		core.setCount(remainedCount);
-		core.setMessage("票種剩餘票數查詢成功");
+		core.setMessage("已更新剩餘票數");
 		core.setSuccessful(true);
 		return core;
 	}

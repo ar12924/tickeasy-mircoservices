@@ -48,5 +48,10 @@ public class EventServiceImpl implements EventService {
     public int updateEvent(MngEventInfo eventInfo) {
         return eventDao.updateEvent(eventInfo);
     }
+	@Transactional
+	@Override
+	public int toggleEventStatus(Integer eventId, Integer isPosted) {
+		return eventDao.toggleEventStatus(eventId, isPosted);
+	}
 
 }

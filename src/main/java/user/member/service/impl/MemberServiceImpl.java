@@ -249,16 +249,68 @@ public class MemberServiceImpl implements MemberService {
 			existingMemberInDB.setPassword(existingMemberInDB.getPassword());
 		}
 
-		String unicode = member.getUnicode();
-		if (unicode != null && !unicode.trim().isEmpty() && !unicode.matches(UNICODE_PATTERN)) {
-			member.setMessage("統一編號格式錯誤，應為 8 碼數字");
+		// 暱稱驗證
+		if (member.getNickName() == null || member.getNickName().trim().isEmpty()) {
 			member.setSuccessful(false);
+			member.setMessage("暱稱不可為空");
+			return member;
+		}
+		if (member.getNickName().length() > 20) {
+			member.setSuccessful(false);
+			member.setMessage("暱稱長度不可超過 20 字元");
 			return member;
 		}
 
-		String email = member.getEmail();
-		if (email != null && !email.trim().isEmpty() && !email.matches(EMAIL_PATTERN)) {
+		// Email 驗證
+		if (member.getEmail() == null || member.getEmail().trim().isEmpty()) {
+			member.setSuccessful(false);
+			member.setMessage("Email 不可為空");
+			return member;
+		}
+		if (!member.getEmail().matches(EMAIL_PATTERN)) {
+			member.setSuccessful(false);
 			member.setMessage("電子郵件格式錯誤");
+			return member;
+		}
+		// 防止 email 重複（排除自己）
+		Member emailOwner = memberDao.findByEmail(member.getEmail());
+		if (emailOwner != null && !emailOwner.getMemberId().equals(member.getMemberId())) {
+			member.setSuccessful(false);
+			member.setMessage("此 email 已被註冊");
+			return member;
+		}
+
+		// 手機驗證
+		if (member.getPhone() == null || !member.getPhone().matches(PHOHE_PATTERN)) {
+			member.setSuccessful(false);
+			member.setMessage("手機格式錯誤，需為台灣手機號碼 09 開頭共 10 碼");
+			return member;
+		}
+		// 防止手機重複（排除自己）
+		Member phoneOwner = memberDao.findByPhone(member.getPhone());
+		if (phoneOwner != null && !phoneOwner.getMemberId().equals(member.getMemberId())) {
+			member.setSuccessful(false);
+			member.setMessage("此手機號碼已被註冊");
+			return member;
+		}
+
+		// 性別驗證
+		if (member.getGender() == null || !(member.getGender().equals("M") || member.getGender().equals("F"))) {
+			member.setSuccessful(false);
+			member.setMessage("性別請選擇男 (M) 或 女 (F)");
+			return member;
+		}
+
+		// 出生日期驗證
+		if (member.getBirthDate() == null) {
+			member.setSuccessful(false);
+			member.setMessage("出生日期不可為空");
+			return member;
+		}
+
+		String unicode = member.getUnicode();
+		if (unicode != null && !unicode.trim().isEmpty() && !unicode.matches(UNICODE_PATTERN)) {
+			member.setMessage("統一編號格式錯誤，應為 8 碼數字");
 			member.setSuccessful(false);
 			return member;
 		}
