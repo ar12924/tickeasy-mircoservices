@@ -187,20 +187,22 @@ public class OrderServiceImpl implements OrderService {
         List<Map<String, Object>> result = new ArrayList<>();
         
         try {
+            // ✅ 查詢該會員的所有訂單
             List<BuyerOrderDC> orders = orderDao.findOrdersByMemberId(memberId);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
             
             for (BuyerOrderDC order : orders) {
                 Map<String, Object> orderInfo = new HashMap<>();
                 
-                // 基本訂單資訊
+                // ✅ 基本訂單資訊
                 orderInfo.put("orderId", order.getOrderId());
                 orderInfo.put("eventId", order.getEventId());
+                orderInfo.put("memberId", order.getMemberId());
                 orderInfo.put("totalAmount", order.getTotalAmount());
                 orderInfo.put("orderStatus", order.getOrderStatus());
                 orderInfo.put("isPaid", order.getIsPaid());
                 
-                // 格式化時間
+                // ✅ 格式化時間
                 if (order.getOrderTime() != null) {
                     orderInfo.put("orderTime", sdf.format(order.getOrderTime()));
                 }
@@ -208,28 +210,21 @@ public class OrderServiceImpl implements OrderService {
                     orderInfo.put("createTime", sdf.format(order.getCreateTime()));
                 }
                 
-                // TODO: 加入活動資訊
-                // 暫時使用預設值
-                orderInfo.put("eventName", "活動名稱");
+                // TODO: 這裡可以加入查詢活動資訊的邏輯
+                // 目前先用預設值
+                orderInfo.put("eventName", "活動名稱 " + order.getEventId());
                 orderInfo.put("eventFromDate", "2024/03/15");
                 orderInfo.put("place", "活動地點");
                 orderInfo.put("ticketQuantity", 1);
                 
-                // 模擬票券明細
+                // ✅ 票券明細（示例）
                 List<Map<String, Object>> tickets = new ArrayList<>();
-                Map<String, Object> ticket1 = new HashMap<>();
-                ticket1.put("ticketNumber", "123456781");
-                ticket1.put("categoryName", "一般區");
-                ticket1.put("seatNumber", "1");
-                ticket1.put("price", "1,100");
-                tickets.add(ticket1);
-                
-                Map<String, Object> ticket2 = new HashMap<>();
-                ticket2.put("ticketNumber", "123456782");
-                ticket2.put("categoryName", "搖滾區");
-                ticket2.put("seatNumber", "2");
-                ticket2.put("price", "2,800");
-                tickets.add(ticket2);
+                Map<String, Object> ticket = new HashMap<>();
+                ticket.put("ticketNumber", "T" + order.getOrderId() + "001");
+                ticket.put("categoryName", "一般區");
+                ticket.put("seatNumber", "1");
+                ticket.put("price", order.getTotalAmount());
+                tickets.add(ticket);
                 
                 orderInfo.put("tickets", tickets);
                 
@@ -237,7 +232,7 @@ public class OrderServiceImpl implements OrderService {
             }
             
         } catch (Exception e) {
-            System.err.println("取得訂單列表失敗: " + e.getMessage());
+            System.err.println("取得會員訂單列表失敗: " + e.getMessage());
             e.printStackTrace();
         }
         
