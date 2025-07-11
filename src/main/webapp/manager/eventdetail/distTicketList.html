@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>活動銷售儀表板</title>
+    <title>分票列表</title>
     <!--Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="TickEasy | 分票列表" />
@@ -59,7 +59,7 @@
               </a>
             </li>
             <li class="nav-item d-none d-md-block">
-              <a href="index.html" class="nav-link">Home</a>
+              <a href="../index.html" class="nav-link">Home</a>
             </li>
           </ul>
           <ul class="navbar-nav ms-auto">
@@ -123,7 +123,7 @@
       </nav>
 
       <!-- Sidebar -->
-      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+     <!-- <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
         <div class="sidebar-brand">
           <div class="brand-link">
             <a href="./index.html" class="brand-link">
@@ -257,7 +257,79 @@
             </ul>
           </nav>
         </div>
-      </aside>
+      </aside> -->
+      
+      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+			<div class="sidebar-brand">
+				<div class="brand-link">
+					<a href="./index.html" class="brand-link"> <span class="brand-text fs-1">TickEasy</span>
+					</a> <span class="brand-text fs-7">活動方</span>
+				</div>
+			</div>
+			<div class="sidebar-wrapper">
+				<nav class="mt-2">
+					<ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu"
+						data-accordion="false">
+						<li class="nav-header">活動方</li>				
+						<li class="nav-item">
+							<a href="#" class="nav-link"> 
+								<i class="nav-icon bi bi-gear-wide-connected"></i>
+								<p>
+									活動管理 <i class="nav-arrow bi bi-chevron-right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="../event/CreateEvent.html" class="nav-link"> 
+										<i class="nav-icon bi bi-patch-plus-fill"></i>
+										<p>建立活動</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="./dashboard.html" class="nav-link">
+										<i class="nav-icon bi bi-speedometer2"></i>
+										<p>儀表板</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="./participant-list.html" class="nav-link"> 
+										<i class="nav-icon bi bi-list-task"></i>
+										<p>活動列表</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="./ticket_exchange.html" class="nav-link active">
+										<i class="nav-icon bi bi-arrow-left-right"></i>
+										<p>換票列表</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="./distTicketList.html" class="nav-link">
+										<i class="nav-icon bi bi-share"></i>
+										<p>分票列表</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a href="#" class="nav-link"> <i class="nav-icon bi bi bi-people-fill"></i>
+								<p>
+									會員管理 <i class="nav-arrow bi bi-chevron-right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="../member/member_list.html" class="nav-link">
+										<i class="nav-icon bi bi-person-fill-gear"></i>
+										<p>會員列表</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</aside>
 
       <!-- Main Content -->
          <main class="app-main">
@@ -304,7 +376,7 @@
 						</div>
 					</div>
 					<div class="change_bar title_card">
-						<h3 class="card-title">換票列表</h3>
+						<h3 class="card-title">分票列表</h3>
 					</div> 
         <div class="change_bar event_change">
       	<label class="me-2 mb-0">目前檢視活動</label> <select
