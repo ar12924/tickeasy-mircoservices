@@ -52,7 +52,7 @@ function init() {
         render: function (data) {
           return `
             <div class="d-grid gap-2">
-              <button class="btn btn-warning text-danger btn-order" data-event-id="${data.eventId}">訂票列表</button>
+              <a href="eventdetail/event-order-list.html?eventId=${data.eventId}" class="btn btn-warning text-danger btn-order" data-event-id="${data.eventId}">訂票列表</a>
               <button class="btn btn-warning text-danger btn-dashboard" data-event-id="${data.eventId}">票券銷售情形</button>
               <button class="btn btn-warning text-danger btn-participant" data-event-id="${data.eventId}">報名人列表</button>
               <button class="btn btn-warning text-danger btn-exchange" data-event-id="${data.eventId}">換票分票紀錄</button>
