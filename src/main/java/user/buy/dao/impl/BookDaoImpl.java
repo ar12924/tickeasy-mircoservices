@@ -146,14 +146,13 @@ public class BookDaoImpl implements BookDao {
 	 * @return {Integer} 插入後生成的票券 id。
 	 */
 	@Override
-	public Integer insertBuyerTicketAndGetId(Integer newOrderId, Member member, String eventName,
+	public Integer insertBuyerTicketAndGetId(Integer newOrderId, Member attendeeMember,Integer memberId, String eventName,
 			BookTypeDto bookTypeDto) {
 		// 1. 從 Member 取出欄位值
-		Integer memberId = member.getMemberId();
-		String email = member.getEmail();
-		String phone = member.getPhone();
-		String idCard = member.getIdCard();
-		String nickName = member.getNickName();
+		String email = attendeeMember.getEmail();
+		String phone = attendeeMember.getPhone();
+		String idCard = attendeeMember.getIdCard();
+		String nickName = attendeeMember.getNickName();
 		Integer isUsed = 0; // 剛購買尚未使用
 
 		// 2. 從 bookTypeDto 取出欄位值

@@ -160,7 +160,8 @@ const initSearchJSEvents = () => {
   // ====== event-box 部分 ======
   // 預設載入第1頁
   const searchTerm = getUrlParam("searchTerm");
-  const eventResponse = await searchEventInfo({ searchTerm });
+  const order = $(".time-filter").attr("data-filter");
+  const eventResponse = await searchEventInfo({ searchTerm, order });
   console.log(eventResponse); // ok!!
   await showPage(1, eventResponse);
 

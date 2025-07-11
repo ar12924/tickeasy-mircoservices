@@ -29,8 +29,11 @@ public class MailServiceImpl implements MailService {
     @Value("${app.mail.activation.subject:歡迎加入 TickEasy - 請驗證您的帳號}")
     private String activationSubject;
 
-    @Value("${app.mail.reset.subject:重設TickEasy密碼}")
+    @Value("${app.mail.reset.subject:TickEasy - 密碼重設通知}")
     private String resetSubject;
+    
+    @Value("${app.mail.update.subject:TickEasy - 密碼更新確認}")
+    private String updateSubject;
 
     @Override
     public void sendActivationNotification(String toEmail, String userName, String tokenName) {
@@ -48,7 +51,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void sendPasswordUpdateNotification(String toEmail, String userName, String tokenName) {
-        String subject = "TickEasy - 密碼更新確認";
+        String subject = updateSubject;
         String content = buildPasswordUpdateEmailContent(userName, tokenName);
         sendHtmlEmail(toEmail, subject, content);
     }
@@ -160,7 +163,7 @@ public class MailServiceImpl implements MailService {
                         "            <p>我們收到了您的密碼重設請求。請點擊下方按鈕重設您的密碼：</p>" +
                         "        <div style=\"text-align: center; margin: 30px 0;\">" +
                         "            <a href=\"http://localhost:8080/maven-tickeasy-v1/user/member/reset-password.html?token=%s\" " +
-                        "               class=\"button\">" +
+                        "               class=\"button\" style=\"color: white !important;\">" +
                         "                重設密碼" +
                         "            </a>" +
                         "        </div>" +

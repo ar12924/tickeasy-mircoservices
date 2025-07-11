@@ -1,10 +1,12 @@
 package user.member.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import common.vo.Core;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import user.member.service.MemberService;
@@ -20,23 +22,13 @@ public class RegisterController {
     private MemberService service;
 
     @PostMapping(value = "", consumes = {"multipart/form-data"})
-    public Core<Member> register(@RequestParam String userName, @RequestParam String nickName, @RequestParam String email, @RequestParam String password, @RequestParam String rePassword, @RequestParam String birthDate, @RequestParam String phone, @RequestParam String gender, @RequestParam String idCard, @RequestParam(required = false) String unicode, @RequestParam(defaultValue = "false") Boolean agree, @RequestParam(defaultValue = "false") Boolean hostApply, @RequestParam(value = "photo", required = false) MultipartFile photo) {
+    public Core<Member> register(@RequestParam("member") String memberJson, @RequestPart(value = "photo", required = false) MultipartFile photo) {
         Core<Member> core = new Core<>();
 
         try {
-            Member member = new Member();
-            member.setUserName(userName);
-            member.setNickName(nickName);
-            member.setEmail(email);
-            member.setPassword(password);
-            member.setRePassword(rePassword);
-            member.setBirthDate(Date.valueOf(birthDate));
-            member.setPhone(phone);
-            member.setGender(gender);
-            member.setIdCard(idCard);
-            member.setUnicode(unicode);
-            member.setAgree(agree);
-            member.setHostApply(hostApply != null && hostApply);
+            // 使用 ObjectMapper 解析 JSON
+            ObjectMapper mapper = new ObjectMapper();
+            Member member = mapper.readValue(memberJson, Member.class);
 
             if (photo != null && !photo.isEmpty()) {
                 member.setPhoto(photo.getBytes());

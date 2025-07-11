@@ -53,8 +53,30 @@
     </section>
 
     <!-- section 熱門活動 -->
-    <section class="section">
+    <section class="section pt-5">
       <div class="container">
+        <!-- 排序按鈕 -->
+        <div class="dropdown time-filter mb-5" data-filter="ASC">
+          <div class="dropdown-trigger">
+            <button
+              class="button"
+              aria-haspopup="true"
+              aria-controls="dropdown-menu"
+            >
+              <span class="filter-name">時間排序</span>
+              <span class="icon is-small">
+                <i class="fas fa-angle-down" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+              <a href="#" class="dropdown-item filter-condition">由近到遠</a>
+              <hr class="dropdown-divider" />
+              <a href="#" class="dropdown-item filter-condition">由遠到近</a>
+            </div>
+          </div>
+        </div>
         <!-- 活動卡片(元件化) -->
         <div class="columns is-multiline event-container"></div>
 

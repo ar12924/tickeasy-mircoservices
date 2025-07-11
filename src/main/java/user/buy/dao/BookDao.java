@@ -19,7 +19,7 @@ public interface BookDao {
 
 	public Integer insertBuyerOrderAndGetId(Integer eventId, Integer memberId, Integer isPaid, BigDecimal totalAmount);
 
-	public Integer insertBuyerTicketAndGetId(Integer newOrderId, Member member, String eventName, BookTypeDto bookTypeDto);
+	public Integer insertBuyerTicketAndGetId(Integer newOrderId, Member member, Integer memberId, String eventName, BookTypeDto bookTypeDto);
 
 	public Long countBuyerTicketByEventNameAndTypeId(String eventName, Integer typeId);
 }
