@@ -20,26 +20,26 @@ public class SchedulingConfig {
 
 	
 	
-	@Scheduled(initialDelay = 60000, fixedRate = 86400000)
+	@Scheduled(initialDelay = 60000, fixedRate = 2 * 60 * 1000)
     public void EventReminder() {
         System.out.println("🔔 EventReminderTask：開始執行schduled排程任務");
         notificationService.sendReminderNotificationForTomorrow();
     }
 	
-	@Scheduled(initialDelay = 60000, fixedRate = 10 * 60 * 1000)
+	@Scheduled(initialDelay = 60000, fixedRate = 2 * 60 * 1000)
     public void FavoriteLeftPercentReminder() {
         System.out.println("🔔 FavoriteLeftPercentReminderTask：開始執行schduled排程任務");
         notificationService.sendFavoriteLeftPercentReminderNotification();
     }
 	
 	
-	@Scheduled(initialDelay = 60000, fixedRate = 86400000)
+	@Scheduled(initialDelay = 60000, fixedRate = 2 * 60 * 1000)
     public void FavoriteSellReminder() {
         System.out.println("🔔 FavoriteSellReminderTask：開始執行schduled排程任務");
         notificationService.sendFavoriteSellReminderNotificationForTomorrow();
     }
 	
-	@Scheduled(initialDelay = 60000, fixedRate = 86400000)
+	@Scheduled(initialDelay = 60000, fixedRate = 2 * 60 * 1000)
     public void FavoriteSoldOutReminder() {
         System.out.println("🔔 FavoriteSoldOutReminderTask：開始執行schduled排程任務");
         notificationService.sendFavoriteSoldOutReminderNotification();

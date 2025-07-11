@@ -29,4 +29,16 @@ public class EventListBarDaoImpl implements EventListBarDao{
 		return eventInfoNameList;
 	}
 
+	@Override
+	public List<EventInfoBarVer> selectMemberEventInfoName(int memberId) {
+		List<EventInfoBarVer> eventInfoNameList = new ArrayList<>();
+		String hql = "FROM EventInfoBarVer WHERE memberId=:memberId";
+		eventInfoNameList = session
+				.createQuery(hql, EventInfoBarVer.class)
+				.setParameter("memberId", memberId)
+				.getResultList();
+		System.out.println("查到資料筆數：" + eventInfoNameList.size());
+		return eventInfoNameList;
+	}
+
 }
