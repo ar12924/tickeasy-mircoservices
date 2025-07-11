@@ -501,17 +501,29 @@ public class MemberServiceImpl implements MemberService {
 				return member;
 			}
 			member = resetToken.getMember();
-			member.setPassword(newPassword);
-			Member updated = editMember(member);
-			if (updated.isSuccessful()) {
+			
+			// 直接更新密碼
+			Member existingMember = memberDao.findById(member.getMemberId());
+			if (existingMember == null) {
+				member.setSuccessful(false);
+				member.setMessage("查無此會員");
+				return member;
+			}
+			
+			// 加密密碼並設置
+			existingMember.setPassword(HashUtil.hashpw(newPassword));
+			
+			boolean updated = memberDao.update(existingMember);
+			if (updated) {
 				verifyDao.deleteById(resetToken.getTokenId());
-				member.setSuccessful(true);
-				member.setMessage("密碼重設成功");
+				existingMember.setSuccessful(true);
+				existingMember.setMessage("密碼重設成功");
+				return existingMember;
 			} else {
 				member.setSuccessful(false);
 				member.setMessage("密碼重設失敗");
+				return member;
 			}
-			return member;
 		} catch (Exception e) {
 			member.setSuccessful(false);
 			member.setMessage("密碼重設失敗：" + e.getMessage());
