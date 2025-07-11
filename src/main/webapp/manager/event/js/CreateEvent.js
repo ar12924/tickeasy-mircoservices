@@ -1,5 +1,6 @@
 (() => {
 	const memberId = sessionStorage.getItem("memberId");
+	const host = sessionStorage.getItem("savedUsername");
 	if (!memberId) {
 		alert("請先登入");
 		window.location.href = "/maven-tickeasy-v1/user/member/login.html";
@@ -23,10 +24,11 @@
 	const price = document.querySelector('#price');
 	const capacity = document.querySelector('#capacity');
 
-	const summernoteEditor = $('#summernote');
+	// const summernoteEditor = $('#summernote');
+	const summernoteEditor = document.querySelector('#summernote');
 
 	$(document).ready(() => {
-		summernoteEditor.summernote();
+		// summernoteEditor.summernote();
 		// ✅ 新增：設定預覽圖片的初始狀態
 		const previewContainer = imagePreview.parentElement;
 		previewContainer.innerHTML = `
@@ -87,7 +89,8 @@
 			msg.textContent = '請填寫活動簡介';
 			return;
 		}
-		if (!summernoteEditor.summernote('code').trim() || summernoteEditor.summernote('code').trim() === '<p><br></p>') {
+		// if (!summernoteEditor.summernote('code').trim() || summernoteEditor.summernote('code').trim() === '<p><br></p>') {
+		if (!summernoteEditor.value.trim) {
 			msg.textContent = '請填寫活動描述';
 			return;
 		}
@@ -119,23 +122,41 @@
 			msg.className = 'text-info';
 
 			const checkedCats = Array.from(categoryCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+
+			// ✅ 修正：確保 payload 格式正確，並處理空值
 			const keywordPayload = {
-				keywordName1: checkedCats[0] || null,
-				keywordName2: checkedCats[1] || null,
-				keywordName3: checkedCats[2] || null,
+				keywordName1: checkedCats[0] || "",  // 使用空字串而非 null
+				keywordName2: checkedCats[1] || "",
+				keywordName3: checkedCats[2] || "",
 			};
 
 			console.log('準備送出關鍵字payload：', keywordPayload);
 
 			// 步驟1：建立關鍵字分類
-			const res1 = await fetch('http://localhost:8080/maven-tickeasy-v1/manager/eventkeyword', {
+			const res1 = await fetch('/maven-tickeasy-v1/manager/eventkeyword', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json'  // ✅ 加入 Accept header
+				},
 				body: JSON.stringify(keywordPayload)
 			});
 
+			console.log('關鍵字API回應狀態:', res1.status);
+			console.log('關鍵字API回應headers:', res1.headers);
+
 			if (!res1.ok) {
+				const errorText = await res1.text();
+				console.error('關鍵字API錯誤回應:', errorText);
 				throw new Error(`關鍵字建立失敗，狀態碼：${res1.status}`);
+			}
+
+			// ✅ 檢查回應內容類型
+			const contentType = res1.headers.get('content-type');
+			if (!contentType || !contentType.includes('application/json')) {
+				const responseText = await res1.text();
+				console.error('非JSON回應:', responseText);
+				throw new Error('伺服器回應格式錯誤');
 			}
 
 			const data1 = await res1.json();
@@ -144,12 +165,11 @@
 			console.log('data 值：', data1.data);
 			console.log('message 值：', data1.message);
 
-			// ✅ 修正：正確檢查成功狀態
+			// ✅ 檢查成功狀態
 			if (!data1.successful) {
 				throw new Error(data1.message || '關鍵字建立失敗');
 			}
 
-			// ✅ 修正：成功時不要拋出錯誤
 			const keywordId = data1.data;
 			if (!keywordId || keywordId <= 0) {
 				throw new Error('未取得有效的關鍵字ID');
@@ -166,26 +186,34 @@
 				eventName: eventNameInput.value.trim(),
 				eventFromDate: appendSeconds(eventFromInput.value),
 				eventToDate: appendSeconds(eventToDate.value),
-				eventHost: "Tibame",
+				eventHost: host,
 				totalCapacity: parseInt(total_capacity.value, 10) || 0,
 				place: placeInput.value.trim(),
 				summary: summaryInput.value.trim(),
-				detail: summernoteEditor.summernote('code'),
+				// detail: summernoteEditor.summernote('code'),
+				detail: summernoteEditor.value.trim(),
 				keywordId: keywordId,
-				memberId: memberId
+				memberId: parseInt(memberId, 10)  // ✅ 確保是數字
 			};
 
 			// 建立活動的函數
 			const createEvent = async (payload) => {
 				console.log("準備送出 create-event payload：", payload);
 
-				const response = await fetch('http://localhost:8080/maven-tickeasy-v1/manager/create-event', {
+				const response = await fetch('/maven-tickeasy-v1/manager/create-event', {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json'
+					},
 					body: JSON.stringify(payload),
 				});
 
+				console.log('活動建立API回應狀態:', response.status);
+
 				if (!response.ok) {
+					const errorText = await response.text();
+					console.error('活動建立API錯誤回應:', errorText);
 					throw new Error(`活動建立失敗，狀態碼：${response.status}`);
 				}
 
@@ -193,15 +221,84 @@
 				console.log('活動建立回應：', result);
 
 				if (result.successful) {
-					// 成功
+					// 成功後建立票種
+					msg.textContent = '正在建立票種...';
+					const ticketTypeId = await createTicketType(result.data);
+
+					// 禁用表單
 					[eventNameInput, eventFromInput, eventToDate, total_capacity, placeInput, imageInput, saveBtn].forEach(i => {
 						i.disabled = true;
 					});
+
 					msg.className = 'text-success';
-					msg.textContent = '✅ 活動建立成功！活動ID：' + result.data;
+					msg.innerHTML = `
+                    ✅ 活動及票種建立成功！<br>
+                    📋 活動ID：${result.data}<br>
+                    🎫 票種ID：${ticketTypeId}<br>
+                    💰 票種：${category_name.value.trim()}<br>
+                    💵 價格：NT$ ${price.value}<br>
+                    👥 數量：${capacity.value} 張
+                `;
+					// ✅ 新增：3秒倒數計時跳轉功能
+					let countdown = 3;
+					const countdownElement = document.getElementById('countdown');
+
+					const timer = setInterval(() => {
+						countdown--;
+						if (countdownElement) {
+							countdownElement.textContent = countdown;
+						}
+
+						if (countdown <= 0) {
+							clearInterval(timer);
+							console.log('🔄 自動跳轉到活動列表...');
+							window.location.href = '../index.html';
+						}
+					}, 1000);
+
 				} else {
 					throw new Error(result.message || '活動建立失敗');
 				}
+			};
+
+			// ✅ 新增：建立票種的函數
+			const createTicketType = async (eventId) => {
+				const ticketPayload = {
+					eventId: eventId,
+					categoryName: category_name.value.trim(),
+					sellFromTime: appendSeconds(sell_from_time.value),
+					sellToTime: appendSeconds(sell_to_time.value),
+					price: parseFloat(price.value), // ✅ 改為 parseFloat 以支援小數
+					capacity: parseInt(capacity.value, 10)
+				};
+
+				console.log("準備送出票種payload：", ticketPayload);
+
+				const ticketResponse = await fetch('/maven-tickeasy-v1/manager/create-ticket-type', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json'
+					},
+					body: JSON.stringify(ticketPayload),
+				});
+
+				console.log('票種建立API回應狀態:', ticketResponse.status);
+
+				if (!ticketResponse.ok) {
+					const errorText = await ticketResponse.text();
+					console.error('票種建立API錯誤回應:', errorText);
+					throw new Error(`票種建立失敗，狀態碼：${ticketResponse.status}`);
+				}
+
+				const ticketResult = await ticketResponse.json();
+				console.log('票種建立回應：', ticketResult);
+
+				if (!ticketResult.successful) {
+					throw new Error(ticketResult.message || '票種建立失敗');
+				}
+
+				return ticketResult.data; // 回傳票種ID
 			};
 
 			// 處理圖片並建立活動

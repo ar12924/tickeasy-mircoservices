@@ -1,9 +1,9 @@
 package manager.event.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,33 +17,127 @@ import manager.event.service.TicketTypeService;
 import manager.event.vo.EventTicketType;
 
 @RestController
-@RequestMapping("manager/ticket-type")
-@CrossOrigin(origins = { 
-    "http://127.0.0.1:5500", 
-    "http://127.0.0.1:5501", 
-    "http://127.0.0.1:8080",
-    "http://localhost:5500", 
-    "http://localhost:5501", 
-    "http://localhost:8080"
-})
+@RequestMapping("manager")
+@CrossOrigin(origins = { "http://127.0.0.1:5500", "http://127.0.0.1:5501", "http://127.0.0.1:8080",
+        "http://localhost:5500", "http://localhost:5501", "http://localhost:8080" })
 public class TicketTypeController {
-    
+
     @Autowired
     private TicketTypeService ticketTypeService;
+
+    /**
+     * 建立票種
+     */
+    @PostMapping("/ticket-type")
+    public Core<Integer> createTicketType(@RequestBody EventTicketType ticketType) {
+        System.out.println("=== 建立票種 ===");
+        System.out.println("接收到的票種資料: " + ticketType);
+        
+        Core<Integer> core = new Core<>();
+        
+        try {
+            if (ticketType == null) {
+                System.err.println("❌ 接收到空的票種資料");
+                core.setSuccessful(false);
+                core.setMessage("請提供票種資料");
+                return core;
+            }
+            
+            // 驗證必要欄位
+            if (ticketType.getEventId() == null || ticketType.getEventId() <= 0) {
+                System.err.println("❌ 無效的活動ID: " + ticketType.getEventId());
+                core.setSuccessful(false);
+                core.setMessage("無效的活動ID");
+                return core;
+            }
+            
+            if (ticketType.getCategoryName() == null || ticketType.getCategoryName().trim().isEmpty()) {
+                System.err.println("❌ 票種名稱為空");
+                core.setSuccessful(false);
+                core.setMessage("請提供票種名稱");
+                return core;
+            }
+            
+            if (ticketType.getPrice() == null || ticketType.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                System.err.println("❌ 無效的價格: " + ticketType.getPrice());
+                core.setSuccessful(false);
+                core.setMessage("請提供有效的價格");
+                return core;
+            }
+            
+            if (ticketType.getCapacity() == null || ticketType.getCapacity() <= 0) {
+                System.err.println("❌ 無效的容量: " + ticketType.getCapacity());
+                core.setSuccessful(false);
+                core.setMessage("請提供有效的票券數量");
+                return core;
+            }
+            
+            if (ticketType.getSellFromTime() == null || ticketType.getSellToTime() == null) {
+                System.err.println("❌ 販售時間不完整");
+                core.setSuccessful(false);
+                core.setMessage("請提供完整的販售時間");
+                return core;
+            }
+            
+            if (ticketType.getSellFromTime().after(ticketType.getSellToTime())) {
+                System.err.println("❌ 販售開始時間晚於結束時間");
+                core.setSuccessful(false);
+                core.setMessage("販售開始時間不能晚於結束時間");
+                return core;
+            }
+            
+            System.out.println("📞 呼叫服務層建立票種...");
+            Integer typeId = ticketTypeService.createTicketType(ticketType);
+            System.out.println("🔄 服務層回傳的 typeId: " + typeId);
+            
+            if (typeId != null && typeId > 0) {
+                System.out.println("✅ 票種建立成功，ID: " + typeId);
+                core.setSuccessful(true);
+                core.setMessage("票種建立成功");
+                core.setData(typeId);
+                core.setCount(1L);
+            } else {
+                System.err.println("❌ 票種建立失敗，回傳ID無效: " + typeId);
+                core.setSuccessful(false);
+                core.setMessage("票種建立失敗");
+                core.setData(null);
+                core.setCount(0L);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("❌ 建立票種時發生錯誤: " + e.getMessage());
+            e.printStackTrace();
+            
+            core.setSuccessful(false);
+            core.setMessage("系統錯誤：" + e.getMessage());
+            core.setData(null);
+            core.setCount(0L);
+        }
+        
+        System.out.println("📤 票種建立最終回應: " + core);
+        return core;
+    }
     
-    @GetMapping("/event/{eventId}")
-    public Core<List<EventTicketType>> getTicketTypesByEvent(@PathVariable Integer eventId) {
+    /**
+     * 根據活動ID取得所有票種
+     */
+    @GetMapping("ticket-type/event/{eventId}")
+    public Core<List<EventTicketType>> getTicketTypesByEventId(@PathVariable Integer eventId) {
+        System.out.println("=== 查詢活動票種 ===");
+        System.out.println("活動ID: " + eventId);
+        
         Core<List<EventTicketType>> core = new Core<>();
         
         try {
             if (eventId == null || eventId <= 0) {
                 core.setSuccessful(false);
                 core.setMessage("無效的活動ID");
-                core.setData(List.of());
                 return core;
             }
             
             List<EventTicketType> ticketTypes = ticketTypeService.findTicketTypesByEventId(eventId);
+            
+            System.out.println("✅ 查詢到 " + ticketTypes.size() + " 個票種");
             
             core.setSuccessful(true);
             core.setMessage("查詢成功");
@@ -51,55 +145,73 @@ public class TicketTypeController {
             core.setCount((long) ticketTypes.size());
             
         } catch (Exception e) {
-            System.err.println("查詢票種失敗: " + e.getMessage());
+            System.err.println("❌ 查詢票種失敗: " + e.getMessage());
+            e.printStackTrace();
+            
             core.setSuccessful(false);
             core.setMessage("查詢失敗：" + e.getMessage());
             core.setData(List.of());
+            core.setCount(0L);
         }
         
         return core;
     }
     
-    @PostMapping
-    public Core<Integer> createTicketType(@RequestBody EventTicketType ticketType) {
-        Core<Integer> core = new Core<>();
+    /**
+     * 根據票種ID取得單一票種
+     */
+    @GetMapping("/ticket-type/{typeId}")
+    public Core<EventTicketType> getTicketTypeById(@PathVariable Integer typeId) {
+        System.out.println("=== 查詢單一票種 ===");
+        System.out.println("票種ID: " + typeId);
+        
+        Core<EventTicketType> core = new Core<>();
         
         try {
-            if (ticketType == null) {
+            if (typeId == null || typeId <= 0) {
                 core.setSuccessful(false);
-                core.setMessage("未提供票種資料");
+                core.setMessage("無效的票種ID");
                 return core;
             }
             
-            String validationError = validateTicketType(ticketType);
-            if (validationError != null) {
-                core.setSuccessful(false);
-                core.setMessage(validationError);
-                return core;
-            }
+            EventTicketType ticketType = ticketTypeService.findTicketTypeById(typeId);
             
-            int result = ticketTypeService.createTicketType(ticketType);
-            
-            if (result > 0) {
+            if (ticketType != null) {
+                System.out.println("✅ 查詢到票種: " + ticketType.getCategoryName());
                 core.setSuccessful(true);
-                core.setMessage("票種新增成功");
-                core.setData(ticketType.getTypeId());
+                core.setMessage("查詢成功");
+                core.setData(ticketType);
+                core.setCount(1L);
             } else {
+                System.err.println("❌ 找不到票種ID: " + typeId);
                 core.setSuccessful(false);
-                core.setMessage("票種新增失敗");
+                core.setMessage("找不到指定的票種");
+                core.setData(null);
+                core.setCount(0L);
             }
             
         } catch (Exception e) {
-            System.err.println("新增票種失敗: " + e.getMessage());
+            System.err.println("❌ 查詢票種失敗: " + e.getMessage());
+            e.printStackTrace();
+            
             core.setSuccessful(false);
-            core.setMessage("系統錯誤：" + e.getMessage());
+            core.setMessage("查詢失敗：" + e.getMessage());
+            core.setData(null);
+            core.setCount(0L);
         }
         
         return core;
     }
     
-    @PutMapping("/{typeId}")
+    /**
+     * 更新票種
+     */
+    @PutMapping("/ticket-type/{typeId}")
     public Core<Integer> updateTicketType(@PathVariable Integer typeId, @RequestBody EventTicketType ticketType) {
+        System.out.println("=== 更新票種 ===");
+        System.out.println("票種ID: " + typeId);
+        System.out.println("更新資料: " + ticketType);
+        
         Core<Integer> core = new Core<>();
         
         try {
@@ -109,91 +221,41 @@ public class TicketTypeController {
                 return core;
             }
             
-            ticketType.setTypeId(typeId);
-            
-            String validationError = validateTicketType(ticketType);
-            if (validationError != null) {
+            if (ticketType == null) {
                 core.setSuccessful(false);
-                core.setMessage(validationError);
+                core.setMessage("請提供票種資料");
                 return core;
             }
+            
+            // 設定票種ID
+            ticketType.setTypeId(typeId);
             
             int result = ticketTypeService.updateTicketType(ticketType);
             
             if (result > 0) {
+                System.out.println("✅ 票種更新成功");
                 core.setSuccessful(true);
                 core.setMessage("票種更新成功");
                 core.setData(typeId);
+                core.setCount(1L);
             } else {
+                System.err.println("❌ 票種更新失敗");
                 core.setSuccessful(false);
                 core.setMessage("票種更新失敗");
+                core.setData(null);
+                core.setCount(0L);
             }
             
         } catch (Exception e) {
-            System.err.println("更新票種失敗: " + e.getMessage());
+            System.err.println("❌ 更新票種失敗: " + e.getMessage());
+            e.printStackTrace();
+            
             core.setSuccessful(false);
             core.setMessage("系統錯誤：" + e.getMessage());
+            core.setData(null);
+            core.setCount(0L);
         }
         
         return core;
-    }
-    
-    @DeleteMapping("/{typeId}")
-    public Core<Integer> deleteTicketType(@PathVariable Integer typeId) {
-        Core<Integer> core = new Core<>();
-        
-        try {
-            if (typeId == null || typeId <= 0) {
-                core.setSuccessful(false);
-                core.setMessage("無效的票種ID");
-                return core;
-            }
-            
-            int result = ticketTypeService.deleteTicketType(typeId);
-            
-            if (result > 0) {
-                core.setSuccessful(true);
-                core.setMessage("票種刪除成功");
-                core.setData(typeId);
-            } else {
-                core.setSuccessful(false);
-                core.setMessage("票種刪除失敗");
-            }
-            
-        } catch (Exception e) {
-            System.err.println("刪除票種失敗: " + e.getMessage());
-            core.setSuccessful(false);
-            core.setMessage("系統錯誤：" + e.getMessage());
-        }
-        
-        return core;
-    }
-    
-    private String validateTicketType(EventTicketType ticketType) {
-        if (ticketType.getCategoryName() == null || ticketType.getCategoryName().trim().isEmpty()) {
-            return "票種名稱不可為空";
-        }
-        
-        if (ticketType.getSellFromTime() == null || ticketType.getSellToTime() == null) {
-            return "請填寫販售時間";
-        }
-        
-        if (ticketType.getSellFromTime().compareTo(ticketType.getSellToTime()) >= 0) {
-            return "販售結束時間必須大於開始時間";
-        }
-        
-        if (ticketType.getPrice() == null || ticketType.getPrice().doubleValue() < 0) {
-            return "票價不可為負數";
-        }
-        
-        if (ticketType.getCapacity() == null || ticketType.getCapacity() <= 0) {
-            return "票券數量必須大於0";
-        }
-        
-        if (ticketType.getEventId() == null || ticketType.getEventId() <= 0) {
-            return "無效的活動ID";
-        }
-        
-        return null;
     }
 }
