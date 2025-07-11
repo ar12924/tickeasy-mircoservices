@@ -313,11 +313,13 @@ export const initEventBoxJSEvents = () => {
       e.preventDefault();
       const currentPage = parseInt($(e.currentTarget).data("page"));
       console.log(currentPage);
-      // 載入點擊頁(再打一次 API)
+      // 載入後續分頁(再打一次 API)
       const searchTerm = getUrlParam("searchTerm");
+      const order = $(".time-filter").attr("data-filter");
       const eventResponse = await searchEventInfo({
         searchTerm,
         page: currentPage,
+        order,
       });
       console.log(eventResponse); // ok!!
       if (
@@ -333,14 +335,27 @@ export const initEventBoxJSEvents = () => {
   );
 
   // 時間篩選功能
-  $(".filter-condition").on("click", (e) => {
+  $(".filter-condition").on("click", async (e) => {
     e.preventDefault();
+    const filterElement = $(e.currentTarget).closest(".time-filter");
 
     // 抽換篩選器文字
     const conditionText = $(e.currentTarget).text();
-    $(e.currentTarget)
-      .closest(".time-filter")
-      .find(".filter-name")
-      .text(conditionText);
+    filterElement.find(".filter-name").text(conditionText);
+
+    // filter 屬性切換
+    if (conditionText === "由近到遠") {
+      filterElement.attr("data-filter", "ASC");
+    }
+    if (conditionText === "由遠到近") {
+      filterElement.attr("data-filter", "DESC");
+    }
+
+    // 載入第1頁
+    const searchTerm = getUrlParam("searchTerm");
+    const order = $(".time-filter").attr("data-filter");
+    const eventResponse = await searchEventInfo({ searchTerm, order });
+    console.log(eventResponse);
+    await showPage(1, eventResponse);
   });
 };
