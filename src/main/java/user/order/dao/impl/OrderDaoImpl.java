@@ -185,6 +185,25 @@ public class OrderDaoImpl implements OrderDao {
     }
     
     @Override
+    public List<BuyerOrderDC> findOrdersWithEventInfo(Integer memberId) {
+        try {
+            // ✅ 正確的 JOIN FETCH 查詢
+            String hql = "SELECT o FROM BuyerOrderDC o " +
+                        "LEFT JOIN FETCH o.mngEventInfo e " +
+                        "WHERE o.memberId = :memberId " +
+                        "ORDER BY o.createTime DESC";
+            
+            return session.createQuery(hql, BuyerOrderDC.class)
+                    .setParameter("memberId", memberId)
+                    .getResultList();
+        } catch (Exception e) {
+            System.err.println("查詢會員訂單含活動資訊失敗: " + e.getMessage());
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+    
+    @Override
     public Long countOrdersByMemberIdAndStatus(Integer memberId, String orderStatus) {
         try {
             String hql = "SELECT COUNT(*) FROM BuyerOrderDC WHERE memberId = :memberId AND orderStatus = :orderStatus";

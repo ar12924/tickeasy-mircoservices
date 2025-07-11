@@ -19,7 +19,6 @@ public class VerifyController {
     private MemberService memberService;
 
     @GetMapping
-    @Transactional
     public String verify(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
         boolean result = memberService.activateMemberByToken(token);
         if (result) {
