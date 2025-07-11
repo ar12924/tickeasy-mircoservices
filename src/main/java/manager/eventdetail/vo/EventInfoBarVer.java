@@ -30,6 +30,8 @@ public class EventInfoBarVer {
     
     @Column(name = "event_name", nullable = false, length = 100)
     private String eventName;
-	
+    
+    @Column(name = "member_id")
+    private Integer memberId;
 
 }

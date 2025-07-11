@@ -74,13 +74,14 @@ public class NotificationDaoImpl implements NotificationDao {
 	}
 
 	//增加DISTINCT 讓多張票券只會發送一筆通知
+	//ei.is_posted=1 活動有上架才會寄送通知
 	@Override
 	public List<Object[]> sendReminderNotificationForTomorrowList() {
 		String sql = "SELECT DISTINCT\r\n" + "bt.current_holder_member_id,\r\n" + "bo.event_id,\r\n" + "ei.event_name,\r\n"
 				+ "ei.event_from_date\r\n" + "FROM buyer_order bo\r\n"
 				+ "JOIN buyer_ticket bt ON bo.order_id = bt.order_id\r\n"
 				+ "JOIN event_info ei ON bo.event_id = ei.event_id\r\n"
-				+ "WHERE DATEDIFF(ei.event_from_date, CURDATE()) = 1";
+				+ "WHERE DATEDIFF(ei.event_from_date, CURDATE()) = 1 AND ei.is_posted=1";
 		return session.createNativeQuery(sql/* , Object[].class */).getResultList();
 	}
 

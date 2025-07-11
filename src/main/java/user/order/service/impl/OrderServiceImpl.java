@@ -1,54 +1,8 @@
-//package user.order.service.impl;
-//
-//import java.util.List;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import common.vo.Core;
-//import common.vo.DataStatus;
-//import user.member.vo.Member;
-//import user.order.dao.OrderDao;
-//import user.order.service.OrderService;
-//import user.order.vo.BuyerOrderDC;
-//
-//@Service
-//public class OrderServiceImpl implements OrderService {
-//
-//	@Autowired
-//	private OrderDao orderDao;
-//
-//	@Transactional
-//	@Override
-//	public Core<List<BuyerOrderDC>> ShowOrders(Member member) {
-//		var core = new Core<List<BuyerOrderDC>>();
-//		var memberId = member.getMemberId();
-//		List<BuyerOrderDC> buyerOrderDC = orderDao.findAllOrders(memberId);
-//
-//		// 如果查不到資料，回傳空的 List
-//		if (buyerOrderDC.isEmpty()) {
-//			core.setDataStatus(DataStatus.NOT_FOUND);
-//			core.setMessage("沒有任何訂單");
-//			core.setSuccessful(false);
-//			return core;
-//		}
-//		// 查到資料，回傳有資料的 List
-//		core.setDataStatus(DataStatus.FOUND);
-//		core.setData(buyerOrderDC);
-//		core.setMessage("有訂單");
-//		core.setSuccessful(true);
-//		return core;
-//	}
-//
-//}
-
-
-
 package user.order.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
         List<Map<String, Object>> result = new ArrayList<>();
         
         try {
-            // ✅ 使用新的方法查詢含活動資訊的訂單
+            // 使用新的方法查詢含活動資訊的訂單
             List<BuyerOrderDC> orders = orderDao.findOrdersWithEventInfo(memberId);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
             
@@ -202,7 +156,6 @@ public class OrderServiceImpl implements OrderService {
                 orderInfo.put("totalAmount", order.getTotalAmount());
                 orderInfo.put("orderStatus", order.getOrderStatus());
                 orderInfo.put("isPaid", order.getIsPaid());
-                orderInfo.put("image", order.getImage());
                 
                 // 格式化時間
                 if (order.getOrderTime() != null) {
@@ -212,20 +165,31 @@ public class OrderServiceImpl implements OrderService {
                     orderInfo.put("createTime", sdf.format(order.getCreateTime()));
                 }
                 
-                // ✅ 從關聯的 MngEventInfo 取得真實的活動資訊
+                // 從關聯的 MngEventInfo 取得真實的活動資訊（包含圖片）
                 if (order.getMngEventInfo() != null) {
                     MngEventInfo eventInfo = order.getMngEventInfo();
                     orderInfo.put("eventName", eventInfo.getEventName());
                     orderInfo.put("place", eventInfo.getPlace());
                     
+                    // 加入活動圖片處理
+                    if (eventInfo.getImage() != null && eventInfo.getImage().length > 0) {
+                        // 將 byte[] 轉換為 Base64 字串
+                        String base64Image = Base64.getEncoder().encodeToString(eventInfo.getImage());
+                        orderInfo.put("image", "data:image/jpeg;base64," + base64Image);
+                    } else {
+                        // 沒有圖片時使用預設圖片
+                        orderInfo.put("eventImage", null);
+                    }
+                    
                     if (eventInfo.getEventFromDate() != null) {
                         orderInfo.put("eventFromDate", sdf.format(eventInfo.getEventFromDate()));
                     }
                 } else {
-                    System.err.println("❌ 訂單 " + order.getOrderId() + " 找不到對應的活動資訊");
+                    System.err.println("訂單 " + order.getOrderId() + " 找不到對應的活動資訊");
                     orderInfo.put("eventName", "找不到活動資訊");
                     orderInfo.put("place", "找不到地點資訊");
                     orderInfo.put("eventFromDate", "");
+                    orderInfo.put("eventImage", null); // 沒有活動時也要設定為 null
                 }
                 
                 orderInfo.put("ticketQuantity", 1);
@@ -243,7 +207,7 @@ public class OrderServiceImpl implements OrderService {
                 result.add(orderInfo);
             }
             
-            System.out.println("✅ 成功查詢到 " + result.size() + " 筆訂單資訊");
+            System.out.println("成功查詢到 " + result.size() + " 筆訂單資訊");
             
         } catch (Exception e) {
             System.err.println("取得會員訂單列表失敗: " + e.getMessage());

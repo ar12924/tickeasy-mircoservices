@@ -102,11 +102,20 @@ function ticket_loaded(category) {
 			
 			if(ticketView.viewCategoryType==category){
 				count++;
+				var qrData = "http://10.2.19.163:8080/maven-tickeasy-v1/ticket/use?Id=" + ticketView.ticketId + "&code=" + ticketView.qrCodeHashCode + "&now=" + sessionStorage.getItem("memberId");
+				// 對整個 URL 編碼
+				const encodedQrData = encodeURIComponent(qrData);
+				var imageSrcLink ="../../common/images/activityPic.png";
+				// 產生 QR Code 圖片網址
+				var qrImgUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodedQrData;
+				if (ticketView.image) {
+				      imageSrcLink = `data:image/jpeg;base64,${ticketView.image}`;
+				  }
 				if((category==1 || category==2 )&&(ticketView.memberId==ticketView.currentHolderMemberId)){
 									ticket_el.insertAdjacentHTML("afterbegin", `
 										<div class="tk">
 															<div class="tk_region tk_left">
-																<img src="../../common/images/activityPic.png" alt="ticket">
+																<img src="${imageSrcLink}" alt="ticket">
 															</div>
 															<div class="tk_region tk_center">
 																<div class="tk_title">${ticketView.eventName}</div>
@@ -172,7 +181,7 @@ function ticket_loaded(category) {
 																<div class="tk_content">
 																	<div class="tk_content_set">
 																		<div class="tk_content_title">QR code</div>
-																		<div class="tk_content_text tk_content_qrcode"><img src="../../common/images/qrcode.png" alt="qrcode"></div>
+																		<div class="tk_content_text tk_content_qrcode"><img src="${qrImgUrl}" data-url="${qrData}" alt="qrcode"></div>
 																	</div>
 																</div>
 															</div>
@@ -184,7 +193,7 @@ function ticket_loaded(category) {
 											ticket_el.insertAdjacentHTML("afterbegin", `
 												<div class="tk">
 																	<div class="tk_region tk_left">
-																		<img src="../../common/images/activityPic.png" alt="ticket">
+																		<img src="${imageSrcLink}" alt="ticket">
 																	</div>
 																	<div class="tk_region tk_center">
 																		<div class="tk_title">${ticketView.eventName}</div>
@@ -251,7 +260,7 @@ function ticket_loaded(category) {
 																		<div class="tk_content">
 																			<div class="tk_content_set">
 																				<div class="tk_content_title">QR code</div>
-																				<div class="tk_content_text tk_content_qrcode"><img src="../../common/images/qrcode.png" alt="qrcode"></div>
+																				<div class="tk_content_text tk_content_qrcode"><img src="${qrImgUrl}" data-url="${qrData}" alt="qrcode"></div>
 																			</div>
 																		</div>
 																	</div>
@@ -263,7 +272,7 @@ function ticket_loaded(category) {
 										ticket_el.insertAdjacentHTML("afterbegin", `
 											<div class="tk">
 																<div class="tk_region tk_left">
-																	<img src="../../common/images/activityPic.png" alt="ticket">
+																	<img src="${imageSrcLink}" alt="ticket">
 																</div>
 																<div class="tk_region tk_center">
 																	<div class="tk_title">${ticketView.eventName}</div>
@@ -329,7 +338,7 @@ function ticket_loaded(category) {
 																	<div class="tk_content">
 																		<div class="tk_content_set">
 																			<div class="tk_content_title">QR code</div>
-																			<div class="tk_content_text tk_content_qrcode"><img src="../../common/images/qrcode.png" alt="qrcode"></div>
+																			<div class="tk_content_text tk_content_qrcode"><img src="${qrImgUrl}" data-url="${qrData}" alt="qrcode"></div>
 																		</div>
 																	</div>
 																</div>
@@ -532,3 +541,4 @@ function reconnectWebSocket() {
 			       createWebSocket();  // 重新創建 WebSocket 連接
 			   }, 5000);  // 5秒後重試
 		}*/
+		

@@ -127,4 +127,12 @@ public class BuyerOrderDC {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
     private MngEventInfo mngEventInfo;
+    
+    public MngEventInfo getMngEventInfo() {
+        return mngEventInfo;
+    }
+    
+    public void setMngEventInfo(MngEventInfo mngEventInfo) {
+        this.mngEventInfo = mngEventInfo;
+    }
 }

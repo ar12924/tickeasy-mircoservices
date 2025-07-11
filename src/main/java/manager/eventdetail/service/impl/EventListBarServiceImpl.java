@@ -23,4 +23,9 @@ public class EventListBarServiceImpl implements EventListBarService{
 		return eventListBarDao.selectAllEventInfoName();
 	}
 
+	@Override
+	public List<EventInfoBarVer> eventListBarMember(int memberId) {
+		return eventListBarDao.selectMemberEventInfoName(memberId);
+	}
+
 }

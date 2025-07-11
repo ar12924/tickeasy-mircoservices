@@ -6,5 +6,5 @@ import manager.event.vo.MngKeywordCategory;
 public interface KeywordCategoryDao extends CommonDao {
 
 //	建立Keyword
-	public Integer createKeywordCategory(MngKeywordCategory category);
+	public Integer createKeywordCategory(MngKeywordCategory kCategory);
 }
