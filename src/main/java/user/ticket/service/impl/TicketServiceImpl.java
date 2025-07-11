@@ -63,6 +63,7 @@ public class TicketServiceImpl implements TicketService{
 			dto.setCurrentHolderChangePhone(ticket.getMemberTicketVer().getCurrentHolderChangePhone());
 			dto.setCurrentHolderChangeIdCard(ticket.getMemberTicketVer().getCurrentHolderChangeIdCard());
 			dto.setQrCodeHashCode(generateCustomCode(ticket.getMemberTicketVer().getCurrentHolderChangeIdCard(),ticket.getTicketId(),12));
+			dto.setImage(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getImage());
 			
 			//狀態轉換邏輯
 			if(ticket.getStatus() != null && ticket.getStatus()==1) {
@@ -121,6 +122,7 @@ public class TicketServiceImpl implements TicketService{
 				dtochange.setCreateTime(changeticket.getCreateTime());
 				dtochange.setUpdateTime(changeticket.getUpdateTime());
 				dtochange.setQrCodeHashCode(generateCustomCode(changeticket.getMemberTicketVer().getCurrentHolderChangeIdCard(),changeticket.getTicketId(),12));
+				dtochange.setImage(changeticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getImage());
 				
 				//狀態轉換邏輯
 				if(changeticket.getStatus() != null && changeticket.getStatus()==1) {
@@ -211,6 +213,7 @@ public class TicketServiceImpl implements TicketService{
 		dto.setCurrentHolderChangePhone(ticket.getMemberTicketVer().getCurrentHolderChangePhone());
 		dto.setCurrentHolderChangeIdCard(ticket.getMemberTicketVer().getCurrentHolderChangeIdCard());
 		dto.setQrCodeHashCode(generateCustomCode(ticket.getIdCard(),ticket.getTicketId(),12));
+		dto.setImage(ticket.getBuyerOrderTicketVer().getEventInfoTicketVer().getImage());
 		
 		//狀態轉換邏輯
 		if(ticket.getStatus() != null && ticket.getStatus()==1) {

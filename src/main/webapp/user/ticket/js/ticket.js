@@ -102,16 +102,20 @@ function ticket_loaded(category) {
 			
 			if(ticketView.viewCategoryType==category){
 				count++;
-				var qrData = "http://192.168.8.183:8080/maven-tickeasy-v1/ticket/use?Id=" + ticketView.ticketId + "&code=" + ticketView.qrCodeHashCode + "&now=" + sessionStorage.getItem("memberId");
+				var qrData = "http://10.2.19.163:8080/maven-tickeasy-v1/ticket/use?Id=" + ticketView.ticketId + "&code=" + ticketView.qrCodeHashCode + "&now=" + sessionStorage.getItem("memberId");
 				// 對整個 URL 編碼
 				const encodedQrData = encodeURIComponent(qrData);
+				var imageSrcLink ="../../common/images/activityPic.png";
 				// 產生 QR Code 圖片網址
 				var qrImgUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodedQrData;
+				if (ticketView.image) {
+				      imageSrcLink = `data:image/jpeg;base64,${ticketView.image}`;
+				  }
 				if((category==1 || category==2 )&&(ticketView.memberId==ticketView.currentHolderMemberId)){
 									ticket_el.insertAdjacentHTML("afterbegin", `
 										<div class="tk">
 															<div class="tk_region tk_left">
-																<img src="../../common/images/activityPic.png" alt="ticket">
+																<img src="${imageSrcLink}" alt="ticket">
 															</div>
 															<div class="tk_region tk_center">
 																<div class="tk_title">${ticketView.eventName}</div>
@@ -189,7 +193,7 @@ function ticket_loaded(category) {
 											ticket_el.insertAdjacentHTML("afterbegin", `
 												<div class="tk">
 																	<div class="tk_region tk_left">
-																		<img src="../../common/images/activityPic.png" alt="ticket">
+																		<img src="${imageSrcLink}" alt="ticket">
 																	</div>
 																	<div class="tk_region tk_center">
 																		<div class="tk_title">${ticketView.eventName}</div>
@@ -268,7 +272,7 @@ function ticket_loaded(category) {
 										ticket_el.insertAdjacentHTML("afterbegin", `
 											<div class="tk">
 																<div class="tk_region tk_left">
-																	<img src="../../common/images/activityPic.png" alt="ticket">
+																	<img src="${imageSrcLink}" alt="ticket">
 																</div>
 																<div class="tk_region tk_center">
 																	<div class="tk_title">${ticketView.eventName}</div>

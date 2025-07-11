@@ -33,8 +33,19 @@ public class TicketViewDto {
 	private String currentHolderChangePhone;
 	private String currentHolderChangeIdCard;
 	private String qrCodeHashCode;
+	private byte[] image;
+	
+	
+	
 	
 
+
+	public byte[] getImage() {
+		return image;
+	}
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
 	public String getQrCodeHashCode() {
 		return qrCodeHashCode;
 	}
