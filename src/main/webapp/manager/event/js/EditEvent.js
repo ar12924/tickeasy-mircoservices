@@ -15,8 +15,8 @@
     const imageInput = document.querySelector('#event_image');
     const updateBtn = document.querySelector('#btnUpdate');
     const imagePreviewContainer = document.querySelector('#imagePreviewContainer');
-
-    let summernoteEditor;
+    const summernoteContent = document.querySelector('#summernote');
+    // let summernoteEditor;
 
     // 從 URL 獲取活動ID
     function getEventIdFromUrl() {
@@ -73,9 +73,9 @@
         summaryInput.value = eventData.summary || '';
 
         // 設置 Summernote 內容
-        if (summernoteEditor) {
-            summernoteEditor.summernote('code', eventData.detail || '');
-        }
+        // if (summernoteEditor) {
+        //     summernoteEditor.summernote('code', eventData.detail || '');
+        // }
 
         // 顯示現有圖片
         if (eventData.image) {
@@ -134,8 +134,8 @@
             return '請填寫活動簡介';
         }
 
-        const summernoteContent = summernoteEditor.summernote('code').trim();
-        if (!summernoteContent || summernoteContent === '<p><br></p>') {
+        // const summernoteContent = summernoteEditor.value.trim();
+        if (!summernoteContent) {
             return '請填寫活動描述';
         }
 
@@ -167,7 +167,7 @@
                 totalCapacity: parseInt(totalCapacityInput.value) || 0,
                 place: placeInput.value.trim(),
                 summary: summaryInput.value.trim(),
-                detail: summernoteEditor.summernote('code'),
+                detail: summernoteContent.value.trim(),
                 keywordId: originalEventData.keywordId,
                 memberId: originalEventData.memberId,
                 isPosted: originalEventData.isPosted
@@ -262,11 +262,11 @@
         }
 
         // 初始化 Summernote
-        summernoteEditor = $('#summernote');
-        summernoteEditor.summernote({
-            height: 200,
-            lang: 'zh-TW'
-        });
+        // summernoteEditor = $('#summernote');
+        // summernoteEditor.summernote({
+        //     height: 200,
+        //     lang: 'zh-TW'
+        // });
 
         // 設置圖片預覽
         setupImagePreview();

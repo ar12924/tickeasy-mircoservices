@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import manager.event.controller.TicketTypeController.EventInfo;
 import manager.event.dao.TicketTypeDao;
 import manager.event.service.TicketTypeService;
 import manager.event.vo.EventTicketType;
+import manager.event.vo.MngEventInfo;
 
 @Service
 public class TicketTypeServiceImpl implements TicketTypeService {
@@ -42,4 +44,11 @@ public class TicketTypeServiceImpl implements TicketTypeService {
     public int deleteTicketType(Integer typeId) {
         return ticketTypeDao.deleteTicketType(typeId);
     }
+
+    @Override
+    public EventInfo getEventInfo(Integer eventId) {
+        return ticketTypeDao.getEventInfo(eventId);
+    }
+    
+    
 }

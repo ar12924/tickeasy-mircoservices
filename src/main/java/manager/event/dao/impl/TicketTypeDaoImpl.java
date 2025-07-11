@@ -5,6 +5,7 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import manager.event.controller.TicketTypeController.EventInfo;
 import manager.event.dao.TicketTypeDao;
 import manager.event.vo.EventTicketType;
 
@@ -103,4 +104,25 @@ public class TicketTypeDaoImpl implements TicketTypeDao {
             return 0;
         }
     }
+
+	@Override
+	public EventInfo getEventInfo(Integer eventId) {
+		try {
+	        String hql = "SELECT e.eventName, e.totalCapacity FROM MngEventInfo e WHERE e.eventId = :eventId";
+	        Object[] result = (Object[]) session.createQuery(hql)
+	                .setParameter("eventId", eventId)
+	                .uniqueResult();
+	        
+	        if (result != null) {
+	            String eventName = (String) result[0];
+	            Integer totalCapacity = (Integer) result[1];
+	            return new EventInfo(eventName, totalCapacity);
+	        }
+	        return null;
+	    } catch (Exception e) {
+	        System.err.println("查詢活動資訊失敗: " + e.getMessage());
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 }

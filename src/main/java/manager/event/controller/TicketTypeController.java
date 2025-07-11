@@ -32,6 +32,7 @@ public class TicketTypeController {
     public Core<Integer> createTicketType(@RequestBody EventTicketType ticketType) {
         System.out.println("=== 建立票種 ===");
         System.out.println("接收到的票種資料: " + ticketType);
+        System.out.println("票種中的 eventId: " + ticketType.getEventId());
         
         Core<Integer> core = new Core<>();
         
@@ -117,6 +118,74 @@ public class TicketTypeController {
         System.out.println("📤 票種建立最終回應: " + core);
         return core;
     }
+    
+    
+    /**
+     * 根據活動ID取得活動資訊（包含總人數上限）
+     */
+    @GetMapping("/event/{eventId}/info")
+    public Core<EventInfo> getEventInfo(@PathVariable Integer eventId) {
+        System.out.println("=== 查詢活動資訊 ===");
+        System.out.println("活動ID: " + eventId);
+        
+        Core<EventInfo> core = new Core<>();
+        
+        try {
+            if (eventId == null || eventId <= 0) {
+                core.setSuccessful(false);
+                core.setMessage("無效的活動ID");
+                return core;
+            }
+            
+            EventInfo eventInfo = ticketTypeService.getEventInfo(eventId);
+            
+            if (eventInfo != null) {
+                System.out.println("✅ 查詢到活動: " + eventInfo.getEventName());
+                System.out.println("總人數上限: " + eventInfo.getTotalCapacity());
+                core.setSuccessful(true);
+                core.setMessage("查詢成功");
+                core.setData(eventInfo);
+                core.setCount(1L);
+            } else {
+                System.err.println("❌ 找不到活動ID: " + eventId);
+                core.setSuccessful(false);
+                core.setMessage("找不到指定的活動");
+                core.setData(null);
+                core.setCount(0L);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("❌ 查詢活動失敗: " + e.getMessage());
+            e.printStackTrace();
+            
+            core.setSuccessful(false);
+            core.setMessage("查詢失敗：" + e.getMessage());
+            core.setData(null);
+            core.setCount(0L);
+        }
+        
+        return core;
+    }
+
+    // 新增內部類別來傳遞活動資訊
+    public static class EventInfo {
+        private String eventName;
+        private Integer totalCapacity;
+        
+        public EventInfo() {}
+        
+        public EventInfo(String eventName, Integer totalCapacity) {
+            this.eventName = eventName;
+            this.totalCapacity = totalCapacity;
+        }
+        
+        // Getters and Setters
+        public String getEventName() { return eventName; }
+        public void setEventName(String eventName) { this.eventName = eventName; }
+        public Integer getTotalCapacity() { return totalCapacity; }
+        public void setTotalCapacity(Integer totalCapacity) { this.totalCapacity = totalCapacity; }
+    }
+    
     
     /**
      * 根據活動ID取得所有票種

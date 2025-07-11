@@ -18,7 +18,7 @@ public class EventDaoImpl implements EventDao {
 	@Override
 	public int createEvent(MngEventInfo eventInfo) {
 		session.persist(eventInfo);
-		return 1;
+		return eventInfo.getEventId();
 	}
 
 	@Override
