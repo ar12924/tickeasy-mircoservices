@@ -69,4 +69,6 @@ public interface OrderDao extends CommonDao {
      * 統計各狀態的訂單數量
      */
     public Long countOrdersByMemberIdAndStatus(Integer memberId, String orderStatus);
+
+	List<BuyerOrderDC> findOrdersWithEventInfo(Integer memberId);
 }

@@ -4,6 +4,12 @@ const order_nav_span_paid_el = document.querySelector(".paid_order");
 const order_nav_span_cancelled_el = document.querySelector(".cancelled_order");
 
 const order_el = document.getElementById("order");
+const memberId = sessionStorage.getItem("memberId");
+  if (!memberId) {
+    alert("請先登入");
+    window.location.href = "/maven-tickeasy-v1/user/member/login.html";
+    return;
+  }
 
 // 點擊展開/收合訂單詳情
 document.addEventListener("click", function(e) {
