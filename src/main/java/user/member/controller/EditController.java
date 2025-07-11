@@ -148,7 +148,6 @@ public class EditController {
 
     // 處理密碼更新認證
     @GetMapping("verify-password-update")
-    @Transactional
     public void verifyPasswordUpdate(@RequestParam String token, HttpSession session, HttpServletResponse response) throws IOException {
         try {
             System.out.println("開始處理密碼更新認證，token: " + token);
