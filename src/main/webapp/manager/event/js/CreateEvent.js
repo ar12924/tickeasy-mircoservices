@@ -1,6 +1,6 @@
 (() => {
 	const memberId = sessionStorage.getItem("memberId");
-	const host = sessionStorage.getItem("savedUsername");
+	const host = sessionStorage.getItem("loggedInNickname") || sessionStorage.getItem("savedUsername");
 	if (!memberId) {
 		alert("請先登入");
 		window.location.href = "/maven-tickeasy-v1/user/member/login.html";
@@ -26,6 +26,70 @@
 
 	// const summernoteEditor = $('#summernote');
 	const summernoteEditor = document.querySelector('#summernote');
+
+
+    // ✅ 新增：監聽票種數量輸入，確保不超過總人數限制
+	capacity.addEventListener('input', function() {
+		const totalCapacityValue = parseInt(total_capacity.value, 10) || 0;
+		const capacityValue = parseInt(this.value, 10) || 0;
+		
+		console.log('票種數量輸入:', capacityValue, '總人數上限:', totalCapacityValue);
+		
+		// 清除之前的錯誤訊息
+		const existingError = document.querySelector('#capacity-error');
+		if (existingError) {
+			existingError.remove();
+		}
+		
+		// 如果總人數上限有設定且票種數量超過限制
+		if (totalCapacityValue > 0 && capacityValue > totalCapacityValue) {
+			// 顯示錯誤訊息
+			const errorDiv = document.createElement('div');
+			errorDiv.id = 'capacity-error';
+			errorDiv.className = 'text-danger mt-1';
+			errorDiv.innerHTML = `<small><i class="bi bi-exclamation-triangle"></i> 票種數量不能超過活動總人數上限 (${totalCapacityValue} 人)</small>`;
+			
+			// 將錯誤訊息插入到 capacity 輸入框後面
+			this.parentElement.appendChild(errorDiv);
+			
+			// 設定輸入框為錯誤狀態
+			this.classList.add('is-invalid');
+			
+			// 禁用建立按鈕
+			saveBtn.disabled = true;
+			saveBtn.classList.add('btn-secondary');
+			saveBtn.classList.remove('btn-outline-secondary');
+		} else {
+			// 移除錯誤狀態
+			this.classList.remove('is-invalid');
+			
+			// 啟用建立按鈕
+			saveBtn.disabled = false;
+			saveBtn.classList.remove('btn-secondary');
+			saveBtn.classList.add('btn-outline-secondary');
+		}
+	});
+
+	// ✅ 新增：監聽總人數上限變更，重新驗證票種數量
+	total_capacity.addEventListener('input', function() {
+		const totalCapacityValue = parseInt(this.value, 10) || 0;
+		const capacityValue = parseInt(capacity.value, 10) || 0;
+		
+		console.log('總人數上限變更:', totalCapacityValue, '當前票種數量:', capacityValue);
+		
+		// 如果有輸入票種數量，重新觸發驗證
+		if (capacity.value) {
+			capacity.dispatchEvent(new Event('input'));
+		}
+		
+		// 如果總人數上限有值，設定票種數量的 max 屬性
+		if (totalCapacityValue > 0) {
+			capacity.setAttribute('max', totalCapacityValue);
+		} else {
+			capacity.removeAttribute('max');
+		}
+	});
+
 
 	$(document).ready(() => {
 		// summernoteEditor.summernote();
@@ -125,7 +189,7 @@
 
 			// ✅ 修正：確保 payload 格式正確，並處理空值
 			const keywordPayload = {
-				keywordName1: checkedCats[0] || "",  // 使用空字串而非 null
+				keywordName1: checkedCats[0] || "",
 				keywordName2: checkedCats[1] || "",
 				keywordName3: checkedCats[2] || "",
 			};
@@ -274,7 +338,7 @@
 
 				console.log("準備送出票種payload：", ticketPayload);
 
-				const ticketResponse = await fetch('/maven-tickeasy-v1/manager/create-ticket-type', {
+				const ticketResponse = await fetch('/maven-tickeasy-v1/manager/ticket-type', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',

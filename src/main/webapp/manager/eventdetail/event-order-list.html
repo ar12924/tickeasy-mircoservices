@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>TickEasy | 活動訂單列表</title>
+
+  <!--Primary Meta Tags-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="TickEasy | 活動訂單列表" />
+  <meta name="author" content="TIA203-G2" />
+  <meta name="description" content="活動訂單管理" />
+  <meta name="keywords" content="TickEasy, ticket, concert, order management" />
+  <link rel="icon" href="../common/assets/img/Member_icon.ico">
+
+  <!--Fonts-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+    integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+
+  <!--Bootstrap Icons-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+
+  <!--DataTables-->
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css">
+
+  <!--AdminLTE-->
+  <link rel="stylesheet" href="../common/css/adminlte.css">
+
+  <style>
+    .app-content {
+      padding-bottom: 20px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      color: #666;
+    }
+
+    .order-status-badge {
+      font-size: 0.875rem;
+    }
+
+    .order-number {
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block"><a href="../index.html" class="nav-link">Home</a></li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+          <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <img src="../common/assets/img/user2-128x128.png" class="user-image rounded-circle shadow"
+                alt="User Image" />
+              <span class="d-none d-md-inline" id="sidebar-username">Alexander Pierce</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+              <li class="user-header text-bg-primary">
+                <img src="../common/assets/img/user2-128x128.png" class="rounded-circle shadow" alt="User Image" />
+                <p id="block_username">
+                  Alexander Pierce - Web Developer
+                  <small>Member since Nov. 2023</small>
+                </p>
+              </li>
+              <li class="user-footer">
+                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <div class="brand-link">
+          <a href="../index.html" class="brand-link">
+            <span class="brand-text fs-1">TickEasy</span>
+          </a>
+          <span class="brand-text fs-7">活動方</span>
+        </div>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <li class="nav-header">活動方</li>
+            <li class="nav-item">
+              <a href="./CreateEvent.html" class="nav-link">
+                <i class="nav-icon bi bi-patch-plus-fill"></i>
+                <p>建立活動</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-gear-wide-connected"></i>
+                <p>
+                  活動管理
+                  <i class="nav-arrow bi bi-chevron-right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="../index.html" class="nav-link">
+                    <i class="nav-icon bi bi-list-task"></i>
+                    <p>活動列表</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link active">
+                    <i class="nav-icon bi bi-receipt"></i>
+                    <p>訂單管理</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h2 class="mb-0">活動訂單列表</h2>
+              <p class="text-muted" id="eventTitle">載入中...</p>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="../index.html">活動列表</a></li>
+                <li class="breadcrumb-item active" aria-current="page">訂單列表</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+            <div class="row mb-3">
+              <div class="col-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link active" href="#">訂單列表</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="./dashboard.html"
+                      >票券銷售情形</a
+                    >
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="./participant-list.html"
+                      >報名人列表</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          <div id="loadingMessage" class="loading">
+            <i class="bi bi-hourglass-split"></i>
+            <p>載入訂單資料中...</p>
+          </div>
+
+          <div id="orderContainer" style="display: none;">
+            <div id="msg" class="mb-3"></div>
+
+            <!-- 訂單統計卡片 -->
+            <div class="row mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h4 id="totalOrders">0</h4>
+                        <p class="mb-0">總訂單數</p>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="bi bi-receipt fs-1"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h4 id="paidOrders">0</h4>
+                        <p class="mb-0">已付款</p>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="bi bi-check-circle fs-1"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h4 id="unpaidOrders">0</h4>
+                        <p class="mb-0">未付款</p>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="bi bi-clock fs-1"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-info text-white">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h4 id="totalRevenue">$0</h4>
+                        <p class="mb-0">總金額</p>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="bi bi-currency-dollar fs-1"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 訂單列表 -->
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0">
+                  <i class="bi bi-list-ul"></i> 訂單列表
+                </h5>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table id="orderTable" class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th>訂單編號</th>
+                        <th>活動名稱</th>
+                        <th>訂單時間</th>
+                        <th>訂單金額</th>
+                        <th>付款狀態</th>
+                        <th>訂單狀態</th>
+                        <th>操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- 動態載入訂單資料 -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal for order details -->
+    <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="orderDetailModalLabel">訂單明細</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="orderDetailContent">
+              <!-- 訂單明細內容將動態載入到這裡 -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">TIA203-G2</div>
+      <strong>
+        Copyright &copy; 2025&nbsp;
+        <a href="https://gamma.app/docs/TickEasy-gd84wknpd0a0roz?mode=doc" class="text-decoration-none">TickEasy</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+  <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
+  <script src="../common/js/adminlte.js"></script>
+  <script src="../common/js/header.js"></script>
+  <script src="../common/js/overlay_scrollbar_init.js"></script>
+  <script src="js/event-order-list.js"></script>
+</body>
+
+</html>

@@ -2,6 +2,7 @@ package manager.event.service;
 
 import java.util.List;
 import manager.event.vo.EventTicketType;
+import manager.event.controller.TicketTypeController.EventInfo;
 
 public interface TicketTypeService {
     
@@ -29,4 +30,9 @@ public interface TicketTypeService {
      * 刪除票種
      */
     public int deleteTicketType(Integer typeId);
+    
+    /**
+     * 根據活動ID取得活動資訊
+     */
+    public EventInfo getEventInfo(Integer eventId);
 }
