@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import manager.event.dao.TicketTypeDao;
 import manager.event.service.TicketTypeService;
 import manager.event.vo.EventTicketType;
@@ -15,19 +16,19 @@ public class TicketTypeServiceImpl implements TicketTypeService {
     private TicketTypeDao ticketTypeDao;
     
     @Override
-    public List<EventTicketType> findTicketTypesByEventId(Integer eventId) {
-        return ticketTypeDao.findByEventId(eventId);
+    @Transactional
+    public Integer createTicketType(EventTicketType ticketType) {
+        return ticketTypeDao.createTicketType(ticketType);
     }
     
     @Override
     public EventTicketType findTicketTypeById(Integer typeId) {
-        return ticketTypeDao.findById(typeId);
+        return ticketTypeDao.findTicketTypeById(typeId);
     }
     
     @Override
-    @Transactional
-    public int createTicketType(EventTicketType ticketType) {
-        return ticketTypeDao.createTicketType(ticketType);
+    public List<EventTicketType> findTicketTypesByEventId(Integer eventId) {
+        return ticketTypeDao.findTicketTypesByEventId(eventId);
     }
     
     @Override

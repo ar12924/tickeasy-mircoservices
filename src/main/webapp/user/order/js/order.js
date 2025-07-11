@@ -4,12 +4,6 @@ const order_nav_span_paid_el = document.querySelector(".paid_order");
 const order_nav_span_cancelled_el = document.querySelector(".cancelled_order");
 
 const order_el = document.getElementById("order");
-const memberId = sessionStorage.getItem("memberId");
-  if (!memberId) {
-    alert("請先登入");
-    window.location.href = "/maven-tickeasy-v1/user/member/login.html";
-    return;
-  }
 
 // 點擊展開/收合訂單詳情
 document.addEventListener("click", function(e) {
@@ -108,10 +102,15 @@ function order_loaded(category) {
                 count++;
                 console.log(`✅ 顯示訂單: ${orderView.orderId}`, orderView);
                 
+                // ✅ 處理活動圖片顯示
+                const eventImageSrc = orderView.eventImage 
+                    ? orderView.eventImage 
+                    : "../../common/images/activityPic.png"; // 預設圖片
+                
                 order_el.insertAdjacentHTML("afterbegin", `
                     <div class="order_item">
                         <div class="order_region order_left">
-                            <img src="../../common/images/activityPic.png" alt="order">
+                            <img src="${eventImageSrc}" alt="活動圖片" onerror="this.src='../../common/images/activityPic.png'">
                         </div>
                         <div class="order_region order_center">
                             <div class="order_title">${orderView.eventName || `活動 ${orderView.eventId}`}</div>
