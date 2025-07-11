@@ -181,7 +181,7 @@ const initBookConfirmJSEvents = async (book) => {
     $(e.target).toggleClass("is-focused");
   });
   $(".next").on("click", () => {
-    location.href = "#";
+    location.href = `${getContextPath()}/user/order/order.html`;
   });
 };
 
