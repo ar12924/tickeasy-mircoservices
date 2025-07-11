@@ -331,4 +331,16 @@ export const initEventBoxJSEvents = () => {
       }
     }
   );
+
+  // 時間篩選功能
+  $(".filter-condition").on("click", (e) => {
+    e.preventDefault();
+
+    // 抽換篩選器文字
+    const conditionText = $(e.currentTarget).text();
+    $(e.currentTarget)
+      .closest(".time-filter")
+      .find(".filter-name")
+      .text(conditionText);
+  });
 };
