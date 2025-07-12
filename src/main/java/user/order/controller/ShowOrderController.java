@@ -40,6 +40,7 @@ package user.order.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -200,7 +201,7 @@ public class ShowOrderController {
                 orderList = orderService.getOrderListWithEventInfo(memberId);
                 orderList = orderList.stream()
                     .filter(order -> orderStatus.equals(order.get("orderStatus")))
-                    .toList();
+                    .collect(Collectors.toList());
             }
             
             core.setSuccessful(true);
