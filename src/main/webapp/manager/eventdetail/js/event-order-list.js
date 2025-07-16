@@ -141,7 +141,7 @@
         console.log('訂單資料回應:', result);
         
         // 詳細除錯輸出
-        console.log('=== 除錯資訊 ===');
+        console.log('=== 除錯資訊 ==='); 
         console.log('result:', result);
         console.log('result.successful:', result.successful);
         console.log('successful 型別:', typeof result.successful);
@@ -289,8 +289,17 @@
             //     throw new Error(result.message || '載入訂單明細失敗');
             // }
             // ✅ 由於後端直接回傳物件，所以直接使用
-        if (orderDetail) {
-            displayOrderDetail(orderDetail);
+        
+        
+        // if (orderDetail) {
+        //     displayOrderDetail(orderDetail);
+        // } else {
+        //     throw new Error('找不到訂單明細');
+        // }
+
+
+        if (result) {
+            displayOrderDetail(result);
         } else {
             throw new Error('找不到訂單明細');
         }
