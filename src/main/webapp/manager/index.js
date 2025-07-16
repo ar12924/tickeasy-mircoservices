@@ -32,15 +32,15 @@ function init() {
         data: null,
         render: function (data) {
           const isPosted = data.isPosted;
-          const toggleButtonText = isPosted ? "下架活動" : "上架活動";
-          const toggleButtonClass = isPosted ? "btn-warning" : "btn-success";
+          const toggleButtonText = isPosted ? " 下架活動" : " 上架活動";
+          const toggleButtonClass = isPosted ? "btn-danger" : "btn-success";
           return `
             <div class="d-grid gap-2">
-              <a href="event/EditEvent.html?eventId=${data.eventId}" class="btn btn-warning text-danger">編輯活動</a>
-              <a href="event/EditTicketType.html?eventId=${data.eventId}" class="btn btn-warning text-danger">編輯票種</a>
+              <a href="event/EditEvent.html?eventId=${data.eventId}" class="btn btn-secondary"><i class="bi bi-hammer"></i> 編輯活動</a>
+              <a href="event/EditTicketType.html?eventId=${data.eventId}" class="btn btn-secondary"><i class="bi bi-ticket-perforated-fill"></i> 編輯票種</a>
               <button class="btn ${toggleButtonClass} btn-toggle-status" 
                       data-event-id="${data.eventId}" 
-                      data-current-status="${isPosted}">
+                      data-current-status="${isPosted}"><i class="bi bi-skip-end-fill"></i>
                 ${toggleButtonText}
               </button>
             </div>
@@ -52,10 +52,10 @@ function init() {
         render: function (data) {
           return `
             <div class="d-grid gap-2">
-              <a href="eventdetail/event-order-list.html?eventId=${data.eventId}" class="btn btn-warning text-danger btn-order" data-event-id="${data.eventId}">訂票列表</a>
-              <button class="btn btn-warning text-danger btn-dashboard" data-event-id="${data.eventId}">票券銷售情形</button>
-              <button class="btn btn-warning text-danger btn-participant" data-event-id="${data.eventId}">報名人列表</button>
-              <button class="btn btn-warning text-danger btn-exchange" data-event-id="${data.eventId}">換票分票紀錄</button>
+              <a href="eventdetail/event-order-list.html?eventId=${data.eventId}" class="btn btn-secondary btn-order" data-event-id="${data.eventId}"><i class="bi bi-card-list"></i> 訂票列表</a>
+              <button class="btn btn-secondary btn-dashboard" data-event-id="${data.eventId}"><i class="bi bi-bar-chart"></i> 票券銷售情形</button>
+              <button class="btn btn-secondary btn-participant" data-event-id="${data.eventId}"><i class="bi bi-person-add"></i> 報名人列表</button>
+              <button class="btn btn-secondary btn-exchange" data-event-id="${data.eventId}"><i class="bi bi-repeat"></i> 換/分票紀錄</button>
             </div>
           `;
         }

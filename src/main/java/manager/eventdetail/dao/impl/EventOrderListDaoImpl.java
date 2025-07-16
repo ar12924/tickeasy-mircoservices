@@ -22,23 +22,21 @@ public class EventOrderListDaoImpl implements EventOrderListDao {
     @Override
     public List<OrderSummary> findOrdersByEventId(Integer eventId) {
         try {
-            String sql = """
-                SELECT 
-                    bo.order_id,
-                    bo.event_id,
-                    ei.event_name,
-                    bo.member_id,
-                    bo.order_time,
-                    bo.is_paid,
-                    bo.total_amount,
-                    bo.order_status,
-                    bo.create_time,
-                    bo.update_time
-                FROM buyer_order bo
-                JOIN event_info ei ON bo.event_id = ei.event_id
-                WHERE bo.event_id = :eventId
-                ORDER BY bo.order_time DESC
-            """;
+        	String sql = "SELECT " +
+        		    "bo.order_id, " +
+        		    "bo.event_id, " +
+        		    "ei.event_name, " +
+        		    "bo.member_id, " +
+        		    "bo.order_time, " +
+        		    "bo.is_paid, " +
+        		    "bo.total_amount, " +
+        		    "bo.order_status, " +
+        		    "bo.create_time, " +
+        		    "bo.update_time " +
+        		    "FROM buyer_order bo " +
+        		    "JOIN event_info ei ON bo.event_id = ei.event_id " +
+        		    "WHERE bo.event_id = :eventId " +
+        		    "ORDER BY bo.order_time DESC";
             
             List<Object[]> results = session.createNativeQuery(sql)
                     .setParameter("eventId", eventId)
@@ -76,22 +74,20 @@ public class EventOrderListDaoImpl implements EventOrderListDao {
     public OrderDetail findOrderDetailById(Integer orderId) {
         try {
             // 查詢訂單基本資訊
-            String orderSql = """
-                SELECT 
-                    bo.order_id,
-                    bo.event_id,
-                    ei.event_name,
-                    bo.member_id,
-                    bo.order_time,
-                    bo.is_paid,
-                    bo.total_amount,
-                    bo.order_status,
-                    bo.create_time,
-                    bo.update_time
-                FROM buyer_order bo
-                JOIN event_info ei ON bo.event_id = ei.event_id
-                WHERE bo.order_id = :orderId
-            """;
+        	String orderSql = "SELECT " +
+        		    "bo.order_id, " +
+        		    "bo.event_id, " +
+        		    "ei.event_name, " +
+        		    "bo.member_id, " +
+        		    "bo.order_time, " +
+        		    "bo.is_paid, " +
+        		    "bo.total_amount, " +
+        		    "bo.order_status, " +
+        		    "bo.create_time, " +
+        		    "bo.update_time " +
+        		    "FROM buyer_order bo " +
+        		    "JOIN event_info ei ON bo.event_id = ei.event_id " +
+        		    "WHERE bo.order_id = :orderId";
             
             Object[] orderRow = (Object[]) session.createNativeQuery(orderSql)
                     .setParameter("orderId", orderId)
@@ -116,16 +112,14 @@ public class EventOrderListDaoImpl implements EventOrderListDao {
             
             // 查詢訂單明細項目（這裡假設有 order_items 表）
             // 由於你沒有提供訂單明細表結構，我用假設的結構
-            String itemsSql = """
-                SELECT 
-                    oi.ticket_type_name,
-                    oi.quantity,
-                    oi.unit_price,
-                    (oi.quantity * oi.unit_price) as subtotal
-                FROM order_items oi
-                WHERE oi.order_id = :orderId
-                ORDER BY oi.item_id
-            """;
+            String itemsSql = "SELECT " +
+            	    "oi.ticket_type_name, " +
+            	    "oi.quantity, " +
+            	    "oi.unit_price, " +
+            	    "(oi.quantity * oi.unit_price) as subtotal " +
+            	    "FROM order_items oi " +
+            	    "WHERE oi.order_id = :orderId " +
+            	    "ORDER BY oi.item_id";
             
             try {
                 List<Object[]> itemRows = session.createNativeQuery(itemsSql)
