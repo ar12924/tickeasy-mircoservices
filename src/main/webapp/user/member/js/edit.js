@@ -366,7 +366,11 @@ if (logoutButton) {
           sessionStorage.removeItem("loggedInNickname");
           location.href = "login.html";
         } else {
-          alert(body.message || "登出失敗");
+          Swal.fire({
+            icon: "error",
+            title: "登出失敗",
+            text: body.message || "登出失敗",
+          });
         }
       });
   });

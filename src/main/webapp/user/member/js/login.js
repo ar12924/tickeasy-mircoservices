@@ -126,13 +126,21 @@ if (loginBtn) {
                 return;
               }
             }
-            alert(body.message || "登入失敗");
+            Swal.fire({
+              icon: "error",
+              title: "登入失敗",
+              text: body.message || "登入失敗",
+            });
           }
         }
       })
       .catch((error) => {
         console.error("登入請求失敗:", error);
-        alert("登入請求失敗，請稍後再試");
+        Swal.fire({
+          icon: "error",
+          title: "登入請求失敗",
+          text: "登入請求失敗，請稍後再試",
+        });
       });
   });
 }

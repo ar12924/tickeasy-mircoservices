@@ -231,15 +231,25 @@ form.addEventListener("submit", function (e) {
     .then((body) => {
       msg.style.color = body.successful ? "green" : "red";
       if (body.successful) {
-        msg.textContent = "註冊成功，請至註冊信箱收取認證信";
-        setTimeout(() => (window.location.href = "login.html"), 3000);
+        Swal.fire({
+          icon: "success",
+          title: "註冊成功",
+          text: "請至註冊信箱收取認證信",
+          confirmButtonText: "前往登入",
+          allowOutsideClick: false,
+        }).then(() => {
+          window.location.href = "login.html";
+        });
       } else {
         msg.textContent = body.message;
       }
     })
     .catch((err) => {
       console.error(err);
-      msg.style.color = "red";
-      msg.textContent = "伺服器錯誤，請稍後再試";
+      Swal.fire({
+        icon: "error",
+        title: "伺服器錯誤",
+        text: "請稍後再試",
+      });
     });
 });
