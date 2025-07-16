@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (typeof window.initHeader === 'function') {
         window.initHeader();
     }
-    
+
     // 初始化編輯頁面
     initEditPage();
 });
@@ -125,18 +125,18 @@ function loadMemberPhoto(memberId) {
 
     // 嘗試載入實際照片
     const testImg = new Image();
-    
-    testImg.onload = function() {
+
+    testImg.onload = function () {
         // 載入成功才更換為實際照片
         photoImg.src = photoUrl + '?t=' + new Date().getTime();
         photoImg.alt = '會員照片';
     };
-    
-    testImg.onerror = function() {
+
+    testImg.onerror = function () {
         // 載入失敗保持預設圖片
         console.log('會員照片不存在，使用預設圖片');
     };
-    
+
     // 開始載入，加上時間戳避免快取問題
     testImg.src = photoUrl + '?timestamp=' + new Date().getTime();
 }
@@ -298,6 +298,9 @@ function updateMember() {
         rePassword = confirmPassword;
     }
 
+    // 清除之前的錯誤顯示
+    closeBusinessError();
+
     // 顯示載入狀態
     const submitBtn = document.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
@@ -333,13 +336,16 @@ function updateMember() {
         body: formData
     })
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
+            return response.json().then(data => {
+                if (response.ok) {
+                    return { success: true, data: data };
+                } else {
+                    return { success: false, data: data };
+                }
+            });
         })
-        .then(data => {
-            if (data.success) {
+        .then(result => {
+            if (result.success) {
                 // 如果有照片，進行上傳
                 if (form.photo.files[0]) {
                     uploadPhoto(currentMemberId, form.photo.files[0])
@@ -356,12 +362,13 @@ function updateMember() {
                     window.location.href = 'member_list.html';
                 }
             } else {
-                throw new Error(data.message || '更新失敗');
+                const errorData = result.data;
+                showBusinessError(errorData.message || '更新會員失敗');
             }
         })
         .catch(error => {
             console.error('更新會員失敗:', error);
-            alert('更新會員失敗：' + error.message);
+            showBusinessError('系統錯誤，請稍後再試');
         })
         .finally(() => {
             submitBtn.innerHTML = originalText;
@@ -605,5 +612,31 @@ function validatePasswordMatch() {
     } else if (newPassword.length >= 6) {
         confirmPasswordInput.classList.add('is-valid');
         confirmPasswordInput.setCustomValidity('');
+    }
+}
+
+/**
+ * 顯示會員操作錯誤訊息
+ */
+function showBusinessError(message) {
+    const errorAlert = document.getElementById('businessErrorAlert');
+    const errorMessage = document.getElementById('businessErrorMessage');
+
+    if (errorAlert && errorMessage) {
+        errorMessage.textContent = message;
+        errorAlert.classList.remove('d-none');
+
+        // 滾動到錯誤提示
+        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+/**
+ * 關閉會員操作錯誤提示
+ */
+function closeBusinessError() {
+    const errorAlert = document.getElementById('businessErrorAlert');
+    if (errorAlert) {
+        errorAlert.classList.add('d-none');
     }
 }

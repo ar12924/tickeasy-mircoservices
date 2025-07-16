@@ -180,6 +180,17 @@
                                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                 <span id="errorMessage"></span>
                             </div>
+                            <div class="alert alert-danger d-none" id="businessErrorAlert">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-exclamation-triangle-fill me-3"></i>
+                                    <div class="flex-grow-1">
+                                        <strong>錯誤：</strong>
+                                        <span id="businessErrorMessage"></span>
+                                        <button type="button" class="btn-close float-end"
+                                            onclick="closeBusinessError()"></button>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- 表單內容 -->
                             <div class="card" id="editForm" style="display: none;">
                                 <div class="card-header">

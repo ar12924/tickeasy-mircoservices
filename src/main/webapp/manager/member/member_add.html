@@ -169,6 +169,17 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
+                            <div class="alert alert-danger d-none" id="errorAlert">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-exclamation-triangle-fill me-3"></i>
+                                    <div class="flex-grow-1">
+                                        <strong>錯誤：</strong>
+                                        <span id="errorMessage"></span>
+                                        <button type="button" class="btn-close float-end"
+                                            onclick="closeError()"></button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="card">
                                 <div class="card-header">
                                     <div class="row align-items-center">

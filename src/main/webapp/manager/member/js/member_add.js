@@ -467,6 +467,7 @@ function initializeHostApplyFeature() {
  * 提交表單
  */
 function submitForm() {
+    closeError();
     // 顯示載入狀態
     const submitBtn = document.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
@@ -499,14 +500,18 @@ function submitForm() {
         body: formData
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
+        return response.json().then(data => {
+            if (response.ok) {
+                return { success: true, data: data };
+            } else {
+                return { success: false, data: data };
+            }
+        });
     })
-    .then(data => {
-        if (data.success) {
-            // 如果有照片，進行上傳
+    .then(result => {
+        if (result.success) {
+            const data = result.data;
+            // 成功處理
             if (form.photo.files[0]) {
                 uploadPhoto(data.data.memberId, form.photo.files[0])
                     .then(() => {
@@ -519,12 +524,14 @@ function submitForm() {
                 showSuccessMessage();
             }
         } else {
-            showErrorMessage(data.message);
+            // 顯示後端的具體錯誤訊息
+            const errorData = result.data;
+            showError(errorData.message || '建立會員失敗');
         }
     })
     .catch(error => {
         console.error('建立會員失敗:', error);
-        showErrorMessage('系統錯誤，請稍後再試');
+        showError('系統錯誤，請稍後再試');
     })
     .finally(() => {
         submitBtn.innerHTML = originalText;
@@ -552,6 +559,28 @@ function uploadPhoto(memberId, photoFile) {
 }
 
 /**
+ * 顯示錯誤訊息
+ */
+function showError(message) {
+    const errorAlert = document.getElementById('errorAlert');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    errorMessage.textContent = message;
+    errorAlert.classList.remove('d-none');
+    
+    // 滾動到錯誤提示
+    errorAlert.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/**
+ * 關閉錯誤提示
+ */
+function closeError() {
+    const errorAlert = document.getElementById('errorAlert');
+    errorAlert.classList.add('d-none');
+}
+
+/**
  * 顯示成功訊息
  */
 function showSuccessMessage(customMessage) {
@@ -562,12 +591,9 @@ function showSuccessMessage(customMessage) {
     window.location.href = 'member_list.html';
 }
 
-/**
- * 顯示錯誤訊息
- */
-function showErrorMessage(message) {
-    alert('錯誤：' + message);
-}
+
+
+
 
 /**
  * 頁面載入完成後初始化所有功能
