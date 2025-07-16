@@ -93,39 +93,117 @@
     }
 
     // 載入訂單資料
+    // async function loadOrders() {
+    //     try {
+    //         console.log('開始載入訂單資料，活動ID:', eventId);
+
+    //         const response = await fetch(`/maven-tickeasy-v1/manager/orders/event/${eventId}`);
+
+    //         if (!response.ok) {
+    //             throw new Error(`載入失敗，狀態碼：${response.status}`);
+    //         }
+
+    //         const result = await response.json();
+    //         console.log('訂單資料回應:', result);
+
+    //         if (result.successful) {
+    //             const orders = result.data || [];
+    //             initializeDataTable(orders);
+    //             updateStatistics(orders);
+
+    //             // 隱藏載入訊息，顯示內容
+    //             loadingMessage.style.display = 'none';
+    //             orderContainer.style.display = 'block';
+    //         } else {
+    //             throw new Error(result.message || '載入訂單資料失敗');
+    //         }
+    //     } catch (error) {
+    //         console.error('載入訂單資料錯誤:', error);
+    //         loadingMessage.innerHTML = `
+    //             <i class="bi bi-exclamation-triangle text-danger"></i>
+    //             <p class="text-danger">載入失敗：${error.message}</p>
+    //             <a href="../index.html" class="btn btn-secondary">返回活動列表</a>
+    //         `;
+    //     }
+    // }
+
     async function loadOrders() {
-        try {
-            console.log('開始載入訂單資料，活動ID:', eventId);
+    try {
+        console.log('開始載入訂單資料，活動ID:', eventId);
 
-            const response = await fetch(`/maven-tickeasy-v1/manager/orders/event/${eventId}`);
+        const response = await fetch(`/maven-tickeasy-v1/manager/orders/event/${eventId}`);
 
-            if (!response.ok) {
-                throw new Error(`載入失敗，狀態碼：${response.status}`);
-            }
-
-            const result = await response.json();
-            console.log('訂單資料回應:', result);
-
-            if (result.successful) {
-                const orders = result.data || [];
-                initializeDataTable(orders);
-                updateStatistics(orders);
-
-                // 隱藏載入訊息，顯示內容
-                loadingMessage.style.display = 'none';
-                orderContainer.style.display = 'block';
-            } else {
-                throw new Error(result.message || '載入訂單資料失敗');
-            }
-        } catch (error) {
-            console.error('載入訂單資料錯誤:', error);
-            loadingMessage.innerHTML = `
-                <i class="bi bi-exclamation-triangle text-danger"></i>
-                <p class="text-danger">載入失敗：${error.message}</p>
-                <a href="../index.html" class="btn btn-secondary">返回活動列表</a>
-            `;
+        if (!response.ok) {
+            throw new Error(`載入失敗，狀態碼：${response.status}`);
         }
+
+        const result = await response.json();
+        console.log('訂單資料回應:', result);
+        
+        // 詳細除錯輸出
+        console.log('=== 除錯資訊 ===');
+        console.log('result:', result);
+        console.log('result.successful:', result.successful);
+        console.log('successful 型別:', typeof result.successful);
+        console.log('result.data:', result.data);
+        console.log('data 型別:', typeof result.data);
+        console.log('data 是陣列:', Array.isArray(result.data));
+        console.log('data 長度:', result.data?.length);
+        console.log('================');
+
+        // 暫時跳過檢查，直接處理資料
+        // let orders = [];
+        
+        // if (result.data && Array.isArray(result.data)) {
+        //     orders = result.data;
+        // } else if (result.data && typeof result.data === 'object') {
+        //     // 如果 data 是物件但不是陣列，看看是否有其他屬性包含陣列
+        //     console.log('data 物件的屬性:', Object.keys(result.data));
+        //     orders = [];
+        // } else {
+        //     console.log('無法識別的 data 格式');
+        //     orders = [];
+        // }
+
+        // console.log('最終處理的訂單資料:', orders);
+
+
+        // ✅ 由於後端直接回傳陣列，所以直接使用
+        const orders = Array.isArray(result) ? result : [];
+
+        
+        // 不管成功失敗，都嘗試顯示資料
+        initializeDataTable(orders);
+        updateStatistics(orders);
+
+        // 隱藏載入訊息，顯示內容
+        loadingMessage.style.display = 'none';
+        orderContainer.style.display = 'block';
+        
+        // 如果有資料但檢查失敗，顯示警告
+        // if (orders.length === 0 && result.data) {
+        //     msg.innerHTML = `
+        //         <div class="alert alert-warning">
+        //             <i class="bi bi-exclamation-triangle"></i>
+        //             資料格式異常，請檢查後端回傳格式
+        //         </div>
+        //     `;
+        // }
+
+    } catch (error) {
+        console.error('載入訂單資料錯誤:', error);
+        loadingMessage.innerHTML = `
+            <i class="bi bi-exclamation-triangle text-danger"></i>
+            <p class="text-danger">載入失敗：${error.message}</p>
+            <a href="../index.html" class="btn btn-secondary">返回活動列表</a>
+        `;
     }
+}
+
+
+
+
+
 
     // 初始化 DataTable
     function initializeDataTable(orders) {
@@ -205,11 +283,26 @@
             const result = await response.json();
             console.log('訂單明細回應:', result);
 
-            if (result.successful) {
-                displayOrderDetail(result.data);
-            } else {
-                throw new Error(result.message || '載入訂單明細失敗');
-            }
+            // if (result.successful) {
+            //     displayOrderDetail(result.data);
+            // } else {
+            //     throw new Error(result.message || '載入訂單明細失敗');
+            // }
+            // ✅ 由於後端直接回傳物件，所以直接使用
+        
+        
+        // if (orderDetail) {
+        //     displayOrderDetail(orderDetail);
+        // } else {
+        //     throw new Error('找不到訂單明細');
+        // }
+
+
+        if (result) {
+            displayOrderDetail(result);
+        } else {
+            throw new Error('找不到訂單明細');
+        }
 
         } catch (error) {
             console.error('載入訂單明細錯誤:', error);
