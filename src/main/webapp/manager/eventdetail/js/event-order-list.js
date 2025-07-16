@@ -141,7 +141,7 @@
         console.log('訂單資料回應:', result);
         
         // 詳細除錯輸出
-        console.log('=== 除錯資訊 ===');
+        console.log('=== 除錯資訊 ==='); 
         console.log('result:', result);
         console.log('result.successful:', result.successful);
         console.log('successful 型別:', typeof result.successful);
