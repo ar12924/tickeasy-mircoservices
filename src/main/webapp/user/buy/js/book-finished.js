@@ -129,7 +129,8 @@ const saveOrderAndTicket = async (book) => {
 
   // 要求使用者，請先登入
   if (authStatus === "NOT_LOGGED_IN") {
-    alert(message);
+    // alert(message);
+    await Swal.fire(message);
     sessionStorage.setItem("core-message", message);
     sessionStorage.setItem("core-successful", successful);
     location.href = `${getContextPath()}/user/member/login.html`;
@@ -170,8 +171,14 @@ const initBookConfirmJSEvents = async (book) => {
   const eventId = getUrlParam("eventId");
 
   // ====== "上一步" 按鈕點擊事件 ======
-  $(".back").on("click", () => {
-    const result = confirm("您將回到首頁");
+  $(".back").on("click", async () => {
+    // const result = confirm("您將回到首頁");
+    const keepGoing = await Swal.fire({
+      title: "您將回到首頁",
+      showCancelButton: true,
+      confirmButtonText: "是",
+      cancelButtonText: "否",
+    });
     if (result) {
       location.href = `${getContextPath()}/user/buy/index.html`;
     }

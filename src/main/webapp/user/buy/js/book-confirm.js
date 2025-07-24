@@ -145,7 +145,8 @@ const saveOrderAndTicket = async (book) => {
 
   // 要求使用者，請先登入
   if (authStatus === "NOT_LOGGED_IN") {
-    alert(message);
+    // alert(message);
+    await Swal.fire(message);
     sessionStorage.setItem("core-message", message);
     sessionStorage.setItem("core-successful", successful);
     location.href = `${getContextPath()}/user/member/login.html`;
@@ -186,9 +187,15 @@ const initBookConfirmJSEvents = async (book) => {
   const eventId = getUrlParam("eventId");
 
   // ====== "上一步" 按鈕點擊事件 ======
-  $(".back").on("click", () => {
-    const keepGoing = confirm("入場者資料會清空，要重新填寫?");
-    if (keepGoing) {
+  $(".back").on("click", async () => {
+    // const keepGoing = confirm("入場者資料會清空，要重新填寫?");
+    const keepGoing = await Swal.fire({
+      title: "入場者資料會清空，要重新填寫?",
+      showCancelButton: true,
+      confirmButtonText: "是",
+      cancelButtonText: "否",
+    });
+    if (keepGoing.isConfirmed) {
       location.href = `${getContextPath()}/user/buy/book-info.html?eventId=${eventId}`;
     }
     return;

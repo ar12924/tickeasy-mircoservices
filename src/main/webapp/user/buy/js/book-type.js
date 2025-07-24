@@ -69,7 +69,8 @@ const saveBook = async (book) => {
 
   // 要求使用者，請先登入
   if (authStatus === "NOT_LOGGED_IN") {
-    alert(message);
+    // alert(message);
+    await Swal.fire(message);
     sessionStorage.setItem("core-message", message);
     sessionStorage.setItem("core-successful", successful);
     location.href = `${getContextPath()}/user/member/login.html`;

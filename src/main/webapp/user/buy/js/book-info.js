@@ -58,7 +58,8 @@ const findBook = async () => {
 
   // 要求使用者，請先登入
   if (authStatus === "NOT_LOGGED_IN") {
-    alert(message);
+    // alert(message);
+    await Swal.fire(message);
     sessionStorage.setItem("core-message", message);
     sessionStorage.setItem("core-sucessful", successful);
     location.href = `${getContextPath()}/user/member/login.html`;
@@ -69,7 +70,8 @@ const findBook = async () => {
   const eventId = getUrlParam("eventId");
   const dataEventId = data?.eventId;
   if (eventId != dataEventId) {
-    alert(ERROR_MESSAGES.EVENT_ID_INCONSISTENT);
+    // alert(ERROR_MESSAGES.EVENT_ID_INCONSISTENT);
+    await Swal.fire(ERROR_MESSAGES.EVENT_ID_INCONSISTENT);
     // 回到票種選擇頁...
     location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
     return;
@@ -133,7 +135,8 @@ const saveBook = async (book) => {
     console.log(attendeeOne);
     const verifiedObject = await verifyMemberIdCard(attendeeOne);
     if (!verifiedObject.successful) {
-      alert(verifiedObject.message);
+      Swal.fire(verifiedObject.message);
+      // alert(verifiedObject.message);
       return;
     }
   }
@@ -148,7 +151,8 @@ const saveBook = async (book) => {
 
   // 要求使用者，請先登入
   if (authStatus === "NOT_LOGGED_IN") {
-    alert(message);
+    // alert(message);
+    await Swal.fire(message);
     sessionStorage.setItem("core-message", message);
     sessionStorage.setItem("core-successful", successful);
     location.href = `${getContextPath()}/user/member/login.html`;
@@ -210,6 +214,14 @@ const countDown = async (TTL, renderTimer) => {
   // 立即執行第1次
   renderTimer(remainingTime);
 
+  // 處理倒數結束的異步函數
+  const handleCountdownEnd = async () => {
+    console.log("倒數結束!!");
+    // alert("請重新選擇票種!!");
+    await Swal.fire("請重新選擇票種!!");
+    location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
+  };
+
   // 定期重複執行(1000 ms)
   const intervalId = setInterval(() => {
     remainingTime--;
@@ -218,9 +230,7 @@ const countDown = async (TTL, renderTimer) => {
     // 時間到停止
     if (remainingTime <= 0) {
       clearInterval(intervalId);
-      console.log("倒數結束!!");
-      alert("請重新選擇票種!!");
-      location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
+      handleCountdownEnd();
       return;
     }
   }, 1000);
@@ -234,9 +244,17 @@ const initBookInfoJSEvents = async (book) => {
   const eventId = getUrlParam("eventId");
 
   // ====== "上一步" 按鈕點擊事件 ======
-  $(".back").on("click", () => {
-    const keepGoing = confirm("票種選擇結果會清空，要重新選擇?");
-    location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
+  $(".back").on("click", async () => {
+    // const keepGoing = confirm("票種選擇結果會清空，要重新選擇?");
+    const keepGoing = await Swal.fire({
+      title: "票種選擇結果會清空，要重新選擇?",
+      showCancelButton: true,
+      confirmButtonText: "是",
+      cancelButtonText: "否",
+    });
+    if (keepGoing.isConfirmed) {
+      location.href = `${getContextPath()}/user/buy/book-type.html?eventId=${eventId}`;
+    }
   });
   // ====== "下一步" 按鈕點擊事件 ======
   $(".next").on("mouseenter mouseleave", (e) => {

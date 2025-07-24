@@ -271,7 +271,8 @@ export const initEventBoxJSEvents = () => {
     // 沒有會員身份，要求先行登入
     const memberResult = await fetchMemberFromSession();
     if (!memberResult.successful) {
-      alert("請先行登入");
+      // alert("請先行登入");
+      await Swal.fire("請先行登入");
       location.href = `${getContextPath()}/user/member/login.html`;
       return;
     }
