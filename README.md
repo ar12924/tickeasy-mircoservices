@@ -26,7 +26,7 @@ TickEasy 是一個基於純 Java Web（Spring MVC + Servlet + JDBC）的線上�
 | 3    | 場次查詢               | 多條件搜尋（日期、場館、演出）並即時顯示剩餘座位               |
 | 4    | 線上購票               | 互動式座位圖選座<br>Redis 分布式鎖 + 資料庫悲觀鎖              |
 | 5    | 訂單管理               | 建立／查詢／取消／退票<br>Spring 事務與事件機制                |
-| 6    | 即時通知               | WebSocket 推播<br>Email/SMS 通知活動與折扣                   |
+| 6    | 即時通知               | WebSocket 推播<br>                   |
 
 ---
 
