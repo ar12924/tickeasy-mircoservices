@@ -10,8 +10,6 @@ TickEasy 是一個基於純 Java Web（Spring MVC + Servlet + JDBC）的線上�
 - **個人貢獻**：
   前台開發：會員註冊登入、會員資料編輯、Email驗證(註冊驗證/更改密碼驗證)、會員權限辨別導向頁面
   後台開發：數據儀錶板(收入圓餅圖/銷售趨勢圖/橫向進度條)、報名人列表與明細
-- **部署平台**：Heroku（Dyno 閒置會休眠，啟動約 20–30 秒）  
-- **公開網址**：`https://your-ticketing-app.herokuapp.com/`  
 - **購票者帳號**：`buyer1` / 123456
 - **管理者帳號**：`eventhost1` / 123456
 
