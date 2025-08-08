@@ -31,11 +31,12 @@ TickEasy 是一個基於純 Java Web（Spring MVC + Servlet + JDBC）的線上�
 ## 🚀 演示（Demo）
 
 - **會員註冊／驗證**  
-  ![Member Register & Email](docs/member-register.gif)  
+  ![image](verification.gif)
+  ![image](updatepasswrd.gif)
 - **Dashboard 摘要**  
   ![image](dashboard.gif)  
 - **參與者列表**  
-  ![Participant List](docs/participant-list.gif)  
+  ![img](participantdetail.gif)  
 
 ---
 
