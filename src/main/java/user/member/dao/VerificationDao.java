@@ -1,7 +1,7 @@
 package user.member.dao;
 
 import common.dao.CommonDao;
-import user.member.vo.VerificationToken;
+import microservices.member.vo.VerificationToken;
 
 public interface VerificationDao extends CommonDao{
 	VerificationToken findByToken(String tokenName);
