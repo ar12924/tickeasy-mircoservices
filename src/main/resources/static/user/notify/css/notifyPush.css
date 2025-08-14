@@ -1,0 +1,75 @@
+/*通知方框*/
+
+/* 初始隱藏通知彈框 */
+.notification_box {
+    position: fixed;
+    bottom: -200px;  /* 初始位置在頁面下方 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #EC4899;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    width: 80%;
+    text-align: center;
+    transition: bottom 1s ease;  /* 動畫過渡效果 */
+    z-index: 1000;  /* 確保通知在其他內容之上 */
+}
+
+/* 顯示通知時的樣式 */
+.notification_box.show {
+    bottom: 20px;  /* 顯示時的位置 */
+}
+
+/* 按鈕樣式 */
+.notification_box button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.notification_box button:hover {
+    background-color: #D9D9D93A;
+}
+
+
+.notification_container1 {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.notification_box1 {
+    background-color: #444;
+    color: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 1;
+    animation: fadeInOut 3s ease-in-out forwards;
+}
+
+.notification_box1 button {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
