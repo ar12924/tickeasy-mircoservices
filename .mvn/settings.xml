@@ -1,0 +1,42 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+  <mirrors>
+    <!-- 強制把 central 指到 repo1 -->
+    <mirror>
+      <id>central-repo1</id>
+      <name>Maven Central via repo1</name>
+      <url>https://repo1.maven.org/maven2</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+
+  <!-- 明確宣告 central（有些公司環境需要才能讓 mirror 生效） -->
+  <profiles>
+    <profile>
+      <id>use-repo1</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>false</enabled></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+      <properties>
+        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+      </properties>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>use-repo1</activeProfile>
+  </activeProfiles>
+
+  <proxies/>
+</settings>
