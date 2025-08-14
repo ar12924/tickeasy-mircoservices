@@ -1,0 +1,20 @@
+server:
+  port: 18082
+
+spring:
+  application:
+    name: media-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  server:
+    port: 18092
+
+app:
+  s3:
+    bucket: ${S3_BUCKET:}
+  presignTtlSeconds: ${PRESIGN_TTL:600}
+  allowedImageTypes: ${ALLOWED_IMAGE_TYPES:image/png,image/jpeg,image/jpg}

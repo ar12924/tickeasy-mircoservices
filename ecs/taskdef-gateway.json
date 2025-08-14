@@ -1,0 +1,41 @@
+{
+  "family": "tickeasy-gateway",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::<account>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<account>:role/tickeasy-gateway-task-role",
+  "containerDefinitions": [
+    {
+      "name": "gateway",
+      "image": "<account>.dkr.ecr.<region>.amazonaws.com/tickeasy/gateway:latest",
+      "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
+      "environment": [
+        { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" },
+        { "name": "MEMBER_URL", "value": "${MEMBER_URL}" },
+        { "name": "MEDIA_URL", "value": "${MEDIA_URL}" },
+        { "name": "NOTIFY_URL", "value": "${NOTIFY_URL}" },
+        { "name": "NOTIFY_WS_URL", "value": "${NOTIFY_WS_URL}" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/tickeasy-gateway",
+          "awslogs-region": "<region>",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "retries": 3,
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8081/actuator/health || exit 1"
+        ],
+        "timeout": 5,
+        "interval": 30,
+        "startPeriod": 30
+      }
+    }
+  ]
+}

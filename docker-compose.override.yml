@@ -1,0 +1,7 @@
+﻿services:
+  auth-service:
+    environment:
+      SPRING_CONFIG_NAME: application-auth
+  notification-service:
+    environment:
+      SPRING_CONFIG_NAME: application-notification

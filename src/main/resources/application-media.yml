@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: media-service
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+      - org.springframework.cloud.gateway.config.GatewayAutoConfiguration
+      - org.springframework.cloud.gateway.config.GatewayClassPathWarningAutoConfiguration
+      - org.springframework.cloud.gateway.config.GatewayMetricsAutoConfiguration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  server:
+    port: 8081
+
+app:
+  s3:
+    bucket: ${S3_BUCKET:}
+  presignTtlSeconds: ${PRESIGN_TTL:600}
+  allowedImageTypes: ${ALLOWED_IMAGE_TYPES:image/png,image/jpeg,image/jpg}

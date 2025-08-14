@@ -1,0 +1,92 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /maven-tickeasy-v1
+
+spring:
+  main:
+    web-application-type: servlet
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+      - org.springframework.cloud.gateway.config.GatewayAutoConfiguration
+      - org.springframework.cloud.gateway.config.GatewayClassPathWarningAutoConfiguration
+      - org.springframework.cloud.gateway.config.GatewayMetricsAutoConfiguration
+  session:
+    store-type: redis
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+  mvc:
+    view:
+      prefix: /
+      suffix: .jsp
+  mail:
+    host: ${SPRING_MAIL_HOST:}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  cloud:
+    gateway:
+      enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: ${EUREKA_REGISTER:false}
+    fetch-registry: ${EUREKA_FETCH:false}
+
+auth:
+  jwt:
+    secret: ${AUTH_JWT_SECRET:change-me-please-change-me-please-change-me}
+    issuer: tickeasy
+    ttlSeconds: 3600
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,mappings"
+
+aws:
+  region: ap-northeast-1
+  accessKeyId: ${AWS_ACCESS_KEY_ID:}
+  secretAccessKey: ${AWS_SECRET_ACCESS_KEY:}
+  s3:
+    endpoint: ${AWS_S3_ENDPOINT:}
+
+app:
+  s3:
+    bucket: ${APP_S3_BUCKET:}
+  url:
+    member-service: ${APP_URL_MEMBER_SERVICE:http://localhost:8080/maven-tickeasy-v1}
+    reset-password-page: ${APP_URL_RESET_PASSWORD_PAGE:http://localhost:8080/maven-tickeasy-v1/user/member/reset-password.html}
+    password-update-page: ${APP_URL_PASSWORD_UPDATE_PAGE:http://localhost:8080/maven-tickeasy-v1/user/member/edit.html}
+
+member:
+  datasource:
+    jdbc-url: ${MEMBER_DATASOURCE_JDBC_URL:jdbc:mysql://db:3306/microservice?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8}
+    username: ${MEMBER_DATASOURCE_USERNAME:app}
+    password: ${MEMBER_DATASOURCE_PASSWORD:app123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+logging:
+  level:
+    user.member: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    org.springframework.web: DEBUG

@@ -1,34 +1,11 @@
+.cursor/
+logs/
+
 target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-# https://github.com/takari/maven-wrapper#usage-without-binary-jar
-.mvn/wrapper/maven-wrapper.jar
 
-# Eclipse m2e generated files
-# Eclipse Core
-.project
-# JDT-specific (Eclipse Java Development Tools)
-.classpath
-# JDT-specific (Spring Tools)
-.factorypath
-# JDT-specific (Intellij Java Development Tools)
-.idea
-.smarttomcat
-# Eclipse others
-.settings
-*.class
-.gitkeep
-/bin/
-src/main/webapp/manager/participant-test.html
 src/main/resources/application.properties
-
-# 環境變數和敏感設定檔
-.env
-application.properties
-*.env
+.smarttomcat/
+.idea/
+src/main/resources/static/common/vendors/.gitkeep
+src/main/resources/static/user/notify/css/.gitkeep
+src/main/resources/static/user/notify/js/.gitkeep

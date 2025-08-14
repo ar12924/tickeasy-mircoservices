@@ -1,0 +1,41 @@
+server:
+  port: 18081
+
+spring:
+  application:
+    name: member-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://127.0.0.1:3306/microservice?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Taipei}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 20000
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  main:
+    web-application-type: servlet
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  server:
+    port: 18091
+
+app:
+  s3:
+    bucket: ${S3_BUCKET:}
+  security:
+    cors:
+      allowed-origins: ${ALLOWED_ORIGINS:*}
+
+jwt:
+  secret: ${JWT_SECRET:dev-secret}

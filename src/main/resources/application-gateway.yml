@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    web-application-type: reactive
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+      - org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - IntrospectFilter
+      routes:
+        - id: notification_api
+          uri: http://notification-service:8080
+          predicates:
+            - Path=/api/notifications/**
+        - id: notify_api
+          uri: http://notify-service:8080
+          predicates:
+            - Path=/api/notify/**
+        - id: notify_ws
+          uri: ws://notify-service:8080
+          predicates:
+            - Path=/ws/**
+
+gateway:
+  auth:
+    introspect-url: ${GATEWAY_INTROSPECT_URL:http://auth-service:8080/auth/introspect}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  server:
+    port: 8081
+
+app:
+  security:
+    permit-patterns: "/","/favicon.ico","/**/*.html","/**/*.css","/**/*.js","/api/media/**"

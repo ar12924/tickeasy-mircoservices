@@ -1,0 +1,39 @@
+{
+  "family": "tickeasy-media",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::<account>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<account>:role/tickeasy-media-task-role",
+  "containerDefinitions": [
+    {
+      "name": "media",
+      "image": "<account>.dkr.ecr.<region>.amazonaws.com/tickeasy/media:latest",
+      "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
+      "environment": [
+        { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" },
+        { "name": "S3_BUCKET", "value": "${S3_BUCKET}" },
+        { "name": "AWS_REGION", "value": "${AWS_REGION}" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/tickeasy-media",
+          "awslogs-region": "<region>",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "retries": 3,
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8081/actuator/health || exit 1"
+        ],
+        "timeout": 5,
+        "interval": 30,
+        "startPeriod": 30
+      }
+    }
+  ]
+}

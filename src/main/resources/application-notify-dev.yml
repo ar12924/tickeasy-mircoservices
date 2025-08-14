@@ -1,0 +1,29 @@
+server:
+  port: 18083
+
+spring:
+  application:
+    name: notify-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://127.0.0.1:3306/microservice?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Taipei}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  server:
+    port: 18093
+
+notify:
+  cron:
+    reminder: ${NOTIFY_CRON_REMINDER:0 0 10 * * *}
+    sell: ${NOTIFY_CRON_SELL:0 0 11 * * *}
+    soldout: ${NOTIFY_CRON_SOLDOUT:0 0 12 * * *}
+    leftPercent: ${NOTIFY_CRON_LEFT:0 0 13 * * *}

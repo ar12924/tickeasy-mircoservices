@@ -1,0 +1,62 @@
+{
+  "family": "tickeasy-member",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::<account>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<account>:role/tickeasy-member-task-role",
+  "containerDefinitions": [
+    {
+      "name": "member",
+      "image": "<account>.dkr.ecr.<region>.amazonaws.com/tickeasy/member:latest",
+      "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
+      "environment": [
+        { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" },
+        {
+          "name": "SPRING_DATASOURCE_URL",
+          "value": "${SPRING_DATASOURCE_URL}"
+        },
+        {
+          "name": "SPRING_DATASOURCE_USERNAME",
+          "value": "${SPRING_DATASOURCE_USERNAME}"
+        },
+        {
+          "name": "SPRING_DATASOURCE_PASSWORD",
+          "value": "${SPRING_DATASOURCE_PASSWORD}"
+        },
+        { "name": "S3_BUCKET", "value": "${S3_BUCKET}" },
+        { "name": "AWS_REGION", "value": "${AWS_REGION}" },
+        { "name": "JWT_SECRET", "value": "${JWT_SECRET}" }
+      ],
+      "secrets": [
+        {
+          "name": "SPRING_DATASOURCE_PASSWORD",
+          "valueFrom": "arn:aws:ssm:<region>:<account>:parameter/tickeasy/prod/db/password"
+        },
+        {
+          "name": "JWT_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:<region>:<account>:secret:tickeasy/prod/jwt"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/tickeasy-member",
+          "awslogs-region": "<region>",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "retries": 3,
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8081/actuator/health || exit 1"
+        ],
+        "timeout": 5,
+        "interval": 30,
+        "startPeriod": 30
+      }
+    }
+  ]
+}
