@@ -1,0 +1,38 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: member-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL_SIZE:20}
+      minimum-idle: ${HIKARI_MIN_IDLE:4}
+      connection-timeout: ${HIKARI_CONN_TIMEOUT:30000}
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  main:
+    web-application-type: servlet
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  server:
+    port: 8081
+
+app:
+  s3:
+    bucket: ${S3_BUCKET}
+  security:
+    cors:
+      allowed-origins: ${ALLOWED_ORIGINS}
+
+jwt:
+  secret: ${JWT_SECRET}
