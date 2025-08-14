@@ -1,0 +1,244 @@
+services:
+  db:
+    image: mysql:8.0.37
+    container_name: tickeasy-mysql
+    environment:
+      MYSQL_DATABASE: microservice
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app123
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    command: ["--default-authentication-plugin=mysql_native_password"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: tickeasy-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  member:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_CLASSIFIER: member
+        SKIP_GO_OFFLINE: "true"
+    container_name: member-service
+    depends_on:
+      - db
+      - redis
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_NAME: application-member
+      MEMBER_DATASOURCE_JDBC_URL: jdbc:mysql://db:3306/microservice?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      MEMBER_DATASOURCE_USERNAME: app
+      MEMBER_DATASOURCE_PASSWORD: app123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      AWS_REGION: ap-northeast-1
+      S3_BUCKET: <your-bucket>
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
+      NOTIFY_ENDPOINT: http://notification-service:8080/api/notifications/send
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
+      APP_MAIL_FROM_EMAIL: noreply@tickeasy.com
+      APP_MAIL_FROM_NAME: TickEasy
+    ports:
+      - "18081:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: "0.75"
+          memory: 768M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_CLASSIFIER: gateway
+        SKIP_GO_OFFLINE: "true"
+    container_name: gateway-service
+    depends_on:
+      - member
+      - auth-service
+      - redis
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_NAME: application-gateway
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
+      MEMBER_URL: http://member-service:8080
+      NOTIFY_URL: http://notify-service:8080
+      NOTIFY_WS_URL: ws://notify-service:8080
+      MEDIA_URL: http://media-service:8080
+      GATEWAY_INTROSPECT_URL: http://auth-service:8080/auth/introspect
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "18080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_CLASSIFIER: notification
+        SKIP_GO_OFFLINE: "true"
+    container_name: notification-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_NAME: application-notification
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/microservice?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: app123
+    depends_on:
+      - db
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "18083:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  media-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_CLASSIFIER: media
+        SKIP_GO_OFFLINE: "true"
+    container_name: media-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_NAME: application-media
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      AWS_REGION: ${AWS_REGION}
+      S3_BUCKET: ${S3_BUCKET}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-test}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-test}
+    ports:
+      - "18082:8080"
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+  notify-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_CLASSIFIER: notify
+        SKIP_GO_OFFLINE: "true"
+    container_name: notify-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_NAME: application-notify
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/microservice?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: app123
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "18084:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_CLASSIFIER: auth
+        SKIP_GO_OFFLINE: "true"
+    container_name: auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_NAME: application-auth
+      AUTH_JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
+      AUTH_JWT_ISSUER: tickeasy
+      AUTH_JWT_TTLSECONDS: 3600
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
+
+volumes:
+  dbdata:
