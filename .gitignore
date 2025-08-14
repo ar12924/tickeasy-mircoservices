@@ -4,3 +4,8 @@ logs/
 target/
 
 src/main/resources/application.properties
+.smarttomcat/
+.idea/
+src/main/resources/static/common/vendors/.gitkeep
+src/main/resources/static/user/notify/css/.gitkeep
+src/main/resources/static/user/notify/js/.gitkeep
