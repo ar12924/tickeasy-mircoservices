@@ -1,0 +1,112 @@
+/* body { font-family: sans-serif; background: #f5f5f5; display: flex; padding: 2rem 0; justify-content: center; align-items: center; height: 100vh; margin: 0; } */
+.register-box {
+  margin: 2rem auto;
+  max-width: 360px;
+  width: 100%;
+  padding: 40px 30px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+.register-box h2 {
+  text-align: center;
+  color: #ec4899;
+  margin-bottom: 24px;
+}
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.register-box input,
+.register-box select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.checkbox-group {
+  margin: 12px 0;
+  font-size: 14px;
+}
+.checkbox-group label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox-group label input[type="checkbox"] {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+}
+button {
+  width: 100%;
+  background-color: #ec4899;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #c2185b;
+}
+.photo-group {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.photo-group img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 0.5rem;
+}
+.photo-group #defaultIcon {
+  display: block;
+  margin: 0 auto 0.5rem;
+  font-size: 80px;
+  color: #ccc;
+}
+#msg {
+  color: red;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.my-tickets {
+  background: transparent;
+}
+.error {
+  color: red;
+  font-size: 0.875em;
+  margin-left: 0.5em;
+}
+input:error,
+select:error {
+  border-color: red;
+  background-color: #fff8f8;
+}
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4a4a4a;
+}
+.star,
+.required,
+.asterisk {
+  color: #ec4899;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-left: 2px;
+  vertical-align: middle;
+}
